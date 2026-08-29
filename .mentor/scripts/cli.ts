@@ -8,6 +8,8 @@ import { relatar as relatarRegras, sincronizar as sincronizarRegras } from './cm
 import { doctor } from './cmd-doctor.ts'
 import { gates } from './cmd-gates.ts'
 import { instalarHooks } from './cmd-hooks.ts'
+import { encerrar as encerrarRisco, nova as novoRisco, relatar as relatarRiscos } from './cmd-riscos.ts'
+import { lancamento } from './cmd-lancamento.ts'
 import { regenerarTudo } from './vistas.ts'
 
 const AJUDA = `
@@ -37,6 +39,10 @@ mentor <comando>
   reserva                              lista a reserva (nao entra no contexto)
   gates                                roda todos os gates declarados pelo projeto
   hooks --instalar                     barreira de pre-push, sem dependencia (core.hooksPath)
+  ra [nova|encerrar <ID>]              registro de riscos aceitos
+       nova --titulo --justificativa --evidencia --aceito-por
+            --revisar-em --tarefa-de-saida [--severidade --pacote --advisory]
+  lancamento                           pode ir a publico? Roda os gates agora
   doctor                               folha de saude com veredito binario. Nunca cria tarefa
   gerar                                regenera as vistas em Markdown
 `
@@ -71,6 +77,18 @@ function principal(argv: string[]): number {
     case 'hooks':
       if (!flags.instalar) throw new Error('Use: mentor hooks --instalar')
       instalarHooks(); return 0
+    case 'lancamento': return lancamento()
+    case 'ra': {
+      const sub = posicionais[0]
+      if (!sub) { relatarRiscos(); return 0 }
+      if (sub === 'nova') { novoRisco(flags); return process.exitCode === 1 ? 1 : 0 }
+      if (sub === 'encerrar') {
+        const id = posicionais[1]
+        if (!id) throw new Error('Falta o ID. Use: mentor ra encerrar RA-001 --motivo "..."')
+        encerrarRisco(id, flags.motivo); return 0
+      }
+      throw new Error(`Subcomando de ra desconhecido: "${sub}".`)
+    }
     case 'doctor': return doctor()
     case 'auditar':
       console.log('`auditar` virou `doctor`. Rodando o doctor.\n')

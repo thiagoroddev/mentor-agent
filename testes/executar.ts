@@ -6,13 +6,22 @@ import { rodar as tdd } from './cenarios/04-tdd.ts'
 import { rodar as verificacao } from './cenarios/05-verificacao.ts'
 import { rodar as saude } from './cenarios/06-doctor.ts'
 import { rodar as entrega } from './cenarios/07-entrega.ts'
+import { rodar as lanc } from './cenarios/08-lancamento.ts'
 import type { Cenario } from './apoio.ts'
 
-const CENARIOS: Array<() => Cenario> = [ciclo, epico, recusas, tdd, verificacao, saude, entrega]
+const CENARIOS: Array<() => Cenario> = [ciclo, epico, recusas, tdd, verificacao, saude, entrega, lanc]
 
 let falharam = 0
 for (const rodar of CENARIOS) {
-  const c = rodar()
+  let c: Cenario
+  try {
+    c = rodar()
+  } catch (erro) {
+    falharam++
+    console.log(`  QUEBROU ${rodar.name}`)
+    console.log(`    - ${erro instanceof Error ? erro.message : String(erro)}`)
+    continue
+  }
   if (c.falhas.length === 0) {
     console.log(`  ok   ${c.nome}`)
   } else {

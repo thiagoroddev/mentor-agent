@@ -172,11 +172,11 @@ Tudo depende daqui. Nenhum comando novo antes desta fase fechar.
 
 ## Fase 6 · Seguranca e lancamento
 
-- [ ] **6.1 · Registro de riscos aceitos** (`MELHORIAS` §4.3)
+- [x] **6.1 · Registro de riscos aceitos** (`MELHORIAS` §4.3)
   `docs/seguranca/riscos-aceitos.md` gerado do JSON de 1.5 + leitor que valida prazo e campos.
   **Entrada vencida reprova mais alto que o problema original.** Encerrar move, nunca apaga.
 
-- [ ] **6.2 · Portao de lancamento** (`MELHORIAS` §4.2)
+- [x] **6.2 · Portao de lancamento** (`MELHORIAS` §4.2)
   `mentor lancamento` responde **uma** pergunta: pode ir a publico? Le' os gates declarados, o
   registro de riscos e as listas de fase. **`NÃO EXECUTADO` tambem reprova.**
   Os itens que dependem de ferramenta (Lighthouse, orcamento de bundle) sao **declarados pelo
@@ -342,6 +342,22 @@ Uma linha por passo concluido: `DD/MM/AA HH:MM · passo · o que mudou · o que 
              (a) epico na reserva com fatias no ciclo ficava invisivel no backlog;
              (b) o mesmo epico aparecia duplicado na listagem da reserva.
 29/08/26 · FASE 2 FECHADA · tsc limpo, verificar APROVADO.
+29/08/26 · 6.1 · registro de riscos aceitos. `mentor ra [nova|encerrar]`, vista gerada com
+                 Ativos e Encerrados, e as seis validacoes do `motocustorj`: sem evidencia, sem
+                 tarefa de saida, sem responsavel nominal, sem justificativa, prazo acima de 90
+                 dias, e data no passado (VENCIDO). **Nenhum campo e opcional, e e por isso que o
+                 registro funciona.** Encerrar move para a secao propria, nunca apaga.
+29/08/26 · 6.2 · `mentor lancamento` responde UMA pergunta, com seis itens: os gates rodados
+                 **agora** (evidencia antiga nao vale, o portao mede o estado atual) · riscos
+                 vencidos ou invalidos · perfil de qualidade · reversao executada · restauracao da
+                 copia testada · validacao manual pendente.
+                 `NÃO EXECUTADO` tambem reprova, e e' o comportamento que separa este portao de um
+                 checklist: gate que nao rodou nao e gate verde.
+29/08/26 · Dois defeitos meus, achados rodando: (a) usei 92 dias de prazo num teste do limite de
+             90, e o registro foi recusado em silencio duas chamadas antes do erro aparecer;
+             (b) o executor de testes morria inteiro quando um cenario lancava, escondendo os
+             outros. Agora um cenario que quebra vira falha dele, e os demais continuam.
+29/08/26 · FASE 6 FECHADA · tsc limpo, 8 cenarios verdes.
 29/08/26 · 5.1 · `processos/entrega.md` (86% do teto), condensado do `docs/operacao.md` do
                  `motocustorj`. Nada nomeia plataforma. Traz inteiro o argumento certo para uma
                  tarefa por ramo: se um ramo carrega tres tarefas, o mesmo link de esteira vai para

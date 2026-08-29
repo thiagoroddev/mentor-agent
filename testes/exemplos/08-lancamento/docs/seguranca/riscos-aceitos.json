@@ -1,0 +1,17 @@
+[
+  {
+    "id": "RA-001",
+    "titulo": "Redirecionamento aberto em rota nao alcancavel neste app",
+    "advisory": null,
+    "pacote": null,
+    "severidade": "high",
+    "tipo": "producao",
+    "justificativa": "a falha e do modo servidor; este app e cliente puro, sem servidor\n\nEncerrado em 29/08/26 14:00: dependencia atualizada na TASK-BG-001",
+    "evidencia": "npm audit --json | grep -c \"rota-servidor\"",
+    "aceito_por": "Thiago",
+    "aceito_em": "29/08/26 14:00",
+    "data_revisao": "15/11/26 14:00",
+    "tarefa_de_saida": "TASK-BG-001",
+    "encerrado_em": "29/08/26 14:00"
+  }
+]
