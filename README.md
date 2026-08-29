@@ -39,6 +39,7 @@ Titulo com espaco vai entre aspas, no PowerShell e no cmd igual: `--titulo "text
 | `.mentor/guia/` | 13 areas de orientacao. Consultadas por lacuna, nunca inteiras |
 | `.mentor/esquemas/` | a forma dos JSON, com os valores possiveis de cada campo |
 | `.mentor/scripts/` | os comandos |
+| `.mentor/manifesto.json` | o hash de cada arquivo do pacote, para saber se algum foi alterado depois de instalado |
 
 **A ideia em uma frase:** o que da' para gerar, o script gera; o que exige julgamento, a pessoa
 decide; e campo vazio no contexto e' a pergunta que a IA faz, em vez de silencio.
