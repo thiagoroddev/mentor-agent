@@ -234,23 +234,33 @@ exemplos ficam de fora.
 **O pacote e' copiado PARA DENTRO do repositorio, nao fica em `node_modules`.** Isso e' deliberado: a
 IA le' `.mentor/` como arquivo, e o projeto versiona as convencoes dele ao lado.
 
-### 9.1 · `mentor instalar` e `mentor atualizar` 🔵 a implementar
+### 9.1 · `mentor instalar` 🔵 a implementar
 
-Atualizar e' o problema, nao instalar. No antecessor a migracao custou **uma sessao inteira mais
-metade de outra**, porque pacote e projeto estavam misturados. A separacao que ja' fizemos deveria
-tornar isso quase de graca, e e' o que precisa ser provado:
+O hospedeiro e' **repositorio zerado** (decisao do humano, 29/08), entao a fase 9 prova **instalacao
+e primeiro uso**, nao migracao.
 
 | Comando | O que faz |
 | :-- | :-- |
 | `instalar` | copia `.mentor/` e `mentor.mjs` para a raiz. Recusa se ja' existir, sem `--forcar` |
-| `atualizar` | **troca `.mentor/` inteiro** e compara a versao de esquema de cada JSON de `docs/` |
 
-⚠️ **`docs/` nunca e' sobrescrito.** Quando o esquema evolui, o `atualizar` **acrescenta os campos
-novos com `null`** e nao remove nada. Campo novo em `null` e' pauta do mentor, que e' o comportamento
-certo: a migracao nao decide por voce.
+Exige gravar a versao do pacote em `contexto._meta.versao_do_pacote`, senao o relatorio de campo nao
+consegue atribuir nada a uma versao.
 
-Exige tambem gravar a versao do pacote em `contexto._meta.versao_do_pacote`, senao o relatorio de
-campo nao consegue atribuir nada a uma versao.
+**A sessao e meia que a migracao custou no antecessor nao e' evidencia sobre este pacote:** foi
+`esquadro-agents` para `esquadro-agents`, com pacote e projeto misturados na mesma pasta. Aqui a
+separacao `.mentor/` × `docs/` existe justamente para isso, e continua **nao provada**.
+
+### 9.1b · `mentor atualizar` 🔵 depois, e o hospedeiro e' o sujeito do teste
+
+So' faz sentido quando existir uma 0.2.0, e ela nasce do relatorio de campo do proprio hospedeiro.
+Ou seja: **o hospedeiro roda a 0.1.0, gera o relatorio, o relatorio produz a 0.2.0, e ai' ele vira o
+primeiro teste de atualizacao real** — de graca, porque ja' esta la'.
+
+O que o `atualizar` fara':
+
+⚠️ **`docs/` nunca e' sobrescrito.** Troca `.mentor/` inteiro; compara a versao de esquema de cada
+JSON de `docs/`; **acrescenta os campos novos com `null`** e nao remove nada. Campo novo em `null` e'
+pauta do mentor, que e' o comportamento certo: a migracao nao decide por voce.
 
 ### 9.2 · O hospedeiro 🔵 a definir
 
