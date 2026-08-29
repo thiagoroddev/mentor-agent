@@ -1,7 +1,6 @@
 {
   "name": "mentor-agent",
   "version": "0.1.0",
-  "private": true,
   "type": "module",
   "description": "Pacote de trabalho para agentes de IA: gerencia tarefas, orienta e registra.",
   "engines": {
@@ -21,5 +20,13 @@
   "devDependencies": {
     "@types/node": "^22.15.0",
     "typescript": "^5.9.2"
+  },
+  "files": [
+    ".mentor/",
+    "mentor.mjs",
+    "README.md"
+  ],
+  "bin": {
+    "mentor": "mentor.mjs"
   }
 }

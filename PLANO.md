@@ -210,6 +210,83 @@ Tudo depende daqui. Nenhum comando novo antes desta fase fechar.
 
 ---
 
+## Fase 9 · Validacao em hospedeiro
+
+Comeca **depois da fase 8**, nunca durante. Ambiente em mudanca gera estado que nenhum projeto real
+visita, e defeito achado ali pode nao existir em lugar nenhum (decisao do humano, 29/08).
+
+### 9.0 · Como o pacote chega no hospedeiro
+
+**Nao se copia a mao.** Copia manual nao registra versao, e sem versao o relatorio de campo nao sabe
+dizer *"isto aconteceu com a 0.1.0"*.
+
+```
+no pacote:      npm pack                    -> mentor-agent-0.1.0.tgz
+no hospedeiro:  npm i -D ../mentor-agent-0.1.0.tgz
+                npx mentor instalar         -> copia .mentor/ e mentor.mjs para a raiz
+                npx mentor init             -> cria docs/
+```
+
+Sem GitHub e sem publicar nada: o tarball local ja' exercita o caminho real. O `files` do
+`package.json` limita a 50 arquivos (105 kB): so' `.mentor/`, `mentor.mjs` e o README. Testes e
+exemplos ficam de fora.
+
+**O pacote e' copiado PARA DENTRO do repositorio, nao fica em `node_modules`.** Isso e' deliberado: a
+IA le' `.mentor/` como arquivo, e o projeto versiona as convencoes dele ao lado.
+
+### 9.1 · `mentor instalar` e `mentor atualizar` 🔵 a implementar
+
+Atualizar e' o problema, nao instalar. No antecessor a migracao custou **uma sessao inteira mais
+metade de outra**, porque pacote e projeto estavam misturados. A separacao que ja' fizemos deveria
+tornar isso quase de graca, e e' o que precisa ser provado:
+
+| Comando | O que faz |
+| :-- | :-- |
+| `instalar` | copia `.mentor/` e `mentor.mjs` para a raiz. Recusa se ja' existir, sem `--forcar` |
+| `atualizar` | **troca `.mentor/` inteiro** e compara a versao de esquema de cada JSON de `docs/` |
+
+⚠️ **`docs/` nunca e' sobrescrito.** Quando o esquema evolui, o `atualizar` **acrescenta os campos
+novos com `null`** e nao remove nada. Campo novo em `null` e' pauta do mentor, que e' o comportamento
+certo: a migracao nao decide por voce.
+
+Exige tambem gravar a versao do pacote em `contexto._meta.versao_do_pacote`, senao o relatorio de
+campo nao consegue atribuir nada a uma versao.
+
+### 9.2 · O hospedeiro 🔵 a definir
+
+**Fictitio serve, com uma condicao: os objetivos precisam ser alcancados de fato, deploy incluido.**
+O que mata o teste e' fictitio abandonado no meio, porque ele para de ser real exatamente no ponto
+que mais importa: quando o processo incomoda.
+
+Cinco criterios, e o menor projeto que os cobre e' o certo:
+
+```
+[ ] uma funcionalidade com login   -> autenticacao e dado pessoal, e dado pessoal promove a N2
+                                      sozinho. Sem isso, metade das regras nunca dispara
+[ ] um banco com uma migracao      -> unica forma de exercitar OPS-23, caminho de volta
+[ ] uma esteira real               -> gate que falha por motivo obscuro, nao por `exit 1`
+[ ] um deploy com reversao         -> OPS-22: reversao so' existe se foi executada
+    executada uma vez
+[ ] 8 a 12 tarefas                 -> menos nao cobre; mais vira outro projeto
+```
+
+### 9.3 · O que so' o hospedeiro prova
+
+Os cenarios de `testes/` sao teste de unidade e integracao **do pacote**: mecanica, transicoes,
+recusas. Todos os gates neles sao falsos (`echo "3 passed"`). Eles nunca provam:
+
+se a orientacao e' boa · se a cerimonia e' proporcional · se a IA aguenta requisito ambiguo e teste
+que falha por motivo obscuro · se as 494 regras disparam na hora certa · **o custo em tokens por
+tarefa**, que e' o numero que decide se o pacote e' usavel.
+
+### 9.4 · Depois: adotar num projeto real
+
+So' quando a 9.2 fechar. Nao por ser mais dificil, mas por **ordem de descoberta**: o hospedeiro acha
+os defeitos grosseiros a custo baixo, e a migracao do projeto real chega com o pacote ja' calibrado.
+O contrario e' pagar o custo mais caro para descobrir o mais barato.
+
+---
+
 ## Decisoes ainda pendentes do humano
 
 Nenhuma bloqueia as fases 1 a 4.
