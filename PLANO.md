@@ -1,0 +1,340 @@
+# Plano de implementacao
+
+> **Se voce e' uma sessao nova, leia so' isto e siga.** Nao ha' contexto de conversa necessario.
+> As decisoes estao em [`ESPECIFICACAO.md`](./ESPECIFICACAO.md) e [`MELHORIAS.md`](./MELHORIAS.md).
+> Este arquivo diz **em que ordem** e **como conferir**.
+
+Estado: `[ ]` nao feito · `[~]` em execucao · `[x]` feito. **Marque ao terminar cada passo**, e' assim
+que a proxima sessao sabe onde parou.
+
+---
+
+## Regras de execucao deste plano
+
+1. **Um passo por vez, na ordem.** As fases dependem uma da outra; dentro de uma fase, a ordem
+   tambem importa.
+2. **Ao fim de cada passo:** `npm run verify` verde · marcar `[x]` aqui · uma linha em
+   "Registro de execucao" no fim deste arquivo. Comportamento novo entra com cenario de teste junto.
+3. **Escopo fechado.** Se algo nao esta' na `ESPECIFICACAO.md` nem na `MELHORIAS.md`, **pare e
+   pergunte**. Nao invente capacidade: foi isso que matou o antecessor.
+4. **Tetos valem para o pacote tambem.** Os cenarios ja' rodam `verificar`; se algum teto estourar,
+   eles reprovam.
+5. **O pacote nao usa a si mesmo.** Nao rode `mentor init` na raiz do `mentor-agent`.
+
+### Como testar
+
+```bash
+npm run verify     # tsc --noEmit + os cenarios
+```
+
+Cada cenario em `testes/cenarios/` constroi um mini-projeto real em `testes/exemplos/` e roda os
+comandos de verdade pela linha de comando. Os projetos gerados sao **versionados**: uma mudanca no
+gerador aparece como diff neles, e o defeito e' visto antes de chegar num projeto real.
+Ao acrescentar comportamento, acrescente o cenario junto. Detalhes em `testes/README.md`.
+
+---
+
+## Estado atual (medido em 29/08/26)
+
+| Parte | Arquivos | Caracteres |
+| :-- | --: | --: |
+| `nucleo.md` | 1 | 6.637 |
+| `guia/` | 15 | 132.298 |
+| `processos/` | 5 | 13.209 |
+| `modelos/` | 3 | 16.434 |
+| `esquemas/` | 3 | 10.189 |
+| `scripts/` (TypeScript) | 10 | 44.715 |
+
+Funciona hoje: `init` · `task nova/iniciar/gate/fila/finalizar` · `stack` · `verificar` (3 familias) ·
+`auditar` · `gerar`. Testado ponta a ponta, `tsc --noEmit` limpo.
+
+---
+
+## Fase 1 · Modelo de dados
+
+Tudo depende daqui. Nenhum comando novo antes desta fase fechar.
+
+- [x] **1.1 · Campo `fila`** (`MELHORIAS` §1.2)
+  `fila: "ciclo" | "reserva"` em `tipos.ts` e `esquemas/tarefa.json`. Nasce em `reserva`.
+  Vistas: `backlog.md` so' do ciclo; novo `reserva.md`.
+  *Confere:* tarefa nova nasce em reserva e nao aparece no `backlog.md`.
+
+- [x] **1.2 · Limites da fila** (`MELHORIAS` §1.3)
+  `em-execucao` = 1 · `ciclo` = 12 tarefas / 2.400 car em `tetos.json`. Ciclo cheio nao impede
+  registrar: a tarefa nova vai para reserva.
+  *Confere:* a 13a puxada e' recusada com a mensagem certa.
+
+- [x] **1.3 · `achados` com destino obrigatorio** (`MELHORIAS` §5.5)
+  Substitui `achados_encaminhados`. `{classe, descricao, destino, ref}`, destino em
+  `tarefa | divida_tecnica | risco_aceito | descartado`, `ref` nunca vazio.
+  *Confere:* `finalizar` recusa achado sem destino.
+
+- [x] **1.4 · Campo `validacao`** (`MELHORIAS` §3)
+  `pendente | aprovado | dispensado` + `validado_em`. E' o "smoke pendente" virando dado.
+  *Confere:* aparece no `backlog.md` e nas contagens.
+
+- [x] **1.5 · Esquemas `divida-tecnica.json` e `risco-aceito.json`** (`MELHORIAS` §4.3)
+  DT exige **gatilho + dono**. RA exige **evidencia + aceito_por (pessoa) + tarefa_de_saida +
+  data_revisao ≤ 90 dias**. RA vencido e' mais grave que o problema original.
+  *Confere:* JSON valido; um RA sem `aceito_por` e' rejeitado.
+
+- [x] **1.6 · Blocos novos no `contexto.json`** (`MELHORIAS` §2.2, §5.4)
+  `versionamento` · `configuracoes_de_plataforma` · `revisao_geral` · `lembretes` (**gerado**) ·
+  contagens: `divida_tecnica_aberta`, `requisitos_pendentes`, `riscos_aceitos_ativos`,
+  `riscos_aceitos_vencidos`, `avisos{bloqueio,recomendacao,observacao}`,
+  `tarefas_desde_revisao_geral`.
+  *Confere:* `mentor init` gera o contexto completo e `gerar` recalcula as contagens.
+
+---
+
+## Fase 2 · Comandos do ciclo
+
+- [x] **2.1 · `task puxar` / `task guardar` / `reserva`** (`MELHORIAS` §1.4, §1.5)
+  Regra de passagem conferida por script: origem resolve · nao e' XG · dependencias no ciclo ou
+  concluidas · ha' vaga.
+  *Confere:* puxar uma XG e' recusado; puxar com dependencia aberta e' recusado.
+
+- [x] **2.2 · `task cancelar` e `task absorver`** (`MELHORIAS` §3)
+  `cancelar --motivo` (obrigatorio) · `absorver <id> --por <id>` grava `absorvida_por` e o numero
+  nao volta a ser usado. Vista gerada substitui a secao "Numeros aposentados" escrita a mao.
+  *Confere:* ID absorvido nao e' reaproveitado pelo gerador de ID.
+
+- [x] **2.3 · `task fatiar <id> --em N`**
+  Cria N fatias com `fatia_de`, encadeia dependencias, marca o pai como epico.
+  *Confere:* o pai sai da fila e vira cabecalho, as fatias entram.
+
+- [x] **2.4 · `task validar <id>`**
+  `--aprovado` / `--dispensado --motivo`. Alimenta o campo de 1.4.
+
+- [x] **2.5 · `finalizar` + indice de concluidas gerado**
+  `finalizar` passa a recusar achado sem destino (1.3) e a gravar DT/RA criados no fechamento.
+  Gera `concluidas/0-indice.md`.
+  *Confere:* o indice bate com os arquivos em disco.
+
+---
+
+## Fase 3 · Verificacao
+
+- [x] **3.1 · Integridade de links markdown** (`MELHORIAS` §4.4)
+  Quarta checagem do `verificar`: link relativo que nao resolve · extensao dupla `.md.md` ·
+  **comparacao sensivel a maiusculas de proposito** (Windows engana, Linux e GitHub quebram).
+  *Confere:* criar `X.md` e linkar `x.md` reprova.
+
+- [x] **3.2 · `.mentor/regras.json`** (`MELHORIAS` §8.3)
+  `{id, onde, comando|null}` para cada regra do pacote. Script extrai os IDs do markdown por regex;
+  a familia de integridade referencial confere que todo ID do markdown esta' no JSON e vice-versa.
+  **`comando: null` = orientacao declarada, nao lei.**
+  *Confere:* apagar uma regra do markdown reprova o `verificar`.
+
+---
+
+## Fase 4 · Auditoria e saude
+
+- [x] **4.1 · `doctor` absorve o `auditar`** (`MELHORIAS` §4.13, §5.2)
+  Formato SEGURANCA / QUALIDADE / PROCESSO, terminando em **veredito binario**. So' mede o que nao
+  exige julgamento. Grava `lembretes` no contexto (gerado, nunca digitado).
+  *Confere:* roda sem IA, sai em segundos, e o veredito muda quando um bloqueio aparece.
+
+- [x] **4.2 · Cadencia da revisao geral** (`MELHORIAS` §5.3)
+  Escala 20 / 30 / 40 tarefas. Em 40+, conta como bloqueio no veredito do doctor.
+  *Confere:* simular 25 concluidas produz o aviso; 45 produz o bloqueio.
+
+- [x] **4.3 · Auditor em `processos/revisao.md`** (`MELHORIAS` §4.12, §5.1)
+  Escopo: **o diff da tarefa, o registro dela e os requisitos citados. Nunca o repositorio.**
+  Tres niveis; bloqueia por classe de falsidade, nao por tema. Calibracao: declarar o que **nao**
+  conseguiu verificar. **Nao abre tarefa.**
+  *Confere:* teto de 4.800 do processo respeitado.
+
+---
+
+## Fase 5 · Entrega e versionamento
+
+- [x] **5.1 · `processos/entrega.md`** (`MELHORIAS` §2.2a, §4.5)
+  Condensar `docs/operacao.md` do `motocustorj` (218 linhas) em 4.800 caracteres: ramo protegido ·
+  fluxo com `gh` · **nome do ramo derivado so' do ID** (`rf-014-shell-exec`), nunca da posicao da
+  fatia, pelo mesmo motivo que matou o campo `posicao`: a posicao muda, o ID nao · **uma tarefa por branch, com o motivo do link de
+  CI** · como julgar PR de dependencia e a ordem segura de merge · reversao testada · migracao com
+  caminho de volta · publicacao registrada.
+
+- [x] **5.2 · Versionamento cobrado na fase `construcao`** (`MELHORIAS` §2.2c)
+  `EXIGIDOS['construcao']` ganha o bloco `versionamento`. E' o gatilho que faltava: hoje so'
+  `pre-lancamento` cobra deploy, e ai' ja' e' tarde.
+
+- [x] **5.3 · Hook de pre-push sem dependencia** (`MELHORIAS` §4.11)
+  Arquivo versionado + `git config core.hooksPath` na inicializacao. **`pre-push`, nao
+  `pre-commit`**, para commit continuar barato e ninguem aprender `--no-verify`.
+
+- [x] **5.4 · `stack github` com rascunho pre-preenchido** (`MELHORIAS` §2.3)
+  Escolhas usuais escritas, cada linha marcada `PREENCHER: confirmar ou trocar`. Rascunho para
+  aprovar, nao padrao imposto.
+
+---
+
+## Fase 6 · Seguranca e lancamento
+
+- [ ] **6.1 · Registro de riscos aceitos** (`MELHORIAS` §4.3)
+  `docs/seguranca/riscos-aceitos.md` gerado do JSON de 1.5 + leitor que valida prazo e campos.
+  **Entrada vencida reprova mais alto que o problema original.** Encerrar move, nunca apaga.
+
+- [ ] **6.2 · Portao de lancamento** (`MELHORIAS` §4.2)
+  `mentor lancamento` responde **uma** pergunta: pode ir a publico? Le' os gates declarados, o
+  registro de riscos e as listas de fase. **`NÃO EXECUTADO` tambem reprova.**
+  Os itens que dependem de ferramenta (Lighthouse, orcamento de bundle) sao **declarados pelo
+  projeto**, nunca embutidos no pacote.
+
+---
+
+## Fase 7 · Campo
+
+- [ ] **7.1 · `mentor relatorio-de-campo`** (`MELHORIAS` §8)
+  Parte A gerada (medicao, incluindo *recusas do `finalizar` por impedimento* e *ordem fixada a
+  mao*), parte B com referencia obrigatoria a ID e data, parte C do que funcionou.
+  **So' metadado de processo: nada de codigo, requisito, nome ou URL.**
+
+---
+
+## Fase 8 · Fechamento
+
+- [ ] **8.1 · Atualizar a `ESPECIFICACAO.md`**
+  Trazer para la' tudo que saiu de 🔵 em `MELHORIAS.md`, com a medicao das 197 tarefas
+  (`MELHORIAS` §4.9) na secao 1, e as cinco regras anti-loop (`MELHORIAS` §6.1).
+  Mover os itens implementados de `MELHORIAS.md` para 🟢, com a data.
+
+- [ ] **8.2 · Teste ponta a ponta no sandbox**
+  Ciclo completo: init · nova · puxar · iniciar · gate real · achado com destino · finalizar ·
+  validar · doctor · verificar · relatorio-de-campo. Registrar as saidas aqui embaixo.
+
+- [ ] **8.3 · Conferir os tetos e o custo de contexto**
+  Medir de novo: sempre carregado, custo de abrir uma tarefa, total do pacote. Comparar com a
+  tabela da `ESPECIFICACAO.md` §13 e corrigir os numeros.
+
+---
+
+## Decisoes ainda pendentes do humano
+
+Nenhuma bloqueia as fases 1 a 4.
+
+1. **Primeiro projeto real adotante.** Bloqueia so' o uso real, nao a implementacao.
+2. **`main`, `concessionaria`, `robust`, `teste-g` do `motocustorj`**: apagar ou manter
+   (`MELHORIAS` §4.1). Nao afeta este repositorio.
+
+---
+
+## Registro de execucao
+
+Uma linha por passo concluido: `DD/MM/AA HH:MM · passo · o que mudou · o que ficou pendente`.
+
+```
+29/08/26 · 1.1 · campo `fila` (ciclo|reserva); toda tarefa nasce na reserva; vista `reserva.md` gerada.
+29/08/26 · 1.2 · `contexto.limites {em_execucao:1, ciclo_tarefas:12}`; `iniciar` recusa a 2a em
+                 execucao e recusa tarefa que ainda esta na reserva; teto de 2.400 car no backlog.
+29/08/26 · 1.3 · `achados[{classe,descricao,destino,ref}]` substitui `achados_encaminhados`;
+                 `finalizar` recusa destino invalido e `ref` vazio. Testado nos dois casos.
+29/08/26 · 1.4 · `validacao` + `validado_em` + `validacao_motivo`; vira `pendente` no fechamento
+                 quando o projeto declara validacao manual; marca 🔍 no backlog. `task validar`
+                 fica para 2.4 (a mensagem de fechamento ja aponta para ele).
+29/08/26 · 1.5 · esquemas `divida-tecnica.json` (gatilho + dono) e `risco-aceito.json`
+                 (evidencia + aceito_por nominal + tarefa_de_saida + revisao <= 90d);
+                 `init` cria os dois arquivos vazios. Vistas e validador ficam para a fase 6.
+29/08/26 · 1.6 · contexto ganha `versionamento`, `configuracoes_de_plataforma`, `limites`,
+                 `revisao_geral` (20/30/40), `lembretes` (gerado) e 9 contagens novas.
+                 Removidas duas chaves mortas (`tarefas_pendentes`, `linhas_do_pacote`).
+29/08/26 · FASE 1 FECHADA · tsc limpo, verificar APROVADO, ciclo testado ponta a ponta.
+
+29/08/26 · 2.1 · `task puxar` com a regra de passagem completa (origem resolvivel de verdade,
+                 nao-XG, dependencia no ciclo ou concluida, vaga); `task guardar`; `reserva`.
+                 Novo arquivo `cmd-fila.ts` para nao inchar o `cmd-tarefa.ts`.
+29/08/26 · 2.2 · `task cancelar --motivo` (recusa sem motivo) e `task absorver --por`.
+                 Substituem a secao "Numeros aposentados" mantida a mao. ID nunca reaproveitado.
+29/08/26 · 2.3 · `task fatiar --titulos "a|b|c"`: fatias encadeadas, herdam valor/urgencia/cerimonia,
+                 e o pai vira epico. Exige titulo proprio por fatia.
+29/08/26 · 2.4 · `task validar --aprovado | --dispensado --motivo`.
+29/08/26 · 2.5 · `concluidas/0-indice.md` gerado, com desfecho (concluida | cancelada: motivo |
+                 absorvida por X) e a validacao. Cancelamento agora leva a narrativa junto.
+29/08/26 · Dois defeitos meus, achados no teste e corrigidos:
+             (a) epico na reserva com fatias no ciclo ficava invisivel no backlog;
+             (b) o mesmo epico aparecia duplicado na listagem da reserva.
+29/08/26 · FASE 2 FECHADA · tsc limpo, verificar APROVADO.
+29/08/26 · 5.1 · `processos/entrega.md` (86% do teto), condensado do `docs/operacao.md` do
+                 `motocustorj`. Nada nomeia plataforma. Traz inteiro o argumento certo para uma
+                 tarefa por ramo: se um ramo carrega tres tarefas, o mesmo link de esteira vai para
+                 tres registros e prova "as tres juntas passaram", nao "esta passou".
+29/08/26 · 5.2 · o doctor cobra `versionamento` a partir da fase **construcao**, nao de
+                 pre-lancamento. Era o gatilho que faltava e que o humano teve de pedir a mao:
+                 quando ha o que publicar, o historico ja foi feito de outro jeito.
+29/08/26 · 5.3 · `mentor hooks --instalar` escreve `.githooks/pre-push` e liga por
+                 `core.hooksPath`. **Zero dependencia**, nada de husky. O hook chama
+                 `mentor gates` (comando novo), que roda os comandos declarados PELO PROJETO em vez
+                 de supor um `npm run`. Em pre-push e nao pre-commit, de proposito.
+29/08/26 · 5.4 · `mentor stack github` nasce com 7 linhas rascunhadas, **cada uma marcada
+                 `PREENCHER: confirmar ou trocar`**. Nao e padrao imposto: o pacote continua sem
+                 opiniao sobre ferramenta, e o que ele economiza e digitacao.
+29/08/26 · Cenario `07-entrega`. E o `06-doctor` quebrou com a mudanca de 5.2 e precisou declarar
+             o versionamento: os exemplos versionados fizeram exatamente o que existem para fazer,
+             mostrar mudanca de comportamento como falha antes de chegar num projeto real.
+29/08/26 · FASE 5 FECHADA · tsc limpo, 7 cenarios verdes.
+29/08/26 · 4.1 · `doctor` absorve o `auditar` (que virou alias com aviso). Secoes SEGURANCA,
+                 QUALIDADE e PROCESSO, terminando em veredito binario. Grava `lembretes` e o
+                 `perfil` no contexto, os dois como SAIDA: o doctor calcula e sobrescreve.
+                 Acrescentado o **perfil ISO/IEC 25010**, que e' a tabela QS-24 do guia com nome
+                 de norma. Cinco estados, e os dois primeiros existem porque a maioria dos sistemas
+                 de nota os funde: `sem meta` nao e' `sem afericao`, e nenhum dos dois e' conforme.
+                 **Nao ha nota unica**: media ponderada diluiria a caracteristica quebrada. A nota
+                 sao duas fracoes contaveis: conformes sobre avaliadas, e avaliadas sobre oito.
+29/08/26 · 4.2 · cadencia da revisao geral, escala 20 avisa / 30 atrasa / 40 bloqueia o veredito.
+                 O doctor e' gratis e roda sempre, entao nao precisa de cadencia; quem precisa e' a
+                 revisao geral, que custa uma sessao.
+29/08/26 · 4.3 · auditor escrito em `processos/revisao.md` (84% do teto). Escopo fechado no diff,
+                 cinco regras, bloqueio por classe de falsidade e nao por tema, e a calibracao que
+                 exige declarar o que NAO foi verificado.
+29/08/26 · Defeito meu, e do tipo que so' aparece conferindo: o primeiro `replace` do auditor nao
+             casou por um acento na ancora e **falhou em silencio**, deixando o arquivo intacto.
+             So' notei porque imprimi o tamanho depois de escrever. Refeito com `assert` na ancora.
+29/08/26 · Cenario `06-doctor`: perfil com os cinco estados, os tres degraus da cadencia, e a
+             gravacao de lembretes e perfil no contexto.
+29/08/26 · FASE 4 FECHADA · tsc limpo, 6 cenarios verdes.
+29/08/26 · 3.1 · integridade de link em markdown, dentro da familia 3 (todo ponteiro resolve),
+                 e nao como familia nova: link e' ponteiro. Confere link relativo que nao resolve,
+                 extensao dupla `.md.md`, e **grafia exata segmento por segmento** — a checagem que
+                 pega `32-adr.md` apontando para `32-ADR.md`, que funciona no Windows e quebra no
+                 GitHub. Bloco de codigo e trecho `inline` sao ignorados.
+29/08/26 · 3.2 · `.mentor/regras.json`, 494 regras extraidas do guia por regex, com a coluna
+                 `comando`. Comando `mentor regras [--sincronizar]`, que preserva os `comando`
+                 preenchidos a mao. O `verificar` confere o espelho nos dois sentidos: regra do
+                 guia fora do inventario, regra do inventario que sumiu do guia, e regra que mudou
+                 de arquivo. Hoje: 0 de 494 viraram comando, e esse zero e' o numero que a tabela
+                 do relatorio de campo (§8 de MELHORIAS) existe para mostrar.
+29/08/26 · Cenario `05-verificacao`: prova que o verificador REPROVA. Um verificador testado so'
+             no caso verde passaria igual estando quebrado — foi o defeito do autoteste do
+             antecessor, ao contrario. Ele termina deixando o exemplo num estado que passa.
+29/08/26 · FASE 3 FECHADA · tsc limpo, 5 cenarios verdes.
+29/08/26 · DECISAO 4 FECHADA: metodo de teste. Padrao `tdd`, trocavel com motivo escrito, em
+             `contexto.qualidade.metodo_de_teste`. Fora do nucleo, que continua em 93% do teto.
+             Duas checagens no fechamento, nenhuma de julgamento:
+               (a) todo criterio de aceite nomeia um teste, em qualquer metodo. Saida honesta:
+                   "nao se aplica: <motivo>";
+               (b) com `tdd` ou `bdd`, o gate de testes precisa de um registro VERMELHO antes do
+                   verde. `--esperando-vermelho` recusa quando o comando sai verde, porque ai o
+                   teste passa sem o codigo e nao testa o que promete.
+             Novo tipo `SPIKE`: exploracao declarada, sem criterio com teste, narrativa propria
+             (a resposta · o que foi descartado · a tarefa que destrava). Existe para a exploracao
+             nao se disfarcar de tarefa normal.
+             `processos/teste.md` criado: o `tarefa.md` estourou 19% do teto e o assunto tinha
+             tamanho de processo proprio. Cenario `04-tdd` cobre os quatro casos.
+29/08/26 · TESTES (pedido do humano, e falha minha: eu vinha testando em sandbox descartavel,
+             fora do repositorio, sem repetibilidade). Criado `testes/` com tres cenarios que
+             constroem mini-projetos reais em `testes/exemplos/`, versionados e legiveis.
+             Duas correcoes de desenho que isso exigiu, e que valem por si:
+               (a) raiz do PACOTE (por `import.meta.url`) separada da raiz do PROJETO
+                   (`MENTOR_RAIZ`, ou o ancestral com `docs/contexto.json`). Sem isso, projeto
+                   dentro do repositorio do pacote confundia os dois;
+               (b) `MENTOR_AGORA` congela o relogio, senao cada rodada mudaria toda data e o diff
+                   dos exemplos viraria ruido. Conferido: duas rodadas dao byte identico.
+             `npm run verify` = tsc + cenarios. O cenario `03-recusas` e' o que mais importa:
+             um pacote cujo proposito e' recusar nao se prova com caminho feliz.
+29/08/26 · Revisao da decisao de ID, provocada pelo humano. A proibicao de decimal estava no
+             `MELHORIAS.md` pela razao errada: a original morreu quando o script passou a gerar o
+             ID. Mantida por outra razao, que sobrevive: ID e' imutavel, relacao pai-filho nao e'.
+             `fatia N/M` passou a ser calculado na geracao da vista, nunca guardado, porque o
+             denominador e' movel (observacao do humano). Testado: 2/3 virou 2/5 sem renomear nada.
+```

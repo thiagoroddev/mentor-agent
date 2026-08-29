@@ -1,0 +1,454 @@
+{
+  "_meta": {
+    "schema": "contexto-projeto/1",
+    "leia_antes": "Campo null = decisao que o guia exige e ninguem tomou ainda. Nao e' erro: e' a pauta do mentor. Nunca preencher por deducao; perguntar ao humano ou marcar dispensado com motivo.",
+    "gerado_em": "2026-08-29T14:00:00.000Z",
+    "atualizado_em": "2026-08-29T14:00:00.000Z",
+    "gerado_por": "script"
+  },
+  "projeto": {
+    "nome": null,
+    "uma_frase": null,
+    "repositorio": null,
+    "idioma_do_codigo": null,
+    "licenca": null
+  },
+  "estado": {
+    "fase": null,
+    "fases_possiveis": [
+      "ideia",
+      "descoberta",
+      "construcao",
+      "pre-lancamento",
+      "producao",
+      "manutencao"
+    ],
+    "portoes": {
+      "V_negocio": {
+        "status": "aberto",
+        "guia": "GUIA §1",
+        "decidido_em": null,
+        "dispensa_motivo": null
+      },
+      "C_obrigacoes": {
+        "status": "aberto",
+        "guia": "GUIA §2",
+        "decidido_em": null,
+        "dispensa_motivo": null
+      },
+      "0_rigor": {
+        "status": "aberto",
+        "guia": "GUIA §10",
+        "decidido_em": null,
+        "dispensa_motivo": null
+      },
+      "P_problema": {
+        "status": "aberto",
+        "guia": "GUIA §3",
+        "decidido_em": null,
+        "dispensa_motivo": null
+      },
+      "I_uso": {
+        "status": "aberto",
+        "guia": "GUIA §8",
+        "decidido_em": null,
+        "dispensa_motivo": null
+      },
+      "A_arquitetura": {
+        "status": "aberto",
+        "guia": "GUIA §4-5",
+        "decidido_em": null,
+        "dispensa_motivo": null
+      },
+      "N_persistencia": {
+        "status": "aberto",
+        "guia": "GUIA §6",
+        "decidido_em": null,
+        "dispensa_motivo": null
+      },
+      "S_ameacas": {
+        "status": "aberto",
+        "guia": "GUIA §9",
+        "decidido_em": null,
+        "dispensa_motivo": null
+      },
+      "O_automacao": {
+        "status": "aberto",
+        "guia": "GUIA §11",
+        "decidido_em": null,
+        "dispensa_motivo": null
+      }
+    },
+    "status_possiveis": [
+      "aberto",
+      "respondido",
+      "dispensado"
+    ]
+  },
+  "rigor": {
+    "nivel": null,
+    "niveis_possiveis": [
+      "N1",
+      "N2",
+      "N3"
+    ],
+    "promovido_por": {
+      "dado_pessoal": null,
+      "cobranca_ou_dinheiro": null,
+      "uso_por_terceiros": null,
+      "decisao_automatizada_sobre_pessoa": null
+    },
+    "tamanho_do_time": null,
+    "revisar_em": null
+  },
+  "negocio": {
+    "problema": null,
+    "de_quem": null,
+    "como_resolvem_hoje": null,
+    "por_que_nao_serve": null,
+    "diferencial": null,
+    "publico_real": null,
+    "como_se_paga": null,
+    "custo_mensal_estimado": null,
+    "folego_disponivel": null,
+    "criterio_de_sucesso": null,
+    "prazo_do_criterio": null
+  },
+  "conformidade": {
+    "jurisdicao_dos_usuarios": null,
+    "jurisdicao_de_operacao": null,
+    "relacao": null,
+    "setor_regulado": null,
+    "norma_aplicavel": null,
+    "menores_possiveis": null,
+    "medidas_para_menores": null,
+    "dado_pessoal": null,
+    "dado_sensivel": null,
+    "fundamentos_por_finalidade": null,
+    "conteudo_de_terceiros": null,
+    "processo_de_moderacao": null,
+    "cobranca": {
+      "modelo": null,
+      "arrependimento": null,
+      "cancelamento": null
+    },
+    "decisao_automatizada": {
+      "onde": null,
+      "explicabilidade": null,
+      "contestacao": null
+    },
+    "terceiros_que_recebem_dados": [],
+    "licencas_verificadas_em": null,
+    "revisar_em": null
+  },
+  "qualidade": {
+    "metas_nao_funcionais": {
+      "_leia": "As oito caracteristicas da ISO/IEC 25010, que sao a tabela QS-24 do guia. Cada uma recebe meta mensuravel OU aceite explicito de 'nao se aplica'. Caracteristica sem meta aparece no perfil como '-', nunca como conforme: ausencia de medicao nao e conformidade.",
+      "adequacao_funcional": {
+        "pergunta": "Faz tudo o que foi combinado, e certo?",
+        "vira_meta_como": "cenarios de aceite aprovados",
+        "meta": null,
+        "aferida_em": null,
+        "resultado": null,
+        "resultados_possiveis": [
+          "conforme",
+          "ressalva",
+          "reprovada"
+        ],
+        "nota": null
+      },
+      "desempenho": {
+        "pergunta": "Quanto tempo o usuario tolera esperar?",
+        "vira_meta_como": "tempo de resposta, simultaneos",
+        "meta": null,
+        "aferida_em": null,
+        "resultado": null,
+        "resultados_possiveis": [
+          "conforme",
+          "ressalva",
+          "reprovada"
+        ],
+        "nota": null
+      },
+      "compatibilidade": {
+        "pergunta": "Precisa conversar com o que? Rodar onde?",
+        "vira_meta_como": "versoes, navegadores, contratos",
+        "meta": null,
+        "aferida_em": null,
+        "resultado": null,
+        "resultados_possiveis": [
+          "conforme",
+          "ressalva",
+          "reprovada"
+        ],
+        "nota": null
+      },
+      "usabilidade": {
+        "pergunta": "Alguem sem treinamento consegue usar?",
+        "vira_meta_como": "taxa de conclusao da tarefa",
+        "meta": null,
+        "aferida_em": null,
+        "resultado": null,
+        "resultados_possiveis": [
+          "conforme",
+          "ressalva",
+          "reprovada"
+        ],
+        "nota": null
+      },
+      "confiabilidade": {
+        "pergunta": "O que acontece se cair? Quanto tempo fora e tolerav[e]l?",
+        "vira_meta_como": "disponibilidade, tempo de recuperacao",
+        "meta": null,
+        "aferida_em": null,
+        "resultado": null,
+        "resultados_possiveis": [
+          "conforme",
+          "ressalva",
+          "reprovada"
+        ],
+        "nota": null
+      },
+      "seguranca": {
+        "pergunta": "Quem pode ver e fazer o que?",
+        "vira_meta_como": "matriz de papeis e permissoes",
+        "meta": null,
+        "aferida_em": null,
+        "resultado": null,
+        "resultados_possiveis": [
+          "conforme",
+          "ressalva",
+          "reprovada"
+        ],
+        "nota": null
+      },
+      "manutenibilidade": {
+        "pergunta": "Outra pessoa mexe nisso em 6 meses?",
+        "vira_meta_como": "modularidade, testabilidade, documentacao",
+        "meta": null,
+        "aferida_em": null,
+        "resultado": null,
+        "resultados_possiveis": [
+          "conforme",
+          "ressalva",
+          "reprovada"
+        ],
+        "nota": null
+      },
+      "portabilidade": {
+        "pergunta": "Precisa mudar de servidor, banco ou nuvem?",
+        "vira_meta_como": "dependencias isolaveis",
+        "meta": null,
+        "aferida_em": null,
+        "resultado": null,
+        "resultados_possiveis": [
+          "conforme",
+          "ressalva",
+          "reprovada"
+        ],
+        "nota": null
+      }
+    },
+    "metodo_de_teste": "tdd",
+    "metodos_possiveis": [
+      "tdd",
+      "bdd",
+      "teste-depois",
+      "nenhum"
+    ],
+    "metodo_nota": "Padrao 'tdd'. Trocar exige 'metodo_motivo' escrito. O metodo diz QUANDO o teste nasce; o vinculo criterio->teste vale em todos eles.",
+    "metodo_motivo": null,
+    "estrategia_de_testes": null,
+    "quadrantes_cobertos": [],
+    "limiar_de_cobertura": null,
+    "riscos_de_qualidade": [],
+    "dispensas_aceitas": [],
+    "definicao_de_pronto_para_comecar": null,
+    "definicao_de_pronto": null,
+    "perfil": {
+      "_gerado_por_doctor": true,
+      "avaliadas": null,
+      "de": 8,
+      "conformes": null,
+      "ressalvas": null,
+      "reprovadas": null,
+      "sem_meta": null,
+      "sem_afericao": null
+    }
+  },
+  "problema": {
+    "processos": [],
+    "atores": [],
+    "fora_de_escopo": []
+  },
+  "uso": {
+    "perfis": [],
+    "tarefa_principal": null,
+    "ambiente": null,
+    "dispositivo": null,
+    "conexao": null,
+    "atencao_disponivel": null,
+    "contexto_mais_dificil": null,
+    "necessidades_de_acessibilidade": null
+  },
+  "arquitetura": {
+    "forma": null,
+    "estabilidade_dos_requisitos": null,
+    "processo_de_trabalho": null,
+    "camadas": [],
+    "decisoes_irreversiveis": [],
+    "adrs": []
+  },
+  "persistencia": {
+    "paradigma": null,
+    "justificativa_se_nao_relacional": null,
+    "entidades_principais": [],
+    "politica_de_remocao": null,
+    "retencao": null,
+    "copia_de_seguranca": {
+      "configurada": null,
+      "restauracao_testada_em": null
+    },
+    "migracoes": {
+      "versionadas": null,
+      "caminho_de_volta_declarado": null
+    }
+  },
+  "seguranca": {
+    "ativos_protegidos": [],
+    "ameacas_mapeadas": [],
+    "matriz_de_autorizacao": null,
+    "regra_de_posse": null,
+    "inventario_de_dado_pessoal": null,
+    "plano_de_incidente": null,
+    "segredos": {
+      "onde_moram": null,
+      "rotacao": null
+    }
+  },
+  "operacao": {
+    "ambientes": [],
+    "esteira": {
+      "existe": null,
+      "barreiras_ativas": []
+    },
+    "analise_de_dependencias": {
+      "automatica": null,
+      "ferramenta": null,
+      "cadencia": null
+    },
+    "analise_estatica": {
+      "automatica": null,
+      "ferramenta": null
+    },
+    "deploy": {
+      "destino": null,
+      "gradual": null,
+      "registro_de_publicacao": null
+    },
+    "reversao": {
+      "testada_em": null
+    },
+    "observabilidade": {
+      "registro": null,
+      "metrica": null,
+      "rastro": null,
+      "alerta": null
+    },
+    "alvos": {
+      "disponibilidade": null,
+      "tempo_de_resposta": null
+    },
+    "teto_de_custo_mensal": null
+  },
+  "ferramentas": [],
+  "gates": {
+    "tipos": {
+      "comando": null,
+      "declarado_em": null
+    },
+    "lint": {
+      "comando": null,
+      "declarado_em": null
+    },
+    "testes": {
+      "comando": "echo \"falhou de proposito\" && exit 1",
+      "declarado_em": null
+    },
+    "build": {
+      "comando": null,
+      "declarado_em": null
+    },
+    "validacao_manual": {
+      "existe": null,
+      "o_que": null
+    }
+  },
+  "convencoes": {
+    "idioma": null,
+    "commit": null,
+    "nomes_de_arquivo": null,
+    "onde_ficam_as_de_stack": "docs/padroes-de-stack/"
+  },
+  "contagens": {
+    "_gerado_por_script": true,
+    "tarefas_concluidas": 0,
+    "tarefas_abertas": 3,
+    "tarefas_no_ciclo": 2,
+    "tarefas_na_reserva": 1,
+    "validacoes_pendentes": 0,
+    "requisitos_total": 0,
+    "requisitos_implementados": 0,
+    "requisitos_pendentes": 0,
+    "divida_tecnica_aberta": 0,
+    "riscos_aceitos_ativos": 0,
+    "riscos_aceitos_vencidos": 0,
+    "tarefas_desde_revisao_geral": 0,
+    "adrs": 0,
+    "ferramentas_sem_padrao": 0,
+    "campos_nulos_do_contexto": 167,
+    "divida_tecnica_com_gatilho_vencido": null
+  },
+  "auditoria": {
+    "cadencia_em_tarefas": 10,
+    "ultima_em": null,
+    "ultima_na_tarefa": null,
+    "proxima_em_tarefa": 10,
+    "pendencias_reportadas": []
+  },
+  "versionamento": {
+    "ramo_principal": null,
+    "estrategia_de_ramos": null,
+    "revisao_antes_do_merge": null,
+    "quem_aprova": null,
+    "protecao_do_ramo_principal": null,
+    "esquema_de_versao": null,
+    "release_automatizado": null,
+    "esteira_barra": [],
+    "uma_tarefa_por_ramo": null,
+    "apaga_ramo_no_merge": null
+  },
+  "configuracoes_de_plataforma": {
+    "_leia": "Configuracao que NAO e' codigo e nenhum script alcanca: vive na web da plataforma. Por isso e' esquecida, e por isso a auditoria cobra.",
+    "protecao_do_ramo_principal": null,
+    "apagar_ramo_apos_merge": null,
+    "alertas_de_vulnerabilidade": null,
+    "atualizacoes_de_seguranca": null,
+    "segredos_do_ambiente_de_esteira": null,
+    "outras": []
+  },
+  "limites": {
+    "em_execucao": 1,
+    "ciclo_tarefas": 12
+  },
+  "revisao_geral": {
+    "_leia": "O doctor e' script e roda sempre, sem custo. Quem precisa de lembrete e' a revisao geral, que custa uma sessao inteira.",
+    "ultima_em": null,
+    "ultima_na_tarefa": null,
+    "aviso_em_tarefas": 20,
+    "atraso_em_tarefas": 30,
+    "bloqueio_em_tarefas": 40
+  },
+  "lembretes": [],
+  "_lembretes_nota": "GERADO pelo doctor a cada execucao. Nao digite aqui: campo livre acumula prosa como qualquer outro."
+}

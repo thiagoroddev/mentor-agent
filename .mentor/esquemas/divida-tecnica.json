@@ -1,0 +1,30 @@
+{
+  "_meta": {
+    "schema": "divida-tecnica/1",
+    "leia_antes": "Decisao de nao corrigir agora, com o custo conhecido. Sem gatilho e sem dono, divida tecnica e' so' uma lista de lamentos: os dois campos sao obrigatorios.",
+    "_gerado": [
+      "id",
+      "criada_em",
+      "paga_em"
+    ]
+  },
+  "id": null,
+  "tipo": null,
+  "tipos_possiveis": [
+    "codigo",
+    "arquitetura",
+    "teste",
+    "documentacao"
+  ],
+  "o_que": null,
+  "motivo": null,
+  "custo_futuro": null,
+  "gatilho": null,
+  "gatilho_nota": "O evento que obriga a pagar. Sem ele a divida nunca vence.",
+  "dono": null,
+  "dono_nota": "Nome de pessoa.",
+  "criada_em": null,
+  "tarefa_origem": null,
+  "paga_em": null,
+  "tarefa_pagamento": null
+}

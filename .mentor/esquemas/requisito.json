@@ -1,0 +1,32 @@
+{
+  "_meta": {
+    "schema": "requisito/1",
+    "leia_antes": "Fonte unica dos requisitos. 'implementados.md' e 'pendentes.md' sao visoes geradas daqui, nunca mantidas a mao. O vinculo com tarefa e' gravado por 'task finalizar', nao pela IA.",
+    "_gerado": ["tarefas", "status", "implementado_em"]
+  },
+
+  "id": null,
+  "tipo": null,
+  "tipos_possiveis": ["RF", "RN", "RNF"],
+  "enunciado": null,
+  "historia": null,
+  "historia_formato": "Como <ator>, quero <objetivo>, para <beneficio>. Obrigatoria para RF e RN; opcional em RNF sem ator identificavel.",
+
+  "prioridade": null,
+  "prioridades_possiveis": ["essencial", "importante", "desejavel"],
+
+  "status": "pendente",
+  "status_possiveis": ["pendente", "em-execucao", "implementado", "cancelado"],
+
+  "criterios_aceite": [],
+  "regras_aplicaveis": [],
+  "requisitos_relacionados": [],
+
+  "tarefas": [],
+  "adr": null,
+  "criado_em": null,
+  "implementado_em": null,
+
+  "pendente_de_validacao": null,
+  "nota_validacao": "true quando o requisito foi extraido do codigo por engenharia reversa e ainda nao foi confirmado por uma pessoa. Requisito extraido nao e' requisito acordado."
+}

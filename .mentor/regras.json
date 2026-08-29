@@ -1,0 +1,2966 @@
+[
+  {
+    "id": "AM-01",
+    "onde": ".mentor/guia/12-aprendizado-de-maquina.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AM-02",
+    "onde": ".mentor/guia/12-aprendizado-de-maquina.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AM-03",
+    "onde": ".mentor/guia/12-aprendizado-de-maquina.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AM-04",
+    "onde": ".mentor/guia/12-aprendizado-de-maquina.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AM-05",
+    "onde": ".mentor/guia/12-aprendizado-de-maquina.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AM-06",
+    "onde": ".mentor/guia/12-aprendizado-de-maquina.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AM-07",
+    "onde": ".mentor/guia/12-aprendizado-de-maquina.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AM-08",
+    "onde": ".mentor/guia/12-aprendizado-de-maquina.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AM-09",
+    "onde": ".mentor/guia/12-aprendizado-de-maquina.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AM-10",
+    "onde": ".mentor/guia/12-aprendizado-de-maquina.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AM-11",
+    "onde": ".mentor/guia/12-aprendizado-de-maquina.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AM-12",
+    "onde": ".mentor/guia/12-aprendizado-de-maquina.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AM-13",
+    "onde": ".mentor/guia/12-aprendizado-de-maquina.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AN-01",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AN-02",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AN-03",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "AN-04",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "AN-05",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AN-06",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AN-07",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "AN-08",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AN-09",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AN-10",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AN-11",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AN-12",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "AN-13",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "AN-14",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AN-15",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AN-16",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AN-17",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AN-18",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "AN-19",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AN-20",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AN-21",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "AN-22",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AN-23",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AN-24",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AN-25",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "AN-26",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "AN-27",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AN-28",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AN-29",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AN-30",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "AN-31",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "AN-32",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "AN-33",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AN-34",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AN-35",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AN-36",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AN-37",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "AN-38",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "AN-39",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "AN-40",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "AN-41",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AN-42",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "AN-43",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "AN-44",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AN-45",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "AN-46",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "BD-01",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "BD-02",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "BD-03",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "BD-04",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "BD-05",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "BD-06",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "BD-07",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "BD-08",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "BD-09",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "BD-10",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "BD-11",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "BD-12",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "BD-13",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "BD-14",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "BD-15",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "BD-16",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "BD-17",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "BD-18",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "BD-19",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "BD-20",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "BD-21",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "BD-22",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "BD-23",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "BD-24",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "BD-25",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "BD-26",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "BD-27",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "BD-28",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "BD-29",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "BD-30",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "BD-31",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "BD-32",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "BD-33",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "BD-34",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "BD-35",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "BD-36",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "BD-37",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "BD-38",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "BD-39",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "BD-40",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "BD-41",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "BD-42",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "BD-43",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "BD-44",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CD-01",
+    "onde": ".mentor/guia/07-codigo.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CD-02",
+    "onde": ".mentor/guia/07-codigo.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CD-03",
+    "onde": ".mentor/guia/07-codigo.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CD-04",
+    "onde": ".mentor/guia/07-codigo.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CD-05",
+    "onde": ".mentor/guia/07-codigo.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "CD-06",
+    "onde": ".mentor/guia/07-codigo.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CD-07",
+    "onde": ".mentor/guia/07-codigo.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CD-08",
+    "onde": ".mentor/guia/07-codigo.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CD-09",
+    "onde": ".mentor/guia/07-codigo.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CD-10",
+    "onde": ".mentor/guia/07-codigo.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CD-11",
+    "onde": ".mentor/guia/07-codigo.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "CD-12",
+    "onde": ".mentor/guia/07-codigo.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "CD-13",
+    "onde": ".mentor/guia/07-codigo.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "CD-14",
+    "onde": ".mentor/guia/07-codigo.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CD-15",
+    "onde": ".mentor/guia/07-codigo.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "CF-01",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CF-02",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CF-03",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CF-04",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "CF-05",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "CF-06",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CF-07",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CF-08",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CF-09",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CF-10",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CF-11",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CF-12",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CF-13",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "CF-14",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CF-15",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CF-16",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CF-17",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "CF-18",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "CF-19",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CF-20",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CF-21",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "CF-22",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CF-23",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CF-24",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CF-25",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CF-26",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CF-27",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "CF-28",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CF-29",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CF-30",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "CF-31",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CF-32",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CF-33",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "CF-34",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "CF-35",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "CF-36",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "CF-37",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "CF-38",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "CF-39",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CF-40",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CF-41",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CF-42",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "CF-43",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "CF-44",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CF-45",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "CF-46",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "CF-47",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "CF-48",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "CF-49",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "CF-50",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "CF-51",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "CF-52",
+    "onde": ".mentor/guia/02-conformidade.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "ES-01",
+    "onde": ".mentor/guia/04-processo.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "ES-02",
+    "onde": ".mentor/guia/04-processo.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "ES-03",
+    "onde": ".mentor/guia/04-processo.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "ES-04",
+    "onde": ".mentor/guia/04-processo.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "ES-05",
+    "onde": ".mentor/guia/04-processo.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "ES-06",
+    "onde": ".mentor/guia/04-processo.md",
+    "severidade": "BLOQUEIA (N2+)",
+    "comando": null
+  },
+  {
+    "id": "ES-07",
+    "onde": ".mentor/guia/04-processo.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "ES-08",
+    "onde": ".mentor/guia/04-processo.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "ES-09",
+    "onde": ".mentor/guia/05-arquitetura.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "ES-10",
+    "onde": ".mentor/guia/05-arquitetura.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "ES-11",
+    "onde": ".mentor/guia/05-arquitetura.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "ES-12",
+    "onde": ".mentor/guia/05-arquitetura.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "ES-13",
+    "onde": ".mentor/guia/05-arquitetura.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "ES-14",
+    "onde": ".mentor/guia/05-arquitetura.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "ES-15",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "ES-17",
+    "onde": ".mentor/guia/03-analise.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "ES-18",
+    "onde": ".mentor/guia/04-processo.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "ES-19",
+    "onde": ".mentor/guia/04-processo.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "ES-20",
+    "onde": ".mentor/guia/04-processo.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "ES-21",
+    "onde": ".mentor/guia/04-processo.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "ES-22",
+    "onde": ".mentor/guia/04-processo.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "ES-23",
+    "onde": ".mentor/guia/04-processo.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "ES-24",
+    "onde": ".mentor/guia/10-qualidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "ES-25",
+    "onde": ".mentor/guia/10-qualidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "ES-26",
+    "onde": ".mentor/guia/10-qualidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "ES-27",
+    "onde": ".mentor/guia/10-qualidade.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "ES-28",
+    "onde": ".mentor/guia/10-qualidade.md",
+    "severidade": "RECOMENDA (N3)",
+    "comando": null
+  },
+  {
+    "id": "ES-29",
+    "onde": ".mentor/guia/04-processo.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "ES-30",
+    "onde": ".mentor/guia/04-processo.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "ES-31",
+    "onde": ".mentor/guia/04-processo.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "ES-32",
+    "onde": ".mentor/guia/04-processo.md",
+    "severidade": "BLOQUEIA (N2+)",
+    "comando": null
+  },
+  {
+    "id": "ES-33",
+    "onde": ".mentor/guia/04-processo.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "ES-34",
+    "onde": ".mentor/guia/04-processo.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "ES-35",
+    "onde": ".mentor/guia/04-processo.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "ES-36",
+    "onde": ".mentor/guia/04-processo.md",
+    "severidade": "RECOMENDA",
+    "comando": null
+  },
+  {
+    "id": "ES-37",
+    "onde": ".mentor/guia/13-evolucao.md",
+    "severidade": "RECOMENDA",
+    "comando": null
+  },
+  {
+    "id": "ES-38",
+    "onde": ".mentor/guia/04-processo.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "ES-39",
+    "onde": ".mentor/guia/05-arquitetura.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "ES-40",
+    "onde": ".mentor/guia/05-arquitetura.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "ES-41",
+    "onde": ".mentor/guia/05-arquitetura.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "ES-42",
+    "onde": ".mentor/guia/05-arquitetura.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "ES-43",
+    "onde": ".mentor/guia/05-arquitetura.md",
+    "severidade": "ACEITE (N3)",
+    "comando": null
+  },
+  {
+    "id": "ES-44",
+    "onde": ".mentor/guia/05-arquitetura.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "ES-45",
+    "onde": ".mentor/guia/05-arquitetura.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "ES-46",
+    "onde": ".mentor/guia/05-arquitetura.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "ES-47",
+    "onde": ".mentor/guia/05-arquitetura.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "ES-48",
+    "onde": ".mentor/guia/05-arquitetura.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "ES-49",
+    "onde": ".mentor/guia/05-arquitetura.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "ES-50",
+    "onde": ".mentor/guia/04-processo.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "ES-51",
+    "onde": ".mentor/guia/04-processo.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "ES-52",
+    "onde": ".mentor/guia/04-processo.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "ES-53",
+    "onde": ".mentor/guia/04-processo.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "ES-54",
+    "onde": ".mentor/guia/04-processo.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "ES-55",
+    "onde": ".mentor/guia/04-processo.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "ES-56",
+    "onde": ".mentor/guia/04-processo.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "ES-57",
+    "onde": ".mentor/guia/04-processo.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "ES-58",
+    "onde": ".mentor/guia/05-arquitetura.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "ES-59",
+    "onde": ".mentor/guia/05-arquitetura.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "ES-60",
+    "onde": ".mentor/guia/05-arquitetura.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "ES-61",
+    "onde": ".mentor/guia/05-arquitetura.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "ES-62",
+    "onde": ".mentor/guia/05-arquitetura.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "ES-63",
+    "onde": ".mentor/guia/05-arquitetura.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "ES-64",
+    "onde": ".mentor/guia/05-arquitetura.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "ES-65",
+    "onde": ".mentor/guia/05-arquitetura.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "IX-01",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "IX-02",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "IX-03",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "IX-04",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "IX-05",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "IX-06",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "IX-07",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "IX-08",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "IX-09",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "IX-10",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "IX-11",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "IX-12",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "IX-13",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "IX-14",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "IX-15",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "IX-16",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "IX-17",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "IX-18",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "IX-19",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "IX-20",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "IX-21",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "IX-22",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "IX-23",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "IX-24",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "IX-25",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "IX-26",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "IX-27",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "IX-28",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "IX-29",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "IX-30",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "IX-31",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "IX-32",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "IX-33",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "IX-34",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "IX-35",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "IX-36",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "IX-37",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "IX-38",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "IX-39",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "IX-40",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "IX-41",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "IX-42",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "IX-43",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "IX-44",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "IX-45",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "IX-46",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "IX-47",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "IX-48",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "IX-49",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "IX-50",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "IX-51",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "IX-52",
+    "onde": ".mentor/guia/08-interacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "NG-01",
+    "onde": ".mentor/guia/01-negocio.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "NG-02",
+    "onde": ".mentor/guia/01-negocio.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "NG-03",
+    "onde": ".mentor/guia/01-negocio.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "NG-04",
+    "onde": ".mentor/guia/01-negocio.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "NG-05",
+    "onde": ".mentor/guia/01-negocio.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "NG-06",
+    "onde": ".mentor/guia/01-negocio.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "NG-07",
+    "onde": ".mentor/guia/01-negocio.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "NG-08",
+    "onde": ".mentor/guia/01-negocio.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "NG-09",
+    "onde": ".mentor/guia/01-negocio.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "NG-10",
+    "onde": ".mentor/guia/01-negocio.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "NG-11",
+    "onde": ".mentor/guia/01-negocio.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "NG-12",
+    "onde": ".mentor/guia/01-negocio.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "NG-13",
+    "onde": ".mentor/guia/01-negocio.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "NG-14",
+    "onde": ".mentor/guia/01-negocio.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "NG-15",
+    "onde": ".mentor/guia/01-negocio.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "NG-16",
+    "onde": ".mentor/guia/01-negocio.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "NG-17",
+    "onde": ".mentor/guia/01-negocio.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "NG-18",
+    "onde": ".mentor/guia/01-negocio.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "NG-19",
+    "onde": ".mentor/guia/01-negocio.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "NG-20",
+    "onde": ".mentor/guia/01-negocio.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "NG-21",
+    "onde": ".mentor/guia/01-negocio.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "NG-22",
+    "onde": ".mentor/guia/01-negocio.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "NG-23",
+    "onde": ".mentor/guia/01-negocio.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "NG-24",
+    "onde": ".mentor/guia/01-negocio.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "NG-25",
+    "onde": ".mentor/guia/01-negocio.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "NG-26",
+    "onde": ".mentor/guia/01-negocio.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "NG-31",
+    "onde": ".mentor/guia/01-negocio.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "NG-32",
+    "onde": ".mentor/guia/01-negocio.md",
+    "severidade": "RECOMENDA",
+    "comando": null
+  },
+  {
+    "id": "NS-01",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "NS-02",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "NS-03",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "NS-04",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "NS-05",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "NS-06",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "NS-07",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "NS-08",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "NS-09",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "NS-10",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "NS-11",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "NS-12",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "NS-13",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "NS-14",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "NS-15",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "NS-16",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "NS-17",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "NS-18",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "NS-19",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "NS-20",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "NS-21",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "NS-22",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "NS-23",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "NS-24",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "NS-25",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "NS-26",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "NS-27",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "NS-28",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "NS-29",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "NS-30",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "NS-31",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "NS-32",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "NS-33",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "NS-35",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "NS-36",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "NS-37",
+    "onde": ".mentor/guia/06-persistencia.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "OPS-01",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "OPS-02",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "OPS-03",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "OPS-04",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "OPS-05",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "OPS-06",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "OPS-07",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "OPS-08",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "OPS-09",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "OPS-10",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "OPS-11",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "OPS-12",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "OPS-13",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "OPS-14",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "OPS-15",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "OPS-16",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "OPS-17",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "OPS-18",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "OPS-19",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "OPS-20",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "OPS-21",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "OPS-22",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "OPS-23",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "OPS-24",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "OPS-25",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "OPS-26",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "OPS-27",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "OPS-28",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "OPS-29",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "OPS-30",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "OPS-31",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "OPS-32",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "OPS-33",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "OPS-34",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "OPS-35",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "BLOQUEIA (N2+)",
+    "comando": null
+  },
+  {
+    "id": "OPS-36",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "OPS-37",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "OPS-38",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "OPS-39",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "OPS-40",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "OPS-41",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "OPS-42",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "OPS-43",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "OPS-44",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "OPS-45",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "OPS-46",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "BLOQUEIA (N2+)",
+    "comando": null
+  },
+  {
+    "id": "OPS-47",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "OPS-48",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "OPS-49",
+    "onde": ".mentor/guia/11-operacao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "QS-01",
+    "onde": ".mentor/guia/10-qualidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "QS-02",
+    "onde": ".mentor/guia/10-qualidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "QS-03",
+    "onde": ".mentor/guia/10-qualidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "QS-04",
+    "onde": ".mentor/guia/10-qualidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "QS-05",
+    "onde": ".mentor/guia/10-qualidade.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "QS-06",
+    "onde": ".mentor/guia/10-qualidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "QS-07",
+    "onde": ".mentor/guia/10-qualidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "QS-08",
+    "onde": ".mentor/guia/04-processo.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "QS-09",
+    "onde": ".mentor/guia/04-processo.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "QS-10",
+    "onde": ".mentor/guia/04-processo.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "QS-11",
+    "onde": ".mentor/guia/04-processo.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "QS-12",
+    "onde": ".mentor/guia/10-qualidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "QS-13",
+    "onde": ".mentor/guia/10-qualidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "QS-14",
+    "onde": ".mentor/guia/10-qualidade.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "QS-15",
+    "onde": ".mentor/guia/10-qualidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "QS-16",
+    "onde": ".mentor/guia/10-qualidade.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "QS-17",
+    "onde": ".mentor/guia/10-qualidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "QS-18",
+    "onde": ".mentor/guia/10-qualidade.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "QS-19",
+    "onde": ".mentor/guia/10-qualidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "QS-20",
+    "onde": ".mentor/guia/10-qualidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "QS-21",
+    "onde": ".mentor/guia/10-qualidade.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "QS-22",
+    "onde": ".mentor/guia/10-qualidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "QS-23",
+    "onde": ".mentor/guia/10-qualidade.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "QS-24",
+    "onde": ".mentor/guia/10-qualidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "QS-33",
+    "onde": ".mentor/guia/10-qualidade.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "QS-34",
+    "onde": ".mentor/guia/10-qualidade.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "QS-35",
+    "onde": ".mentor/guia/10-qualidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "QS-36",
+    "onde": ".mentor/guia/10-qualidade.md",
+    "severidade": "RECOMENDA",
+    "comando": null
+  },
+  {
+    "id": "QS-37",
+    "onde": ".mentor/guia/10-qualidade.md",
+    "severidade": "RECOMENDA",
+    "comando": null
+  },
+  {
+    "id": "QS-38",
+    "onde": ".mentor/guia/13-evolucao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "QS-39",
+    "onde": ".mentor/guia/13-evolucao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "QS-40",
+    "onde": ".mentor/guia/13-evolucao.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "QS-41",
+    "onde": ".mentor/guia/13-evolucao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "QS-42",
+    "onde": ".mentor/guia/13-evolucao.md",
+    "severidade": "RECOMENDA",
+    "comando": null
+  },
+  {
+    "id": "QS-43",
+    "onde": ".mentor/guia/13-evolucao.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "QS-44",
+    "onde": ".mentor/guia/13-evolucao.md",
+    "severidade": "RECOMENDA",
+    "comando": null
+  },
+  {
+    "id": "QS-45",
+    "onde": ".mentor/guia/10-qualidade.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "QS-46",
+    "onde": ".mentor/guia/10-qualidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "QS-47",
+    "onde": ".mentor/guia/10-qualidade.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "QS-48",
+    "onde": ".mentor/guia/10-qualidade.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "SEC-01",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "SEC-02",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "SEC-03",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "SEC-04",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "SEC-05",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "SEC-06",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA (N2+)",
+    "comando": null
+  },
+  {
+    "id": "SEC-07",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "SEC-08",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "SEC-09",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "SEC-10",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "SEC-11",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "SEC-12",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "SEC-13",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "SEC-14",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "SEC-15",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "SEC-16",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "SEC-17",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA (N3)",
+    "comando": null
+  },
+  {
+    "id": "SEC-18",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "SEC-19",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "SEC-20",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "SEC-21",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "SEC-22",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "SEC-23",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "SEC-24",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "SEC-25",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "SEC-26",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "SEC-27",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "SEC-28",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "SEC-29",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "SEC-30",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "SEC-31",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "SEC-32",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "SEC-33",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "SEC-34",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "SEC-35",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "SEC-36",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "SEC-37",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "SEC-38",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "RECOMENDA (N3)",
+    "comando": null
+  },
+  {
+    "id": "SEC-39",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA (N2+)",
+    "comando": null
+  },
+  {
+    "id": "SEC-40",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "SEC-41",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA (dado pessoal)",
+    "comando": null
+  },
+  {
+    "id": "SEC-42",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "SEC-43",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA (N2+)",
+    "comando": null
+  },
+  {
+    "id": "SEC-44",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA (N2+)",
+    "comando": null
+  },
+  {
+    "id": "SEC-45",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "SEC-46",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA (dado pessoal)",
+    "comando": null
+  },
+  {
+    "id": "SEC-47",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "SEC-48",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "SEC-49",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "SEC-50",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "SEC-51",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "SEC-52",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  },
+  {
+    "id": "SEC-53",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "SEC-54",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "ACEITE",
+    "comando": null
+  },
+  {
+    "id": "SEC-55",
+    "onde": ".mentor/guia/09-seguranca.md",
+    "severidade": "BLOQUEIA",
+    "comando": null
+  }
+]

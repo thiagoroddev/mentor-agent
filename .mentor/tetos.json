@@ -1,0 +1,54 @@
+{
+  "_leia": "Tetos em caracteres, nao em linhas. Teto de linha se burla juntando paragrafos; caracteres nao. Tolerancia de 10%: acima disso bloqueia ate' reescrever mais curto ou declarar excecao com motivo. Nunca ate' cortar conteudo.",
+  "tolerancia": 0.1,
+  "fator_linha": 60,
+  "excecoes": [
+    {
+      "caminho": ".mentor/guia/06-persistencia.md",
+      "teto": 20000,
+      "motivo": "Unica secao que cobre dois paradigmas de persistencia (relacional BD e nao-relacional NS), em dez subsecoes. Dividir quebraria o mapeamento 1:1 entre secao do guia e portao, que o contexto.json usa para enderecar lacuna."
+    }
+  ],
+  "regras": [
+    {
+      "padrao": ".mentor/nucleo.md",
+      "teto": 7200
+    },
+    {
+      "padrao": ".mentor/guia/00-indice.md",
+      "teto": 4800
+    },
+    {
+      "padrao": ".mentor/guia/*.md",
+      "teto": 15000
+    },
+    {
+      "padrao": ".mentor/processos/*.md",
+      "teto": 4800
+    },
+    {
+      "padrao": ".mentor/modelos/*.md",
+      "teto": 15000
+    },
+    {
+      "padrao": "docs/tarefas/backlog.md",
+      "teto": 2400
+    },
+    {
+      "padrao": "docs/contexto.md",
+      "teto": 2400
+    },
+    {
+      "padrao": "docs/padroes-de-stack/*.md",
+      "teto": 3600
+    },
+    {
+      "padrao": "docs/tarefas/concluidas/*.md",
+      "teto": 2400
+    },
+    {
+      "padrao": "docs/arquitetura/ADR/*.md",
+      "teto": 1800
+    }
+  ]
+}

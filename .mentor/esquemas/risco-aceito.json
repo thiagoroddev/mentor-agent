@@ -1,0 +1,39 @@
+{
+  "_meta": {
+    "schema": "risco-aceito/1",
+    "leia_antes": "Vulnerabilidade conhecida nao corrigida agora. Diferente da divida tecnica: ela DESTRAVA um gate que esta' reprovando, e por isso exige prova, responsavel nominal, saida e prazo. Entrada vencida reprova mais alto que o problema original. Encerrar move para encerrados, nunca apaga.",
+    "_gerado": [
+      "id",
+      "aceito_em",
+      "encerrado_em"
+    ]
+  },
+  "id": null,
+  "titulo": null,
+  "advisory": null,
+  "pacote": null,
+  "severidade": null,
+  "severidades_possiveis": [
+    "low",
+    "moderate",
+    "high",
+    "critical"
+  ],
+  "tipo": null,
+  "tipos_possiveis": [
+    "producao",
+    "desenvolvimento"
+  ],
+  "justificativa": null,
+  "evidencia": null,
+  "evidencia_nota": "O comando que qualquer pessoa roda para conferir. Sem ele, 'nao se aplica' e' opiniao.",
+  "aceito_por": null,
+  "aceito_por_nota": "Nome de pessoa. A IA nao se concede as proprias excecoes.",
+  "aceito_em": null,
+  "data_revisao": null,
+  "data_revisao_nota": "No maximo 90 dias apos o aceite. Renovar exige nova avaliacao escrita, nao copiar a anterior.",
+  "tarefa_de_saida": null,
+  "tarefa_de_saida_nota": "Aceitar sem caminho de saida nao e' decisao, e' desistencia.",
+  "encerrado_em": null,
+  "proibido": "Nunca criar entrada para vulnerabilidade ALCANCAVEL em producao. Isso se corrige."
+}

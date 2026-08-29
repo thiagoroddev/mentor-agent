@@ -1,0 +1,18 @@
+[
+  {
+    "id": "RF-1",
+    "tipo": "RF",
+    "enunciado": "Exportar o relatorio em CSV",
+    "historia": "Como analista, quero exportar em CSV, para abrir na planilha",
+    "prioridade": "essencial",
+    "status": "implementado",
+    "criterios_aceite": [],
+    "tarefas": [
+      "TASK-RF-001"
+    ],
+    "adr": null,
+    "criado_em": "29/08/26 14:00",
+    "implementado_em": "29/08/26 14:00",
+    "pendente_de_validacao": false
+  }
+]

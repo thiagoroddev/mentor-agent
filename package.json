@@ -1,0 +1,25 @@
+{
+  "name": "mentor-agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Pacote de trabalho para agentes de IA: gerencia tarefas, orienta e registra.",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "mentor": "node mentor.mjs",
+    "init": "node mentor.mjs init",
+    "verificar": "node mentor.mjs verificar",
+    "doctor": "node mentor.mjs doctor",
+    "regras": "node mentor.mjs regras",
+    "gerar": "node mentor.mjs gerar",
+    "tipos": "tsc --noEmit",
+    "test": "node testes/executar.ts",
+    "verify": "npm run tipos && npm test"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "typescript": "^5.9.2"
+  }
+}

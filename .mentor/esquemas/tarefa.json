@@ -1,0 +1,153 @@
+{
+  "_meta": {
+    "schema": "tarefa/1",
+    "leia_antes": "Esqueleto gerado por 'task nova'. Campos de _gerado nunca sao digitados nem conferidos pela IA. Campos null que o estado atual ja' exige sao o que 'task iniciar' e 'task finalizar' cobram.",
+    "_gerado": [
+      "id",
+      "criada_em",
+      "iniciada_em",
+      "concluida_em",
+      "arquivo",
+      "gates.*.executado_em",
+      "gates.*.comando",
+      "gates.*.saida",
+      "ordem",
+      "fila",
+      "validado_em"
+    ]
+  },
+  "id": null,
+  "tipo": null,
+  "tipos_possiveis": [
+    "RF",
+    "RN",
+    "RNF",
+    "BG",
+    "REF",
+    "DOC",
+    "CHORE",
+    "TEST",
+    "SPIKE"
+  ],
+  "titulo": null,
+  "fatia_de": null,
+  "estado": "aberta",
+  "estados_possiveis": [
+    "aberta",
+    "em-execucao",
+    "concluida",
+    "cancelada"
+  ],
+  "cerimonia": null,
+  "cerimonias_possiveis": [
+    "Light",
+    "Standard",
+    "Strict"
+  ],
+  "valor": null,
+  "valores_possiveis": [
+    "critico",
+    "importante",
+    "desejavel"
+  ],
+  "urgencia": null,
+  "urgencias_possiveis": [
+    "imediata",
+    "normal"
+  ],
+  "esforco": {
+    "humano": null,
+    "ia": null,
+    "escala": [
+      "P",
+      "M",
+      "G",
+      "XG"
+    ],
+    "nota": "XG e' sinal de divisao obrigatoria: quebrar antes de executar."
+  },
+  "depende_de": [],
+  "ordem": null,
+  "ordem_nota": "null = a fila calcula. Numero = posicao fixada a mao por 'task fila'. A IA nunca renumera todas: pede a posicao de uma.",
+  "fila": "reserva",
+  "fila_possiveis": [
+    "ciclo",
+    "reserva"
+  ],
+  "fila_nota": "Toda tarefa nasce em reserva. 'reserva' e' lembrete e nao entra no contexto; 'ciclo' e' compromisso do ciclo atual, com teto. Mover com 'task puxar' e 'task guardar'.",
+  "origem": null,
+  "origem_aceita": "IDs resolviveis (RF RN RNF ADR DT REV) ou o token literal 'titulo-autossuficiente'. Vazio e' proibido.",
+  "requisitos": [],
+  "criada_em": null,
+  "iniciada_em": null,
+  "concluida_em": null,
+  "plano": {
+    "muda": [],
+    "criterios_aceite": [
+      {
+        "texto": null,
+        "teste": null
+      }
+    ],
+    "impacto": null,
+    "riscos": [],
+    "dependencias_novas": [],
+    "proporcionalidade": null,
+    "criterios_aceite_nota": "Todo criterio nomeia um teste. Saida honesta: 'nao se aplica: <motivo>'. Criterio que nao vira asercao nao era criterio, era intencao."
+  },
+  "gates": {
+    "_forma": {
+      "rotulo": null,
+      "rotulos_possiveis": [
+        "APROVADO",
+        "APROVADO com ressalva",
+        "FALHOU",
+        "NAO EXECUTADO",
+        "BLOQUEADO",
+        "INVALIDO como gate",
+        "nao se aplica"
+      ],
+      "comando": null,
+      "saida": null,
+      "executado_em": null,
+      "vermelho_em": null,
+      "vermelho_nota": "Quando o gate foi visto falhando antes de passar. Com metodo tdd ou bdd, o fechamento exige. Grave com: task gate <id> testes --esperando-vermelho",
+      "evidencia_url": null,
+      "motivo": null
+    }
+  },
+  "validacao": "nao_requer",
+  "validacao_possiveis": [
+    "nao_requer",
+    "pendente",
+    "aprovado",
+    "dispensado"
+  ],
+  "validacao_nota": "Vira 'pendente' no fechamento quando o projeto declara validacao manual. E' o 'smoke pendente' virando dado em vez de frase solta.",
+  "validado_em": null,
+  "validacao_motivo": null,
+  "achados": [],
+  "tarefas_geradas": [],
+  "adrs": [],
+  "divida_tecnica": [],
+  "narrativa": {
+    "arquivo": null,
+    "teto_caracteres": 2400,
+    "secoes": [
+      "Decisoes tomadas",
+      "O que nao foi feito e por que",
+      "Aprendizados"
+    ]
+  },
+  "achados_forma": {
+    "classe": "1 seguranca | 2 dado pessoal exposto | 3 performance com impacto | 4 requisito contradito | 5 gate que nao checa nada. A lista e' fechada: fora dela nao e' achado.",
+    "descricao": null,
+    "destino": "tarefa | divida_tecnica | risco_aceito | descartado",
+    "ref": "o ID criado, ou o motivo do descarte. Nunca vazio."
+  },
+  "achados_nota": "Achado nao sobrevive ao fechamento: 'task finalizar' recusa achado sem destino. Nao existe achado pendente.",
+  "riscos_aceitos": [],
+  "absorvida_por": null,
+  "cancelamento_motivo": null,
+  "tipos_nota": "SPIKE e' exploracao declarada: responde uma pergunta, e' descartavel, e nao exige criterio com teste. Existe para a exploracao nao se disfarcar de tarefa normal."
+}

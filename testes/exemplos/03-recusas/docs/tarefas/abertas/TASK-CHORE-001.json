@@ -1,0 +1,68 @@
+{
+  "id": "TASK-CHORE-001",
+  "tipo": "CHORE",
+  "titulo": "Primeira",
+  "fatia_de": null,
+  "estado": "em-execucao",
+  "cerimonia": "Standard",
+  "valor": "importante",
+  "urgencia": "normal",
+  "esforco": {
+    "humano": "P",
+    "ia": "P"
+  },
+  "depende_de": [],
+  "fila": "ciclo",
+  "ordem": null,
+  "origem": "titulo-autossuficiente",
+  "requisitos": [],
+  "criada_em": "29/08/26 14:00",
+  "iniciada_em": "29/08/26 14:00",
+  "concluida_em": null,
+  "plano": {
+    "muda": [
+      "a.ts"
+    ],
+    "criterios_aceite": [
+      {
+        "texto": "x",
+        "teste": ""
+      }
+    ],
+    "impacto": "y",
+    "riscos": [],
+    "dependencias_novas": [],
+    "proporcionalidade": "z"
+  },
+  "gates": {
+    "testes": {
+      "rotulo": "FALHOU",
+      "vermelho_em": null,
+      "comando": "echo \"falhou de proposito\" && exit 1",
+      "codigo_saida": 1,
+      "saida": "falhou de proposito",
+      "executado_em": "29/08/26 14:00",
+      "evidencia_url": null,
+      "motivo": null,
+      "ressalva": null
+    }
+  },
+  "achados": [
+    {
+      "classe": 1,
+      "descricao": "token no log",
+      "destino": "divida_tecnica",
+      "ref": ""
+    }
+  ],
+  "validacao": "nao_requer",
+  "validado_em": null,
+  "validacao_motivo": null,
+  "tarefas_geradas": [],
+  "adrs": [],
+  "divida_tecnica": [],
+  "riscos_aceitos": [],
+  "absorvida_por": null,
+  "cancelamento_motivo": null,
+  "narrativa": null
+}

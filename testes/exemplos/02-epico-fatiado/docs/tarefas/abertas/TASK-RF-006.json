@@ -1,0 +1,44 @@
+{
+  "id": "TASK-RF-006",
+  "tipo": "RF",
+  "titulo": "Sumario reflete a execucao",
+  "fatia_de": "TASK-RF-001",
+  "estado": "aberta",
+  "cerimonia": "Strict",
+  "valor": "critico",
+  "urgencia": "imediata",
+  "esforco": {
+    "humano": "P",
+    "ia": "M"
+  },
+  "depende_de": [
+    "TASK-RF-005"
+  ],
+  "fila": "reserva",
+  "ordem": null,
+  "origem": "titulo-autossuficiente",
+  "requisitos": [],
+  "criada_em": "29/08/26 14:00",
+  "iniciada_em": null,
+  "concluida_em": null,
+  "plano": {
+    "muda": [],
+    "criterios_aceite": [],
+    "impacto": null,
+    "riscos": [],
+    "dependencias_novas": [],
+    "proporcionalidade": null
+  },
+  "gates": {},
+  "achados": [],
+  "validacao": "nao_requer",
+  "validado_em": null,
+  "validacao_motivo": null,
+  "tarefas_geradas": [],
+  "adrs": [],
+  "divida_tecnica": [],
+  "riscos_aceitos": [],
+  "absorvida_por": null,
+  "cancelamento_motivo": null,
+  "narrativa": null
+}

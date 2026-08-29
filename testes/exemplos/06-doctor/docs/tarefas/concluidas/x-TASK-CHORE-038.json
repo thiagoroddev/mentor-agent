@@ -1,0 +1,42 @@
+{
+  "id": "TASK-CHORE-038",
+  "tipo": "CHORE",
+  "titulo": "ruido",
+  "fatia_de": null,
+  "estado": "concluida",
+  "cerimonia": "Light",
+  "valor": "desejavel",
+  "urgencia": "normal",
+  "esforco": {
+    "humano": "P",
+    "ia": "P"
+  },
+  "depende_de": [],
+  "fila": "ciclo",
+  "ordem": null,
+  "origem": "titulo-autossuficiente",
+  "requisitos": [],
+  "criada_em": "29/08/26 14:00",
+  "iniciada_em": "29/08/26 14:00",
+  "concluida_em": "29/08/26 14:00",
+  "plano": {
+    "muda": [],
+    "criterios_aceite": [],
+    "impacto": null,
+    "riscos": [],
+    "dependencias_novas": [],
+    "proporcionalidade": null
+  },
+  "gates": {},
+  "achados": [],
+  "validacao": "nao_requer",
+  "validado_em": null,
+  "validacao_motivo": null,
+  "tarefas_geradas": [],
+  "adrs": [],
+  "divida_tecnica": [],
+  "riscos_aceitos": [],
+  "absorvida_por": null,
+  "cancelamento_motivo": null,
+  "narrativa": null
+}
