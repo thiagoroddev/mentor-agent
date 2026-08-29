@@ -6,6 +6,7 @@
       "id",
       "criada_em",
       "iniciada_em",
+      "commit_base",
       "concluida_em",
       "arquivo",
       "gates.*.executado_em",
@@ -80,6 +81,8 @@
   "requisitos": [],
   "criada_em": null,
   "iniciada_em": null,
+  "commit_base": null,
+  "commit_base_nota": "HEAD do git no momento do 'task iniciar'. E a base do diff que a auditoria le. Nunca digitado.",
   "concluida_em": null,
   "plano": {
     "muda": [],

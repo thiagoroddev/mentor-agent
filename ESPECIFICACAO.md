@@ -346,6 +346,9 @@ ferramenta de desenvolvimento, para `tsc --noEmit`. `tsconfig` em `strict`, com
 | `hooks --instalar` | barreira de pre-push, sem dependencia (`core.hooksPath`) |
 | `verificar` | tres familias de checagem |
 | `doctor` | folha de saude, perfil ISO 25010, veredito binario |
+| `auditar preparar` | monta o dossie do lote para uma sessao **nova** de IA. Escopo fechado: e' tudo o que ela ve |
+| `auditar registrar` | valida e grava o veredito. Recusa aprovar com bloqueio, e recusa achado que ja' venha com destino |
+| `auditar resolver` | **voce** decide o destino do achado. A auditoria nunca decide |
 | `lancamento` | pode ir a publico? Roda os gates **agora** |
 | `regras [--sincronizar]` | inventario: quais regras viraram comando |
 | `relatorio-de-campo` | medicao do uso real, para levar ao repositorio do pacote |
@@ -354,6 +357,12 @@ ferramenta de desenvolvimento, para `tsc --noEmit`. `tsconfig` em `strict`, com
 **O que o `gate` recusa, e e' o ponto do comando.** `APROVADO`, `APROVADO com ressalva` e `FALHOU`
 so' nascem de execucao: pedi-los por `--rotulo` e' recusado com *"declaracao escrita a mao nao vale
 como evidencia"*. O rotulo sai do codigo de saida do processo, nunca de quem escreve o registro.
+
+**O que o `auditar registrar` recusa, e e' o ponto do comando.** Achado com `destino` ja' preenchido:
+*"a auditoria reporta, nunca decide o que vira trabalho"* — e' essa recusa que impede a auditoria de
+virar maquina de gerar tarefa, que foi como o antecessor morreu. Tambem recusa `APROVADO` com achado
+que bloqueia, `REPROVADO` sem nenhum, e `nao_verificado` vazio: **auditoria que diz ter verificado
+tudo esta' quebrada**, e a lista do que ficou de fora e' o que sustenta o veredito.
 
 **O que o `finalizar` recusa:** marcador nao preenchido no plano ou na narrativa · gate declarado
 pelo projeto e ausente do registro · gate `FALHOU` ou `BLOQUEADO` · gate `NÃO EXECUTADO` ou
@@ -507,7 +516,7 @@ CHORE e DOC no antecessor.
 
 ## 17. O que existe hoje, e o cenario que prova cada coisa
 
-Fases 1 a 8 fechadas em 29/08/26. Cada linha tem teste; `npm run verify` roda os nove.
+Fases 1 a 8 fechadas, e a 9 em curso, em 29/08/26. Cada linha tem teste; `npm run verify` roda os doze.
 
 | Capacidade | Prova |
 | :-- | :-- |
@@ -520,15 +529,18 @@ Fases 1 a 8 fechadas em 29/08/26. Cada linha tem teste; `npm run verify` roda os
 | Gates do projeto, hook de pre-push, versionamento cobrado na construcao | `07-entrega` |
 | Risco aceito com prazo de 90 dias, portao de lancamento | `08-lancamento` |
 | Recusas gravadas e relatorio de campo | `09-campo` |
+| Manifesto, instalacao, divergencia do pacote | `10-pacote` |
+| Rascunho como porta de entrada de ideia, e onde a melhoria vai | `11-rascunho` |
+| **Auditor**: dossie de escopo fechado, arquivo nunca commitado no diff, e as quatro recusas do veredito | `12-auditoria` |
 
 **O `03-recusas` e' o mais importante.** Um pacote cujo proposito e' recusar nao se prova com caminho
 feliz: ele passaria igual estando quebrado.
 
 ### O que ainda nao existe
 
-`mentor instalar` e `versao_do_pacote` no contexto (fase 9.1) · `mentor atualizar` (fase 9.1b, so'
-quando houver uma 0.2.0) · o agente auditor rodando de verdade em contexto separado, que hoje e'
-processo escrito e nao comando.
+`mentor atualizar` (fase 9.1b, so' quando houver uma 0.2.0, que nasce do relatorio de campo do
+hospedeiro) · o hospedeiro em si (9.2), que e' o unico que mede custo em tokens por tarefa e se a
+orientacao e' boa. Os doze cenarios provam mecanica; nenhum deles prova julgamento.
 
 ---
 

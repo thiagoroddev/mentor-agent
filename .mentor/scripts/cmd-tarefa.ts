@@ -37,6 +37,12 @@ function localizar(id: string): { caminho: string; tarefa: Tarefa } {
 
 const narrativaDe = (caminhoJson: string) => caminhoJson.replace(/\.json$/, '.md')
 
+/** O commit atual, ou `null` se o projeto ainda nao tem git. Nunca lanca: git ausente nao trava tarefa. */
+function cabecaDoGit(): string | null {
+  const r = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: caminhos().raiz, encoding: 'utf8' })
+  return r.status === 0 ? (r.stdout ?? '').trim() || null : null
+}
+
 // ---------------------------------------------------------------- nova
 
 export function nova(flags: Flags): void {
@@ -65,6 +71,7 @@ export function nova(flags: Flags): void {
     requisitos: (flags.requisitos ?? '').split(',').map((s) => s.trim()).filter(Boolean),
     criada_em: agora().log,
     iniciada_em: null,
+    commit_base: null,
     concluida_em: null,
     plano: { muda: [], criterios_aceite: [], impacto: null, riscos: [], dependencias_novas: [], proporcionalidade: null },
     gates: {},
@@ -106,6 +113,9 @@ export function iniciar(id: string): void {
   }
   tarefa.estado = 'em-execucao'
   tarefa.iniciada_em = agora().log
+  // Marca o ponto de partida no historico. Sem ele a auditoria nao consegue recortar o diff da
+  // tarefa e so' sobraria "o repositorio inteiro", que e' exatamente o escopo que gera o loop.
+  tarefa.commit_base = cabecaDoGit()
   const ehSpike = tarefa.tipo === 'SPIKE'
   tarefa.plano = {
     muda: [`${MARCADOR} caminho/arquivo.ext - o que muda nele, em uma linha`],
@@ -331,9 +341,13 @@ export function finalizar(id: string): void {
   if (tarefa.validacao === 'pendente') {
     console.log('Validacao manual pendente. Quando conferir: mentor task validar ' + id + ' --aprovado')
   }
+  // A cadencia da auditoria e' contada aqui porque e' aqui que o numero muda. Avisar so' no doctor
+  // faria o lembrete depender de alguem lembrar de rodar o doctor.
   const feitas = Number(ctxAtualizado.contagens.tarefas_concluidas ?? 0)
-  if (feitas > 0 && feitas % ctxAtualizado.auditoria.cadencia_em_tarefas === 0) {
-    console.log(`\n>>> ${feitas} tarefas concluidas. Rode "npm run auditar". A auditoria reporta, nunca cria tarefa.`)
+  const desde = feitas - (ctxAtualizado.auditoria.ultima_na_tarefa ?? 0)
+  if (desde >= ctxAtualizado.auditoria.cadencia_em_tarefas) {
+    console.log(`\n>>> ${desde} tarefas concluidas sem auditoria. Rode: node mentor.mjs auditar preparar`)
+    console.log('    O dossie vai para uma sessao NOVA de IA. Quem escreve nao aprova.')
   }
 }
 

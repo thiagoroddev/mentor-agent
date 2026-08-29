@@ -18,8 +18,16 @@ node mentor.mjs task gate TASK-RF-001 testes
 node mentor.mjs task finalizar TASK-RF-001
 
 node mentor.mjs verificar
-node mentor.mjs auditar
+node mentor.mjs doctor          # folha de saude do projeto, com veredito binario
+
+node mentor.mjs auditar preparar            # a cada N tarefas: monta o dossie do lote
+node mentor.mjs auditar registrar AUD-001   # veredito, escrito por uma sessao NOVA de IA
 ```
+
+**Sobre o `auditar`.** Quem escreve nao aprova: contexto compartilhado propaga vies. O `preparar`
+monta um dossie com o diff do lote, os registros e os requisitos citados — **e nada mais** — e voce
+o entrega a uma sessao de IA zerada. O escopo fechado nao e' promessa: e' o unico material que ela
+recebe. Ela reporta achados; **quem decide o que vira trabalho e voce**, no `auditar resolver`.
 
 Os que nao levam flag tambem tem atalho: `npm run init`, `npm run verificar`, `npm run auditar`,
 `npm run gerar`, `npm run tipos`.
@@ -34,6 +42,7 @@ Titulo com espaco vai entre aspas, no PowerShell e no cmd igual: `--titulo "text
 | Onde | O que e' |
 | :-- | :-- |
 | [`ESPECIFICACAO.md`](./ESPECIFICACAO.md) | o desenho inteiro, com os numeros que o justificam |
+| `docs/auditorias/` | um dossie e um veredito por auditoria, no seu projeto |
 | `.mentor/nucleo.md` | as leis. Sempre carregado |
 | `.mentor/processos/` | como conduzir o trabalho. Carregados por gatilho |
 | `.mentor/guia/` | 13 areas de orientacao. Consultadas por lacuna, nunca inteiras |

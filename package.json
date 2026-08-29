@@ -11,6 +11,7 @@
     "init": "node mentor.mjs init",
     "verificar": "node mentor.mjs verificar",
     "doctor": "node mentor.mjs doctor",
+    "auditar": "node mentor.mjs auditar",
     "regras": "node mentor.mjs regras",
     "gerar": "node mentor.mjs gerar",
     "tipos": "tsc --noEmit",

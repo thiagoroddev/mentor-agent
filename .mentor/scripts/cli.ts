@@ -13,6 +13,7 @@ import { lancamento } from './cmd-lancamento.ts'
 import { relatorioDeCampo } from './cmd-campo.ts'
 import { gerarManifesto, instalar } from './cmd-pacote.ts'
 import { anotar } from './cmd-anotar.ts'
+import { preparar as prepararAuditoria, registrar as registrarAuditoria, relatar as relatarAuditorias, resolver as resolverPendencia } from './cmd-auditar.ts'
 import { regenerarTudo } from './vistas.ts'
 
 const AJUDA = `
@@ -51,6 +52,10 @@ mentor <comando>
   lancamento                           pode ir a publico? Roda os gates agora
   relatorio-de-campo [--detalhado]     medicao do uso real, para levar ao repositorio do pacote
   doctor                               folha de saude com veredito binario. Nunca cria tarefa
+  auditar [preparar]                   monta o dossie do lote para uma sessao NOVA de IA auditar
+       registrar <AUD-ID>              valida e grava o veredito. Recusa aprovar com bloqueio
+       resolver <AUD-ID-Bxx>           voce decide o destino do achado; a auditoria nunca decide
+            --destino tarefa|divida_tecnica|risco_aceito|descartado --ref "..."
   gerar                                regenera as vistas em Markdown
 `
 
@@ -109,9 +114,22 @@ function principal(argv: string[]): number {
       throw new Error(`Subcomando de ra desconhecido: "${sub}".`)
     }
     case 'doctor': return doctor()
-    case 'auditar':
-      console.log('`auditar` virou `doctor`. Rodando o doctor.\n')
-      return doctor()
+    case 'auditar': {
+      const sub = posicionais[0]
+      if (!sub) return relatarAuditorias()
+      if (sub === 'preparar') return prepararAuditoria()
+      if (sub === 'registrar') {
+        const alvo = posicionais[1]
+        if (!alvo) throw new Error('Falta o ID. Use: mentor auditar registrar AUD-001')
+        return registrarAuditoria(alvo)
+      }
+      if (sub === 'resolver') {
+        const alvo = posicionais[1]
+        if (!alvo) throw new Error('Falta o ID da pendencia. Use: mentor auditar resolver AUD-001-B01 --destino ... --ref "..."')
+        return resolverPendencia(alvo, flags)
+      }
+      throw new Error(`Subcomando de auditar desconhecido: "${sub}".`)
+    }
     case 'stack': {
       const nome = posicionais[0]
       if (!nome) throw new Error('Falta o nome da ferramenta.')

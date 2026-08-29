@@ -132,6 +132,8 @@ export interface Tarefa {
   requisitos: string[]
   criada_em: string
   iniciada_em: string | null
+  /** HEAD no momento do `iniciar`. E' a base do diff que a auditoria le'. `null` = projeto sem git. */
+  commit_base: string | null
   concluida_em: string | null
   plano: Plano
   gates: Partial<Record<string, RegistroGate>>
@@ -243,8 +245,12 @@ export interface Contexto {
   auditoria: {
     cadencia_em_tarefas: number
     ultima_em: string | null
-    ultima_na_tarefa: string | null
+    /** Quantas tarefas estavam concluidas quando a ultima auditoria foi registrada. */
+    ultima_na_tarefa: number | null
+    /** HEAD quando ela foi registrada: e' a base do diff da proxima. */
+    ultimo_commit: string | null
     proxima_em_tarefa: number | null
+    /** IDs das pendencias 🔴 ainda em aberto. GERADO pelo `auditar`, nunca digitado. */
     pendencias_reportadas: string[]
   }
   [bloco: string]: unknown
@@ -290,4 +296,52 @@ export interface Tetos {
   fator_linha: number
   excecoes: ExcecaoDeTeto[]
   regras: RegraDeTeto[]
+}
+
+// ---------------------------------------------------------------- auditoria
+
+/**
+ * Tres niveis, e a diferenca entre eles nao e' tema, e' **classe de falsidade**.
+ * Erro de estilo em codigo de seguranca nao bloqueia; criterio de aceite contradito num botao sim.
+ */
+export const NIVEIS_DE_AUDITORIA = ['bloqueia', 'recomendacao', 'observacao'] as const
+export type NivelDeAuditoria = (typeof NIVEIS_DE_AUDITORIA)[number]
+
+/**
+ * ⚠️ Grafia diferente da dos gates de proposito. `APROVADO COM RESSALVAS` julga **codigo**;
+ * `APROVADO com ressalva` julga **um comando executado**. As duas existem porque as duas foram
+ * medidas em uso, e trocar uma pela outra apaga a distincao.
+ */
+export const VEREDITOS_DE_REVISAO = ['APROVADO', 'APROVADO COM RESSALVAS', 'REPROVADO'] as const
+export type VereditoDeRevisao = (typeof VEREDITOS_DE_REVISAO)[number]
+
+/**
+ * Achado de auditoria. Nao vira tarefa aqui: recebe **destino** depois, e quem decide e' o humano.
+ * E' essa separacao que impede a auditoria de virar maquina de gerar trabalho.
+ */
+export interface PendenciaDeAuditoria {
+  id: string
+  nivel: NivelDeAuditoria
+  descricao: string
+  /** As tarefas do lote a que o achado se refere. Vazio = achado do lote inteiro. */
+  tarefas: string[]
+  destino: DestinoDeAchado | null
+  ref: string | null
+  resolvida_em: string | null
+}
+
+export interface Auditoria {
+  id: string
+  lote: string[]
+  commit_base: string | null
+  commit_final: string | null
+  preparada_em: string
+  registrada_em: string | null
+  veredito: VereditoDeRevisao | null
+  /**
+   * A parte mais util do relatorio. Auditoria que aprova tudo esta' quebrada; se nao achou nada,
+   * o que sustenta o veredito e' a lista do que **nao** deu para verificar.
+   */
+  nao_verificado: string[]
+  pendencias: PendenciaDeAuditoria[]
 }

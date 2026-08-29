@@ -413,8 +413,10 @@
   },
   "auditoria": {
     "cadencia_em_tarefas": 10,
+    "cadencia_nota": "A cada N tarefas concluidas, 'mentor auditar preparar' monta o dossie do lote. O auditor le so o diff do lote, os registros e os requisitos citados: nunca o repositorio.",
     "ultima_em": null,
     "ultima_na_tarefa": null,
+    "ultimo_commit": null,
     "proxima_em_tarefa": 10,
     "pendencias_reportadas": []
   },
@@ -457,6 +459,7 @@
     "5 configuracao(oes) de plataforma nao declarada(s): protecao_do_ramo_principal, apagar_ramo_apos_merge, alertas_de_vulnerabilidade, atualizacoes_de_seguranca, segredos_do_ambiente_de_esteira. Nenhum script alcanca isso",
     "nenhum requisito registrado: o que guia o trabalho nao esta escrito",
     "repositorio sem remoto: o trabalho existe so nesta maquina",
+    "41 tarefas sem auditoria, e a cadencia e 10. Rode: mentor auditar preparar",
     "41 tarefas desde a ultima revisao geral (bloqueia em 40)"
   ],
   "_lembretes_nota": "GERADO pelo doctor a cada execucao. Nao digite aqui: campo livre acumula prosa como qualquer outro."

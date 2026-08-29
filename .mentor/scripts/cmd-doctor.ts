@@ -219,6 +219,23 @@ function processo(ctx: Contexto, tarefas: Tarefa[]): Linha[] {
     linhas.push({ estado: 'atencao', texto: `${semPadrao.length} ferramenta(s) sem convencao escrita: ${semPadrao.map((f) => f.nome).join(', ')}` })
   }
 
+  // Auditoria: o doctor mede a cadencia e conta os bloqueios que ela reportou. Nao julga nada
+  // do que ela achou — julgar e' da auditoria, e ela ja' julgou em contexto novo.
+  const concluidasParaAuditoria = tarefas.filter((t) => t.estado === 'concluida').length
+  const au = ctx.auditoria
+  const semAuditar = concluidasParaAuditoria - (au.ultima_na_tarefa ?? 0)
+  if (semAuditar >= au.cadencia_em_tarefas * 2) {
+    linhas.push({ estado: 'bloqueio', texto: `${semAuditar} tarefas sem auditoria, e a cadencia e ${au.cadencia_em_tarefas}. Rode: mentor auditar preparar` })
+  } else if (semAuditar >= au.cadencia_em_tarefas) {
+    linhas.push({ estado: 'atencao', texto: `${semAuditar} tarefas sem auditoria (cadencia ${au.cadencia_em_tarefas}). Rode: mentor auditar preparar` })
+  } else if (au.ultima_em) {
+    linhas.push({ estado: 'ok', texto: `auditoria em dia: ultima em ${au.ultima_em}, ${semAuditar} tarefa(s) desde entao` })
+  }
+  const bloqueiosDeAuditoria = au.pendencias_reportadas
+  if (bloqueiosDeAuditoria.length) {
+    linhas.push({ estado: 'bloqueio', texto: `${bloqueiosDeAuditoria.length} achado(s) de auditoria nivel "bloqueia" sem destino: ${bloqueiosDeAuditoria.join(', ')}. Decida com: mentor auditar resolver <ID> --destino ... --ref "..."` })
+  }
+
   // A revisao geral e' a unica auditoria que custa uma sessao. Por isso e' a unica com lembrete.
   const concluidas = tarefas.filter((t) => t.estado === 'concluida').length
   const desde = concluidas - (ctx.revisao_geral.ultima_na_tarefa ?? 0)

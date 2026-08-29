@@ -37,36 +37,31 @@ duas existem porque as duas foram medidas em uso. Não troque uma pela outra.
 ## O auditor: quem escreve não aprova
 
 **Contexto compartilhado propaga viés.** Quem decidiu usar um `useEffect` para derivar estado tem
-exatamente o mesmo modelo mental na hora de revisar aquele `useEffect`. Por isso a revisão roda em
-**contexto novo**, por um agente com um único poder: **reprovar**.
+exatamente o mesmo modelo mental na hora de revisar aquele `useEffect`. Por isso a auditoria roda em
+**sessão nova**, por um agente com um único poder: **reprovar**.
 
-**O escopo é fechado, e é ele que impede o ciclo infinito.** O auditor vê o **diff da tarefa**, o
-registro dela e os requisitos citados. **Nunca o repositório.** A calibração abaixo empurra para
-achar alguma coisa; solta no repositório inteiro, ela vira máquina de gerar trabalho.
+**Cadência, não toda tarefa.** A cada N tarefas concluídas (`contexto.auditoria.cadencia_em_tarefas`,
+10 por padrão) o `finalizar` avisa. Auditar toda tarefa dobraria o custo de cada uma, e processo caro
+é processo abandonado.
 
-**E o auditor não abre tarefa.** Escreve o veredito no registro; quem decide o que vira trabalho é o
-humano, no portão 2.
+```
+mentor auditar preparar          monta o dossiê do lote
+mentor auditar registrar AUD-001 valida e grava o veredito
+mentor auditar resolver AUD-001-B01 --destino ... --ref "..."
+```
 
-### Cinco regras
+**O `preparar` é o que fecha o escopo.** O dossiê traz o diff do lote, o registro de cada tarefa e os
+requisitos citados — **e nada mais**. Não é promessa de comportamento: é o único material que a sessão
+nova recebe. As cinco regras do auditor e os três níveis vêm escritos dentro do próprio dossiê, para
+não existirem em duas versões que divergem.
 
-1. **Não confie no que a tarefa afirma ter feito. Verifique no diff.**
-2. Gate sem evidência é `NÃO EXECUTADO`, nunca `APROVADO`.
-3. Critério de aceite sem teste ou verificação reproduzível é critério **não verificado**.
-   *"Validado visualmente"* sem passos não conta.
-4. Mudança em cálculo, persistência ou migração de esquema **exige revisão humana**.
-5. **Calibração:** uma auditoria que aprova tudo está quebrada. Se não achou nada, declare **o que
-   verificou e o que não conseguiu verificar** — a lista de não-verificado é a parte mais útil do
-   relatório.
+⚠️ **Por que o escopo é fechado.** A calibração *"auditoria que aprova tudo está quebrada"* empurra a
+achar alguma coisa. Solta no repositório inteiro, ela vira máquina de gerar trabalho — foi assim que o
+pacote anterior morreu. Presa ao diff, ela acha o que importa.
 
-### Bloqueio é por classe de falsidade, não por tema
-
-Erro de estilo em código de segurança não bloqueia; critério de aceite contradito num botão bloqueia.
-
-| Nível | O que é |
-| :-- | :-- |
-| 🔴 **Bloqueia** | o diff contradiz um critério declarado · gate sem evidência · uma das cinco classes de risco do núcleo §6 · toca cálculo, persistência ou migração sem revisão humana |
-| 🟡 Recomendação | funciona, dá para ficar melhor. Vira achado com destino, ou nada |
-| 🟢 Observação | fica anotado |
+**E o auditor não abre tarefa.** O `registrar` recusa achado que já venha com destino. Achado
+`bloqueia` sem destino conta como bloqueio no `doctor` até você decidir, no `resolver`, se vira tarefa,
+dívida técnica, risco aceito ou descarte com motivo.
 
 ## Os limites da auto-revisão
 

@@ -262,7 +262,36 @@ O que o `atualizar` fara':
 JSON de `docs/`; **acrescenta os campos novos com `null`** e nao remove nada. Campo novo em `null` e'
 pauta do mentor, que e' o comportamento certo: a migracao nao decide por voce.
 
-### 9.2 · O hospedeiro 🔵 a definir
+### 9.1c · O auditor como comando 🟢 *(implementado 29/08)*
+
+Era processo escrito, nao comando. Virou `mentor auditar preparar | registrar | resolver`.
+
+**A decisao que define o desenho: cadencia, nao toda tarefa.** Auditar cada tarefa Standard/Strict
+dobraria o custo de cada uma, e processo caro e' processo abandonado — que e' a razao nº 1 pela qual
+processos morrem. A cada N tarefas (10 por padrao) o `finalizar` avisa e o `doctor` cobra.
+
+**O escopo fechado deixou de ser promessa.** O `preparar` monta um dossie com o diff do lote, os
+registros e os requisitos citados, e e' o unico material que a sessao nova recebe. As cinco regras e
+os tres niveis vao escritos dentro dele, para nao existirem em duas versoes que divergem.
+
+Duas correcoes que so' apareceram ao ver um dossie de verdade, e valem por si:
+
+  (a) as **vistas geradas** (`contexto.json`, `contexto.md`, `backlog.md`, indices) saem do diff. Elas
+      inundavam o dossie com a contabilidade do proprio pacote e afogavam o codigo — e ainda
+      produziam um achado falso, "arquivo mudou sem constar no plano";
+  (b) **arquivo criado e nunca commitado entra inteiro**, por `git diff --no-index`. `git diff` nao o
+      mostra, e e' exatamente onde o erro novo mora. No teste isso e' um `login.ts` com senha no
+      codigo, invisivel na primeira versao do comando.
+
+**O que impede o loop, agora mecanicamente:** o `registrar` recusa achado que ja' venha com `destino`.
+O auditor reporta; quem decide se vira tarefa, divida, risco aceito ou descarte e' o humano, no
+`resolver`. E recusa `APROVADO` com achado que bloqueia, e `nao_verificado` vazio — auditoria que diz
+ter verificado tudo esta' quebrada.
+
+Cenario `12-auditoria`, fora do repositorio porque precisa de git de verdade. As duas asercoes novas
+foram conferidas por mutacao: quebrei o comando e o cenario acusou.
+
+### 9.2 · O hospedeiro 🟡 decidido em forma, a definir em escopo
 
 **Fictitio serve, com uma condicao: os objetivos precisam ser alcancados de fato, deploy incluido.**
 O que mata o teste e' fictitio abandonado no meio, porque ele para de ser real exatamente no ponto
@@ -279,6 +308,19 @@ Cinco criterios, e o menor projeto que os cobre e' o certo:
     executada uma vez
 [ ] 8 a 12 tarefas                 -> menos nao cobre; mais vira outro projeto
 ```
+
+**29/08: o humano definiu a forma.** Repositorio zerado, para exercitar: Docker · Bun ou outro runtime
+no lugar do Node · banco de dados · login · pagamento · VPS · nuvem · TypeScript · Next ou Fastify ·
+API · React.
+
+⚠️ **O escopo nao se planeja aqui.** Ele nasce la', com o agente conduzindo pelo `processos/rascunho.md`
+— que e' o teste mais honesto que existe do proprio processo: se o rascunho nao consegue transformar
+essa lista de tecnologias num escopo de 8 a 12 tarefas, o defeito e' do pacote, e o hospedeiro achou
+o primeiro antes da primeira linha de codigo.
+
+Pagamento nao estava nos cinco criterios e muda o rigor: dinheiro promove a N3 e obriga revisao
+humana em qualquer mudanca de calculo. E' o cenario mais duro que o pacote pode receber, e por isso
+o melhor.
 
 ### 9.3 · O que so' o hospedeiro prova
 
@@ -301,7 +343,7 @@ O contrario e' pagar o custo mais caro para descobrir o mais barato.
 
 Nenhuma bloqueia as fases 1 a 4.
 
-1. **Primeiro projeto real adotante.** Bloqueia so' o uso real, nao a implementacao.
+1. **Escopo do hospedeiro.** A forma esta' definida (9.2); o escopo sai do rascunho, la'.
 2. **`main`, `concessionaria`, `robust`, `teste-g` do `motocustorj`**: apagar ou manter
    (`MELHORIAS` §4.1). Nao afeta este repositorio.
 
@@ -510,4 +552,15 @@ Uma linha por passo concluido: `DD/MM/AA HH:MM · passo · o que mudou · o que 
              ID. Mantida por outra razao, que sobrevive: ID e' imutavel, relacao pai-filho nao e'.
              `fatia N/M` passou a ser calculado na geracao da vista, nunca guardado, porque o
              denominador e' movel (observacao do humano). Testado: 2/3 virou 2/5 sem renomear nada.
+29/08/26 · 9.1c · O auditor virou comando: `auditar preparar | registrar | resolver`. Cadencia,
+             nao toda tarefa. O escopo fechado deixou de ser promessa e virou o unico material que a
+             sessao nova recebe. Duas correcoes que so' apareceram ao ler um dossie real: as vistas
+             geradas saem do diff (afogavam o codigo e produziam achado falso) e arquivo nunca
+             commitado entra inteiro (`git diff` nao o mostra, e e' onde o erro novo mora).
+             DEFEITO MEU, achado por mutacao: a asercao do arquivo nao commitado passava por outro
+             caminho — eu criava o `login.ts` **antes** do `commit -A` do cenario, entao ele estava
+             rastreado e entrava pelo diff normal. Passava sem provar nada. Corrigido movendo a
+             criacao para depois do commit, e reconferido quebrando o comando de proposito.
+             Licao repetida pela terceira vez neste projeto: **asercao verde nao e' asercao que
+             bite.** So' vale depois de ver ela vermelha.
 ```

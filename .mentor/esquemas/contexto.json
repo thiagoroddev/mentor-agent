@@ -426,8 +426,10 @@
   },
   "auditoria": {
     "cadencia_em_tarefas": 10,
+    "cadencia_nota": "A cada N tarefas concluidas, 'mentor auditar preparar' monta o dossie do lote. O auditor le so o diff do lote, os registros e os requisitos citados: nunca o repositorio.",
     "ultima_em": null,
     "ultima_na_tarefa": null,
+    "ultimo_commit": null,
     "proxima_em_tarefa": null,
     "pendencias_reportadas": []
   },
