@@ -1,0 +1,31 @@
+[
+  {
+    "quando": "29/08/26 14:00",
+    "comando": "task puxar",
+    "alvo": "TASK-BG-001",
+    "impedimentos": [
+      "origem aponta para RF-99, ADR-77, que nao existe. Criar o registro duravel e parte de criar a tarefa"
+    ]
+  },
+  {
+    "quando": "29/08/26 14:00",
+    "comando": "task finalizar",
+    "alvo": "TASK-CHORE-001",
+    "impedimentos": [
+      "marcador PREENCHER: nao preenchido em plano.muda[0], plano.criterios_aceite[0].texto, plano.criterios_aceite[0].teste, plano.impacto, plano.riscos[0], plano.proporcionalidade",
+      "marcador PREENCHER: nao preenchido na narrativa",
+      "gate \"testes\" declarado pelo projeto e ausente do registro"
+    ]
+  },
+  {
+    "quando": "29/08/26 14:00",
+    "comando": "task finalizar",
+    "alvo": "TASK-CHORE-001",
+    "impedimentos": [
+      "criterio[0] sem teste nomeado. Saida honesta: \"nao se aplica: <motivo>\"",
+      "metodo \"tdd\" exige o gate \"testes\" visto vermelho antes do verde. Registre com: task gate TASK-CHORE-001 testes --esperando-vermelho",
+      "achado[0] sem \"ref\": o ID criado, ou o motivo do descarte",
+      "gate \"testes\" esta FALHOU e nao sustenta conclusao"
+    ]
+  }
+]

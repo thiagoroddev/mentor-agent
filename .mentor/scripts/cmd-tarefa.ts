@@ -2,7 +2,7 @@ import { spawnSync } from 'node:child_process'
 import { renameSync, rmSync } from 'node:fs'
 import { agora, caminhos, escreverJson, escreverTexto, existe, lerJson, lerTexto, listar } from './arquivos.ts'
 import { proximoIdDeTarefa } from './ids.ts'
-import { carregarContexto, carregarRequisitos, carregarTarefas, fixar, regenerarTudo, soltar } from './vistas.ts'
+import { carregarContexto, carregarRequisitos, carregarTarefas, fixar, regenerarTudo, registrarRecusa, soltar } from './vistas.ts'
 import {
   DESTINOS_DE_ACHADO, ESCALA, MARCADOR, METODOS_COM_VERMELHO, ROTULOS, ROTULOS_DE_EXECUCAO,
   ROTULOS_QUE_EXIGEM_MOTIVO, ROTULOS_QUE_NAO_FECHAM, TIPOS_TAREFA,
@@ -291,6 +291,7 @@ export function finalizar(id: string): void {
   }
 
   if (impedimentos.length) {
+    registrarRecusa('task finalizar', id, impedimentos)
     console.error(`Nao da para fechar ${id}:`)
     for (const i of impedimentos) console.error(`  - ${i}`)
     process.exitCode = 1

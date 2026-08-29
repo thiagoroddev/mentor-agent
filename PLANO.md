@@ -186,7 +186,7 @@ Tudo depende daqui. Nenhum comando novo antes desta fase fechar.
 
 ## Fase 7 · Campo
 
-- [ ] **7.1 · `mentor relatorio-de-campo`** (`MELHORIAS` §8)
+- [x] **7.1 · `mentor relatorio-de-campo`** (`MELHORIAS` §8)
   Parte A gerada (medicao, incluindo *recusas do `finalizar` por impedimento* e *ordem fixada a
   mao*), parte B com referencia obrigatoria a ID e data, parte C do que funcionou.
   **So' metadado de processo: nada de codigo, requisito, nome ou URL.**
@@ -342,6 +342,21 @@ Uma linha por passo concluido: `DD/MM/AA HH:MM · passo · o que mudou · o que 
              (a) epico na reserva com fatias no ciclo ficava invisivel no backlog;
              (b) o mesmo epico aparecia duplicado na listagem da reserva.
 29/08/26 · FASE 2 FECHADA · tsc limpo, verificar APROVADO.
+29/08/26 · 7.1 · `mentor relatorio-de-campo`. Antes dele, o que faltava era o dado: acrescentado
+                 `docs/tarefas/recusas.json`, **o unico registro do pacote que so cresce**, gravado
+                 no momento em que `puxar` ou `finalizar` recusam. Apagar recusa seria apagar a
+                 evidencia de onde o pacote atrapalha.
+                 Parte A gerada com nove medicoes, entre elas as duas que nenhum projeto anterior
+                 tinha: **onde o pacote recusou, agrupado por impedimento** (mede onde a IA falha,
+                 sem ninguem opinar) e **quantas vezes a ordem da fila foi fixada a mao** (se for
+                 frequente, quem muda e o pacote, nao quem usa).
+                 Parte B nasce com marcador e exige ID e data. Parte C existe porque analise que so
+                 lista defeito faz a leitura seguinte concluir que nada presta.
+                 So metadado de processo: o cenario confere que nenhum titulo de tarefa vaza.
+29/08/26 · Defeito achado rodando: o log de recusas guarda a frase do impedimento, e ela **cita o
+             marcador**. O verificador acusou o registro do erro como se fosse o erro. Duas
+             excecoes declaradas, com motivo no codigo: `recusas.json` e `relatorio-de-campo.md`.
+29/08/26 · FASE 7 FECHADA · tsc limpo, 9 cenarios verdes.
 29/08/26 · 6.1 · registro de riscos aceitos. `mentor ra [nova|encerrar]`, vista gerada com
                  Ativos e Encerrados, e as seis validacoes do `motocustorj`: sem evidencia, sem
                  tarefa de saida, sem responsavel nominal, sem justificativa, prazo acima de 90

@@ -1,0 +1,42 @@
+{
+  "id": "TASK-RF-001",
+  "tipo": "RF",
+  "titulo": "Epico grande",
+  "fatia_de": null,
+  "estado": "aberta",
+  "cerimonia": "Standard",
+  "valor": "importante",
+  "urgencia": "normal",
+  "esforco": {
+    "humano": "XG",
+    "ia": "XG"
+  },
+  "depende_de": [],
+  "fila": "reserva",
+  "ordem": null,
+  "origem": "titulo-autossuficiente",
+  "requisitos": [],
+  "criada_em": "29/08/26 14:00",
+  "iniciada_em": null,
+  "concluida_em": null,
+  "plano": {
+    "muda": [],
+    "criterios_aceite": [],
+    "impacto": null,
+    "riscos": [],
+    "dependencias_novas": [],
+    "proporcionalidade": null
+  },
+  "gates": {},
+  "achados": [],
+  "validacao": "nao_requer",
+  "validado_em": null,
+  "validacao_motivo": null,
+  "tarefas_geradas": [],
+  "adrs": [],
+  "divida_tecnica": [],
+  "riscos_aceitos": [],
+  "absorvida_por": null,
+  "cancelamento_motivo": null,
+  "narrativa": null
+}

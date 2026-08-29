@@ -7,9 +7,10 @@ import { rodar as verificacao } from './cenarios/05-verificacao.ts'
 import { rodar as saude } from './cenarios/06-doctor.ts'
 import { rodar as entrega } from './cenarios/07-entrega.ts'
 import { rodar as lanc } from './cenarios/08-lancamento.ts'
+import { rodar as campo } from './cenarios/09-campo.ts'
 import type { Cenario } from './apoio.ts'
 
-const CENARIOS: Array<() => Cenario> = [ciclo, epico, recusas, tdd, verificacao, saude, entrega, lanc]
+const CENARIOS: Array<() => Cenario> = [ciclo, epico, recusas, tdd, verificacao, saude, entrega, lanc, campo]
 
 let falharam = 0
 for (const rodar of CENARIOS) {

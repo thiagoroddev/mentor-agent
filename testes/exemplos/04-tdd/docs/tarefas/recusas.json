@@ -1,0 +1,10 @@
+[
+  {
+    "quando": "29/08/26 14:00",
+    "comando": "task finalizar",
+    "alvo": "TASK-RF-001",
+    "impedimentos": [
+      "metodo \"tdd\" exige o gate \"testes\" visto vermelho antes do verde. Registre com: task gate TASK-RF-001 testes --esperando-vermelho"
+    ]
+  }
+]

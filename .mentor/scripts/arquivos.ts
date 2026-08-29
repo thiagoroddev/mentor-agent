@@ -54,6 +54,7 @@ export const caminhos = (r: string = raizProjeto()) => ({
   abertas: join(r, 'docs', 'tarefas', 'abertas'),
   concluidas: join(r, 'docs', 'tarefas', 'concluidas'),
   backlog: join(r, 'docs', 'tarefas', 'backlog.md'),
+  recusas: join(r, 'docs', 'tarefas', 'recusas.json'),
   reservaMd: join(r, 'docs', 'tarefas', 'reserva.md'),
   indiceConcluidas: join(r, 'docs', 'tarefas', 'concluidas', '0-indice.md'),
   dividas: join(r, 'docs', 'dividas', 'dividas.json'),

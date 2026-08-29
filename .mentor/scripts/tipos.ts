@@ -271,6 +271,18 @@ export interface MetaDeQualidade {
  */
 export type EstadoDaCaracteristica = 'sem_meta' | 'sem_afericao' | 'conforme' | 'ressalva' | 'reprovada'
 
+/**
+ * Uma recusa do pacote, gravada quando acontece.
+ * **Mede onde a IA falha, sem ninguem opinar.** Se 80% das recusas forem "marcador nao preenchido",
+ * o defeito esta' no esqueleto do plano, nao em quem preenche.
+ */
+export interface Recusa {
+  quando: string
+  comando: string
+  alvo: string
+  impedimentos: string[]
+}
+
 export interface RegraDeTeto { padrao: string; teto: number }
 export interface ExcecaoDeTeto { caminho: string; teto: number; motivo: string }
 export interface Tetos {

@@ -13,11 +13,21 @@ function casa(padrao: string, caminho: string): boolean {
   return re.test(caminho)
 }
 
+/**
+ * Arquivos onde o marcador aparece **como conteudo**, nao como esqueleto por preencher:
+ * - `recusas.json` guarda a frase do impedimento, e ela cita o marcador. Acusar o registro de um
+ *   erro como se fosse o erro apagaria justamente a medicao de onde o pacote atrapalha.
+ * - `relatorio-de-campo.md` e' entregue ao repositorio do PACOTE, nao ao projeto: os marcadores da
+ *   parte B sao para quem escreve o relatorio, e nao devem barrar o trabalho do projeto.
+ */
+const MARCADOR_E_CONTEUDO = ['recusas.json', 'relatorio-de-campo.md']
+
 /** Familia 1: nenhum marcador sobrevivente. O script escreve o esqueleto; ninguem entrega o esqueleto. */
 function marcadores(): Achado[] {
   const c = caminhos()
   const achados: Achado[] = []
   const alvos = [...listar(c.docs, '.md'), ...listar(c.docs, '.json')]
+    .filter((a) => !MARCADOR_E_CONTEUDO.some((nome) => a.endsWith(nome)))
   for (const a of alvos) {
     if (lerTexto(a).includes(MARCADOR)) {
       achados.push({ familia: 'marcador', onde: relativo(a), problema: `contem ${MARCADOR} nao preenchido` })

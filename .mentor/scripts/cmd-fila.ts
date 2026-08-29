@@ -4,7 +4,8 @@ import {
 } from './arquivos.ts'
 import { proximoIdDeTarefa } from './ids.ts'
 import {
-  carregarContexto, carregarDividas, carregarRequisitos, carregarRiscos, carregarTarefas, regenerarTudo,
+  carregarContexto, carregarDividas, carregarRequisitos, carregarRiscos, carregarTarefas,
+  regenerarTudo, registrarRecusa,
 } from './vistas.ts'
 import type { Tarefa } from './tipos.ts'
 
@@ -85,6 +86,7 @@ export function puxar(id: string): void {
   }
 
   if (impedimentos.length) {
+    registrarRecusa('task puxar', id, impedimentos)
     console.error(`Nao da para puxar ${id}:`)
     for (const i of impedimentos) console.error(`  - ${i}`)
     process.exitCode = 1

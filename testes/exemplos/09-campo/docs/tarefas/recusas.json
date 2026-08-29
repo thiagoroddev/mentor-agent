@@ -1,0 +1,18 @@
+[
+  {
+    "quando": "29/08/26 14:00",
+    "comando": "task puxar",
+    "alvo": "TASK-BG-001",
+    "impedimentos": [
+      "origem aponta para RF-99, que nao existe. Criar o registro duravel e parte de criar a tarefa"
+    ]
+  },
+  {
+    "quando": "29/08/26 14:00",
+    "comando": "task puxar",
+    "alvo": "TASK-RF-001",
+    "impedimentos": [
+      "esforco XG para IA: divida antes com `task fatiar`"
+    ]
+  }
+]

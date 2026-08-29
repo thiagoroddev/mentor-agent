@@ -1,5 +1,5 @@
-import { agoraIso, caminhos, escreverJson, escreverTexto, existe, lerJson, listar } from './arquivos.ts'
-import type { Contexto, DividaTecnica, Requisito, RiscoAceito, Tarefa } from './tipos.ts'
+import { agora, agoraIso, caminhos, escreverJson, escreverTexto, existe, lerJson, listar } from './arquivos.ts'
+import type { Contexto, DividaTecnica, Recusa, Requisito, RiscoAceito, Tarefa } from './tipos.ts'
 
 const AVISO = '<!-- Gerado por `npm run mentor`. Nao edite a mao: a proxima geracao sobrescreve. -->'
 
@@ -28,6 +28,22 @@ export function riscoVencido(r: RiscoAceito, hoje: Date = new Date()): boolean {
   if (r.encerrado_em) return false
   const revisao = new Date(r.data_revisao)
   return Number.isNaN(revisao.getTime()) || revisao < hoje
+}
+
+export function carregarRecusas(): Recusa[] {
+  const c = caminhos()
+  return existe(c.recusas) ? lerJson<Recusa[]>(c.recusas) : []
+}
+
+/**
+ * Grava a recusa no momento em que ela acontece. E' o unico registro do pacote que so' cresce:
+ * apagar recusa seria apagar a evidencia de onde ele atrapalha.
+ */
+export function registrarRecusa(comando: string, alvo: string, impedimentos: string[]): void {
+  const c = caminhos()
+  const anteriores = carregarRecusas()
+  anteriores.push({ quando: agora().log, comando, alvo, impedimentos })
+  escreverJson(c.recusas, anteriores)
 }
 
 export function carregarContexto(): Contexto {
