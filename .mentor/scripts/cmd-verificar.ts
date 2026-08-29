@@ -2,6 +2,7 @@ import { readdirSync } from 'node:fs'
 import { basename, dirname, join, resolve } from 'node:path'
 import { caminhos, existe, lerJson, lerTexto, listar, raizPacote, relativo } from './arquivos.ts'
 import { comparar } from './cmd-regras.ts'
+import { conferirManifesto } from './cmd-pacote.ts'
 import { carregarContexto, carregarRequisitos, carregarTarefas } from './vistas.ts'
 import { MARCADOR } from './tipos.ts'
 import type { Tetos } from './tipos.ts'
@@ -127,6 +128,28 @@ function inventarioDeRegras(): Achado[] {
   return achados
 }
 
+/**
+ * Familia 3c: o `.mentor/` instalado bate com a versao que ele diz ser.
+ * Nao proibe editar para destravar; proibe **esquecer que editou**, que foi como o pacote chegou
+ * incompleto num projeto e ninguem descobriu.
+ */
+function divergenciaDoPacote(): Achado[] {
+  const d = conferirManifesto()
+  if (!d) return []
+  const total = d.mudados.length + d.faltando.length + d.acrescentados.length
+  if (total === 0) return []
+  const partes = [
+    d.mudados.length ? `${d.mudados.length} mudado(s): ${d.mudados.slice(0, 4).join(', ')}` : '',
+    d.faltando.length ? `${d.faltando.length} faltando: ${d.faltando.slice(0, 4).join(', ')}` : '',
+    d.acrescentados.length ? `${d.acrescentados.length} acrescentado(s): ${d.acrescentados.slice(0, 4).join(', ')}` : '',
+  ].filter(Boolean)
+  return [{
+    familia: 'referencia',
+    onde: `.mentor/ (versao ${d.versao})`,
+    problema: `${partes.join(' · ')}. Editar para destravar e legitimo; esquecer que editou vira divergencia silenciosa. Registre no relatorio de campo`,
+  }]
+}
+
 /** Familia 3: integridade referencial. Todo ponteiro resolve para algo que existe. */
 function referencias(): Achado[] {
   const c = caminhos()
@@ -162,7 +185,10 @@ function referencias(): Achado[] {
 }
 
 export function verificar(): number {
-  const achados = [...marcadores(), ...tetos(), ...referencias(), ...links(), ...inventarioDeRegras()]
+  const achados = [
+    ...marcadores(), ...tetos(), ...referencias(),
+    ...links(), ...inventarioDeRegras(), ...divergenciaDoPacote(),
+  ]
   if (achados.length === 0) {
     console.log('APROVADO. Tres familias: marcadores, tetos de texto, integridade referencial (ponteiros, links e inventario de regras).')
     return 0

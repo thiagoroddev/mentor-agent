@@ -11,11 +11,14 @@ import { instalarHooks } from './cmd-hooks.ts'
 import { encerrar as encerrarRisco, nova as novoRisco, relatar as relatarRiscos } from './cmd-riscos.ts'
 import { lancamento } from './cmd-lancamento.ts'
 import { relatorioDeCampo } from './cmd-campo.ts'
+import { gerarManifesto, instalar } from './cmd-pacote.ts'
 import { regenerarTudo } from './vistas.ts'
 
 const AJUDA = `
 mentor <comando>
 
+  instalar [--destino <pasta>]         copia o pacote para dentro de um projeto
+  manifesto                            grava o hash de cada arquivo do pacote (antes de empacotar)
   init                                 cria docs/ a partir dos esquemas
   task nova --tipo T --titulo "..."    cria tarefa (gera ID e data)
        --esforco H/IA --origem "..."
@@ -67,6 +70,8 @@ function principal(argv: string[]): number {
   const posicionais = resto.filter((a) => !a.startsWith('--'))
 
   switch (comando) {
+    case 'instalar': instalar(flags); return process.exitCode === 1 ? 1 : 0
+    case 'manifesto': gerarManifesto(); return 0
     case 'init': inicializar(); return 0
     case 'gerar': regenerarTudo(); console.log('Vistas regeneradas.'); return 0
     case 'reserva': listarReserva(); return 0

@@ -41,11 +41,21 @@ export function raizProjeto(partida: string = process.cwd()): string {
 /** Compatibilidade: quem so' quer "a raiz" quer a do projeto. */
 export const raiz = raizProjeto
 
+/**
+ * O pacote **que este projeto usa**, que nao e' necessariamente o que esta' rodando.
+ * Instalado, `.mentor/` vive no repositorio do projeto, e e' esse que a IA le' e que o `verificar`
+ * confere. So' quando o projeto nao tem copia propria e' que se cai no pacote em execucao.
+ */
+function pacoteDoProjeto(r: string): string {
+  const local = join(r, '.mentor')
+  return existsSync(local) ? local : join(raizPacote(), '.mentor')
+}
+
 export const caminhos = (r: string = raizProjeto()) => ({
   raiz: r,
-  pacote: join(raizPacote(), '.mentor'),
-  esquemas: join(raizPacote(), '.mentor', 'esquemas'),
-  tetos: join(raizPacote(), '.mentor', 'tetos.json'),
+  pacote: pacoteDoProjeto(r),
+  esquemas: join(pacoteDoProjeto(r), 'esquemas'),
+  tetos: join(pacoteDoProjeto(r), 'tetos.json'),
   docs: join(r, 'docs'),
   contexto: join(r, 'docs', 'contexto.json'),
   contextoMd: join(r, 'docs', 'contexto.md'),

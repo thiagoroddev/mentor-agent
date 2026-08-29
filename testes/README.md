@@ -5,8 +5,12 @@ linha de comando e confere a saida. Nao ha' mock: o que roda aqui e' o mesmo `me
 num projeto.
 
 ```bash
-npm test
+npm run verify     # regenera o manifesto, confere tipos, roda os cenarios
 ```
+
+⚠️ **O manifesto entra antes dos testes de proposito.** Ele guarda o hash de cada arquivo de
+`.mentor/`, e o `verificar` compara: num projeto instalado isso detecta divergencia silenciosa, mas
+aqui, onde o pacote e' editado o tempo todo, ele precisa ser regenerado a cada rodada.
 
 ## Por que os projetos gerados ficam versionados
 

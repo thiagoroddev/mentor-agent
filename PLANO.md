@@ -234,7 +234,7 @@ exemplos ficam de fora.
 **O pacote e' copiado PARA DENTRO do repositorio, nao fica em `node_modules`.** Isso e' deliberado: a
 IA le' `.mentor/` como arquivo, e o projeto versiona as convencoes dele ao lado.
 
-### 9.1 · `mentor instalar` 🔵 a implementar
+### 9.1 · `mentor instalar` 🟢 *(implementado 29/08)*
 
 O hospedeiro e' **repositorio zerado** (decisao do humano, 29/08), entao a fase 9 prova **instalacao
 e primeiro uso**, nao migracao.
@@ -342,6 +342,25 @@ Uma linha por passo concluido: `DD/MM/AA HH:MM · passo · o que mudou · o que 
              (a) epico na reserva com fatias no ciclo ficava invisivel no backlog;
              (b) o mesmo epico aparecia duplicado na listagem da reserva.
 29/08/26 · FASE 2 FECHADA · tsc limpo, verificar APROVADO.
+29/08/26 · 9.1 · `mentor instalar [--destino --forcar]` e `mentor manifesto`.
+                 O manifesto guarda o hash de cada um dos 51 arquivos de `.mentor/`, e o `verificar`
+                 compara. **Nao proibe editar para destravar; proibe esquecer que editou** — que foi
+                 exatamente como o pacote chegou incompleto no roteirizador: copia manual nao tem
+                 como saber que divergiu, entao nada avisava.
+                 `contexto._meta.versao_do_pacote` gravado no `init`, sem o qual o relatorio de campo
+                 nao consegue atribuir nada a uma versao.
+                 Reinstalar por cima avisa quantos arquivos divergem antes de descartar.
+29/08/26 · Tres defeitos meus em cadeia, todos achados pelo cenario `10-pacote`:
+             (a) `caminhos().pacote` apontava para o pacote **em execucao**, nao para o que o
+                 projeto usa. Instalado, `.mentor/` mora no repositorio do projeto, e e' esse que a
+                 IA le'. Um conceito que eu tinha juntado num campo so;
+             (b) o inventario de regras guardava caminho relativo a' raiz errada, e depois da
+                 correcao (a) as 494 regras apareciam como "mudaram de arquivo";
+             (c) a chamada de `divergenciaDoPacote()` nao entrou na lista de achados: o `replace`
+                 casou a importacao e nao a chamada, e o `verificar` aprovava com a divergencia na
+                 frente. Agora ha `assert` de que a funcao aparece duas vezes no arquivo.
+29/08/26 · `npm run verify` passa a regenerar o manifesto antes dos testes: aqui o pacote e editado
+             o tempo todo, e sem isso todo cenario acusaria divergencia do proprio repositorio.
 29/08/26 · 8.1 · especificacao atualizada: a medicao das 197 tarefas do `motocustorj` entrou na
                  secao 1, as cinco regras anti-laco na secao 2, os 19 comandos reais na 10, e uma
                  secao 17 nova que liga cada capacidade ao cenario que a prova. No `MELHORIAS.md`,

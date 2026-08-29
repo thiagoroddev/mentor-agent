@@ -1,3 +1,4 @@
+import { join } from 'node:path'
 import { agoraIso, caminhos, escreverJson, escreverTexto, existe, garantirPasta, lerJson } from './arquivos.ts'
 import { regenerarTudo } from './vistas.ts'
 import type { Contexto } from './tipos.ts'
@@ -19,6 +20,10 @@ export function inicializar(): void {
 
   const modelo = lerJson<Contexto>(c.esquemas + '/contexto.json')
   modelo._meta.gerado_em = agoraIso()
+  const manifesto = join(c.pacote, 'manifesto.json')
+  modelo._meta['versao_do_pacote'] = existe(manifesto)
+    ? lerJson<{ versao?: string }>(manifesto).versao ?? 'desconhecida'
+    : 'desconhecida (pacote sem manifesto: copiado a mao?)'
   modelo.ferramentas = []
   escreverJson(c.contexto, modelo)
   escreverJson(c.requisitos, [])

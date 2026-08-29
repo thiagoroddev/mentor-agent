@@ -1,6 +1,5 @@
-import { caminhos, escreverJson, existe, lerJson, lerTexto, listar, relativo } from './arquivos.ts'
-import { raizPacote } from './arquivos.ts'
-import { join } from 'node:path'
+import { caminhos, escreverJson, existe, lerJson, lerTexto, listar } from './arquivos.ts'
+import { dirname, join, relative } from 'node:path'
 
 /**
  * Inventario das regras do proprio pacote, com uma coluna so': **virou comando?**
@@ -19,7 +18,8 @@ export interface Regra {
 
 const DEFINICAO = /^\*\*([A-Z]{2,3}-\d{2,3}) · ([A-Z]+(?: \([^)]+\))?) ·/gm
 
-export const caminhoDoInventario = () => join(raizPacote(), '.mentor', 'regras.json')
+/** Sempre o inventario do pacote **que este projeto usa**, nao o do pacote em execucao. */
+export const caminhoDoInventario = () => join(caminhos().pacote, 'regras.json')
 
 /** Le' as definicoes direto do markdown. A fonte e' o guia; este arquivo e' o espelho. */
 export function extrairDoGuia(): Regra[] {
@@ -30,7 +30,11 @@ export function extrairDoGuia(): Regra[] {
     for (const casou of texto.matchAll(DEFINICAO)) {
       const id = casou[1]
       const severidade = casou[2]
-      if (id && severidade) achadas.push({ id, onde: relativo(arquivo, raizPacote()), severidade, comando: null })
+      if (id && severidade) {
+        // Relativo a' raiz do pacote lido, para o caminho nao mudar quando o pacote e' instalado.
+        const onde = relative(dirname(c.pacote), arquivo).split('\\').join('/')
+        achadas.push({ id, onde, severidade, comando: null })
+      }
     }
   }
   return achadas.sort((a, b) => a.id.localeCompare(b.id))

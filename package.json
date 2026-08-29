@@ -15,7 +15,8 @@
     "gerar": "node mentor.mjs gerar",
     "tipos": "tsc --noEmit",
     "test": "node testes/executar.ts",
-    "verify": "npm run tipos && npm test"
+    "verify": "npm run manifesto && npm run tipos && npm test",
+    "manifesto": "node mentor.mjs manifesto"
   },
   "devDependencies": {
     "@types/node": "^22.15.0",
