@@ -130,9 +130,9 @@ mentor-agent/
       vistas.ts                  backlog.md, contexto.md, requisitos, contagens
       cmd-init.ts  cmd-tarefa.ts  cmd-stack.ts  cmd-verificar.ts  cmd-auditar.ts
       cli.ts                     despacho
-  docs/                          NAO existe no pacote: e' o que o script cria
-                                 dentro do projeto que usa o pacote, na
-                                 inicializacao, a partir de esquemas/
+  docs/                          o que o script cria na inicializacao, a partir
+                                 de esquemas/. O proprio pacote tem o seu, com
+                                 contexto e sem tarefas (ver secao 15, decisao 10)
     contexto.json                fonte
     contexto.md                  gerado, ~40 linhas, so' campos preenchidos
     README.md                    gerado, para humano
@@ -442,7 +442,9 @@ testes existe mas ninguem sabe o que deveria estar cobrindo.
 | 7 | Requisitos | fonte unica, duas visoes geradas |
 | 8 | Modelo de tarefa | um so', dois niveis de preenchimento |
 | 9 | Auditoria | a cada 10 tarefas, por fase, por promocao de rigor |
-| 10 | Primeiro adotante | projeto novo a definir, nunca o proprio pacote |
+| 10 | O pacote roda as **proprias checagens** | sim: `verificar`, `gates`, `doctor`. E' controle de qualidade, nao tem laco. Corrigido em 29/08: eu tinha proibido demais |
+| 10b | O pacote gerencia as **proprias tarefas** | nao. O backlog dele e' o `PLANO.md`, a mao. Migrar para `docs/tarefas/` seria o laco que produziu 79% de CHORE+DOC no antecessor |
+| 10c | Usar o pacote em si mesmo **durante o desenvolvimento** | nao (decisao do humano, 29/08): ambiente em mudanca gera estado que nenhum projeto real visita, e defeito achado ali pode nao existir em lugar nenhum. Depois de estavel, sim |
 
 ## 16. Decisoes pendentes
 
