@@ -454,6 +454,7 @@
   "lembretes": [
     "5 configuracao(oes) de plataforma nao declarada(s): protecao_do_ramo_principal, apagar_ramo_apos_merge, alertas_de_vulnerabilidade, atualizacoes_de_seguranca, segredos_do_ambiente_de_esteira. Nenhum script alcanca isso",
     "nenhum requisito registrado: o que guia o trabalho nao esta escrito",
+    "repositorio sem remoto: o trabalho existe so nesta maquina",
     "41 tarefas desde a ultima revisao geral (bloqueia em 40)"
   ],
   "_lembretes_nota": "GERADO pelo doctor a cada execucao. Nao digite aqui: campo livre acumula prosa como qualquer outro."

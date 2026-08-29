@@ -1,6 +1,5 @@
 import { spawnSync } from 'node:child_process'
-import { agora, caminhos, diasDesde, escreverJson, existe } from './arquivos.ts'
-import { join } from 'node:path'
+import { agora, caminhos, diasDesde, escreverJson } from './arquivos.ts'
 import { tetos } from './cmd-verificar.ts'
 import {
   carregarContexto, carregarDividas, carregarRequisitos, carregarRiscos, carregarTarefas, riscoVencido,
@@ -165,7 +164,10 @@ function processo(ctx: Contexto, tarefas: Tarefa[]): Linha[] {
   // A pergunta que ninguem faz porque parece obvia demais, e que por isso nao e feita.
   // Foi assim que o proprio pacote passou cinco fases sendo construido sem repositorio.
   const raiz = caminhos().raiz
-  if (!existe(join(raiz, '.git'))) {
+  // Pergunta ao git, nao procura a pasta `.git`: um projeto dentro de um repositorio maior esta'
+  // versionado pelo pai, e worktree e submodulo tambem nao tem a pasta onde se espera.
+  const dentroDeRepo = spawnSync('git', ['rev-parse', '--is-inside-work-tree'], { cwd: raiz, encoding: 'utf8' })
+  if (dentroDeRepo.status !== 0) {
     linhas.push({ estado: 'bloqueio', texto: 'o projeto nao esta versionado: nao ha repositorio git. Nada aqui e recuperavel' })
   } else {
     const commits = spawnSync('git', ['rev-list', '--count', 'HEAD'], { cwd: raiz, encoding: 'utf8' })

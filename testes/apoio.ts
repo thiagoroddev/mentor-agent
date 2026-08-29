@@ -1,5 +1,6 @@
 import { spawnSync } from 'node:child_process'
-import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -20,6 +21,18 @@ export function abrirCenario(nome: string): Cenario {
   rmSync(join(pasta, 'docs'), { recursive: true, force: true })
   mkdirSync(pasta, { recursive: true })
   return { nome, pasta, falhas: [] }
+}
+
+/**
+ * Cenario fora do repositorio. Existe para um caso so': provar o que acontece num projeto **sem
+ * versionamento**. Os exemplos normais vivem dentro deste repositorio, entao o git do pai os cobre.
+ */
+export function abrirCenarioTemporario(nome: string): Cenario {
+  return { nome, pasta: mkdtempSync(join(tmpdir(), `mentor-${nome}-`)), falhas: [] }
+}
+
+export function fecharTemporario(c: Cenario): void {
+  rmSync(c.pasta, { recursive: true, force: true })
 }
 
 export interface Resultado {

@@ -272,7 +272,26 @@ Uma linha por passo concluido: `DD/MM/AA HH:MM · passo · o que mudou · o que 
 29/08/26 · Cenario `07-entrega`. E o `06-doctor` quebrou com a mudanca de 5.2 e precisou declarar
              o versionamento: os exemplos versionados fizeram exatamente o que existem para fazer,
              mostrar mudanca de comportamento como falha antes de chegar num projeto real.
-29/08/26 · FASE 5 FECHADA · tsc limpo, 7 cenarios verdes.
+29/08/26 · FALHA MINHA, apontada pelo humano: construi cinco fases, escrevi o processo de entrega
+             inteiro, e **nao notei que este repositorio nao tinha git**. Ninguem precisou lembrar
+             ele; precisou lembrar a mim.
+             A causa e estrutural e vale registrar: o `mentor-agent` e' o unico projeto **sem
+             mentor**, porque a decisao 10 diz que ele nao usa a si mesmo. Nenhum doctor rodava
+             sobre ele.
+             Consertado na mesma tarefa, e virou checagem: o doctor cobra repositorio ausente
+             (bloqueio), repositorio sem commit (bloqueio) e repositorio sem remoto (aviso).
+             `git init` feito, 204 arquivos no primeiro commit.
+29/08/26 · Hook testado de verdade, com remoto local: gate vermelho **barrou o push**, gate verde
+             deixou passar, e `--no-verify` continua funcionando de proposito, porque a barreira
+             avisa e nao aprisiona. Tres commits chegaram ao remoto.
+29/08/26 · Dois defeitos meus achados pelos cenarios, em sequencia:
+             (a) procurei a pasta `.git` em vez de perguntar ao git, entao projeto dentro de um
+                 repositorio maior aparecia como nao versionado. Trocado por
+                 `git rev-parse --is-inside-work-tree`, que tambem cobre worktree e submodulo;
+             (b) a assercao seguinte assumia o contrario, e os exemplos versionados a derrubaram.
+                 Nasceu o `abrirCenarioTemporario`, que roda fora do repositorio, para o unico caso
+                 que precisa disso.
+29/08/26 · FASE 5 FECHADA · tsc limpo, 7 cenarios verdes, repositorio versionado.
 29/08/26 · 4.1 · `doctor` absorve o `auditar` (que virou alias com aviso). Secoes SEGURANCA,
                  QUALIDADE e PROCESSO, terminando em veredito binario. Grava `lembretes` e o
                  `perfil` no contexto, os dois como SAIDA: o doctor calcula e sobrescreve.

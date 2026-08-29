@@ -1,4 +1,6 @@
-import { abrirCenario, confere, dizQue, escrever, ler, lerJson, mentor } from '../apoio.ts'
+import {
+  abrirCenario, abrirCenarioTemporario, confere, dizQue, escrever, fecharTemporario, ler, lerJson, mentor,
+} from '../apoio.ts'
 import type { Cenario } from '../apoio.ts'
 
 /** Entrega: gates do projeto, barreira local sem dependencia, e o gatilho na fase certa. */
@@ -18,6 +20,17 @@ export function rodar(): Cenario {
   salvar()
   dizQue(c, mentor(c, 'doctor'), 'versionamento nao declarado, e a fase "construcao" ja exige',
     'na construcao o versionamento passa a ser bloqueio')
+
+  // --- a pergunta que ninguem faz porque parece obvia demais.
+  //     Fora do repositorio, porque os exemplos normais sao cobertos pelo git deste projeto.
+  const solto = abrirCenarioTemporario('sem-git')
+  mentor(solto, 'init')
+  dizQue(c, mentor(solto, 'doctor'), 'nao esta versionado',
+    'projeto sem repositorio git e bloqueio, e ninguem precisa lembrar de perguntar')
+  fecharTemporario(solto)
+
+  dizQue(c, mentor(c, 'doctor'), 'sem remoto',
+    'versionado sem remoto vira aviso: o trabalho existe so nesta maquina')
 
   // --- gates: usa os comandos do projeto, nunca um `npm run` suposto
   const semGate = mentor(c, 'gates')
