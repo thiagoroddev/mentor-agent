@@ -12,7 +12,7 @@ parte da `ESPECIFICACAO.md` ou sendo descartado **com motivo escrito**.
 
 ---
 
-## 1 · Organizacao da fila 🔵
+## 1 · Organizacao da fila 🟢 *(implementado 29/08, fases 1 e 2)*
 
 **O problema, nas palavras do humano (29/08):** *"fica muita tarefa pendente parada muito tempo so'
 pra lembrar que precisa ser feita, mas isso ja' tem dado nos requisitos pendentes, e' redundante"*.
@@ -84,7 +84,7 @@ mentor reserva                lista a reserva (nao entra no contexto)
 
 ---
 
-## 2 · Entrega, versionamento e deploy 🔵
+## 2 · Entrega, versionamento e deploy 🟢 *(implementado 29/08, fase 5)*
 
 **Levantado pelo humano (29/08):** *"processo de versionamento e deploy profissional e com seguranca
 precisa ter, foi uma coisa que eu precisei pedir, mas esse agente tem que lembrar o usuario disso
@@ -137,7 +137,7 @@ aprovar. Vale para qualquer ferramenta que 90% usa.
 
 ---
 
-## 3 · Comandos propostos em 29/08 🔵
+## 3 · Comandos propostos em 29/08 🟢 *(todos implementados, fases 2 e 7)*
 
 | Comando | Substitui, no `pendentes.md` do roteirizador |
 | :-- | :-- |
@@ -192,7 +192,7 @@ git fetch --prune
 > acontece."* O `contexto.json` precisa de `configuracoes_de_plataforma`, e a auditoria precisa
 > cobrar, porque e' invisivel para qualquer verificacao automatica.
 
-### 4.2 Portao de lancamento 🔵 trazer
+### 4.2 Portao de lancamento 🟢 *(fase 6)*
 
 `scripts/gate-lancamento.mjs`, 462 linhas + `.github/workflows/lancamento.yml`. Responde **uma**
 pergunta: *este projeto pode ir a publico?* Itens: verify, auditoria de producao, cabecalhos de
@@ -208,7 +208,7 @@ Duas doutrinas para trazer inteiras:
 A segunda e' a formulacao mais forte do principio P2 que existe nos tres projetos, e foi **medida**.
 Entra na `ESPECIFICACAO.md`.
 
-### 4.3 Registro de Riscos Aceitos (`RA-NNN`) 🔵 trazer
+### 4.3 Registro de Riscos Aceitos (`RA-NNN`) 🟢 *(fase 6)*
 
 `docs/seguranca/riscos-aceitos.md` + `scripts/riscos-aceitos.mjs`. Conceito que o `mentor-agent` nao
 tem, e distinto de divida tecnica:
@@ -229,7 +229,7 @@ mais alto que o advisory original**, porque significa que a revisao parou de fun
 Isso implementa, com mecanismo, o que o guia so' tem como texto (*"Dispensas aceitas: regra | motivo |
 aceite de (nome/data)"*). E' a peca que faltava para `ACEITE` ser lei de verdade.
 
-### 4.4 Integridade de links em markdown 🔵 trazer
+### 4.4 Integridade de links em markdown 🟢 *(fase 3)*
 
 `scripts/check-docs.mjs`. O `verificar` do `mentor-agent` confere integridade **referencial entre
 JSON**, e nao confere link de markdown. Falta:
@@ -312,7 +312,7 @@ N1). A conciliacao honesta: N1 vale para o que e' de fato descartavel, e a promo
 cobre o resto. Mas os gates que custam **quase nada** (auditoria de dependencia, varredura de segredo)
 devem nascer ligados em qualquer nivel, porque o custo de liga-los depois e' maior que o de mante-los.
 
-### 4.11 As 4 camadas de gate 🔵 avaliar
+### 4.11 As 4 camadas de gate 🟢 *(camadas 1, 3 e 4 na fase 5 e 6; a 2 e do projeto)*
 
 ```
 1  npm run verify        segundos  o agente roda a cada tarefa
@@ -352,7 +352,7 @@ nunca o repositorio. A regra 5 empurra para achar alguma coisa, e um auditor sol
 inteiro com essa calibracao e' precisamente a maquina de tarefa-gera-tarefa que matou o
 `esquadro-agents`. Escopo fechado no diff e' o que separa as duas coisas.
 
-### 4.13 `doctor`: o relatorio de saude 🟢 trazer
+### 4.13 `doctor`: o relatorio de saude 🟢 *(fase 4)*
 
 §6, e e' a **funcao de mentor que voce descreveu**, so' que melhor do que o `auditar` que eu escrevi.
 Sai uma folha por push, com secoes de SEGURANCA, QUALIDADE e PROCESSO, e termina em veredito binario:
@@ -572,7 +572,7 @@ erros"*. Sete limites reais, e o que no pacote responde a cada um.
 
 ---
 
-## 8 · Relatorio de campo: como a melhoria volta ao pacote 🔵
+## 8 · Relatorio de campo: como a melhoria volta ao pacote 🟢 *(fase 7)*
 
 A regra §5.7 fecha a porta certa (o pacote nao se conserta de dentro do projeto), mas melhoria precisa
 de evidencia de uso real. O canal e' **um arquivo que sai do projeto e entra no repositorio do

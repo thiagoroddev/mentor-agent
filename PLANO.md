@@ -195,16 +195,16 @@ Tudo depende daqui. Nenhum comando novo antes desta fase fechar.
 
 ## Fase 8 · Fechamento
 
-- [ ] **8.1 · Atualizar a `ESPECIFICACAO.md`**
+- [x] **8.1 · Atualizar a `ESPECIFICACAO.md`**
   Trazer para la' tudo que saiu de 🔵 em `MELHORIAS.md`, com a medicao das 197 tarefas
   (`MELHORIAS` §4.9) na secao 1, e as cinco regras anti-loop (`MELHORIAS` §6.1).
   Mover os itens implementados de `MELHORIAS.md` para 🟢, com a data.
 
-- [ ] **8.2 · Teste ponta a ponta no sandbox**
+- [x] **8.2 · Teste ponta a ponta no sandbox**
   Ciclo completo: init · nova · puxar · iniciar · gate real · achado com destino · finalizar ·
   validar · doctor · verificar · relatorio-de-campo. Registrar as saidas aqui embaixo.
 
-- [ ] **8.3 · Conferir os tetos e o custo de contexto**
+- [x] **8.3 · Conferir os tetos e o custo de contexto**
   Medir de novo: sempre carregado, custo de abrir uma tarefa, total do pacote. Comparar com a
   tabela da `ESPECIFICACAO.md` §13 e corrigir os numeros.
 
@@ -342,6 +342,23 @@ Uma linha por passo concluido: `DD/MM/AA HH:MM · passo · o que mudou · o que 
              (a) epico na reserva com fatias no ciclo ficava invisivel no backlog;
              (b) o mesmo epico aparecia duplicado na listagem da reserva.
 29/08/26 · FASE 2 FECHADA · tsc limpo, verificar APROVADO.
+29/08/26 · 8.1 · especificacao atualizada: a medicao das 197 tarefas do `motocustorj` entrou na
+                 secao 1, as cinco regras anti-laco na secao 2, os 19 comandos reais na 10, e uma
+                 secao 17 nova que liga cada capacidade ao cenario que a prova. No `MELHORIAS.md`,
+                 nove blocos sairam de 🔵 para 🟢 com a fase que os entregou.
+29/08/26 · 8.2 · ciclo completo num projeto de verdade, fora do repositorio: `init` · requisito ·
+                 `nova` · `puxar` · `iniciar` · **vermelho antes do codigo existir** · escrever a
+                 funcao · verde · `finalizar` · requisito vinculado pelo script · `verificar` ·
+                 `lancamento` · `doctor`. Gate real (`node teste.mjs`), nao `echo`.
+                 O registro guardou `vermelho_em` e `executado_em` no mesmo gate: a prova de que o
+                 teste falhou antes de passar.
+29/08/26 · 8.3 · tetos e custo de contexto remedidos, agora comparando com o antecessor **em
+                 caracteres nos dois lados**, medido nos dois repositorios:
+                   sempre carregado   42.137 -> 6.764    (6x menor)
+                   abrir uma tarefa  171.591 -> 11.227   (15x menor)
+                   pacote inteiro  1.027.929 -> 170.799  (6x menor)
+                 A tabela anterior misturava linhas e caracteres, e estava errada.
+29/08/26 · FASE 8 FECHADA · tsc limpo, 9 cenarios verdes, 26 de 26 passos.
 29/08/26 · 7.1 · `mentor relatorio-de-campo`. Antes dele, o que faltava era o dado: acrescentado
                  `docs/tarefas/recusas.json`, **o unico registro do pacote que so cresce**, gravado
                  no momento em que `puxar` ou `finalizar` recusam. Apagar recusa seria apagar a

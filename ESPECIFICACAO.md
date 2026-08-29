@@ -34,7 +34,25 @@ verificacao, mecanismo encontra violacao, violacao vira tarefa, tarefa gera regr
 produzem ate N^2 interacoes a conferir. O resultado medido e' um projeto que so' produz manutencao
 de si mesmo.
 
-**A ultima linha da tabela e' a prova mais limpa:** o processo mais valioso do pacote e' o unico que
+**A mesma medicao, feita por outra pessoa, em outro projeto.** O `motocustorj`, 197 tarefas
+concluidas, cruzou cada regra do pacote com a pergunta "virou comando?":
+
+| Gate | Virou comando? | Vezes executado em 197 tarefas |
+| :-- | :-: | --: |
+| Testes | sim | **182** |
+| Typecheck | sim | **141** |
+| `npm audit` | **nao, so prosa** | **0** |
+| Lighthouse | **nao, so prosa** | **0** |
+| Cabecalhos de seguranca | **nao, so prosa** | **0** |
+
+> Os 314 itens do checklist de seguranca produziram **zero** verificacoes. Os 3 comandos do
+> `package.json` produziram **323**.
+
+E o custo real: 10 vulnerabilidades, 1 critica e 7 altas, numa dependencia **de producao publicada**,
+todas com correcao disponivel. Nenhuma detectada, porque o comando que as detecta nunca rodou,
+embora estivesse documentado em dois modulos desde a versao 1.0.0.
+
+**A ultima linha da tabela do antecessor e' a prova mais limpa:** o processo mais valioso do pacote e' o unico que
 nunca foi executado, porque era manual.
 
 ---
@@ -75,6 +93,24 @@ sozinha reproduz o loop, so' que agendado.
 **P7 · Campo vazio e' a pauta do mentor.**
 O guia nao e' lido inteiro por ninguem. Ele e' endereçado por lacuna: o contexto tem um campo para
 cada decisao que o guia exige, e campo `null` e' a pergunta que a IA faz.
+
+---
+
+### As cinco regras que impedem o laco de voltar
+
+1. **Auditoria reporta, nunca cria tarefa.** (P6)
+2. **Escopo fechado por tipo:** o auditor ve' o diff da tarefa; o doctor mede sem julgar; a revisao
+   geral julga, mas sob demanda.
+3. **Achado sem mecanismo nao vira lei.** Erro que se repete e para o qual nao da' para escrever um
+   comando que o pegue vira orientacao no guia, nunca regra nova no nucleo. Esta regra sozinha teria
+   evitado os 7 defeitos de aparato do antecessor.
+4. **O pacote nao se conserta de dentro do projeto do usuario.** Melhoria do `mentor-agent` e' tarefa
+   no repositorio do `mentor-agent`. Sem isso, todo projeto vira aos poucos um projeto sobre o pacote.
+5. **O doctor so' cresce em coisa mensuravel.** Checagem que precisa de julgamento nao entra nele.
+
+> **O padrao comum as cinco:** nenhuma pede que a IA lembre, se esforce ou tenha cuidado. Todas mudam
+> **o que ela e' capaz de fazer**. Foi a tentativa de resolver limite de capacidade com mais texto que
+> produziu 1.027.929 caracteres e zero funcionalidade.
 
 ---
 
@@ -170,29 +206,25 @@ pacote, 59,9 caracteres por linha em 155.369 caracteres e 2.592 linhas.
 | cada ADR | 30 | 1.800 |
 | `contexto.md` gerado | 40 | 2.400 |
 
-**Estado atual**, apos a divisao e as restauracoes (494 IDs no original, 494 nos arquivos):
+**Estado atual**, medido em 29/08 ao fechar a fase 8 (`mentor verificar` confere a cada execucao):
 
 ```
- 6.637  nucleo.md ................. 92% do teto
- 4.485  guia/00-indice ............ 93%
- 9.315  guia/01-negocio ........... 62%      13.623  guia/02-conformidade .... 91%
-12.419  guia/03-analise ........... 83%       8.456  guia/04-processo ........ 56%
- 7.098  guia/05-arquitetura ....... 47%      18.422  guia/06-persistencia ... 123%
- 6.084  guia/07-codigo ............ 41%      12.958  guia/08-interacao ....... 86%
-11.535  guia/09-seguranca ......... 77%       7.476  guia/10-qualidade ....... 50%
-11.260  guia/11-operacao .......... 75%       3.302  guia/12-aprendizado ..... 22%
- 1.375  guia/13-evolucao ........... 9%       4.490  guia/ORIGEM ............. 30%
- 6.186  modelos/fichas ............ 41%       2.404  modelos/listas .......... 16%
- 7.844  modelos/varredura ......... 52%
+  6.764  nucleo.md ................. 94% do teto      sempre carregado
+  4.463  processos/tarefa.md ....... 93%
+  4.135  processos/entrega.md ...... 86%
+  4.018  processos/revisao.md ...... 84%
+  2.535  processos/teste.md ........ 53%
+  2.440  processos/inicializacao ... 51%
+  2.431  processos/padroes-de-stack  51%
+  2.045  processos/analise-impacto . 43%
+ 18.422  guia/06-persistencia ..... 123%  <- unica excecao declarada
+    ...  demais 14 arquivos do guia entre 9% e 93%
 ```
 
 **Excecao declarada.** `06-persistencia.md` fica em 123%. Motivo: e' a unica secao que cobre dois
 paradigmas de persistencia (relacional `BD` e nao-relacional `NS`), com dez subsecoes. Dividi-la
 quebraria o mapeamento 1:1 entre secao do guia e portao, que o `contexto.json` usa para enderecar
-lacuna. A excecao fica registrada aqui e o script a le'; nenhum outro arquivo herda a folga.
-
-O `nucleo.md` tem 137 linhas contra as 120 de referencia, e **nao esta' acima do teto**: em
-caracteres esta' em 92%. A contagem de linhas media errado, e era o defeito que P4 corrige.
+lacuna. A excecao vive em `.mentor/tetos.json` e o script a le'; nenhum outro arquivo herda a folga.
 
 Formato que faz caber: uma linha por regra.
 
@@ -299,15 +331,25 @@ ferramenta de desenvolvimento, para `tsc --noEmit`. `tsconfig` em `strict`, com
 
 | Comando | O que faz |
 | :-- | :-- |
-| `mentor init` | cria `docs/` a partir de `.mentor/esquemas/`. Nao preenche nada |
-| `mentor task nova` | gera ID e data, valida os enums, grava o registro minimo |
-| `mentor task iniciar <id>` | move para execucao, escreve o esqueleto do plano e da narrativa com marcadores |
-| `mentor task gate <id> <gate>` | **executa** o comando declarado e grava comando, saida, codigo e horario |
-| `mentor task finalizar <id>` | confere os impedimentos, fecha, vincula requisito, regenera as vistas |
-| `mentor stack <ferramenta>` | cria a convencao com esqueleto e registra no contexto |
-| `mentor verificar` | tres familias de checagem |
-| `mentor auditar` | reporta o que falta. Nunca cria tarefa |
-| `mentor gerar` | regenera as vistas em Markdown |
+| `init` | cria `docs/` a partir dos esquemas. Nao preenche nada |
+| `task nova` | gera ID e data, valida os enums. Nasce na **reserva** |
+| `task puxar` / `guardar` | reserva ↔ ciclo, com a regra de passagem conferida |
+| `task fila <n>` / `--soltar` | fixa a posicao a mao, ou devolve a' ordem calculada |
+| `task fatiar --titulos` | divide em fatias encadeadas; o pai vira epico |
+| `task iniciar` | esqueleto do plano e da narrativa, com marcadores |
+| `task gate [--esperando-vermelho]` | **executa** e grava comando, saida, codigo e horario |
+| `task validar` | registra a validacao manual (o "smoke pendente") |
+| `task cancelar` / `absorver` | encerra sem fazer; o numero nunca volta |
+| `task finalizar` | confere os impedimentos, fecha, vincula requisito, regenera |
+| `ra [nova\|encerrar]` | registro de riscos aceitos, com prazo de 90 dias |
+| `gates` | roda todos os gates declarados pelo projeto |
+| `hooks --instalar` | barreira de pre-push, sem dependencia (`core.hooksPath`) |
+| `verificar` | tres familias de checagem |
+| `doctor` | folha de saude, perfil ISO 25010, veredito binario |
+| `lancamento` | pode ir a publico? Roda os gates **agora** |
+| `regras [--sincronizar]` | inventario: quais regras viraram comando |
+| `relatorio-de-campo` | medicao do uso real, para levar ao repositorio do pacote |
+| `gerar` | regenera as vistas em Markdown |
 
 **O que o `gate` recusa, e e' o ponto do comando.** `APROVADO`, `APROVADO com ressalva` e `FALHOU`
 so' nascem de execucao: pedi-los por `--rotulo` e' recusado com *"declaracao escrita a mao nao vale
@@ -395,14 +437,20 @@ Exemplos de divisao ja' resolvidos:
 | checklist `44` + metade de `templates/30` e `31` | 1.170 | **vira script** |
 | `27-revisao-geral` | 251 | funde em `revisao.md` |
 
-Resultado esperado:
+Resultado, medido nos dois pacotes em **caracteres** (a unidade que P4 adotou, porque teto de
+linha se burla juntando paragrafos):
 
-| | esquadro-agents | mentor-agent |
-| :-- | --: | --: |
-| Sempre carregado | 765 | ~160 |
-| Abrir tarefa | 3.042 | ~300 |
-| Pacote normativo | 22.707 | ~1.850 |
-| Guia consultavel | 0 | 2.376 |
+| | esquadro-agents | mentor-agent | |
+| :-- | --: | --: | --: |
+| Sempre carregado | 42.137 | **6.764** | 6x menor |
+| Abrir uma tarefa | 171.591 | **11.227** | 15x menor |
+| Pacote inteiro em Markdown | 1.027.929 | **170.799** | 6x menor |
+
+O "pacote inteiro" do `mentor-agent` inclui os 132.298 do guia, que **nunca sao carregados juntos**:
+sao consultados por lacuna, um arquivo por vez. O que se paga por interacao e' a primeira linha.
+
+Fora dessa conta, porque nao entram em contexto nenhum: 117.581 de scripts, 60.412 do inventario de
+regras e 33.330 dos cenarios de teste.
 
 Nada foi apagado. Mudou onde mora e quando e' pago.
 
@@ -457,7 +505,34 @@ CHORE e DOC no antecessor.
 
 ---
 
-## 17. O que trazer do esquadro-agents
+## 17. O que existe hoje, e o cenario que prova cada coisa
+
+Fases 1 a 8 fechadas em 29/08/26. Cada linha tem teste; `npm run verify` roda os nove.
+
+| Capacidade | Prova |
+| :-- | :-- |
+| Ciclo completo, ate' o requisito vinculado pelo script | `01-ciclo-basico` |
+| XG nao executa, se divide; `fatia N/M` calculado, nunca guardado | `02-epico-fatiado` |
+| **O que o pacote recusa**: origem que nao resolve, tarefa na reserva, segunda em execucao, marcador por preencher, `APROVADO` a mao, gate vermelho, achado sem destino, cancelar sem motivo | `03-recusas` |
+| Metodo de teste declarado, vermelho antes do verde, spike | `04-tdd` |
+| Link quebrado, grafia errada de arquivo, extensao dupla | `05-verificacao` |
+| Perfil ISO 25010 com cinco estados, cadencia da revisao, veredito | `06-doctor` |
+| Gates do projeto, hook de pre-push, versionamento cobrado na construcao | `07-entrega` |
+| Risco aceito com prazo de 90 dias, portao de lancamento | `08-lancamento` |
+| Recusas gravadas e relatorio de campo | `09-campo` |
+
+**O `03-recusas` e' o mais importante.** Um pacote cujo proposito e' recusar nao se prova com caminho
+feliz: ele passaria igual estando quebrado.
+
+### O que ainda nao existe
+
+`mentor instalar` e `versao_do_pacote` no contexto (fase 9.1) · `mentor atualizar` (fase 9.1b, so'
+quando houver uma 0.2.0) · o agente auditor rodando de verdade em contexto separado, que hoje e'
+processo escrito e nao comando.
+
+---
+
+## 18. O que trazer do esquadro-agents
 
 Lista fechada. Fora disto, nao consultar.
 
