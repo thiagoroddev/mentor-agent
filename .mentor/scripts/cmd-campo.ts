@@ -1,5 +1,5 @@
 import { join } from 'node:path'
-import { agora, caminhos, diasDesde, escreverTexto, existe, lerJson, raizPacote } from './arquivos.ts'
+import { agora, caminhos, diasDesde, escreverTexto, existe, lerJson, lerTexto, raizPacote } from './arquivos.ts'
 import { lerInventario } from './cmd-regras.ts'
 import { tetos } from './cmd-verificar.ts'
 import {
@@ -30,7 +30,12 @@ const tabela = (cab: string[], linhas: string[][]) => [
   ...linhas.map((l) => `| ${l.join(' | ')} |`),
 ]
 
-export function relatorioDeCampo(): number {
+/**
+ * `--detalhado` so' faz sentido quando quem escreve o relatorio e' dono do projeto **e** do pacote.
+ * O padrao continua limpo, porque o relatorio pode vir de outra pessoa que usa o pacote, e ai' o
+ * detalhe do produto dela nao e' meu para carregar.
+ */
+export function relatorioDeCampo(flags: Record<string, string | undefined> = {}): number {
   const c = caminhos()
   const ctx = carregarContexto()
   const tarefas = carregarTarefas()
@@ -122,6 +127,18 @@ export function relatorioDeCampo(): number {
   const estouros = tetos()
   l.push(estouros.length ? estouros.map((a) => `- ${a.onde}: ${a.problema}`).join('\n') : 'Nenhum estouro.', '')
 
+  const anotadas = join(c.docs, 'melhorias-do-pacote.md')
+  if (existe(anotadas)) {
+    const itens = lerTexto(anotadas).split('\n').filter((x: string) => x.startsWith('- **'))
+    l.push('### A.10 Melhorias anotadas durante o uso', '')
+    l.push(`${itens.length} anotacao(oes) por \`mentor anotar --sobre pacote\`.`, '')
+    if (flags.detalhado) {
+      l.push(...itens, '')
+    } else {
+      l.push('> Conteudo omitido: rode com `--detalhado` se voce e dono do projeto **e** do pacote.', '')
+    }
+  }
+
   l.push(
     '## B · Atrito (escrita, com referencia obrigatoria)', '',
     '### B.1 Regras que atrapalharam', '',
@@ -142,6 +159,11 @@ export function relatorioDeCampo(): number {
     '> Analise honesta reconhece o que funciona, senao vira reescrita gratuita. Sem esta secao, todo',
     '> relatorio vira lista de defeitos, e a leitura seguinte conclui que nada presta.',
   )
+
+  if (!flags.detalhado) {
+    l.splice(5, 0, '> Modo limpo: so metadado de processo. Use `--detalhado` quando voce for dono do',
+      '> projeto e do pacote, e o conteudo puder viajar junto.', '')
+  }
 
   const destino = `${c.docs}/relatorio-de-campo.md`
   escreverTexto(destino, l.join('\n'))

@@ -1,6 +1,7 @@
 import { spawnSync } from 'node:child_process'
-import { agora, caminhos, diasDesde, escreverJson } from './arquivos.ts'
+import { agora, caminhos, diasDesde, escreverJson, listar } from './arquivos.ts'
 import { tetos } from './cmd-verificar.ts'
+import { rascunhosParados } from './cmd-anotar.ts'
 import {
   carregarContexto, carregarDividas, carregarRequisitos, carregarRiscos, carregarTarefas, riscoVencido,
 } from './vistas.ts'
@@ -196,6 +197,21 @@ function processo(ctx: Contexto, tarefas: Tarefa[]): Linha[] {
     } else {
       linhas.push({ estado: 'ok', texto: 'versionamento declarado' })
     }
+  }
+
+  // Rascunho parado e' pauta, nao patrimonio.
+  const parados = rascunhosParados()
+  if (parados.length) {
+    linhas.push({ estado: 'atencao', texto: `${parados.length} rascunho(s) sem destino ha mais de 60 dias: ${parados.map((r) => r.arquivo).join(', ')}` })
+  }
+
+  // Fase inicial sem nenhum rascunho: comecou-se a construir antes de entender.
+  const FASE_INICIAL: Fase[] = ['ideia', 'descoberta']
+  if (fase && FASE_INICIAL.includes(fase)) {
+    const rascunhos = listar(`${caminhos().docs}/rascunhos`, '.md').length
+    linhas.push(rascunhos === 0
+      ? { estado: 'atencao', texto: `fase "${fase}" sem nenhum rascunho. Fluxo atual, atores, estados, entidades e telas moram em docs/rascunhos/ (processos/rascunho.md)` }
+      : { estado: 'ok', texto: `${rascunhos} rascunho(s) na fase "${fase}"` })
   }
 
   const semPadrao = ctx.ferramentas.filter((f) => !f.padrao && !f.dispensa_motivo)

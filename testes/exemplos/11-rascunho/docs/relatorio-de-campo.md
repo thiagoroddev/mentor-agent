@@ -1,11 +1,8 @@
-# Relatorio de campo · hospedeiro · 29/08/26 14:00
+# Relatorio de campo · projeto · 29/08/26 14:00
 
-Pacote **mentor-agent 0.1.0** · 1 tarefas concluidas
+Pacote **mentor-agent 0.1.0** · 0 tarefas concluidas
 
 > Partes A e C sao geradas. A parte B e escrita, e item sem ID de tarefa e data **nao entra**.
-> Modo limpo: so metadado de processo. Use `--detalhado` quando voce for dono do
-> projeto e do pacote, e o conteudo puder viajar junto.
-
 > So metadado de processo: nada de codigo, requisito, nome de pessoa ou URL.
 
 ## A · Medicao
@@ -14,7 +11,6 @@ Pacote **mentor-agent 0.1.0** · 1 tarefas concluidas
 
 | Tipo | Qtd | % |
 |---|---|---|
-| CHORE | 1 | 100% |
 
 **Funcionalidade (RF+RN+RNF): 0%.** Abaixo de 50% indica pacote consumindo o projeto.
 
@@ -29,27 +25,17 @@ entre uma versao e outra.
 
 ### A.3 Onde o pacote recusou
 
-| Impedimento | Vezes |
-|---|---|
-| origem que nao resolve | 1 |
-| XG sem fatiar | 1 |
-
-2 recusa(s) no total. **Mede onde a IA falha, sem ninguem opinar:** se um
-impedimento domina, o defeito esta no que o pacote pede, nao em quem preenche.
+Nenhuma recusa registrada.
 
 ### A.4 Rotulos de gate
 
-| Rotulo | Vezes |
-|---|---|
-| APROVADO | 1 |
+Nenhum gate registrado.
 
-Tarefas com vermelho registrado antes do verde: **0 de 1**.
+Tarefas com vermelho registrado antes do verde: **0 de 0**.
 
 ### A.5 Achados
 
-| Destino | Vezes |
-|---|---|
-| divida_tecnica | 1 |
+Nenhum achado registrado.
 
 ### A.6 Divida tecnica e risco aceito
 
@@ -61,7 +47,7 @@ Tarefas com vermelho registrado antes do verde: **0 de 1**.
 
 | Nascidas XG | Delas, fatiadas | Ordem fixada a mao | Validacoes pendentes |
 |---|---|---|---|
-| 1 | 0 | 0 | 0 |
+| 0 | 0 | 0 | 0 |
 
 **Ordem fixada a mao com frequencia significa que os criterios de ordenacao estao errados.**
 Nesse caso quem muda e o pacote, nao quem usa.
@@ -70,11 +56,17 @@ Nesse caso quem muda e o pacote, nao quem usa.
 
 | Dias parada antes de iniciar (mediana) | Dias em execucao (mediana) |
 |---|---|
-| 0 | 0 |
+| - | - |
 
 ### A.9 Tetos de texto
 
-- docs/contexto.md: 2661 caracteres, 111% do teto 2400
+Nenhum estouro.
+
+### A.10 Melhorias anotadas durante o uso
+
+1 anotacao(oes) por `mentor anotar --sobre pacote`.
+
+- **29/08/26 14:00** · o doctor nao lembra de diagrama na descoberta
 
 ## B · Atrito (escrita, com referencia obrigatoria)
 
@@ -95,8 +87,8 @@ Nesse caso quem muda e o pacote, nao quem usa.
 ## C · O que funcionou
 
 - 494 regras no inventario, 0 com comando
-- -1 de 1 tarefas encerradas sem nenhuma recusa
-- 1 gates aprovados por execucao, nao por declaracao
+- 0 de 0 tarefas encerradas sem nenhuma recusa
+- 0 gates aprovados por execucao, nao por declaracao
 
 > Analise honesta reconhece o que funciona, senao vira reescrita gratuita. Sem esta secao, todo
 > relatorio vira lista de defeitos, e a leitura seguinte conclui que nada presta.

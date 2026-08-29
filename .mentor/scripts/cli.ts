@@ -12,6 +12,7 @@ import { encerrar as encerrarRisco, nova as novoRisco, relatar as relatarRiscos 
 import { lancamento } from './cmd-lancamento.ts'
 import { relatorioDeCampo } from './cmd-campo.ts'
 import { gerarManifesto, instalar } from './cmd-pacote.ts'
+import { anotar } from './cmd-anotar.ts'
 import { regenerarTudo } from './vistas.ts'
 
 const AJUDA = `
@@ -40,6 +41,7 @@ mentor <comando>
   stack <ferramenta> [--versao --papel] cria a convencao e registra no contexto
   regras [--sincronizar]               inventario das regras do pacote: quais viraram comando
   verificar                            marcadores, tetos de texto, integridade referencial
+  anotar --sobre pacote|projeto "..."  onde a melhoria vai nao e decisao de memoria
   reserva                              lista a reserva (nao entra no contexto)
   gates                                roda todos os gates declarados pelo projeto
   hooks --instalar                     barreira de pre-push, sem dependencia (core.hooksPath)
@@ -47,33 +49,42 @@ mentor <comando>
        nova --titulo --justificativa --evidencia --aceito-por
             --revisar-em --tarefa-de-saida [--severidade --pacote --advisory]
   lancamento                           pode ir a publico? Roda os gates agora
-  relatorio-de-campo                   medicao do uso real, para levar ao repositorio do pacote
+  relatorio-de-campo [--detalhado]     medicao do uso real, para levar ao repositorio do pacote
   doctor                               folha de saude com veredito binario. Nunca cria tarefa
   gerar                                regenera as vistas em Markdown
 `
 
-function lerFlags(args: string[]): Record<string, string | undefined> {
+/**
+ * Uma passada so'. Separado em duas, o **valor de uma flag entra tambem como posicional** — e ai'
+ * `mentor anotar --sobre projeto "texto"` le' `projeto` como se fosse o texto. Aconteceu.
+ */
+function lerArgumentos(args: string[]): {
+  flags: Record<string, string | undefined>
+  posicionais: string[]
+} {
   const flags: Record<string, string | undefined> = {}
+  const posicionais: string[] = []
   for (let i = 0; i < args.length; i++) {
     const a = args[i]
-    if (a?.startsWith('--')) {
-      const proximo = args[i + 1]
-      flags[a.slice(2)] = proximo && !proximo.startsWith('--') ? (i++, proximo) : 'true'
-    }
+    if (!a) continue
+    if (!a.startsWith('--')) { posicionais.push(a); continue }
+    const proximo = args[i + 1]
+    if (proximo && !proximo.startsWith('--')) { flags[a.slice(2)] = proximo; i++ }
+    else flags[a.slice(2)] = 'true'
   }
-  return flags
+  return { flags, posicionais }
 }
 
 function principal(argv: string[]): number {
   const [comando, ...resto] = argv
-  const flags = lerFlags(resto)
-  const posicionais = resto.filter((a) => !a.startsWith('--'))
+  const { flags, posicionais } = lerArgumentos(resto)
 
   switch (comando) {
     case 'instalar': instalar(flags); return process.exitCode === 1 ? 1 : 0
     case 'manifesto': gerarManifesto(); return 0
     case 'init': inicializar(); return 0
     case 'gerar': regenerarTudo(); console.log('Vistas regeneradas.'); return 0
+    case 'anotar': anotar(posicionais[0], flags.sobre); return 0
     case 'reserva': listarReserva(); return 0
     case 'regras':
       if (flags.sincronizar) sincronizarRegras()
@@ -85,7 +96,7 @@ function principal(argv: string[]): number {
       if (!flags.instalar) throw new Error('Use: mentor hooks --instalar')
       instalarHooks(); return 0
     case 'lancamento': return lancamento()
-    case 'relatorio-de-campo': return relatorioDeCampo()
+    case 'relatorio-de-campo': return relatorioDeCampo(flags)
     case 'ra': {
       const sub = posicionais[0]
       if (!sub) { relatarRiscos(); return 0 }
