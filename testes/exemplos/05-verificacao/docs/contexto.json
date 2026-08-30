@@ -406,7 +406,7 @@
     "riscos_aceitos_ativos": 0,
     "riscos_aceitos_vencidos": 0,
     "tarefas_desde_revisao_geral": 0,
-    "adrs": 0,
+    "adrs": 3,
     "ferramentas_sem_padrao": 0,
     "campos_nulos_do_contexto": 168,
     "divida_tecnica_com_gatilho_vencido": null

@@ -38,15 +38,38 @@ function marcadores(): Achado[] {
 }
 
 /** Familia 2: teto de texto em caracteres. Linha se burla juntando paragrafos; caractere nao. */
+/**
+ * Os tetos do pacote, mais os do projeto por cima.
+ *
+ * ⚠️ **O projeto precisa de um lugar proprio.** Medido em campo: um projeto com 10 ADRs migradas
+ * declarou 10 excecoes dentro de `.mentor/tetos.json`, e elas sumiriam no proximo
+ * `instalar --forcar`. Decisao do projeto guardada na pasta do pacote e' decisao com data de
+ * validade. O arquivo do projeto vem primeiro em toda busca, entao ele sobrepoe sem apagar nada.
+ */
+export function carregarTetos(): Tetos | null {
+  const c = caminhos()
+  const doPacote = existe(c.tetos) ? lerJson<Tetos>(c.tetos) : null
+  const doProjeto = existe(c.tetosProjeto) ? lerJson<Partial<Tetos>>(c.tetosProjeto) : null
+  if (!doPacote && !doProjeto) return null
+  return {
+    tolerancia: doProjeto?.tolerancia ?? doPacote?.tolerancia ?? 0.1,
+    fator_linha: doProjeto?.fator_linha ?? doPacote?.fator_linha ?? 60,
+    excecoes: [...(doProjeto?.excecoes ?? []), ...(doPacote?.excecoes ?? [])],
+    regras: [...(doProjeto?.regras ?? []), ...(doPacote?.regras ?? [])],
+  }
+}
+
 export function tetos(): Achado[] {
   const c = caminhos()
-  if (!existe(c.tetos)) return []
-  const cfg = lerJson<Tetos>(c.tetos)
+  const cfg = carregarTetos()
+  if (!cfg) return []
   const achados: Achado[] = []
   const alvos = [...listar(c.pacote, '.md'), ...listar(c.docs, '.md')]
   for (const a of alvos) {
     const rel = relativo(a)
-    const excecao = cfg.excecoes.find((e) => e.caminho === rel)
+    // Excecao casa por glob, igual as regras. Antes comparava caminho exato, e migrar 10 ADRs
+    // exigia 10 entradas literais identicas: uma linha por arquivo, para dizer a mesma coisa.
+    const excecao = cfg.excecoes.find((e) => casa(e.caminho, rel))
     const regra = cfg.regras.find((r) => casa(r.padrao, rel))
     const teto = excecao?.teto ?? regra?.teto
     if (!teto) continue

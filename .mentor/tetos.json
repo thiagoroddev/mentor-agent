@@ -1,5 +1,5 @@
 {
-  "_leia": "Tetos em caracteres, nao em linhas. Teto de linha se burla juntando paragrafos; caracteres nao. Tolerancia de 10%: acima disso bloqueia ate' reescrever mais curto ou declarar excecao com motivo. Nunca ate' cortar conteudo.",
+  "_leia": "Tetos em caracteres, nao em linhas. Teto de linha se burla juntando paragrafos; caracteres nao. Tolerancia de 10%: acima disso bloqueia ate' reescrever mais curto ou declarar excecao com motivo. Nunca ate' cortar conteudo. ESTE ARQUIVO E DO PACOTE e o instalar sobrescreve: excecao do SEU projeto vai em docs/tetos.json, que sobrepoe este e sobrevive a atualizacao. Caminho de excecao aceita glob, igual a regra: um docs/arquitetura/ADR/ADR-0*.md cobre todas.",
   "tolerancia": 0.1,
   "fator_linha": 60,
   "excecoes": [
@@ -36,7 +36,8 @@
     },
     {
       "padrao": "docs/contexto.md",
-      "teto": 2400
+      "teto": 8000,
+      "_motivo": "Calibrado em projeto vazio o teto era 2400. Medido em projeto real com os oito portoes respondidos: 7.633 caracteres, 88 campos. O conteudo e GERADO por script, nao prosa que se possa enxugar, entao teto sobre esta vista e teto sobre o gerador. Sobe para 8000, e cresce com o projeto: se estourar de novo, o que precisa mudar e o que a vista lista, nunca o numero."
     },
     {
       "padrao": "docs/padroes-de-stack/*.md",

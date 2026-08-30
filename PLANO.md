@@ -687,4 +687,19 @@ VALIDACAO 9.3 · O pacote carregou num projeto real pela primeira vez (roteiriza
              E se o projeto reformatasse `.mentor/`, o manifesto acusaria divergencia em tudo: os
              dois mecanismos brigariam. Dependencia se ignora, nao se adequa.
              Mutacao confere: neutralizar a deteccao derruba o cenario.
+30/08/26 · Fase 10, passos 3 e 4. Achados 3 e 4 do campo.
+             Excecao de teto casava caminho EXATO enquanto regra casava glob, entao migrar 10 ADRs
+             exigiu 10 entradas literais identicas. Agora usa a mesma `casa()`: um
+             `docs/arquitetura/ADR/ADR-0*.md` cobre todas.
+             E o mais importante, que o achado 4 revelou: a excecao morava dentro de `.mentor/`,
+             que o `instalar --forcar` sobrescreve. **Decisao do projeto guardada na pasta do
+             pacote e' decisao com data de validade.** Criado `docs/tetos.json`, do projeto, que
+             sobrepoe o do pacote e sobrevive a atualizacao.
+             Teto do `contexto.md` de 2.400 para 8.000: medido 7.633 em projeto real com os oito
+             portoes respondidos, e o conteudo e' GERADO, nao prosa enxugavel. Teto sobre saida de
+             script e' teto sobre o gerador. Se estourar de novo, muda-se o que a vista lista.
+             Teto de ADR fica em 1.800: ele serve para ADR nova, escrita curta. ADR migrada e'
+             caso do `docs/tetos.json`, que e' exatamente para isso.
+             Duas mutacoes conferem: voltar ao caminho exato e ignorar o arquivo do projeto
+             derrubam o cenario.
 ```

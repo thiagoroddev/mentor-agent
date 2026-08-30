@@ -94,7 +94,7 @@ ignora, como `node_modules` e `dist`.
 **Teste:** cenário com `eslint.config.js` na raiz, conferindo que o `instalar` nomeia o arquivo certo
 e que o `doctor` avisa enquanto o ignore não existir.
 
-## Passo 3 · Exceção de teto com glob
+## Passo 3 · Exceção de teto com glob 🟢 *(feito, 0.1.3)*
 
 **O defeito.** `cmd-verificar.ts:49` compara exceção por igualdade (`e.caminho === rel`), enquanto as
 regras usam `casa(padrao, rel)`. Migrar 10 ADRs exigiu 10 entradas literais idênticas no `tetos.json`.
@@ -109,7 +109,7 @@ Proposta: `tetos.json` do pacote continua sendo o padrão, e um `tetos.json` **d
 
 **Teste:** um glob cobrindo três arquivos, e exceção de projeto sobrevivendo a `instalar --forcar`.
 
-## Passo 4 · Tetos calibrados com dado real
+## Passo 4 · Tetos calibrados com dado real 🟢 *(feito, 0.1.3)*
 
 | Arquivo | Teto hoje | Real medido | Proposta |
 | :-- | --: | --: | --: |

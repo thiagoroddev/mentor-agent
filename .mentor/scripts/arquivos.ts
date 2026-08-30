@@ -56,6 +56,11 @@ export const caminhos = (r: string = raizProjeto()) => ({
   pacote: pacoteDoProjeto(r),
   esquemas: join(pacoteDoProjeto(r), 'esquemas'),
   tetos: join(pacoteDoProjeto(r), 'tetos.json'),
+  /**
+   * Tetos **do projeto**, fora de `.mentor/`. Existe porque excecao de teto morando dentro do
+   * pacote some no proximo `instalar --forcar`: e' decisao do projeto guardada na pasta do pacote.
+   */
+  tetosProjeto: join(r, 'docs', 'tetos.json'),
   docs: join(r, 'docs'),
   contexto: join(r, 'docs', 'contexto.json'),
   contextoMd: join(r, 'docs', 'contexto.md'),
