@@ -1,6 +1,6 @@
 {
-  "versao": "0.1.4",
-  "gerado_em": "2026-08-30T21:21:12.324Z",
+  "versao": "0.1.5",
+  "gerado_em": "2026-08-30T23:04:50.396Z",
   "arquivos": {
     "esquemas/contexto.json": "014c3dfe91606be9",
     "esquemas/divida-tecnica.json": "0906f6786a8e63a1",
@@ -28,7 +28,7 @@
     "nucleo.md": "2fd61006ec4faf4e",
     "package.json": "1c9a0949072c4ea1",
     "processos/analise-de-impacto.md": "60318cd6189f0f28",
-    "processos/entrega.md": "c186134c3d8813c7",
+    "processos/entrega.md": "4aecc0aee0269a5a",
     "processos/inicializacao.md": "6fc67500d1319022",
     "processos/padroes-de-stack.md": "8586ccee6bd75e23",
     "processos/rascunho.md": "96458476e94d8e44",
@@ -40,7 +40,7 @@
     "scripts/cli.ts": "09ad4ea00564bd66",
     "scripts/cmd-anotar.ts": "97e941a0ee029868",
     "scripts/cmd-auditar.ts": "50d9c55a18e64ba7",
-    "scripts/cmd-campo.ts": "5bfa0d554663120c",
+    "scripts/cmd-campo.ts": "a79086ddcdd98fc9",
     "scripts/cmd-doctor.ts": "802cf7e607d3d1ff",
     "scripts/cmd-fila.ts": "1b47eb1fed396563",
     "scripts/cmd-gates.ts": "a36538533ace0bb7",

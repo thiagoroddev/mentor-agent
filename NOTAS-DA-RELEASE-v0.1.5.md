@@ -1,4 +1,4 @@
-# mentor-agent 0.1.4
+# mentor-agent 0.1.5
 
 Primeira versão instalável. Pacote de trabalho para agentes de IA: gerencia tarefas, orienta quem
 não sabe o que precisa perguntar, e registra tudo de forma rastreável.
@@ -7,20 +7,28 @@ não sabe o que precisa perguntar, e registra tudo de forma rastreável.
 
 ⚠️ **A v0.1.0 não deve ser usada.** A tag foi publicada apontando para um commit sem os pontos de
 entrada de IA, então nenhuma ferramenta carregava o núcleo. Ela fica no histórico como registro
-honesto do que era; instale a 0.1.4.
+honesto do que era; instale a 0.1.5.
 
 ## Como instalar num projeto
 
 Na raiz do projeto:
 
 ```bash
-npm i -D github:thiagoroddev/mentor-agent#v0.1.4
+npm i -D github:thiagoroddev/mentor-agent#v0.1.5
 npx mentor instalar        # copia .mentor/, mentor.mjs e os pontos de entrada
 node mentor.mjs init       # cria docs/
 ```
 
 ⚠️ **`npm i` sozinho não muda nada no projeto**, por desenho: ele só põe o pacote em
 `node_modules`. Quem copia os arquivos para dentro do repositório é o `npx mentor instalar`.
+
+## Novo na 0.1.5
+
+**A parte B do relatório de campo parou de ser destruída.** Ela é escrita a mão, e morava dentro de
+um arquivo que o gerador refazia inteiro: quem escrevesse e rodasse o comando de novo perdia o
+texto, e rodar de novo é exatamente o que se faz para atualizar as partes geradas. Agora vive em
+`docs/atrito-de-campo.md`, criado uma vez e **nunca sobrescrito**, e copiado para dentro do
+relatório para que o arquivo continue viajando sozinho até o repositório do pacote.
 
 ## Novo na 0.1.4
 

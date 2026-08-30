@@ -51,7 +51,7 @@ export function rodar(): Cenario {
   dizQue(c, saida, 'nao cria tarefa em lugar nenhum', 'o comando declara que nao cria tarefa')
 
   const r = ler(c, 'docs/relatorio-de-campo.md')
-  confere(c, r.includes('mentor-agent 0.1.4'), 'o relatorio atribui tudo a uma versao do pacote')
+  confere(c, r.includes('mentor-agent 0.1.5'), 'o relatorio atribui tudo a uma versao do pacote')
   // A versao saia de `join(raizPacote(), 'package.json')`, que instalado num projeto resolve para o
   // package.json DO PROJETO: o relatorio publicava a versao do app. Ancorar achado numa versao e a
   // unica coisa que este relatorio existe para fazer.
@@ -61,6 +61,20 @@ export function rodar(): Cenario {
     'a versao vem do manifesto do pacote, nunca do package.json do projeto')
   confere(c, outro.includes('adocao'),
     'a parte B aceita ancora `adocao`: todo o atrito da adocao acontece antes da primeira tarefa')
+
+  // A parte B e ESCRITA, e escrita nao sobrevive num arquivo que o gerador refaz inteiro. Antes ela
+  // morava dentro do relatorio e voltava aos marcadores a cada execucao, que e justamente o que se
+  // faz para atualizar A e C antes de levar o relatorio ao pacote.
+  const escrito = ler(c, 'docs/atrito-de-campo.md').replace(
+    '- PREENCHER: <regra> · <ancora> · <data> · o que aconteceu · o que teria funcionado',
+    '- gate de lint · adocao · 30/08/26 · reprovou por estilo do pacote')
+  escrever(c, 'docs/atrito-de-campo.md', escrito)
+  mentor(c, 'relatorio-de-campo')
+  mentor(c, 'relatorio-de-campo')
+  confere(c, ler(c, 'docs/atrito-de-campo.md').includes('gate de lint · adocao'),
+    'duas regeneracoes depois, o que foi escrito a mao continua la')
+  confere(c, ler(c, 'docs/relatorio-de-campo.md').includes('gate de lint · adocao'),
+    'e o relatorio traz o texto escrito, para o arquivo viajar sozinho ate o pacote')
 
   confere(c, r.includes('origem que nao resolve'), 'as recusas aparecem agrupadas por impedimento')
   confere(c, r.includes('XG sem fatiar'), 'impedimentos parecidos sao agrupados, nao listados como frases')

@@ -104,9 +104,10 @@ vira versão nova.
 pasta vizinha exercita um caminho que ninguém mais percorre, e pula justamente o que falha: a tag no
 remoto, o `files` do pacote, o que o gerenciador empacota.
 
-⚠️ Os dois foram medidos aqui, no mesmo dia. Uma tag reapontada por quem a julgava rascunho já
-estava publicada, e o `package-lock` de um projeto fixa o commit, não o nome: `npm i` serviu código
-antigo em silêncio, e a reinstalação copiou fielmente o pacote velho. Instalar e não instalar ao
-mesmo tempo, sem erro na tela. E a instalação por gerenciador nunca funcionou enquanto só se rodava
-da pasta local, apesar de documentada como se funcionasse.
+⚠️ Medido aqui, no mesmo dia. Uma tag foi reapontada três vezes por quem a julgava rascunho, e ela
+já estava publicada. O remoto não se moveu, porque git recusa sobrescrever tag existente sem
+`--force`, mas o nome passou a significar **uma coisa aqui e outra lá**, e quem publicou não sabia.
+Bastaria um `--force` para o estrago sair de local e virar público, sem erro na tela. E a instalação
+por gerenciador nunca funcionou enquanto só se rodava da pasta local, apesar de documentada como se
+funcionasse.
 

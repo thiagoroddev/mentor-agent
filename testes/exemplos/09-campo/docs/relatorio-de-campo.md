@@ -1,6 +1,6 @@
 # Relatorio de campo · hospedeiro · 29/08/26 14:00
 
-Pacote **mentor-agent 0.1.4** · 1 tarefas concluidas
+Pacote **mentor-agent 0.1.5** · 1 tarefas concluidas
 
 > Partes A e C sao geradas. A parte B e escrita, e item sem ancora e data **nao entra**.
 > Modo limpo: so metadado de processo. Use `--detalhado` quando voce for dono do
@@ -76,19 +76,22 @@ Nesse caso quem muda e o pacote, nao quem usa.
 
 Nenhum estouro.
 
-## B · Atrito (escrita, com ancora obrigatoria)
+## B · Atrito (escrito a mao)
 
-> **Tres ancoras aceitas:** `TASK-XXX-NNN` para atrito dentro de uma tarefa · `adocao` para o que
-> aconteceu ao instalar e inicializar · `fase:<fase>` para o resto, com a fase declarada no contexto.
-> Fases: ideia · descoberta · construcao · pre-lancamento · producao · manutencao.
+> Fonte: `docs/atrito-de-campo.md`, que o gerador nunca sobrescreve. Edite la; aqui e copia.
 
-> ⚠️ `adocao` existe porque **todo o atrito da adocao acontece antes da primeira tarefa**. Exigindo
-> so ID de tarefa, esta parte nao alcancava nada da instalacao, e cinco defeitos reais sobreviveram
-> apenas por terem caido em A.10 como texto solto.
+# Atrito de campo
+
+> Escrito a mao. O `relatorio-de-campo` copia isto para dentro dele e **nunca sobrescreve** este
+> arquivo. Item sem ancora e data nao entra: sem ancora nao da para conferir, e o que nao se
+> confere vira reclamacao.
+
+> **Tres ancoras:** `TASK-XXX-NNN` dentro de uma tarefa · `adocao` para instalar e inicializar ·
+> `fase:<fase>` para o resto. Fases: ideia · descoberta · construcao · pre-lancamento · producao · manutencao.
 
 ### B.1 Regras que atrapalharam
 
-- PREENCHER: <regra> · <ancora> · <data> · o que aconteceu · o que teria funcionado
+- gate de lint · adocao · 30/08/26 · reprovou por estilo do pacote
 
 ### B.2 O que o pacote deixou de lembrar
 
@@ -97,8 +100,6 @@ Nenhum estouro.
 ### B.3 O que a IA teve que improvisar
 
 - PREENCHER: <processo ausente> · <ancora> · <data>
-
-> Item sem ancora e data **nao entra**. Sem ancora nao da para conferir, e o que nao se confere vira reclamacao.
 
 ## C · O que funcionou
 

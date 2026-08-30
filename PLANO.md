@@ -221,7 +221,7 @@ visita, e defeito achado ali pode nao existir em lugar nenhum (decisao do humano
 dizer *"isto aconteceu com a 0.1.0"*.
 
 ```
-no hospedeiro:  npm i -D github:thiagoroddev/mentor-agent#v0.1.4
+no hospedeiro:  npm i -D github:thiagoroddev/mentor-agent#v0.1.5
                 npx mentor instalar         -> copia .mentor/ e mentor.mjs para a raiz
                 node mentor.mjs init        -> cria docs/
 ```
@@ -761,4 +761,29 @@ VALIDACAO 9.3 · O pacote carregou num projeto real pela primeira vez (roteiriza
              ver `entrega.md` com 5.486 por `wc -c` e o `verificar` aprovando: o arquivo tinha
              5.278 caracteres contra limite 5.280, e passou por DOIS. Sorte, nao margem.
              Enxugado para 5.008. Conferir teto e' `lerTexto().length`, nunca `wc -c`.
+30/08/26 · CORRECAO DE UM ERRO MEU DE DIAGNOSTICO, apontado pelo campo, e ela importa mais que o
+             conserto que motivou. Eu comparei `70ec4481` (SHA do OBJETO da tag anotada) com
+             `e3b57903` (SHA do commit no lock) e conclui que a tag tinha sido movida. Sao coisas
+             diferentes: `refs/tags/v0.1.3^{}` sempre foi e3b5790, igual ao lock. **A tag nunca se
+             moveu no remoto** e o lock esteve certo o tempo todo; as correcoes simplesmente ainda
+             nao existiam naquela versao.
+             ⚠️ O grave: eu escrevi esse mecanismo errado como "medido aqui" dentro de
+             `processos/entrega.md`. Evidencia falsa no pacote e' pior que evidencia nenhuma, e e'
+             exatamente o que ele existe para impedir. Paragrafo corrigido.
+             A LEI CONTINUA DE PE, por outra razao, e essa e' real: eu reapontei a tag tres vezes
+             local, e o nome passou a significar uma coisa aqui e outra la'. O remoto so' nao se
+             moveu porque o git recusa sobrescrever tag sem `--force`. Bastava um `--force` para o
+             estrago sair de local e virar publico. Uma versao, um commit, para sempre.
+             Licao de metodo: **conferir SHA de tag anotada exige `^{}`**, senao se compara o objeto
+             da tag com um commit e a conclusao nasce errada.
+
+30/08/26 · 0.1.5 · ACHADO 12, e ele nasceu do conserto do 11: a ancora `adocao` tornou a parte B
+             finalmente preenchivel, e so' entao doeu que `escreverTexto` refazia o relatorio
+             inteiro. Quem escrevesse B e rodasse o comando de novo perdia o texto, e rodar de novo
+             e' justamente o que se faz para atualizar A e C antes de levar o relatorio ao pacote.
+             Erro de desenho meu: **misturei gerado e escrito no mesmo arquivo**, que e' o que este
+             pacote proibe em toda vista. B mudou-se para `docs/atrito-de-campo.md`, escrito a mao,
+             que o gerador cria uma vez e nunca sobrescreve, e copia para dentro do relatorio para
+             o arquivo continuar viajando sozinho ate' o repositorio do pacote.
+             Mutacao confere: tirar o `if (!existe(...))` derruba as duas asercoes.
 ```

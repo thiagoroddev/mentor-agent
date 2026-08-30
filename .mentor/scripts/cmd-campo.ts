@@ -157,23 +157,18 @@ export function relatorioDeCampo(flags: Record<string, string | undefined> = {})
   // adocao acontece antes da primeira tarefa.** Exigindo so' ID de tarefa, a parte B nao alcancava
   // nada da inicializacao, e cinco defeitos reais so' sobreviveram porque cairam em A.10 como texto
   // solto. Fase e' ancora legitima: vem de vocabulario fechado, entao continua sendo verificavel.
-  l.push(
-    '## B · Atrito (escrita, com ancora obrigatoria)', '',
-    '> **Tres ancoras aceitas:** `TASK-XXX-NNN` para atrito dentro de uma tarefa · `adocao` para o que',
-    '> aconteceu ao instalar e inicializar · `fase:<fase>` para o resto, com a fase declarada no contexto.',
-    `> Fases: ${FASES.join(' · ')}.`, '',
-    '> ⚠️ `adocao` existe porque **todo o atrito da adocao acontece antes da primeira tarefa**. Exigindo',
-    '> so ID de tarefa, esta parte nao alcancava nada da instalacao, e cinco defeitos reais sobreviveram',
-    '> apenas por terem caido em A.10 como texto solto.', '',
-    '### B.1 Regras que atrapalharam', '',
-    `- ${MARCADOR} <regra> · <ancora> · <data> · o que aconteceu · o que teria funcionado`, '',
-    '### B.2 O que o pacote deixou de lembrar', '',
-    `- ${MARCADOR} <assunto> · <ancora> · <data> · quando isso deveria ter aparecido`, '',
-    '### B.3 O que a IA teve que improvisar', '',
-    `- ${MARCADOR} <processo ausente> · <ancora> · <data>`, '',
-    '> Item sem ancora e data **nao entra**. Sem ancora nao da para conferir, e o que nao se confere vira reclamacao.', '',
-    '## C · O que funcionou', '',
-  )
+  // A parte B vem de um ARQUIVO PROPRIO, escrito a mao, que o gerador nunca sobrescreve.
+  //
+  // ⚠️ Antes ela morava aqui dentro, e `escreverTexto` refazia o relatorio inteiro: quem escrevesse
+  // B e rodasse o comando outra vez perdia o texto — e rodar outra vez e' exatamente o que se faz
+  // para atualizar A e C antes de levar o relatorio ao pacote. O erro de desenho foi **misturar
+  // gerado e escrito no mesmo arquivo**, que e' o que este pacote proibe em toda vista.
+  const atrito = `${c.docs}/atrito-de-campo.md`
+  if (!existe(atrito)) escreverTexto(atrito, esqueletoDeAtrito())
+  l.push('## B · Atrito (escrito a mao)', '',
+    '> Fonte: `docs/atrito-de-campo.md`, que o gerador nunca sobrescreve. Edite la; aqui e copia.', '',
+    lerTexto(atrito).trim(), '',
+    '## C · O que funcionou', '')
   const encerradasSemRecusa = encerradas.length - new Set(recusas.map((r) => r.alvo)).size
   l.push(
     `- ${regras.length} regras no inventario, ${comComando} com comando`,
@@ -192,9 +187,40 @@ export function relatorioDeCampo(flags: Record<string, string | undefined> = {})
   const destino = `${c.docs}/relatorio-de-campo.md`
   escreverTexto(destino, l.join('\n'))
   console.log(`Relatorio gerado em docs/relatorio-de-campo.md (${concluidas.length} tarefas).`)
-  console.log('A parte B esta com marcadores: preencha com referencia a ID e data, e leve o arquivo')
-  console.log('para o repositorio do pacote. Ele nao cria tarefa em lugar nenhum.')
+  console.log('A parte B se escreve em docs/atrito-de-campo.md, que este comando nunca sobrescreve.')
+  console.log('Leve o relatorio ao repositorio do pacote. Ele nao cria tarefa em lugar nenhum.')
   return 0
+}
+
+/**
+ * O esqueleto do atrito, criado uma vez e nunca mais tocado.
+ * Tres ancoras: tarefa para o que acontece dentro de uma; `adocao` para instalar e inicializar;
+ * `fase:<fase>` para o resto. `adocao` existe por medicao: **todo o atrito da adocao acontece antes
+ * da primeira tarefa**, e exigindo so' ID de tarefa esta parte nao alcancava nada da instalacao.
+ */
+function esqueletoDeAtrito(): string {
+  return [
+    '# Atrito de campo',
+    '',
+    '> Escrito a mao. O `relatorio-de-campo` copia isto para dentro dele e **nunca sobrescreve** este',
+    '> arquivo. Item sem ancora e data nao entra: sem ancora nao da para conferir, e o que nao se',
+    '> confere vira reclamacao.',
+    '',
+    '> **Tres ancoras:** `TASK-XXX-NNN` dentro de uma tarefa · `adocao` para instalar e inicializar ·',
+    `> \`fase:<fase>\` para o resto. Fases: ${FASES.join(' · ')}.`,
+    '',
+    '### B.1 Regras que atrapalharam',
+    '',
+    `- ${MARCADOR} <regra> · <ancora> · <data> · o que aconteceu · o que teria funcionado`,
+    '',
+    '### B.2 O que o pacote deixou de lembrar',
+    '',
+    `- ${MARCADOR} <assunto> · <ancora> · <data> · quando isso deveria ter aparecido`,
+    '',
+    '### B.3 O que a IA teve que improvisar',
+    '',
+    `- ${MARCADOR} <processo ausente> · <ancora> · <data>`,
+  ].join('\n')
 }
 
 /** Agrupa impedimentos parecidos para a contagem nao virar lista de frases unicas. */
