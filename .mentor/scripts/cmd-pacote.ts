@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto'
 import { join, relative } from 'node:path'
 import { copiarPacote } from './instalar.mjs'
+import { criarPontosDeEntrada } from './entrada.ts'
 import {
   agoraIso, caminhos, escreverJson, escreverTexto, existe, lerJson, lerTexto, listar, raizPacote,
 } from './arquivos.ts'
@@ -90,7 +91,20 @@ export function instalar(flags: Record<string, string | undefined>): void {
   copiarPacote(origem, destino, true)
   const versao = lerJson<{ version?: string }>(join(origem, 'package.json')).version ?? '0.0.0'
   console.log(`mentor-agent ${versao} instalado em ${destino}.`)
-  console.log('Proximo passo: `mentor init`, e depois responder os portoes V, C e 0.')
+
+  // Sem ponto de entrada, nenhuma ferramenta le' o nucleo, e o pacote inteiro nao existe.
+  const e = criarPontosDeEntrada(destino)
+  if (e.criados.length) console.log(`Ponto de entrada criado: ${e.criados.join(', ')}.`)
+  if (e.preservados.length) {
+    console.log(`\nJa existia, e nao foi tocado: ${e.preservados.join(', ')}.`)
+    console.log('Cole nele, para a ferramenta carregar as leis:')
+    for (const arquivo of e.preservados) {
+      console.log(arquivo === 'CLAUDE.md'
+        ? '  CLAUDE.md:  @.mentor/nucleo.md'
+        : `  ${arquivo}:  Antes de qualquer outra coisa, leia \`.mentor/nucleo.md\`.`)
+    }
+  }
+  console.log('\nProximo passo: `node mentor.mjs init`, e depois responder os portoes V, C e 0.')
 
   if (!existe(join(pastaDestino, NOME))) {
     escreverTexto(join(destino, '.mentor', 'LEIA-ME-MANIFESTO.txt'),

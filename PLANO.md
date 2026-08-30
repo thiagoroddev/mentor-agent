@@ -598,4 +598,17 @@ Uma linha por passo concluido: `DD/MM/AA HH:MM · passo · o que mudou · o que 
              repositorio**. A asercao nao testava o pacote, testava o ambiente — e passava verde ha'
              dias por coincidencia. Movida para repositorio temporario proprio.
              Regra que sai daqui: **asercao sobre git roda em repositorio isolado, sempre.**
+30/08/26 · O DEFEITO MAIS GRAVE ATE AGORA, e quem achou foi o humano instalando num projeto real:
+             o pacote nao criava ponto de entrada nenhum, entao **nenhuma ferramenta de IA carregava
+             o nucleo**. `carregamento: sempre` estava escrito no cabecalho de um arquivo que nada
+             no mundo abria. Regra sem mecanismo pela terceira vez no mesmo dia, e a mais cara: sem
+             o nucleo, as 494 regras nao existem.
+             `instalar` passa a criar CLAUDE.md, AGENTS.md e GEMINI.md (escolha do humano).
+             Ponteiro, nunca espelho: 1.885 caracteres somados contra 26.440 do antecessor, e
+             nenhuma regra repetida. So' o CLAUDE.md e' mecanico (`@arquivo` entra no contexto);
+             nos outros e' instrucao, que e' o teto do que existe hoje.
+             Nunca sobrescreve arquivo existente: imprime a linha para colar. O doctor bloqueia
+             quando nao ha entrada nenhuma, ou quando a que existe nao cita o nucleo.
+             O cenario `06-doctor` quebrou junto e estava certo em quebrar: ele afirmava veredito
+             limpo num projeto que ninguem carregava.
 ```

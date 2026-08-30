@@ -13,6 +13,11 @@ npx mentor instalar        # copia .mentor/ e mentor.mjs para a raiz
 node mentor.mjs init       # cria docs/
 ```
 
+O `instalar` cria tambem os pontos de entrada das ferramentas de IA (`CLAUDE.md`, `AGENTS.md`,
+`GEMINI.md`), **sem os quais nada carrega o nucleo e o pacote nao existe na pratica**. Sao ponteiros
+de menos de 2 KB somados: dizem onde as leis estao, nunca as repetem. Se o projeto ja' tiver um
+desses arquivos, ele **nao e' sobrescrito**: o comando imprime a linha para voce colar.
+
 ⚠️ **O pacote e' copiado PARA DENTRO do repositorio, e nao fica em `node_modules`.** E' deliberado:
 a IA le' `.mentor/` como arquivo, e o projeto versiona as convencoes dele ao lado. De dentro de
 `node_modules` so' o `instalar` roda — o Node se recusa a remover tipos ali, e o `mentor.mjs` avisa

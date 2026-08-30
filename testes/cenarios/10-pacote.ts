@@ -21,6 +21,27 @@ export function rodar(): Cenario {
 
   confere(c, mentor(c, 'verificar').codigo === 0, 'pacote recem-instalado nao diverge de nada')
 
+  // --- pontos de entrada. Sem eles nenhuma ferramenta le o nucleo, e o pacote inteiro nao existe.
+  //     No antecessor isto so foi notado quando um projeto real carregou nada.
+  for (const arquivo of ['CLAUDE.md', 'AGENTS.md', 'GEMINI.md']) {
+    confere(c, ler(c, arquivo).includes('.mentor/nucleo.md'), `${arquivo} aponta para o nucleo`)
+  }
+  confere(c, ler(c, 'CLAUDE.md').includes('@.mentor/nucleo.md'),
+    'no Claude o carregamento e mecanico: `@` traz o conteudo sem depender de o agente abrir nada')
+  const somados = ['CLAUDE.md', 'AGENTS.md', 'GEMINI.md'].reduce((n, f) => n + ler(c, f).length, 0)
+  confere(c, somados < 4000,
+    `ponteiro, nunca espelho: ${somados} chars nos tres (o AGENTS.md do antecessor sozinho tinha 22.616)`)
+  dizQue(c, mentor(c, 'doctor'), 'pontos de entrada apontam para o nucleo', 'o doctor confere que existe quem carregue')
+
+  // --- o arquivo da pessoa nunca e sobrescrito
+  escrever(c, 'CLAUDE.md', '# Meu arquivo\n\nTexto que nao pode sumir.\n')
+  const reinstala = mentor(c, 'instalar', '--destino', c.pasta, '--forcar')
+  confere(c, ler(c, 'CLAUDE.md').includes('nao pode sumir'),
+    'CLAUDE.md existente sobrevive a reinstalacao: apagar o texto da pessoa seria imperdoavel')
+  dizQue(c, reinstala, 'Ja existia, e nao foi tocado', 'e o comando diz o que colar a mao')
+  dizQue(c, mentor(c, 'doctor'), 'nao cita .mentor/nucleo.md',
+    'ponto de entrada que nao chega nas leis e bloqueio, nao aviso')
+
   // --- editar para destravar e legitimo; esquecer que editou nao
   const nucleo = ler(c, '.mentor/nucleo.md')
   escrever(c, '.mentor/nucleo.md', nucleo + '\n<!-- ajuste local para destravar -->\n')

@@ -456,7 +456,8 @@
   "lembretes": [
     "5 configuracao(oes) de plataforma nao declarada(s): protecao_do_ramo_principal, apagar_ramo_apos_merge, alertas_de_vulnerabilidade, atualizacoes_de_seguranca, segredos_do_ambiente_de_esteira. Nenhum script alcanca isso",
     "nenhum requisito registrado: o que guia o trabalho nao esta escrito",
-    "4 portao(oes) que a fase \"descoberta\" ja exige continuam abertos: V_negocio, C_obrigacoes, 0_rigor, P_problema"
+    "4 portao(oes) que a fase \"descoberta\" ja exige continuam abertos: V_negocio, C_obrigacoes, 0_rigor, P_problema",
+    "nenhum ponto de entrada de IA no projeto: nada carrega o nucleo, e sem o nucleo o pacote nao existe. Rode: mentor instalar"
   ],
   "_lembretes_nota": "GERADO pelo doctor a cada execucao. Nao digite aqui: campo livre acumula prosa como qualquer outro."
 }

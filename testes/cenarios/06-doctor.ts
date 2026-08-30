@@ -5,6 +5,12 @@ import type { Cenario } from '../apoio.ts'
 export function rodar(): Cenario {
   const c = abrirCenario('06-doctor')
   mentor(c, 'init')
+  // Precondicao de projeto instalado de verdade: sem ponto de entrada, nenhuma ferramenta carrega o
+  // nucleo, e o doctor bloqueia com razao. Escrito a mao aqui em vez de rodar `instalar`, que
+  // copiaria os 55 arquivos do pacote para dentro de cada exemplo versionado.
+  for (const arquivo of ['CLAUDE.md', 'AGENTS.md', 'GEMINI.md']) {
+    escrever(c, arquivo, `# entrada\n\nLeia .mentor/nucleo.md.\n`)
+  }
 
   const ctx = lerJson<Record<string, any>>(c, 'docs/contexto.json')
   ctx['estado'].fase = 'construcao'

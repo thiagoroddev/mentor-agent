@@ -346,6 +346,7 @@ ferramenta de desenvolvimento, para `tsc --noEmit`. `tsconfig` em `strict`, com
 | `hooks --instalar` | barreira de pre-push, sem dependencia (`core.hooksPath`) |
 | `verificar` | tres familias de checagem |
 | `doctor` | folha de saude, perfil ISO 25010, veredito binario |
+| `instalar` | copia `.mentor/`, `mentor.mjs` e os pontos de entrada de IA. Nunca sobrescreve arquivo da pessoa |
 | `auditar preparar` | monta o dossie do lote para uma sessao **nova** de IA. Escopo fechado: e' tudo o que ela ve |
 | `auditar registrar` | valida e grava o veredito. Recusa aprovar com bloqueio, e recusa achado que ja' venha com destino |
 | `auditar resolver` | **voce** decide o destino do achado. A auditoria nunca decide |

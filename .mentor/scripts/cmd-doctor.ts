@@ -2,6 +2,7 @@ import { spawnSync } from 'node:child_process'
 import { agora, caminhos, diasDesde, escreverJson, listar } from './arquivos.ts'
 import { tetos } from './cmd-verificar.ts'
 import { rascunhosParados } from './cmd-anotar.ts'
+import { PONTOS_DE_ENTRADA, pontosDeEntradaSemNucleo } from './entrada.ts'
 import {
   carregarContexto, carregarDividas, carregarRequisitos, carregarRiscos, carregarTarefas, riscoVencido,
 } from './vistas.ts'
@@ -217,6 +218,24 @@ function processo(ctx: Contexto, tarefas: Tarefa[]): Linha[] {
   const semPadrao = ctx.ferramentas.filter((f) => !f.padrao && !f.dispensa_motivo)
   if (semPadrao.length) {
     linhas.push({ estado: 'atencao', texto: `${semPadrao.length} ferramenta(s) sem convencao escrita: ${semPadrao.map((f) => f.nome).join(', ')}` })
+  }
+
+  // A checagem mais barata do pacote, e a que sustenta todas as outras: se nenhuma ferramenta
+  // carrega o nucleo, as 494 regras nao existem. `carregamento: sempre` no cabecalho do nucleo nao
+  // e' lido por nada: quem faz o carregamento acontecer sao estes arquivos.
+  const entrada = pontosDeEntradaSemNucleo()
+  if (entrada.ausentes.length === PONTOS_DE_ENTRADA.length) {
+    linhas.push({ estado: 'bloqueio', texto: 'nenhum ponto de entrada de IA no projeto: nada carrega o nucleo, e sem o nucleo o pacote nao existe. Rode: mentor instalar' })
+  } else {
+    if (entrada.ausentes.length) {
+      linhas.push({ estado: 'atencao', texto: `sem ponto de entrada para ${entrada.ausentes.join(', ')}: nessas ferramentas o nucleo nao carrega` })
+    }
+    if (entrada.mudos.length) {
+      linhas.push({ estado: 'bloqueio', texto: `${entrada.mudos.join(', ')} existe mas nao cita .mentor/nucleo.md: a ferramenta carrega o arquivo e nao chega nas leis` })
+    }
+    if (!entrada.ausentes.length && !entrada.mudos.length) {
+      linhas.push({ estado: 'ok', texto: 'pontos de entrada apontam para o nucleo' })
+    }
   }
 
   // Auditoria: o doctor mede a cadencia e conta os bloqueios que ela reportou. Nao julga nada
