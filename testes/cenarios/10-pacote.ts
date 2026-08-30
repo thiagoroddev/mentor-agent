@@ -1,4 +1,9 @@
-import { abrirCenarioTemporario, confere, dizQue, escrever, fecharTemporario, ler, lerJson, mentor } from '../apoio.ts'
+import { cpSync, mkdirSync } from 'node:fs'
+import { spawnSync } from 'node:child_process'
+import { join } from 'node:path'
+import {
+  RAIZ_REPO, abrirCenarioTemporario, confere, dizQue, escrever, fecharTemporario, ler, lerJson, mentor,
+} from '../apoio.ts'
 import type { Cenario } from '../apoio.ts'
 
 /**
@@ -35,6 +40,30 @@ export function rodar(): Cenario {
 
   dizQue(c, mentor(c, 'instalar', '--destino', c.pasta, '--forcar'), 'instalado em', 'com --forcar, reinstala')
   confere(c, !ler(c, '.mentor/nucleo.md').includes('ajuste local'), 'a reinstalacao devolve o arquivo original')
+
+  // --- o caminho real de entrega: `npm i` poe o pacote em node_modules, e la' o Node **se recusa**
+  // a remover tipos de `.ts` (ERR_UNSUPPORTED_NODE_MODULES_TYPE_STRIPPING). O `mentor.mjs` precisa
+  // atravessar isso em JS puro. Sem este cenario, o defeito so' apareceria no primeiro projeto real.
+  const dentro = join(c.pasta, 'node_modules', 'mentor-agent')
+  mkdirSync(dentro, { recursive: true })
+  cpSync(join(RAIZ_REPO, '.mentor'), join(dentro, '.mentor'), { recursive: true })
+  cpSync(join(RAIZ_REPO, 'mentor.mjs'), join(dentro, 'mentor.mjs'))
+  cpSync(join(RAIZ_REPO, 'package.json'), join(dentro, 'package.json'))
+  const alvo = join(c.pasta, 'projeto-novo')
+  mkdirSync(alvo, { recursive: true })
+  const deDentro = (...args: string[]) => {
+    const r = spawnSync(process.execPath, [join(dentro, 'mentor.mjs'), ...args], { encoding: 'utf8', cwd: alvo })
+    return { codigo: r.status ?? 1, saida: `${r.stdout ?? ''}${r.stderr ?? ''}`.trim() }
+  }
+  const outro = deDentro('doctor')
+  confere(c, outro.codigo === 1, 'de dentro de node_modules, so instalar roda')
+  dizQue(c, outro, 'so `instalar` roda daqui', 'e diz qual e o caminho, em vez de estourar')
+  const deLa = deDentro('instalar', '--destino', alvo)
+  dizQue(c, deLa, 'instalado em', 'instalar funciona de dentro de node_modules, que e como o npm entrega')
+  confere(c, ler({ ...c, pasta: alvo }, '.mentor/nucleo.md').length > 0, 'o pacote chegou inteiro na raiz do projeto')
+  const semAviso = spawnSync(process.execPath, [join(alvo, 'mentor.mjs'), 'init'], { encoding: 'utf8', cwd: alvo })
+  confere(c, !`${semAviso.stdout}${semAviso.stderr}`.includes('MODULE_TYPELESS'),
+    'sem aviso de tipo de modulo: `.mentor/package.json` resolve sem mexer no package.json do projeto')
 
   fecharTemporario(c)
   return c

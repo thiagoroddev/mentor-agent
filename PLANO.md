@@ -227,7 +227,18 @@ no hospedeiro:  npm i -D ../mentor-agent-0.1.0.tgz
                 npx mentor init             -> cria docs/
 ```
 
-Sem GitHub e sem publicar nada: o tarball local ja' exercita o caminho real. O `files` do
+⚠️ **30/08: este caminho estava quebrado, e so' se descobre executando.** O Node **se recusa** a
+remover tipos de arquivo dentro de `node_modules` (`ERR_UNSUPPORTED_NODE_MODULES_TYPE_STRIPPING`),
+entao `npx mentor instalar` morria antes da primeira linha. Corrigido: `mentor.mjs` detecta que esta'
+em `node_modules` e faz a copia em **JavaScript puro** (`.mentor/scripts/instalar.mjs`, fonte unica
+que o `cmd-pacote.ts` tambem usa), recusando qualquer outro comando dali com a instrucao certa.
+Depois da copia, tudo roda da raiz do projeto, onde a remocao de tipos funciona.
+
+Junto veio `.mentor/package.json` com `{"type":"module"}`: sem ele, **todo** comando imprimia um
+aviso `MODULE_TYPELESS_PACKAGE_JSON`. Resolve dentro de `.mentor/`, sem obrigar o projeto do usuario
+a mexer no `package.json` dele.
+
+Sem GitHub e sem publicar nada, o tarball local ja' exercita o caminho real. O `files` do
 `package.json` limita a 50 arquivos (105 kB): so' `.mentor/`, `mentor.mjs` e o README. Testes e
 exemplos ficam de fora.
 
@@ -563,4 +574,14 @@ Uma linha por passo concluido: `DD/MM/AA HH:MM · passo · o que mudou · o que 
              criacao para depois do commit, e reconferido quebrando o comando de proposito.
              Licao repetida pela terceira vez neste projeto: **asercao verde nao e' asercao que
              bite.** So' vale depois de ver ela vermelha.
+30/08/26 · 9.0 · DEFEITO ACHADO AO EXECUTAR O CAMINHO DOCUMENTADO, nao ao le-lo. O `npm pack` ->
+             `npm i -D` -> `npx mentor instalar` da 9.0 **nunca funcionou**: o Node se recusa a
+             remover tipos dentro de `node_modules`. O comando morria na primeira linha.
+             Corrigido com `.mentor/scripts/instalar.mjs` em JS puro, fonte unica da copia, e um
+             `mentor.mjs` que detecta node_modules e so' aceita `instalar` de la'.
+             Junto: `.mentor/package.json` com type:module, senao todo comando imprime aviso.
+             Cenario `10-pacote` ganhou o caminho de node_modules — sem ele, isto so' apareceria
+             no primeiro projeto real, que e' o lugar mais caro possivel para descobrir.
+             Licao de desenho: **caminho de entrega documentado e' promessa ate' ser executado.**
+             Eu tinha escrito as quatro linhas do 9.0 com confianca e nao as tinha rodado uma vez.
 ```

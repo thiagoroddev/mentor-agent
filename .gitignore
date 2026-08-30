@@ -2,3 +2,6 @@ node_modules/
 *.log
 .obsidian/
 _rascunho/
+
+# tarball gerado por `npm pack`: e artefato de release, nao fonte
+*.tgz

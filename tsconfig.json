@@ -16,10 +16,13 @@
     "verbatimModuleSyntax": true,
     "allowImportingTsExtensions": true,
     "noEmit": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "allowJs": true
   },
   "include": [
     ".mentor/scripts/**/*.ts",
+    ".mentor/scripts/**/*.mjs",
+    "mentor.mjs",
     "testes/**/*.ts"
   ]
 }

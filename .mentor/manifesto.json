@@ -1,6 +1,6 @@
 {
   "versao": "0.1.0",
-  "gerado_em": "2026-08-29T23:39:46.090Z",
+  "gerado_em": "2026-08-30T00:02:29.275Z",
   "arquivos": {
     "esquemas/contexto.json": "014c3dfe91606be9",
     "esquemas/divida-tecnica.json": "0906f6786a8e63a1",
@@ -26,6 +26,7 @@
     "modelos/listas-por-fase.md": "57377dc4538acc80",
     "modelos/varredura.md": "f3016bd789b30a83",
     "nucleo.md": "2fd61006ec4faf4e",
+    "package.json": "1c9a0949072c4ea1",
     "processos/analise-de-impacto.md": "60318cd6189f0f28",
     "processos/entrega.md": "088dd75b2abeb062",
     "processos/inicializacao.md": "6fc67500d1319022",
@@ -46,7 +47,7 @@
     "scripts/cmd-hooks.ts": "4333ff3cd6a1c28f",
     "scripts/cmd-init.ts": "417012234d888343",
     "scripts/cmd-lancamento.ts": "41c8bdff4d3bd949",
-    "scripts/cmd-pacote.ts": "359dd8a98ae3b4d3",
+    "scripts/cmd-pacote.ts": "09cc90139cef3d4b",
     "scripts/cmd-regras.ts": "a753f82f340943ca",
     "scripts/cmd-riscos.ts": "1105941214b5cc99",
     "scripts/cmd-stack.ts": "c05b949614cb569a",

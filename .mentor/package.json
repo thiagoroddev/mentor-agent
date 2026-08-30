@@ -1,0 +1,4 @@
+{
+  "type": "module",
+  "_leia": "Existe so para o Node saber que os scripts daqui sao ES modules sem precisar mexer no package.json do SEU projeto. Sem ele, todo comando imprime um aviso MODULE_TYPELESS_PACKAGE_JSON. Nao e um pacote npm: nao tem nome, versao nem dependencia."
+}

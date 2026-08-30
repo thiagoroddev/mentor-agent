@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
-import { cpSync } from 'node:fs'
 import { join, relative } from 'node:path'
+import { copiarPacote } from './instalar.mjs'
 import {
   agoraIso, caminhos, escreverJson, escreverTexto, existe, lerJson, lerTexto, listar, raizPacote,
 } from './arquivos.ts'
@@ -87,8 +87,7 @@ export function instalar(flags: Record<string, string | undefined>): void {
     return
   }
 
-  cpSync(join(origem, '.mentor'), pastaDestino, { recursive: true })
-  cpSync(join(origem, 'mentor.mjs'), join(destino, 'mentor.mjs'))
+  copiarPacote(origem, destino, true)
   const versao = lerJson<{ version?: string }>(join(origem, 'package.json')).version ?? '0.0.0'
   console.log(`mentor-agent ${versao} instalado em ${destino}.`)
   console.log('Proximo passo: `mentor init`, e depois responder os portoes V, C e 0.')
