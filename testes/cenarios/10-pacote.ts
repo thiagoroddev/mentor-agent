@@ -71,11 +71,15 @@ export function rodar(): Cenario {
     'e avisa que ha divergencia a registrar antes')
 
   dizQue(c, mentor(c, 'instalar', '--destino', c.pasta, '--forcar'), 'instalado em', 'com --forcar, reinstala')
-  // Irmao do achado 10: rodando de dentro de um projeto instalado, `origem` e a raiz DELE, e o
-  // package.json de la e o do app. A versao anunciada seria a do projeto do usuario.
+  // Irmao do achado 10, e so reproduzivel rodando o mentor.mjs **copiado para o projeto**: ali
+  // `origem` e a raiz do projeto, e o package.json de la e o do app do usuario.
+  // ⚠️ A primeira versao deste teste usava `mentor()`, que roda sempre o mentor.mjs do repositorio,
+  // entao origem nunca era o projeto e a asercao passava sem provar nada. Quinta asercao vazia.
   escrever(c, 'package.json', JSON.stringify({ name: 'app-do-usuario', version: '7.7.7' }, null, 2))
-  confere(c, !mentor(c, 'instalar', '--destino', c.pasta, '--forcar').saida.includes('7.7.7'),
-    'a versao anunciada pelo instalar vem do manifesto, nunca do package.json do projeto')
+  const daCopia = spawnSync(process.execPath, [join(c.pasta, 'mentor.mjs'), 'instalar', '--destino', join(c.pasta, 'vizinho')], { encoding: 'utf8', cwd: c.pasta })
+  const saidaDaCopia = `${daCopia.stdout ?? ''}${daCopia.stderr ?? ''}`
+  confere(c, !saidaDaCopia.includes('7.7.7') && saidaDaCopia.includes('instalado em'),
+    'a versao anunciada vem do manifesto, nunca do package.json do projeto que hospeda o pacote')
   confere(c, !ler(c, '.mentor/nucleo.md').includes('ajuste local'), 'a reinstalacao devolve o arquivo original')
 
   // --- o caminho real de entrega: `npm i` poe o pacote em node_modules, e la' o Node **se recusa**

@@ -731,4 +731,13 @@ VALIDACAO 9.3 · O pacote carregou num projeto real pela primeira vez (roteiriza
              E um terceiro que eu achei lendo: com zero concluidas, A.1 anunciava "0%, o pacote
              esta consumindo o projeto". Amostra vazia nao e' estatistica. Vira "sem dados".
              Mesma familia do dia: ausencia de dado tratada como valor.
+30/08/26 · QUINTA ASERCAO VAZIA DO DIA, e eu ja' tinha commitado com ela. Ao cobrir o irmao do
+             achado 10 em `cmd-pacote.ts`, escrevi o teste usando o helper `mentor()`, que roda
+             SEMPRE o `mentor.mjs` do repositorio: `origem` nunca era o projeto, o defeito nunca se
+             manifestava, e a asercao passava sem provar nada. Verde no commit.
+             So' apareceu porque rodei a mutacao DEPOIS de commitar e ela nao derrubou nada.
+             Corrigido rodando o `mentor.mjs` **copiado para o projeto**, que e' o unico jeito de
+             `origem` ser a raiz dele. Reconferido: agora morde.
+             Padrao das cinco: a asercao mediu um caminho que o defeito nao percorre. Verde e'
+             barato; o que custa e' ver vermelho de proposito, e e' o unico passo que prova.
 ```
