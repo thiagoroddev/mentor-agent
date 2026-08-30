@@ -1,19 +1,37 @@
-# mentor-agent 0.1.0
+# mentor-agent 0.1.1
 
 Primeira versão instalável. Pacote de trabalho para agentes de IA: gerencia tarefas, orienta quem
 não sabe o que precisa perguntar, e registra tudo de forma rastreável.
 
 **Node ≥ 22.18. Nenhuma dependência de execução, nenhuma etapa de build.**
 
+⚠️ **A v0.1.0 não deve ser usada.** A tag foi publicada apontando para um commit sem os pontos de
+entrada de IA, então nenhuma ferramenta carregava o núcleo. Ela fica no histórico como registro
+honesto do que era; instale a 0.1.1.
+
 ## Como instalar num projeto
 
-Baixe `mentor-agent-0.1.0.tgz` abaixo e, na raiz do projeto:
+Na raiz do projeto:
 
 ```bash
-npm i -D ./mentor-agent-0.1.0.tgz
-npx mentor instalar        # copia .mentor/ e mentor.mjs para a raiz do projeto
+npm i -D github:thiagoroddev/mentor-agent#v0.1.1
+npx mentor instalar        # copia .mentor/, mentor.mjs e os pontos de entrada
 node mentor.mjs init       # cria docs/
 ```
+
+⚠️ **`npm i` sozinho não muda nada no projeto**, por desenho: ele só põe o pacote em
+`node_modules`. Quem copia os arquivos para dentro do repositório é o `npx mentor instalar`.
+
+## Novo na 0.1.1
+
+**Pontos de entrada de IA.** O `instalar` cria `CLAUDE.md`, `AGENTS.md` e `GEMINI.md`, sem os quais
+nenhuma ferramenta carrega o núcleo e o pacote não existe na prática. São ponteiros: 1.885
+caracteres somados, nenhuma regra repetida. Arquivo que já exista **não é sobrescrito**.
+
+**O auditor virou comando.** `mentor auditar preparar | registrar | resolver`.
+
+**A instalação via npm funciona.** Na 0.1.0 ela morria: o Node se recusa a remover tipos dentro de
+`node_modules`.
 
 O pacote é copiado **para dentro** do repositório, não fica em `node_modules`: a IA lê `.mentor/`
 como arquivo, e o projeto versiona as convenções dele ao lado. A versão fica gravada em

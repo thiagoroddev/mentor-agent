@@ -221,7 +221,7 @@ visita, e defeito achado ali pode nao existir em lugar nenhum (decisao do humano
 dizer *"isto aconteceu com a 0.1.0"*.
 
 ```
-no hospedeiro:  npm i -D github:thiagoroddev/mentor-agent#v0.1.0
+no hospedeiro:  npm i -D github:thiagoroddev/mentor-agent#v0.1.1
                 npx mentor instalar         -> copia .mentor/ e mentor.mjs para a raiz
                 node mentor.mjs init        -> cria docs/
 ```
@@ -611,4 +611,13 @@ Uma linha por passo concluido: `DD/MM/AA HH:MM · passo · o que mudou · o que 
              quando nao ha entrada nenhuma, ou quando a que existe nao cita o nucleo.
              O cenario `06-doctor` quebrou junto e estava certo em quebrar: ele afirmava veredito
              limpo num projeto que ninguem carregava.
+30/08/26 · 0.1.1. A tag v0.1.0 foi publicada apontando para o commit ERRADO: eu a recriei local
+             depois que o humano ja' tinha empurrado, e a atualizacao nao foi junto. Quem instalou
+             pela tag recebeu a versao sem pontos de entrada. Falha minha, e da especie que o pacote
+             existe para impedir: **mexer numa tag depois de ela existir e' divergencia silenciosa.**
+             Decisao (humano): nao mover a tag. Publicar 0.1.1 e deixar a 0.1.0 como registro do que
+             ela era de fato. Versao e' promessa sobre conteudo.
+             Junto: `postinstall` que imprime o passo que falta. `npm i` sozinho nao muda nada no
+             projeto por desenho, e sem esse aviso o usuario ve zero diferenca e conclui que quebrou.
+             Foi exatamente o que aconteceu com o humano hoje.
 ```

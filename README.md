@@ -8,7 +8,7 @@ perguntar, e registra tudo de forma rastreavel.
 Na raiz do projeto que vai usar o pacote:
 
 ```bash
-npm i -D github:thiagoroddev/mentor-agent#v0.1.0
+npm i -D github:thiagoroddev/mentor-agent#v0.1.1
 npx mentor instalar        # copia .mentor/ e mentor.mjs para a raiz
 node mentor.mjs init       # cria docs/
 ```
@@ -24,7 +24,7 @@ a IA le' `.mentor/` como arquivo, e o projeto versiona as convencoes dele ao lad
 isso em vez de estourar.
 
 A versao instalada fica gravada em `docs/contexto.json`, senao o relatorio de campo nao consegue
-dizer *"isto aconteceu com a 0.1.0"*.
+dizer *"isto aconteceu com a 0.1.1"*.
 
 ## Como rodar
 
