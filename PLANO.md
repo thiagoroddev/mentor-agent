@@ -221,7 +221,7 @@ visita, e defeito achado ali pode nao existir em lugar nenhum (decisao do humano
 dizer *"isto aconteceu com a 0.1.0"*.
 
 ```
-no hospedeiro:  npm i -D github:thiagoroddev/mentor-agent#v0.1.1
+no hospedeiro:  npm i -D github:thiagoroddev/mentor-agent#v0.1.2
                 npx mentor instalar         -> copia .mentor/ e mentor.mjs para a raiz
                 node mentor.mjs init        -> cria docs/
 ```
@@ -630,4 +630,21 @@ Uma linha por passo concluido: `DD/MM/AA HH:MM · passo · o que mudou · o que 
              de que existe.
              Regra que sai daqui: **todo caminho que passa por node_modules e' JS puro, e o cenario
              `10-pacote` prova isso arquivo a arquivo.** Duas vezes nao pode virar tres.
+30/08/26 · 0.1.2 · PRIMEIRO ACHADO DE CAMPO, e veio do humano lendo a saida num projeto real.
+             O `contexto.md` dizia "Decidido: 25 campos" com **zero** decisao tomada: os 25 saem
+             prontos do esquema. Campo pre-preenchido ficava indistinguivel de campo respondido, e
+             sumia da pauta sem ninguem ter pensado nele. Fura o principio P7 do pacote inteiro
+             (campo vazio e' a pauta do mentor) e ainda da' ao projeto aparencia de maturidade que
+             ele nao tem, para a pessoa e para a IA que le' isso toda sessao.
+             Corrigido comparando com `.mentor/esquemas/contexto.json`, sem campo nem comando novo.
+             O teto de 2.400 do `contexto.md` reprovou a primeira versao, que listava os 25. Estava
+             certo: e' vista sempre carregada, e listar valor que ninguem escolheu custa caractere
+             para nao dizer nada. Agora sao contados, nunca listados.
+             Junto: o cabecalho das vistas dizia "Gerado por `npm run mentor`", comando que nao gera
+             nada e que o proprio README manda nao usar porque o npm engole as flags.
+             ⚠️ v0.1.1 ja' estava publicada e NAO foi movida. Licao de horas atras, aplicada.
+
+VALIDACAO 9.3 · O pacote carregou num projeto real pela primeira vez (roteirizarj-limpo, 30/08).
+             Claude, Codex e Gemini leram o nucleo pelos pontos de entrada; as demais ferramentas
+             reconheceram a instrucao de ler. E' o unico teste que nenhum dos 12 cenarios faz.
 ```

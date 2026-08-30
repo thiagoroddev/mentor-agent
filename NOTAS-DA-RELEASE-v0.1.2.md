@@ -1,4 +1,4 @@
-# mentor-agent 0.1.1
+# mentor-agent 0.1.2
 
 Primeira versão instalável. Pacote de trabalho para agentes de IA: gerencia tarefas, orienta quem
 não sabe o que precisa perguntar, e registra tudo de forma rastreável.
@@ -7,20 +7,29 @@ não sabe o que precisa perguntar, e registra tudo de forma rastreável.
 
 ⚠️ **A v0.1.0 não deve ser usada.** A tag foi publicada apontando para um commit sem os pontos de
 entrada de IA, então nenhuma ferramenta carregava o núcleo. Ela fica no histórico como registro
-honesto do que era; instale a 0.1.1.
+honesto do que era; instale a 0.1.2.
 
 ## Como instalar num projeto
 
 Na raiz do projeto:
 
 ```bash
-npm i -D github:thiagoroddev/mentor-agent#v0.1.1
+npm i -D github:thiagoroddev/mentor-agent#v0.1.2
 npx mentor instalar        # copia .mentor/, mentor.mjs e os pontos de entrada
 node mentor.mjs init       # cria docs/
 ```
 
 ⚠️ **`npm i` sozinho não muda nada no projeto**, por desenho: ele só põe o pacote em
 `node_modules`. Quem copia os arquivos para dentro do repositório é o `npx mentor instalar`.
+
+## Novo na 0.1.2
+
+**Padrao do pacote deixou de contar como decisao sua.** O `contexto.md` de um projeto novo dizia
+*"Decidido: 25 campos"* com zero decisao tomada: os 25 vinham prontos do esquema. Agora o cabecalho
+separa `Respondido por voce`, `Padrao do pacote` e `Em aberto`, comparando com o esquema. Campo
+pre-preenchido que se confunde com campo respondido some da pauta sem ninguem ter pensado nele.
+
+Achado no primeiro uso real do pacote, que e exatamente para isso que ele serve.
 
 ## Novo na 0.1.1
 

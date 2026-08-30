@@ -1,6 +1,6 @@
 # Relatorio de campo · hospedeiro · 29/08/26 14:00
 
-Pacote **mentor-agent 0.1.1** · 1 tarefas concluidas
+Pacote **mentor-agent 0.1.2** · 1 tarefas concluidas
 
 > Partes A e C sao geradas. A parte B e escrita, e item sem ID de tarefa e data **nao entra**.
 > Modo limpo: so metadado de processo. Use `--detalhado` quando voce for dono do
@@ -74,7 +74,7 @@ Nesse caso quem muda e o pacote, nao quem usa.
 
 ### A.9 Tetos de texto
 
-- docs/contexto.md: 2661 caracteres, 111% do teto 2400
+Nenhum estouro.
 
 ## B · Atrito (escrita, com referencia obrigatoria)
 

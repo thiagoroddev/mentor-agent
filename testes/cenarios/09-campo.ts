@@ -45,7 +45,7 @@ export function rodar(): Cenario {
   dizQue(c, saida, 'nao cria tarefa em lugar nenhum', 'o comando declara que nao cria tarefa')
 
   const r = ler(c, 'docs/relatorio-de-campo.md')
-  confere(c, r.includes('mentor-agent 0.1.1'), 'o relatorio atribui tudo a uma versao do pacote')
+  confere(c, r.includes('mentor-agent 0.1.2'), 'o relatorio atribui tudo a uma versao do pacote')
   confere(c, r.includes('origem que nao resolve'), 'as recusas aparecem agrupadas por impedimento')
   confere(c, r.includes('XG sem fatiar'), 'impedimentos parecidos sao agrupados, nao listados como frases')
   confere(c, r.includes('Funcionalidade (RF+RN+RNF)'), 'a proporcao de funcionalidade e medida')

@@ -1,4 +1,4 @@
-import { abrirCenario, apagar, confere, dizQue, escrever, mentor } from '../apoio.ts'
+import { abrirCenario, apagar, confere, dizQue, escrever, ler, lerJson, mentor } from '../apoio.ts'
 import type { Cenario } from '../apoio.ts'
 
 /**
@@ -8,6 +8,23 @@ import type { Cenario } from '../apoio.ts'
 export function rodar(): Cenario {
   const c = abrirCenario('05-verificacao')
   mentor(c, 'init')
+
+  // Padrao do pacote nao e decisao. O primeiro contexto.md de um projeto real dizia
+  // "Decidido: 25 campos" com zero decisao tomada, e campo pre-preenchido some da pauta do mentor.
+  const recem = ler(c, 'docs/contexto.md')
+  confere(c, recem.includes('**Respondido por voce:** 0'),
+    'projeto recem-criado nao decidiu nada, por mais campos que venham preenchidos')
+  confere(c, recem.includes('vieram preenchidos pelo pacote e ainda nao foram olhados'),
+    'o que veio do esquema e contado a parte, nao somado ao que a pessoa decidiu')
+  confere(c, !recem.includes('`limites.em_execucao`'),
+    'padrao e contado, nunca listado: esta vista entra em contexto a cada sessao')
+  const antes = lerJson<Record<string, any>>(c, 'docs/contexto.json')
+  antes['limites'].ciclo_tarefas = 8
+  escrever(c, 'docs/contexto.json', JSON.stringify(antes, null, 2))
+  mentor(c, 'gerar')
+  const depois = ler(c, 'docs/contexto.md')
+  confere(c, depois.includes('**Respondido por voce:** 1') && depois.includes('`limites.ciclo_tarefas`: 8'),
+    'valor diferente do esquema conta como decisao, e aparece na secao certa')
   confere(c, mentor(c, 'verificar').codigo === 0, 'projeto recem-criado passa')
 
   // --- link que nao resolve

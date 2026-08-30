@@ -1,7 +1,8 @@
 import { agora, agoraIso, caminhos, escreverJson, escreverTexto, existe, lerJson, listar } from './arquivos.ts'
+import { join } from 'node:path'
 import type { Contexto, DividaTecnica, Recusa, Requisito, RiscoAceito, Tarefa } from './tipos.ts'
 
-const AVISO = '<!-- Gerado por `npm run mentor`. Nao edite a mao: a proxima geracao sobrescreve. -->'
+const AVISO = '<!-- Gerado por `node mentor.mjs gerar`. Nao edite a mao: a proxima geracao sobrescreve. -->'
 
 export function carregarTarefas(): Tarefa[] {
   const c = caminhos()
@@ -262,6 +263,26 @@ const RESUMIDOS = ['estado.portoes', 'contagens', 'auditoria']
 
 type Achatado = { rotulo: string; valor: string }
 
+/**
+ * O valor que o **esquema entrega pronto**, para o mesmo caminho de campo.
+ * Existe porque campo preenchido pelo pacote e campo respondido pela pessoa sao coisas diferentes,
+ * e o contador que os soma faz o projeto parecer decidido sem ninguem ter decidido nada. O primeiro
+ * `contexto.md` de um projeto real dizia "Decidido: 25 campos" com **zero** decisao tomada.
+ */
+function valorDoEsquema(rotulo: string): string | null {
+  const arquivo = join(caminhos().esquemas, 'contexto.json')
+  if (!existe(arquivo)) return null
+  let no: unknown = lerJson<Record<string, unknown>>(arquivo)
+  for (const parte of rotulo.split('.')) {
+    if (no === null || typeof no !== 'object') return null
+    no = (no as Record<string, unknown>)[parte]
+  }
+  if (no === null || no === undefined) return null
+  if (Array.isArray(no)) return `${no.length} item(s)`
+  if (typeof no === 'object') return null
+  return String(no)
+}
+
 /** Devolve so' o que foi decidido, e conta o que nao foi. Campo null e' pauta, nao conteudo. */
 function achatar(no: unknown, prefixo: string, cheios: Achatado[], vazios: string[]): void {
   if (no === null || no === undefined) { vazios.push(prefixo); return }
@@ -288,6 +309,10 @@ export function gerarContextoMd(): { cheios: number; vazios: number } {
   const vazios: string[] = []
   achatar(ctx, '', cheios, vazios)
 
+  // Padrao do pacote nao e' decisao. Igual ao esquema = ninguem olhou ainda.
+  const padroes = cheios.filter((f) => valorDoEsquema(f.rotulo) === f.valor)
+  const respondidos = cheios.filter((f) => valorDoEsquema(f.rotulo) !== f.valor)
+
   const portoesAbertos = Object.entries(ctx.estado.portoes)
     .filter(([, p]) => p.status === 'aberto')
     .map(([nome]) => nome)
@@ -298,16 +323,26 @@ export function gerarContextoMd(): { cheios: number; vazios: number } {
     AVISO,
     '',
     `**Fase:** ${ctx.estado.fase ?? 'nao definida'} · **Rigor:** ${ctx.rigor.nivel ?? 'nao definido'}`,
-    `**Decidido:** ${cheios.length} campos · **Em aberto:** ${vazios.length} campos`,
+    `**Respondido por voce:** ${respondidos.length} · **Padrao do pacote:** ${padroes.length} · **Em aberto:** ${vazios.length}`,
     '',
     portoesAbertos.length
       ? `⚠️ **Portoes ainda abertos:** ${portoesAbertos.join(' · ')}. Cada um tem arquivo em \`.mentor/guia/00-indice.md\`.`
       : 'Todos os portoes foram respondidos ou dispensados com motivo.',
     '',
-    '## Decidido',
+    '## Respondido por voce',
     '',
   ]
-  for (const { rotulo, valor } of cheios) linhas.push(`- \`${rotulo}\`: ${valor}`)
+  if (respondidos.length === 0) {
+    linhas.push('Nenhum campo ainda. Tudo o que esta preenchido veio pronto do pacote.', '')
+  }
+  for (const { rotulo, valor } of respondidos) linhas.push(`- \`${rotulo}\`: ${valor}`)
+  // Os padroes sao contados, nunca listados. Esta vista entra em contexto a cada sessao, e listar
+  // 25 valores que ninguem escolheu custa caracteres para nao dizer nada. O numero ja' diz tudo:
+  // eles existem, e nenhum foi decidido.
+  if (padroes.length) {
+    linhas.push(`${padroes.length} campo(s) vieram preenchidos pelo pacote e ainda nao foram olhados.`)
+    linhas.push('Valem enquanto ninguem decidir outra coisa.')
+  }
   linhas.push('', '> O JSON completo, com os campos em aberto, esta' + "'" + ' em `docs/contexto.json`.')
   escreverTexto(c.contextoMd, linhas.join('\n'))
   return { cheios: cheios.length, vazios: vazios.length }
