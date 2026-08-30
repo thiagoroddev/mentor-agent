@@ -221,7 +221,7 @@ visita, e defeito achado ali pode nao existir em lugar nenhum (decisao do humano
 dizer *"isto aconteceu com a 0.1.0"*.
 
 ```
-no hospedeiro:  npm i -D github:thiagoroddev/mentor-agent#v0.1.3
+no hospedeiro:  npm i -D github:thiagoroddev/mentor-agent#v0.1.4
                 npx mentor instalar         -> copia .mentor/ e mentor.mjs para a raiz
                 node mentor.mjs init        -> cria docs/
 ```
@@ -740,4 +740,25 @@ VALIDACAO 9.3 · O pacote carregou num projeto real pela primeira vez (roteiriza
              `origem` ser a raiz dele. Reconferido: agora morde.
              Padrao das cinco: a asercao mediu um caminho que o defeito nao percorre. Verde e'
              barato; o que custa e' ver vermelho de proposito, e e' o unico passo que prova.
+30/08/26 · 0.1.4, e a razao de existir dela e' UM ERRO MEU DE PROCESSO, achado em campo pela
+             outra sessao, que rastreou ate' o `package-lock.json`.
+             Eu reapontei a tag `v0.1.3` tres vezes acreditando que ela era rascunho. Ela ja' tinha
+             sido publicada. O git protegeu o remoto (`--follow-tags` nao sobrescreve tag existente),
+             entao nada corrompeu, mas o efeito pratico foi o mesmo: **um nome, dois conteudos.**
+             A v0.1.3 publicada aponta para e3b5790 e esta' tres correcoes atras do main; o lock do
+             projeto fixou esse SHA, o `npm i` respeitou o lock, e o `instalar --forcar` copiou
+             fielmente o pacote velho. "Instalei e nao instalei".
+             ⚠️ Eu enunciei a regra "tag publicada nao se move" DUAS VEZES hoje, e depois assumi
+             "nao publicada" sem conferir o remoto. A regra estava certa; o que faltou foi a
+             checagem. Lei nova, sem mecanismo porque nao precisa de um: **uma versao, um commit,
+             para sempre. Correcao vira versao nova, nunca tag repontada.** Retag deixa de existir
+             como operacao permitida, inclusive antes do push, porque nao da' para saber daqui se
+             alguem ja' puxou.
+             Junto: reinstalar sobre projeto inicializado convidava a rodar `init` e refazer os oito
+             portoes ja' respondidos. Agora detecta `docs/contexto.json` e manda `gerar`.
+30/08/26 · Armadilha de medicao que eu venho usando o dia inteiro: **`wc -c` conta BYTES, o teto
+             conta CARACTERES.** Em portugues com acento e emoji a diferenca chega a 4%. Achei ao
+             ver `entrega.md` com 5.486 por `wc -c` e o `verificar` aprovando: o arquivo tinha
+             5.278 caracteres contra limite 5.280, e passou por DOIS. Sorte, nao margem.
+             Enxugado para 5.008. Conferir teto e' `lerTexto().length`, nunca `wc -c`.
 ```

@@ -95,15 +95,18 @@ ninguém percebe, porque nada falha.
 Conferir o resultado da esteira daquele commit. **É o único passo posterior ao portão 3 do núcleo,**
 porque acontece depois de todos eles. Não é autorização e não reprova nada: o poder dele é avisar.
 
-## Entrega se prova pelo remoto, nunca pela cópia local
+## Versão: um nome, um commit, para sempre
 
-Quem instala não tem a sua pasta. Copiar de um diretório vizinho exercita um caminho que **ninguém
-mais percorre**, e pula o que costuma falhar: a tag existir no remoto, o `files` do pacote, o que o
-gerenciador de fato empacota.
+**Tag não se reaponta**, nem antes de publicar: daqui não dá para saber quem já puxou. Correção
+vira versão nova.
 
-**Publicou, instale do remoto uma vez, num diretório vazio, como um estranho faria.** Custa um
-minuto e é a única prova de que a versão publicada é instalável.
+**Publicou, instale do remoto uma vez, num diretório vazio, como um estranho faria.** Copiar de uma
+pasta vizinha exercita um caminho que ninguém mais percorre, e pula justamente o que falha: a tag no
+remoto, o `files` do pacote, o que o gerenciador empacota.
 
-⚠️ Medido aqui, num dia: uma tag saiu apontando para o commit errado sem ninguém notar, e a
-instalação por gerenciador nunca havia funcionado, ambas documentadas como se funcionassem.
+⚠️ Os dois foram medidos aqui, no mesmo dia. Uma tag reapontada por quem a julgava rascunho já
+estava publicada, e o `package-lock` de um projeto fixa o commit, não o nome: `npm i` serviu código
+antigo em silêncio, e a reinstalação copiou fielmente o pacote velho. Instalar e não instalar ao
+mesmo tempo, sem erro na tela. E a instalação por gerenciador nunca funcionou enquanto só se rodava
+da pasta local, apesar de documentada como se funcionasse.
 

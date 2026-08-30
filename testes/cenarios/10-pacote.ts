@@ -16,7 +16,7 @@ export function rodar(): Cenario {
   mentor(c, 'init')
 
   const ctx = lerJson<Record<string, any>>(c, 'docs/contexto.json')
-  confere(c, ctx['_meta'].versao_do_pacote === '0.1.3',
+  confere(c, ctx['_meta'].versao_do_pacote === '0.1.4',
     'a versao do pacote fica gravada no contexto: sem ela o relatorio nao atribui nada')
 
   confere(c, mentor(c, 'verificar').codigo === 0, 'pacote recem-instalado nao diverge de nada')

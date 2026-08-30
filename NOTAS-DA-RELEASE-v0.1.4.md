@@ -1,4 +1,4 @@
-# mentor-agent 0.1.2
+# mentor-agent 0.1.4
 
 Primeira versão instalável. Pacote de trabalho para agentes de IA: gerencia tarefas, orienta quem
 não sabe o que precisa perguntar, e registra tudo de forma rastreável.
@@ -7,20 +7,42 @@ não sabe o que precisa perguntar, e registra tudo de forma rastreável.
 
 ⚠️ **A v0.1.0 não deve ser usada.** A tag foi publicada apontando para um commit sem os pontos de
 entrada de IA, então nenhuma ferramenta carregava o núcleo. Ela fica no histórico como registro
-honesto do que era; instale a 0.1.2.
+honesto do que era; instale a 0.1.4.
 
 ## Como instalar num projeto
 
 Na raiz do projeto:
 
 ```bash
-npm i -D github:thiagoroddev/mentor-agent#v0.1.2
+npm i -D github:thiagoroddev/mentor-agent#v0.1.4
 npx mentor instalar        # copia .mentor/, mentor.mjs e os pontos de entrada
 node mentor.mjs init       # cria docs/
 ```
 
 ⚠️ **`npm i` sozinho não muda nada no projeto**, por desenho: ele só põe o pacote em
 `node_modules`. Quem copia os arquivos para dentro do repositório é o `npx mentor instalar`.
+
+## Novo na 0.1.4
+
+⚠️ **Se você instalou a `v0.1.3`, atualize.** Aquela tag foi publicada apontando para um commit
+intermediário e ficou três correções atrás. **Não instale por ela.** Uma versão, um commit, para
+sempre: correção vira versão nova, nunca tag repontada.
+
+**O relatório de campo publicava a versão errada.** Lia `join(raizPacote(), "package.json")`, que
+instalado resolve para o `package.json` do projeto: o relatório saía com a versão do app. Ancorar
+achado numa versão é a única coisa que esse relatório existe para fazer. Agora lê o
+`manifesto.json` e avisa quando o contexto declarar outra.
+
+**A versão gravada acompanha a atualização.** Era escrita só pelo `init`, que recusa rodar em
+projeto existente, então ficava congelada na versão da adoção para sempre.
+
+**A parte B do relatório alcança a adoção.** Exigia ID de tarefa, mas todo o atrito de instalar e
+inicializar acontece antes da primeira tarefa. Âncora passa a aceitar `adocao` e `fase:<fase>`.
+
+**Amostra vazia deixou de virar estatística.** Com zero tarefas concluídas, o relatório anunciava
+*"Funcionalidade: 0%, o pacote está consumindo o projeto"*.
+
+**Reinstalar sobre projeto inicializado não pede `init` de novo.**
 
 ## Novo na 0.1.2
 

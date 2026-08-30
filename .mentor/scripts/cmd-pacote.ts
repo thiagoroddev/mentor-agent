@@ -119,7 +119,11 @@ export function instalar(flags: Record<string, string | undefined>): void {
     console.log('Acrescente:')
     for (const l of lint) console.log(`  ${l.arquivo}:  ${l.linha}`)
   }
-  console.log('\nProximo passo: `node mentor.mjs init`, e depois responder os portoes V, C e 0.')
+  // Reinstalar sobre projeto inicializado nao pede `init`: convidar a refazer os portoes ja
+  // respondidos e' o comando desaprendendo o estado do projeto a cada atualizacao.
+  console.log(existe(join(destino, 'docs', 'contexto.json'))
+    ? '\nProjeto ja inicializado. Proximo passo: `node mentor.mjs gerar`, para regenerar as vistas com a versao nova.'
+    : '\nProximo passo: `node mentor.mjs init`, e depois responder os portoes V, C e 0.')
 
   if (!existe(join(pastaDestino, NOME))) {
     escreverTexto(join(destino, '.mentor', 'LEIA-ME-MANIFESTO.txt'),

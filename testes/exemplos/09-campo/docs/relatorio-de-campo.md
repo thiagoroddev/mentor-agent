@@ -1,6 +1,6 @@
 # Relatorio de campo · hospedeiro · 29/08/26 14:00
 
-Pacote **mentor-agent 0.1.3** · 1 tarefas concluidas
+Pacote **mentor-agent 0.1.4** · 1 tarefas concluidas
 
 > Partes A e C sao geradas. A parte B e escrita, e item sem ancora e data **nao entra**.
 > Modo limpo: so metadado de processo. Use `--detalhado` quando voce for dono do

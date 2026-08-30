@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Atalho de linha de comando. Existe para nao precisar digitar o caminho dos scripts,
 // e para fugir do `--` que o npm exige antes de repassar flags.
-import { dirname } from 'node:path'
+import { existsSync } from 'node:fs'
+import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const aqui = dirname(fileURLToPath(import.meta.url))
@@ -46,7 +47,12 @@ if (aqui.split(/[\\/]/).includes('node_modules')) {
         console.log('Acrescente:')
         for (const l of lint) console.log(`  ${l.arquivo}:  ${l.linha}`)
       }
-      console.log('\nProximo passo: `node mentor.mjs init`, e depois responder os portoes V, C e 0.')
+      // Reinstalar sobre projeto inicializado nao pede `init`: convidar a refazer os portoes ja
+      // respondidos e' o comando desaprendendo o estado do projeto a cada atualizacao.
+      const jaInicializado = existsSync(join(destino, 'docs', 'contexto.json'))
+      console.log(jaInicializado
+        ? '\nProjeto ja inicializado. Proximo passo: `node mentor.mjs gerar`, para regenerar as vistas com a versao nova.'
+        : '\nProximo passo: `node mentor.mjs init`, e depois responder os portoes V, C e 0.')
     }
   }
 } else {
