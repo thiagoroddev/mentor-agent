@@ -89,7 +89,14 @@ export function instalar(flags: Record<string, string | undefined>): void {
   }
 
   copiarPacote(origem, destino, true)
-  const versao = lerJson<{ version?: string }>(join(origem, 'package.json')).version ?? '0.0.0'
+  // Manifesto primeiro, `package.json` so' como reserva. Rodando de dentro de um projeto ja
+  // instalado, `origem` e' a raiz DELE, e o `package.json` de la e' o do app: a mensagem sairia
+  // anunciando a versao do projeto do usuario como se fosse a do pacote. Irmao do achado 10,
+  // encontrado varrendo a classe em vez de so' o call site reportado.
+  const doManifesto = join(origem, '.mentor', NOME)
+  const versao = existe(doManifesto)
+    ? lerJson<{ versao?: string }>(doManifesto).versao ?? '0.0.0'
+    : lerJson<{ version?: string }>(join(origem, 'package.json')).version ?? '0.0.0'
   console.log(`mentor-agent ${versao} instalado em ${destino}.`)
 
   // Sem ponto de entrada, nenhuma ferramenta le' o nucleo, e o pacote inteiro nao existe.

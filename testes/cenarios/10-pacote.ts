@@ -71,6 +71,11 @@ export function rodar(): Cenario {
     'e avisa que ha divergencia a registrar antes')
 
   dizQue(c, mentor(c, 'instalar', '--destino', c.pasta, '--forcar'), 'instalado em', 'com --forcar, reinstala')
+  // Irmao do achado 10: rodando de dentro de um projeto instalado, `origem` e a raiz DELE, e o
+  // package.json de la e o do app. A versao anunciada seria a do projeto do usuario.
+  escrever(c, 'package.json', JSON.stringify({ name: 'app-do-usuario', version: '7.7.7' }, null, 2))
+  confere(c, !mentor(c, 'instalar', '--destino', c.pasta, '--forcar').saida.includes('7.7.7'),
+    'a versao anunciada pelo instalar vem do manifesto, nunca do package.json do projeto')
   confere(c, !ler(c, '.mentor/nucleo.md').includes('ajuste local'), 'a reinstalacao devolve o arquivo original')
 
   // --- o caminho real de entrega: `npm i` poe o pacote em node_modules, e la' o Node **se recusa**

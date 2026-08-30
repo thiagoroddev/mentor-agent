@@ -714,4 +714,21 @@ VALIDACAO 9.3 · O pacote carregou num projeto real pela primeira vez (roteiriza
              mordia: eu mutei um arquivo do pacote sem regenerar o manifesto, entao as checagens de
              divergencia caiam antes e escondiam o resultado. Mutar exige regenerar o manifesto
              junto, senao o cenario falha pelo motivo errado. Refeito na ordem certa: morde.
+30/08/26 · Fase 10, passo 4c. ACHADOS 10 e 11, ambos sobre o proprio instrumento de medicao, e
+             so' encontraveis rodando o relatorio em campo.
+             10: a versao publicada era a DO PROJETO. `join(raizPacote(), 'package.json')` resolve
+             para a raiz do projeto quando instalado, entao o relatorio saiu dizendo
+             "mentor-agent 0.1.0", que era a versao do app eu-roteirizo. Ancorar achado numa versao
+             e' a UNICA coisa que este relatorio existe para fazer.
+             ⚠️ FALHA MINHA DE METODO: ao consertar o achado 9 (versao congelada no contexto) eu
+             nao procurei os outros lugares que liam versao. O 10 e' irmao do 9 e estava a um grep
+             de distancia. **Consertar sintoma sem varrer a classe** e' como o loop do antecessor
+             comeca. Regra que sai daqui: achado de leitura errada de uma fonte pede grep pela
+             fonte inteira, nao so' pelo call site reportado.
+             11: a parte B exigia ID de tarefa, mas todo o atrito da adocao acontece ANTES da
+             primeira tarefa. Cinco defeitos reais so' sobreviveram por cairem em A.10 como texto
+             solto. Ancora passa a aceitar `adocao` e `fase:<fase>` alem de TASK.
+             E um terceiro que eu achei lendo: com zero concluidas, A.1 anunciava "0%, o pacote
+             esta consumindo o projeto". Amostra vazia nao e' estatistica. Vira "sem dados".
+             Mesma familia do dia: ausencia de dado tratada como valor.
 ```

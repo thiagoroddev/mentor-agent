@@ -1,12 +1,12 @@
 import { join } from 'node:path'
-import { agora, caminhos, diasDesde, escreverTexto, existe, lerJson, lerTexto, raizPacote } from './arquivos.ts'
+import { agora, caminhos, diasDesde, escreverTexto, existe, lerJson, lerTexto } from './arquivos.ts'
 import { lerInventario } from './cmd-regras.ts'
 import { tetos } from './cmd-verificar.ts'
 import {
   carregarContexto, carregarDividas, carregarRecusas, carregarRequisitos, carregarRiscos,
   carregarTarefas, riscoVencido,
 } from './vistas.ts'
-import { MARCADOR } from './tipos.ts'
+import { FASES, MARCADOR } from './tipos.ts'
 import type { Tarefa } from './tipos.ts'
 
 /**
@@ -43,15 +43,23 @@ export function relatorioDeCampo(flags: Record<string, string | undefined> = {})
   const encerradas = tarefas.filter((t) => t.estado === 'concluida' || t.estado === 'cancelada')
   const recusas = carregarRecusas()
   const regras = lerInventario()
-  const manifesto = join(raizPacote(), 'package.json')
-  const versao = existe(manifesto) ? (lerJson<{ version?: string }>(manifesto).version ?? '?') : '?'
+  // A versao sai do manifesto do PACOTE INSTALADO. Antes era `join(raizPacote(), 'package.json')`,
+  // e instalado num projeto isso resolve para o package.json **do projeto**: o relatorio saiu
+  // dizendo "mentor-agent 0.1.0", que era a versao do app. Ancorar achado numa versao e' a unica
+  // coisa que este relatorio existe para fazer, e ele fazia isso errado.
+  const manifesto = join(c.pacote, 'manifesto.json')
+  const versao = existe(manifesto) ? (lerJson<{ versao?: string }>(manifesto).versao ?? '?') : '?'
+  const declarada = String(ctx._meta['versao_do_pacote'] ?? '?')
+  const divergencia = declarada !== '?' && declarada !== versao
+    ? ` ⚠️ o contexto declara ${declarada}: rode \`mentor gerar\` para reconciliar`
+    : ''
 
   const l: string[] = [
     `# Relatorio de campo · ${ctx.projeto['nome'] ?? 'projeto'} · ${agora().log}`,
     '',
-    `Pacote **mentor-agent ${versao}** · ${concluidas.length} tarefas concluidas`,
+    `Pacote **mentor-agent ${versao}**${divergencia} · ${concluidas.length} tarefas concluidas`,
     '',
-    '> Partes A e C sao geradas. A parte B e escrita, e item sem ID de tarefa e data **nao entra**.',
+    '> Partes A e C sao geradas. A parte B e escrita, e item sem ancora e data **nao entra**.',
     '> So metadado de processo: nada de codigo, requisito, nome de pessoa ou URL.',
     '',
     '## A · Medicao',
@@ -61,9 +69,15 @@ export function relatorioDeCampo(flags: Record<string, string | undefined> = {})
   ]
   const porTipo = contar(concluidas.map((t) => t.tipo))
   l.push(...tabela(['Tipo', 'Qtd', '%'], porTipo.map(([t, n]) => [t, String(n), `${Math.round((n / Math.max(1, concluidas.length)) * 100)}%`])))
-  const funcionalidade = concluidas.filter((t) => ['RF', 'RN', 'RNF'].includes(t.tipo)).length
-  const proporcao = Math.round((funcionalidade / Math.max(1, concluidas.length)) * 100)
-  l.push('', `**Funcionalidade (RF+RN+RNF): ${proporcao}%.** Abaixo de 50% indica pacote consumindo o projeto.`, '')
+  // Zero tarefa concluida nao da' 0%: da' **sem dados**. Anunciar "0%, o pacote esta consumindo o
+  // projeto" para quem ainda nao fechou a primeira tarefa e' afirmar sobre amostra vazia.
+  if (concluidas.length === 0) {
+    l.push('', '**Funcionalidade (RF+RN+RNF): sem dados.** Nenhuma tarefa concluida ainda: a proporcao so passa a medir alguma coisa a partir da primeira.', '')
+  } else {
+    const funcionalidade = concluidas.filter((t) => ['RF', 'RN', 'RNF'].includes(t.tipo)).length
+    const proporcao = Math.round((funcionalidade / concluidas.length) * 100)
+    l.push('', `**Funcionalidade (RF+RN+RNF): ${proporcao}%.** Abaixo de 50% indica pacote consumindo o projeto.`, '')
+  }
 
   l.push('### A.2 Regras do pacote: escrita x comando', '')
   const comComando = regras.filter((r) => r.comando).length
@@ -139,15 +153,25 @@ export function relatorioDeCampo(flags: Record<string, string | undefined> = {})
     }
   }
 
+  // A ancora pode ser tarefa OU fase, e a fase existe por um motivo medido: **todo o atrito da
+  // adocao acontece antes da primeira tarefa.** Exigindo so' ID de tarefa, a parte B nao alcancava
+  // nada da inicializacao, e cinco defeitos reais so' sobreviveram porque cairam em A.10 como texto
+  // solto. Fase e' ancora legitima: vem de vocabulario fechado, entao continua sendo verificavel.
   l.push(
-    '## B · Atrito (escrita, com referencia obrigatoria)', '',
+    '## B · Atrito (escrita, com ancora obrigatoria)', '',
+    '> **Tres ancoras aceitas:** `TASK-XXX-NNN` para atrito dentro de uma tarefa · `adocao` para o que',
+    '> aconteceu ao instalar e inicializar · `fase:<fase>` para o resto, com a fase declarada no contexto.',
+    `> Fases: ${FASES.join(' · ')}.`, '',
+    '> ⚠️ `adocao` existe porque **todo o atrito da adocao acontece antes da primeira tarefa**. Exigindo',
+    '> so ID de tarefa, esta parte nao alcancava nada da instalacao, e cinco defeitos reais sobreviveram',
+    '> apenas por terem caido em A.10 como texto solto.', '',
     '### B.1 Regras que atrapalharam', '',
-    `- ${MARCADOR} <regra> · TASK-XXX-NNN · <data> · o que aconteceu · o que teria funcionado`, '',
+    `- ${MARCADOR} <regra> · <ancora> · <data> · o que aconteceu · o que teria funcionado`, '',
     '### B.2 O que o pacote deixou de lembrar', '',
-    `- ${MARCADOR} <assunto> · TASK-XXX-NNN · <data> · quando isso deveria ter aparecido`, '',
+    `- ${MARCADOR} <assunto> · <ancora> · <data> · quando isso deveria ter aparecido`, '',
     '### B.3 O que a IA teve que improvisar', '',
-    `- ${MARCADOR} <processo ausente> · TASK-XXX-NNN · <data>`, '',
-    '> Item sem ID de tarefa e data **nao entra**.', '',
+    `- ${MARCADOR} <processo ausente> · <ancora> · <data>`, '',
+    '> Item sem ancora e data **nao entra**. Sem ancora nao da para conferir, e o que nao se confere vira reclamacao.', '',
     '## C · O que funcionou', '',
   )
   const encerradasSemRecusa = encerradas.length - new Set(recusas.map((r) => r.alvo)).size

@@ -10,6 +10,12 @@ export function rodar(): Cenario {
   ctx['gates'].testes.comando = 'echo "5 passed"'
   escrever(c, 'docs/contexto.json', JSON.stringify(ctx, null, 2))
 
+  // Antes de existir qualquer tarefa: amostra vazia nao e estatistica. Dizer "0%, o pacote esta
+  // consumindo o projeto" a quem nao fechou a primeira tarefa e afirmar sobre nada.
+  mentor(c, 'relatorio-de-campo')
+  confere(c, ler(c, 'docs/relatorio-de-campo.md').includes('Funcionalidade (RF+RN+RNF): sem dados'),
+    'sem tarefa concluida a proporcao e "sem dados", nunca 0%')
+
   // Duas recusas de propósito: e' delas que sai a medicao mais util do relatorio.
   mentor(c, 'task', 'nova', '--tipo', 'BG', '--titulo', 'Origem inventada',
     '--esforco', 'P/P', '--origem', 'RF-99')
@@ -46,6 +52,16 @@ export function rodar(): Cenario {
 
   const r = ler(c, 'docs/relatorio-de-campo.md')
   confere(c, r.includes('mentor-agent 0.1.3'), 'o relatorio atribui tudo a uma versao do pacote')
+  // A versao saia de `join(raizPacote(), 'package.json')`, que instalado num projeto resolve para o
+  // package.json DO PROJETO: o relatorio publicava a versao do app. Ancorar achado numa versao e a
+  // unica coisa que este relatorio existe para fazer.
+  escrever(c, 'package.json', JSON.stringify({ name: 'app-do-usuario', version: '7.7.7' }, null, 2))
+  const outro = mentor(c, 'relatorio-de-campo').saida + ler(c, 'docs/relatorio-de-campo.md')
+  confere(c, !outro.includes('7.7.7'),
+    'a versao vem do manifesto do pacote, nunca do package.json do projeto')
+  confere(c, outro.includes('adocao'),
+    'a parte B aceita ancora `adocao`: todo o atrito da adocao acontece antes da primeira tarefa')
+
   confere(c, r.includes('origem que nao resolve'), 'as recusas aparecem agrupadas por impedimento')
   confere(c, r.includes('XG sem fatiar'), 'impedimentos parecidos sao agrupados, nao listados como frases')
   confere(c, r.includes('Funcionalidade (RF+RN+RNF)'), 'a proporcao de funcionalidade e medida')

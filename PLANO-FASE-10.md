@@ -136,6 +136,33 @@ mentindo, o relatório atribuiria defeito já resolvido à versão que o resolve
 **instalado**. Não é lembrado por comando nenhum: qualquer coisa que regenere o contexto o corrige.
 É o princípio P2 do pacote, "se dá para gerar, gere", aplicado onde faltava.
 
+## Passo 4c · O relatório de campo media a si mesmo errado 🟢 *(feito, 0.1.3)*
+
+**Achados 10 e 11, e os dois são sobre o instrumento de medição.** Foram achados exatamente por
+alguém rodar o relatório em campo, que é a única forma de achar defeito num instrumento.
+
+**10 · A versão publicada era a do projeto, não a do pacote.** `cmd-campo.ts` fazia
+`join(raizPacote(), 'package.json')`. Instalado, `raizPacote()` é a raiz do projeto, então lia o
+`package.json` do app: o relatório saiu dizendo *"mentor-agent 0.1.0"*, que era a versão do
+`eu-roteirizo`. **Ancorar achado numa versão é a única coisa que este relatório existe para fazer.**
+
+Corrigido para ler `.mentor/manifesto.json`, e ele agora confere contra
+`_meta.versao_do_pacote`, avisando no cabeçalho quando divergirem.
+
+⚠️ **Falha minha de método:** ao consertar o achado 9 (a versão congelada no contexto) eu não
+procurei os outros lugares que liam versão. O 10 é irmão do 9 e estava a um `grep` de distância.
+Consertar um sintoma sem varrer a classe é como o loop do antecessor começa.
+
+**11 · A parte B não alcançava o atrito da adoção.** Ela exigia ID de tarefa por item, mas
+instalar e inicializar acontece **antes de existir qualquer tarefa**. Todo o atrito medido na
+sessão de adoção ficou fora de B, e sobreviveu só porque `mentor anotar` aceita texto solto e caiu
+em A.10. Agora a âncora aceita três formas: `TASK-XXX-NNN`, `adocao`, ou `fase:<fase>`.
+
+**Um terceiro, que eu achei lendo o relatório:** com zero tarefas concluídas, A.1 anunciava
+*"Funcionalidade: 0%. Abaixo de 50% indica pacote consumindo o projeto."* Isso é afirmar sobre
+amostra vazia, e é a mesma família de erro do dia: **tratar ausência de dado como um valor.** Agora
+diz `sem dados`.
+
 ---
 
 # 0.2.0 · Adoção não é migração

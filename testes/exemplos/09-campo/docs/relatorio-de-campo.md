@@ -2,7 +2,7 @@
 
 Pacote **mentor-agent 0.1.3** · 1 tarefas concluidas
 
-> Partes A e C sao geradas. A parte B e escrita, e item sem ID de tarefa e data **nao entra**.
+> Partes A e C sao geradas. A parte B e escrita, e item sem ancora e data **nao entra**.
 > Modo limpo: so metadado de processo. Use `--detalhado` quando voce for dono do
 > projeto e do pacote, e o conteudo puder viajar junto.
 
@@ -76,21 +76,29 @@ Nesse caso quem muda e o pacote, nao quem usa.
 
 Nenhum estouro.
 
-## B · Atrito (escrita, com referencia obrigatoria)
+## B · Atrito (escrita, com ancora obrigatoria)
+
+> **Tres ancoras aceitas:** `TASK-XXX-NNN` para atrito dentro de uma tarefa · `adocao` para o que
+> aconteceu ao instalar e inicializar · `fase:<fase>` para o resto, com a fase declarada no contexto.
+> Fases: ideia · descoberta · construcao · pre-lancamento · producao · manutencao.
+
+> ⚠️ `adocao` existe porque **todo o atrito da adocao acontece antes da primeira tarefa**. Exigindo
+> so ID de tarefa, esta parte nao alcancava nada da instalacao, e cinco defeitos reais sobreviveram
+> apenas por terem caido em A.10 como texto solto.
 
 ### B.1 Regras que atrapalharam
 
-- PREENCHER: <regra> · TASK-XXX-NNN · <data> · o que aconteceu · o que teria funcionado
+- PREENCHER: <regra> · <ancora> · <data> · o que aconteceu · o que teria funcionado
 
 ### B.2 O que o pacote deixou de lembrar
 
-- PREENCHER: <assunto> · TASK-XXX-NNN · <data> · quando isso deveria ter aparecido
+- PREENCHER: <assunto> · <ancora> · <data> · quando isso deveria ter aparecido
 
 ### B.3 O que a IA teve que improvisar
 
-- PREENCHER: <processo ausente> · TASK-XXX-NNN · <data>
+- PREENCHER: <processo ausente> · <ancora> · <data>
 
-> Item sem ID de tarefa e data **nao entra**.
+> Item sem ancora e data **nao entra**. Sem ancora nao da para conferir, e o que nao se confere vira reclamacao.
 
 ## C · O que funcionou
 
