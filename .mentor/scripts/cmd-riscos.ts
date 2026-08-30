@@ -1,5 +1,5 @@
 import { agora, caminhos, diasDesde, escreverJson, escreverTexto } from './arquivos.ts'
-import { carregarRiscos, carregarTarefas, regenerarTudo } from './vistas.ts'
+import { carregarRiscos, carregarTarefas, estadoDoPrazo, regenerarTudo } from './vistas.ts'
 import { PRAZO_MAXIMO_RISCO_DIAS } from './tipos.ts'
 import type { RiscoAceito } from './tipos.ts'
 
@@ -25,12 +25,15 @@ export function avaliar(riscos: RiscoAceito[] = carregarRiscos()): Avaliacao[] {
     if (!r.justificativa?.trim()) problemas.push('sem justificativa')
 
     const prazo = diasEntre(r.aceito_em, r.data_revisao)
-    if (prazo === null) problemas.push('data de revisao ausente ou ilegivel')
-    else if (prazo > PRAZO_MAXIMO_RISCO_DIAS) problemas.push(`prazo de ${prazo} dias, acima do maximo de ${PRAZO_MAXIMO_RISCO_DIAS}`)
+    if (prazo !== null && prazo > PRAZO_MAXIMO_RISCO_DIAS) {
+      problemas.push(`prazo de ${prazo} dias, acima do maximo de ${PRAZO_MAXIMO_RISCO_DIAS}`)
+    }
 
-    const restante = diasDesde(r.data_revisao)
-    const vencido = !r.encerrado_em && restante !== null && restante > 0
-    return { risco: r, problemas, vencido }
+    // Um veredito so', vindo de `estadoDoPrazo`. Enquanto esta tela e o doctor faziam a propria
+    // conta, as duas discordavam, e quem registrava um risco aceito era punido pelo doctor.
+    const estado = estadoDoPrazo(r)
+    if (estado === 'ilegivel') problemas.push(`data de revisao ilegivel: "${r.data_revisao}". O formato e DD/MM/AA`)
+    return { risco: r, problemas, vencido: estado === 'vencido' }
   })
 }
 

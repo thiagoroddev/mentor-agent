@@ -221,7 +221,7 @@ visita, e defeito achado ali pode nao existir em lugar nenhum (decisao do humano
 dizer *"isto aconteceu com a 0.1.0"*.
 
 ```
-no hospedeiro:  npm i -D github:thiagoroddev/mentor-agent#v0.1.2
+no hospedeiro:  npm i -D github:thiagoroddev/mentor-agent#v0.1.3
                 npx mentor instalar         -> copia .mentor/ e mentor.mjs para a raiz
                 node mentor.mjs init        -> cria docs/
 ```
@@ -654,4 +654,24 @@ VALIDACAO 9.3 · O pacote carregou num projeto real pela primeira vez (roteiriza
              sem ninguem saber. Duas provas no mesmo dia: a tag errada, e a instalacao por npm que
              nunca funcionou enquanto eu so' rodava do repositorio.
              Registrado em `processos/entrega.md` como secao propria.
+30/08/26 · 0.1.3 · Fase 10, passo 1. Achado 2 do campo: **todo risco aceito nascia vencido.**
+             `ra nova` aceitava prazo de 77 dias e o `doctor` reprovava no mesmo minuto, porque
+             existiam DUAS contas de "vencido" no pacote e so' uma estava certa. Efeito perverso:
+             usar o comando de registrar excecao PIORAVA a saude do projeto.
+             Causa funda, e ela repete um padrao do dia: `Number.isNaN(...) || revisao < hoje`
+             fundia **"nao consegui ler"** com **"venceu"**. Desconhecido tratado como estado
+             conhecido, igual ao contador que somava padrao do pacote com decisao do humano.
+             Correcao: `lerData()` como fonte unica de leitura de data, `estadoDoPrazo()` como
+             fonte unica do veredito, e `ilegivel` como quarto estado com nome proprio.
+             `relogioDoPacote()` faz `MENTOR_AGORA` valer tambem para prazo, que nao valia.
+             TDD de verdade: teste escrito primeiro, visto VERMELHO nas tres asercoes, depois o
+             conserto. Mutacao confirmou que mordem.
+             DOIS ERROS MEUS NO CAMINHO, os dois uteis:
+               (a) meu regex `/risco.*vencido/i` casava com a mensagem NEGATIVA "nenhum risco
+                   aceito vencido", e reprovava o codigo certo. Teste errado, nao codigo errado;
+               (b) ao separar `ilegivel` de `vencido`, o estado novo ficou INVISIVEL no doctor.
+                   Separar sem dar destino a metade nova esconde o defeito melhor que antes.
+             LIMITE HONESTO: a correcao do relogio congelado nao tem teste que falhe sem ela. As
+             datas do cenario dao o mesmo veredito com relogio real ou congelado, entao ela esta'
+             certa por leitura, nao por prova. Registrado para nao passar por provado.
 ```

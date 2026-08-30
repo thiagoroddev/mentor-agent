@@ -4,7 +4,8 @@ import { tetos } from './cmd-verificar.ts'
 import { rascunhosParados } from './cmd-anotar.ts'
 import { PONTOS_DE_ENTRADA, pontosDeEntradaSemNucleo } from './entrada.ts'
 import {
-  carregarContexto, carregarDividas, carregarRequisitos, carregarRiscos, carregarTarefas, riscoVencido,
+  carregarContexto, carregarDividas, carregarRequisitos, carregarRiscos, carregarTarefas,
+  estadoDoPrazo, riscoVencido,
 } from './vistas.ts'
 import { CARACTERISTICAS } from './tipos.ts'
 import type { Caracteristica, Contexto, EstadoDaCaracteristica, Fase, MetaDeQualidade, Tarefa } from './tipos.ts'
@@ -44,12 +45,19 @@ function seguranca(ctx: Contexto): Linha[] {
   const riscos = carregarRiscos()
   const linhas: Linha[] = []
   const vencidos = riscos.filter((r) => riscoVencido(r))
-  const ativos = riscos.filter((r) => !r.encerrado_em && !riscoVencido(r))
+  const ativos = riscos.filter((r) => estadoDoPrazo(r) === 'no_prazo')
 
   linhas.push(vencidos.length
     ? { estado: 'bloqueio', texto: `${vencidos.length} risco(s) aceito(s) VENCIDO(s): ${vencidos.map((r) => r.id).join(', ')}. Vencido e' mais grave que o problema original` }
     : { estado: 'ok', texto: 'nenhum risco aceito vencido' })
   if (ativos.length) linhas.push({ estado: 'neutro', texto: `${ativos.length} risco(s) aceito(s) no prazo` })
+
+  // Ilegivel nao e' vencido, e nao pode ser invisivel: e' defeito do registro, e o registro e' a
+  // unica coisa que sustenta a excecao. Sem esta linha, o estado novo sumiria da folha de saude.
+  const ilegiveis = riscos.filter((r) => estadoDoPrazo(r) === 'ilegivel')
+  if (ilegiveis.length) {
+    linhas.push({ estado: 'bloqueio', texto: `${ilegiveis.length} risco(s) com data de revisao ilegivel: ${ilegiveis.map((r) => r.id).join(', ')}. O formato e DD/MM/AA` })
+  }
 
   const dep = (ctx['operacao'] as { analise_de_dependencias?: { automatica?: boolean | null } })?.analise_de_dependencias
   const rigor = ctx.rigor.nivel

@@ -122,6 +122,10 @@ const doisDigitos = (n: number) => String(n).padStart(2, '0')
  * `MENTOR_AGORA` congela o relogio. Existe para os exemplos de teste sairem byte a byte iguais a
  * cada execucao: sem isso, cada rodada mudaria toda data e o diff do git viraria ruido.
  */
+export function relogioDoPacote(): Date {
+  return relogio()
+}
+
 function relogio(): Date {
   const congelado = process.env['MENTOR_AGORA']
   return congelado ? new Date(congelado) : new Date()
@@ -143,14 +147,28 @@ export function agora(d: Date = relogio()) {
   }
 }
 
-/** Quantos dias se passaram desde um carimbo `DD/MM/AA HH:MM`. `null` se nao der para ler. */
-export function diasDesde(log: string | null): number | null {
+/**
+ * **Fonte unica de leitura de data no pacote.** O formato e' `DD/MM/AA`, o mesmo que `agora()`
+ * escreve, e `new Date()` nao o entende: devolve `Invalid Date` em silencio.
+ *
+ * ⚠️ Existiam duas leituras de data aqui, e so' esta estava certa. A outra usava `new Date()` e
+ * tratava ilegivel como vencido, o que fazia **todo risco aceito nascer vencido**: o `ra nova`
+ * aceitava um prazo de 77 dias e o `doctor` reprovava o projeto no mesmo minuto. Registrar um
+ * risco aceito piorava a saude do projeto. Uma leitura so', e ela devolve `null` quando nao le'.
+ */
+export function lerData(log: string | null): Date | null {
   if (!log) return null
   const casou = /^(\d{2})\/(\d{2})\/(\d{2})/.exec(log.trim())
   if (!casou) return null
   const [, dia, mes, ano] = casou
   const quando = new Date(2000 + Number(ano), Number(mes) - 1, Number(dia))
-  if (Number.isNaN(quando.getTime())) return null
+  return Number.isNaN(quando.getTime()) ? null : quando
+}
+
+/** Quantos dias se passaram desde um carimbo `DD/MM/AA HH:MM`. `null` se nao der para ler. */
+export function diasDesde(log: string | null): number | null {
+  const quando = lerData(log)
+  if (!quando) return null
   return Math.floor((relogio().getTime() - quando.getTime()) / 86_400_000)
 }
 

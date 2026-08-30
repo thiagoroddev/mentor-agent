@@ -1,6 +1,6 @@
 {
-  "versao": "0.1.2",
-  "gerado_em": "2026-08-30T05:59:55.552Z",
+  "versao": "0.1.3",
+  "gerado_em": "2026-08-30T17:26:31.011Z",
   "arquivos": {
     "esquemas/contexto.json": "014c3dfe91606be9",
     "esquemas/divida-tecnica.json": "0906f6786a8e63a1",
@@ -36,12 +36,12 @@
     "processos/tarefa.md": "bbf5e095b4a08dd3",
     "processos/teste.md": "e904b9a054de5187",
     "regras.json": "5f5ddff0c236ed68",
-    "scripts/arquivos.ts": "22ed357732c14054",
+    "scripts/arquivos.ts": "4e5899db3c99ac31",
     "scripts/cli.ts": "09ad4ea00564bd66",
     "scripts/cmd-anotar.ts": "97e941a0ee029868",
     "scripts/cmd-auditar.ts": "50d9c55a18e64ba7",
     "scripts/cmd-campo.ts": "10f8f04327ebaaeb",
-    "scripts/cmd-doctor.ts": "889075ccb4b16bee",
+    "scripts/cmd-doctor.ts": "5c21b959cb0a6f66",
     "scripts/cmd-fila.ts": "1b47eb1fed396563",
     "scripts/cmd-gates.ts": "a36538533ace0bb7",
     "scripts/cmd-hooks.ts": "4333ff3cd6a1c28f",
@@ -49,14 +49,14 @@
     "scripts/cmd-lancamento.ts": "41c8bdff4d3bd949",
     "scripts/cmd-pacote.ts": "9086e5204be4f347",
     "scripts/cmd-regras.ts": "a753f82f340943ca",
-    "scripts/cmd-riscos.ts": "1105941214b5cc99",
+    "scripts/cmd-riscos.ts": "54da3ca4e24f28eb",
     "scripts/cmd-stack.ts": "c05b949614cb569a",
     "scripts/cmd-tarefa.ts": "4cf2eba32e5a1c86",
     "scripts/cmd-verificar.ts": "2df740385eb6f9b5",
     "scripts/entrada.ts": "1a56522a3580b616",
     "scripts/ids.ts": "63e393f8e0b27e5a",
     "scripts/tipos.ts": "ba3576f118061a5a",
-    "scripts/vistas.ts": "b8165f1fbfaf9b5b",
+    "scripts/vistas.ts": "a8ad6ded3155766e",
     "tetos.json": "6e8505c4927dc9b8"
   }
 }

@@ -41,6 +41,36 @@ export function rodar(): Cenario {
   escrever(c, 'docs/seguranca/riscos-aceitos.json', JSON.stringify(riscos, null, 2))
   dizQue(c, mentor(c, 'ra'), 'VENCIDO', 'data no passado deixa o registro vencido')
 
+  // --- `ra` e `doctor` nunca podem discordar sobre o mesmo risco.
+  //     Era essa a invariante que faltava: as duas telas tinham implementacoes proprias de
+  //     "vencido", e so uma estava certa. Registrar um risco aceito PIORAVA o doctor.
+  const prazo = (data: string) => {
+    riscos[0]!['data_revisao'] = data
+    escrever(c, 'docs/seguranca/riscos-aceitos.json', JSON.stringify(riscos, null, 2))
+    const ra = mentor(c, 'ra').saida
+    const dr = mentor(c, 'doctor').saida
+    // Ancorado no texto que so existe quando ha vencido. `/risco.*vencido/i` casava com a
+    // mensagem NEGATIVA "nenhum risco aceito vencido", e o teste reprovava o codigo certo.
+    return { ra, dr, raVencido: ra.includes('VENCIDO'), drVencido: dr.includes('aceito(s) VENCIDO(s)') }
+  }
+
+  const futuro = prazo('15/11/26 14:00')
+  confere(c, !futuro.raVencido && !futuro.drVencido,
+    'data no futuro nao vence em lugar nenhum: registrar risco aceito nao pode piorar o doctor')
+  confere(c, futuro.raVencido === futuro.drVencido, 'ra e doctor concordam sobre data futura')
+
+  const passado = prazo('01/08/26 14:00')
+  confere(c, passado.raVencido && passado.drVencido, 'data no passado vence nos dois')
+  confere(c, passado.raVencido === passado.drVencido, 'ra e doctor concordam sobre data passada')
+
+  const ilegivel = prazo('quinze de novembro')
+  confere(c, ilegivel.ra.includes('ilegivel'), '`ra` chama data ilegivel pelo nome')
+  confere(c, !ilegivel.drVencido && /ilegivel/i.test(ilegivel.dr),
+    'data ilegivel nao e "vencida": nao conseguir ler nao e o mesmo que ter passado do prazo')
+
+  // --- vencido barra o lancamento
+  riscos[0]!['data_revisao'] = '01/08/26 14:00'
+  escrever(c, 'docs/seguranca/riscos-aceitos.json', JSON.stringify(riscos, null, 2))
   const barrado = mentor(c, 'lancamento')
   confere(c, barrado.codigo === 1, 'risco vencido barra o lancamento')
   dizQue(c, barrado, 'REPROVADO', 'o portao reprova')

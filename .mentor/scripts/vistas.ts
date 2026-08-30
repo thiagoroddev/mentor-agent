@@ -1,4 +1,4 @@
-import { agora, agoraIso, caminhos, escreverJson, escreverTexto, existe, lerJson, listar } from './arquivos.ts'
+import { agora, agoraIso, caminhos, escreverJson, escreverTexto, existe, lerData, lerJson, listar, relogioDoPacote } from './arquivos.ts'
 import { join } from 'node:path'
 import type { Contexto, DividaTecnica, Recusa, Requisito, RiscoAceito, Tarefa } from './tipos.ts'
 
@@ -24,11 +24,25 @@ export function carregarRiscos(): RiscoAceito[] {
   return existe(c.riscos) ? lerJson<RiscoAceito[]>(c.riscos) : []
 }
 
-/** Um risco so' cobre alguma coisa enquanto esta' no prazo. Vencido e' pior que o problema original. */
-export function riscoVencido(r: RiscoAceito, hoje: Date = new Date()): boolean {
-  if (r.encerrado_em) return false
-  const revisao = new Date(r.data_revisao)
-  return Number.isNaN(revisao.getTime()) || revisao < hoje
+/**
+ * O estado do prazo de um risco, **em um lugar so'**. O `doctor` e o `ra` tinham cada um a sua
+ * conta, e as duas discordavam; quem usasse o comando era punido por isso.
+ *
+ * `ilegivel` existe separado de proposito: **nao conseguir ler uma data nao e' o mesmo que a data
+ * ter passado**. Fundir os dois esconde o defeito do registro atras de um prazo que nunca existiu.
+ */
+export type EstadoDoPrazo = 'encerrado' | 'no_prazo' | 'vencido' | 'ilegivel'
+
+export function estadoDoPrazo(r: RiscoAceito): EstadoDoPrazo {
+  if (r.encerrado_em) return 'encerrado'
+  const revisao = lerData(r.data_revisao)
+  if (!revisao) return 'ilegivel'
+  return revisao.getTime() < relogioDoPacote().getTime() ? 'vencido' : 'no_prazo'
+}
+
+/** Vencido e' pior que o problema original: a revisao parou de funcionar. Ilegivel nao e' vencido. */
+export function riscoVencido(r: RiscoAceito): boolean {
+  return estadoDoPrazo(r) === 'vencido'
 }
 
 export function carregarRecusas(): Recusa[] {
