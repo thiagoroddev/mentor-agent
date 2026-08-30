@@ -3,6 +3,7 @@ import { agora, caminhos, diasDesde, escreverJson, listar } from './arquivos.ts'
 import { tetos } from './cmd-verificar.ts'
 import { rascunhosParados } from './cmd-anotar.ts'
 import { PONTOS_DE_ENTRADA, pontosDeEntradaSemNucleo } from './entrada.ts'
+import { analisadoresSemIgnorar } from './instalar.mjs'
 import {
   carregarContexto, carregarDividas, carregarRequisitos, carregarRiscos, carregarTarefas,
   estadoDoPrazo, riscoVencido,
@@ -226,6 +227,13 @@ function processo(ctx: Contexto, tarefas: Tarefa[]): Linha[] {
   const semPadrao = ctx.ferramentas.filter((f) => !f.padrao && !f.dispensa_motivo)
   if (semPadrao.length) {
     linhas.push({ estado: 'atencao', texto: `${semPadrao.length} ferramenta(s) sem convencao escrita: ${semPadrao.map((f) => f.nome).join(', ')}` })
+  }
+
+  // O gate de lint do projeto reprovando por estilo do PACOTE nao mede nada do codigo do projeto,
+  // e trava o ciclo no primeiro `finalizar`. Medido em campo: 1.975 erros, nenhum em src/.
+  const lintCego = analisadoresSemIgnorar(caminhos().raiz)
+  if (lintCego.length) {
+    linhas.push({ estado: 'atencao', texto: `${lintCego.map((l) => l.arquivo).join(', ')} nao ignora .mentor/: o gate de lint reprova por estilo do pacote. Acrescente ${lintCego[0]?.linha}` })
   }
 
   // A checagem mais barata do pacote, e a que sustenta todas as outras: se nenhuma ferramenta

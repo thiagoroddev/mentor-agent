@@ -674,4 +674,17 @@ VALIDACAO 9.3 · O pacote carregou num projeto real pela primeira vez (roteiriza
              LIMITE HONESTO: a correcao do relogio congelado nao tem teste que falhe sem ela. As
              datas do cenario dao o mesmo veredito com relogio real ou congelado, entao ela esta'
              certa por leitura, nao por prova. Registrado para nao passar por provado.
+30/08/26 · Fase 10, passo 2. Achado 1 do campo: `eslint .` varria `.mentor/` e produzia 1.975
+             erros, nenhum em `src/`. Com o nucleo exigindo gate verde, a instalacao travava o
+             ciclo que ela veio abrir: o projeto piorava no minuto em que adotava.
+             `instalar` detecta config de analisador na raiz que ainda nao mencione `.mentor` e
+             imprime a linha pronta, nos DOIS caminhos (repositorio e node_modules). O doctor
+             cobra enquanto o ignore nao existir. Nunca edita a config: ela e' do projeto, e
+             sobrescreve-la e' a mesma classe de erro que sobrescrever o CLAUDE.md da pessoa.
+             Pergunta do humano, respondida com o eslint.config.js real em maos: adequar o estilo
+             do pacote NAO resolve. `prettier/prettier: error` cobra a saida do prettier daquele
+             projeto, que depende de printWidth, aspas e ponto e virgula que o pacote nao conhece.
+             E se o projeto reformatasse `.mentor/`, o manifesto acusaria divergencia em tudo: os
+             dois mecanismos brigariam. Dependencia se ignora, nao se adequa.
+             Mutacao confere: neutralizar a deteccao derruba o cenario.
 ```

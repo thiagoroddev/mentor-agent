@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
 import { join, relative } from 'node:path'
-import { copiarPacote } from './instalar.mjs'
+import { analisadoresSemIgnorar, copiarPacote } from './instalar.mjs'
 import { criarPontosDeEntrada } from './entrada.ts'
 import {
   agoraIso, caminhos, escreverJson, escreverTexto, existe, lerJson, lerTexto, listar, raizPacote,
@@ -103,6 +103,14 @@ export function instalar(flags: Record<string, string | undefined>): void {
         ? '  CLAUDE.md:  @.mentor/nucleo.md'
         : `  ${arquivo}:  Antes de qualquer outra coisa, leia \`.mentor/nucleo.md\`.`)
     }
+  }
+
+  const lint = analisadoresSemIgnorar(destino)
+  if (lint.length) {
+    console.log(`\nAVISO: ${lint.map((l) => l.arquivo).join(', ')} nao ignora .mentor/.`)
+    console.log('O analisador vai varrer o pacote e reprovar o gate de lint por estilo que nao e do seu codigo.')
+    console.log('Acrescente:')
+    for (const l of lint) console.log(`  ${l.arquivo}:  ${l.linha}`)
   }
   console.log('\nProximo passo: `node mentor.mjs init`, e depois responder os portoes V, C e 0.')
 

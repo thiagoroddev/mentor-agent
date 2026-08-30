@@ -11,7 +11,7 @@ const aqui = dirname(fileURLToPath(import.meta.url))
 // coisa que precisa fazer ali (copiar-se para dentro do projeto) e todos os outros comandos passam
 // a rodar da raiz, onde a remocao de tipos funciona. Medido: sem isto, `npx mentor instalar` morre.
 if (aqui.split(/[\\/]/).includes('node_modules')) {
-  const { copiarPacote, criarPontosDeEntrada } = await import('./.mentor/scripts/instalar.mjs')
+  const { copiarPacote, criarPontosDeEntrada, analisadoresSemIgnorar } = await import('./.mentor/scripts/instalar.mjs')
   const args = process.argv.slice(2)
   if (args[0] !== 'instalar') {
     console.error('Instalado como dependencia, so `instalar` roda daqui.')
@@ -37,6 +37,14 @@ if (aqui.split(/[\\/]/).includes('node_modules')) {
             ? '  CLAUDE.md:  @.mentor/nucleo.md'
             : `  ${arq}:  Antes de qualquer outra coisa, leia \`.mentor/nucleo.md\`.`)
         }
+      }
+
+      const lint = analisadoresSemIgnorar(destino)
+      if (lint.length) {
+        console.log(`\nAVISO: ${lint.map((l) => l.arquivo).join(', ')} nao ignora .mentor/.`)
+        console.log('O analisador vai varrer o pacote e reprovar o gate de lint por estilo que nao e do seu codigo.')
+        console.log('Acrescente:')
+        for (const l of lint) console.log(`  ${l.arquivo}:  ${l.linha}`)
       }
       console.log('\nProximo passo: `node mentor.mjs init`, e depois responder os portoes V, C e 0.')
     }

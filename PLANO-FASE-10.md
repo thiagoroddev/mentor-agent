@@ -62,7 +62,7 @@ Conferido por mutação antes de dar por pronto.
 
 **Risco da mudança:** baixo. Função isolada, sem mudança de formato de arquivo.
 
-## Passo 2 · Instalar o pacote reprova o lint do projeto
+## Passo 2 · Instalar o pacote reprova o lint do projeto 🟢 *(feito, 0.1.3)*
 
 **O defeito.** `eslint .` varre a raiz, encontra `.mentor/scripts/*.ts` e produz 1.975 erros, nenhum
 em `src/`. Como o núcleo exige gate verde para fechar tarefa, **a instalação trava o ciclo que ela
@@ -78,6 +78,18 @@ veio abrir**. É o pior tipo de defeito de adoção: o projeto piora no minuto e
 
 **Por que não editar automaticamente:** configuração de lint é do projeto, e sobrescrever a do
 usuário é a mesma classe de erro que sobrescrever o `CLAUDE.md` dele.
+
+**Por que adequar o estilo do pacote não resolve** (pergunta do humano, 30/08, respondida com o
+`eslint.config.js` real do `roteirizarj` em mãos). A regra que dispara é `"prettier/prettier": "error"`
+sobre `**/*.{ts,tsx}`, e o que ela cobra não é estilo em abstrato: é **bater com a saída do prettier
+configurado naquele projeto**. Lá o `printWidth` é 200; o padrão é 80. Código formatado para um
+acusa erro no outro. Não existe formatação que satisfaça um projeto arbitrário, porque a resposta
+certa depende de uma configuração que o pacote não pode conhecer.
+
+⚠️ E há um motivo específico deste pacote que fecha a questão: se o projeto reformatasse `.mentor/`,
+o `verificar` acusaria divergência em todos os arquivos. **O manifesto e o formatador brigariam**, e
+o manifesto perderia toda a utilidade. `.mentor/` é dependência versionada junto, e dependência se
+ignora, como `node_modules` e `dist`.
 
 **Teste:** cenário com `eslint.config.js` na raiz, conferindo que o `instalar` nomeia o arquivo certo
 e que o `doctor` avisa enquanto o ignore não existir.

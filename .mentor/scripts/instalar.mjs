@@ -3,7 +3,7 @@
 // (ERR_UNSUPPORTED_NODE_MODULES_TYPE_STRIPPING). Um `.ts` aqui quebraria a instalacao inteira.
 // Fonte unica da copia: `mentor.mjs` chama daqui quando esta em node_modules, e `cmd-pacote.ts`
 // chama daqui quando roda do repositorio. Duas copias da mesma logica divergiriam.
-import { cpSync, existsSync, mkdirSync, writeFileSync } from 'node:fs'
+import { cpSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 
 /**
@@ -106,4 +106,49 @@ export function criarPontosDeEntrada(destino) {
     r.criados.push(p.arquivo)
   }
   return r
+}
+
+// ---------------------------------------------------------------- analisador do projeto
+
+/**
+ * O pacote mora **dentro** do repositorio, de proposito, e por isso o analisador do projeto o
+ * encontra. Medido em campo: `eslint .` achou `.mentor/scripts/` e produziu **1.975 erros, nenhum
+ * em `src/`**. Como o nucleo exige gate verde para fechar tarefa, a instalacao travava o ciclo que
+ * ela veio abrir. Pior defeito de adocao possivel: o projeto piora no minuto em que adota.
+ *
+ * ⚠️ **Adequar o estilo do pacote nao resolve.** Com `prettier/prettier: error` o que se cobra e'
+ * bater com a saida do prettier **daquele** projeto, e ela depende de `printWidth`, aspas e ponto e
+ * virgula que o pacote nao tem como conhecer. Pior: se o projeto reformatasse `.mentor/`, o
+ * `verificar` passaria a acusar divergencia em todos os arquivos. Os dois mecanismos brigariam.
+ *
+ * `.mentor/` e' dependencia versionada junto, e dependencia nao se analisa: ignora-se, como
+ * `node_modules` e `dist`.
+ */
+const ANALISADORES = [
+  { arquivo: 'eslint.config.js', linha: 'ignores: [".mentor"]  (ou globalIgnores(["dist", ".mentor"]))' },
+  { arquivo: 'eslint.config.mjs', linha: 'ignores: [".mentor"]  (ou globalIgnores(["dist", ".mentor"]))' },
+  { arquivo: 'eslint.config.cjs', linha: 'ignores: [".mentor"]  (ou globalIgnores(["dist", ".mentor"]))' },
+  { arquivo: 'eslint.config.ts', linha: 'ignores: [".mentor"]  (ou globalIgnores(["dist", ".mentor"]))' },
+  { arquivo: '.eslintrc.json', linha: '"ignorePatterns": [".mentor"]' },
+  { arquivo: '.eslintrc.js', linha: 'ignorePatterns: [".mentor"]' },
+  { arquivo: '.eslintrc.cjs', linha: 'ignorePatterns: [".mentor"]' },
+  { arquivo: '.eslintignore', linha: '.mentor' },
+  { arquivo: 'biome.json', linha: '"files": { "includes": ["**", "!.mentor/**"] }' },
+  { arquivo: 'biome.jsonc', linha: '"files": { "includes": ["**", "!.mentor/**"] }' },
+]
+
+/**
+ * Configuracoes de analisador na raiz que **ainda nao mencionam** `.mentor`.
+ * Mencionar e' o sinal: quem escreveu `.mentor` ali ja' decidiu o que fazer com ele.
+ */
+export function analisadoresSemIgnorar(destino) {
+  const achados = []
+  for (const a of ANALISADORES) {
+    const caminho = join(destino, a.arquivo)
+    if (!existsSync(caminho)) continue
+    let conteudo = ''
+    try { conteudo = readFileSync(caminho, 'utf8') } catch { continue }
+    if (!conteudo.includes('.mentor')) achados.push(a)
+  }
+  return achados
 }

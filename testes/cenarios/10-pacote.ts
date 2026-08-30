@@ -21,6 +21,17 @@ export function rodar(): Cenario {
 
   confere(c, mentor(c, 'verificar').codigo === 0, 'pacote recem-instalado nao diverge de nada')
 
+  // --- o analisador do projeto encontra o pacote e reprova por estilo que nao e do projeto.
+  //     Medido em campo: 1975 erros, nenhum em src/, e o ciclo travava no primeiro finalizar.
+  escrever(c, 'eslint.config.js', 'export default [{ files: ["**/*.ts"] }]\n')
+  const comLint = mentor(c, 'instalar', '--destino', c.pasta, '--forcar')
+  dizQue(c, comLint, 'nao ignora .mentor/', 'o instalar avisa que o analisador vai varrer o pacote')
+  dizQue(c, comLint, 'ignores: [".mentor"]', 'e da a linha pronta, em vez de descrever o problema')
+  dizQue(c, mentor(c, 'doctor'), 'nao ignora .mentor/', 'o doctor cobra enquanto o ignore nao existir')
+  escrever(c, 'eslint.config.js', 'export default [{ ignores: [".mentor"] }]\n')
+  confere(c, !mentor(c, 'doctor').saida.includes('nao ignora .mentor/'),
+    'mencionar .mentor na config encerra o aviso: quem escreveu ali ja decidiu')
+
   // --- pontos de entrada. Sem eles nenhuma ferramenta le o nucleo, e o pacote inteiro nao existe.
   //     No antecessor isto so foi notado quando um projeto real carregou nada.
   for (const arquivo of ['CLAUDE.md', 'AGENTS.md', 'GEMINI.md']) {
@@ -86,6 +97,9 @@ export function rodar(): Cenario {
   // moravam num `.ts`, que de dentro de node_modules nao carrega. O `instalar` copiava o pacote e
   // nao criava entrada nenhuma, ou seja, instalava um pacote que nada carregava.
   dizQue(c, deLa, 'Ponto de entrada criado', 'de node_modules tambem cria os pontos de entrada')
+  escrever({ ...c, pasta: alvo }, 'eslint.config.js', 'export default [{ files: ["**/*.ts"] }]\n')
+  dizQue(c, deDentro('instalar', '--destino', alvo, '--forcar'), 'nao ignora .mentor/',
+    'o aviso de lint tambem sai pelo caminho de node_modules, que e como o npm entrega')
   for (const arquivo of ['CLAUDE.md', 'AGENTS.md', 'GEMINI.md']) {
     confere(c, ler({ ...c, pasta: alvo }, arquivo).includes('.mentor/nucleo.md'),
       `${arquivo} criado pelo caminho de node_modules aponta para o nucleo`)
