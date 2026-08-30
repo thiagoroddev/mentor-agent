@@ -590,4 +590,12 @@ Uma linha por passo concluido: `DD/MM/AA HH:MM · passo · o que mudou · o que 
              no primeiro projeto real, que e' o lugar mais caro possivel para descobrir.
              Licao de desenho: **caminho de entrega documentado e' promessa ate' ser executado.**
              Eu tinha escrito as quatro linhas do 9.0 com confianca e nao as tinha rodado uma vez.
+30/08/26 · Remoto, tag v0.1.0 e notas da release preparados. O `push` fica com o humano: o shell
+             que eu tenho na maquina dele nao alcanca as credenciais do GitHub. Repositorio
+             PUBLICO (decisao do humano), entao a instalacao e' `npm i -D github:...#v0.1.0`.
+             DEFEITO ACHADO POR ACIDENTE, e vale mais que o conserto: adicionar o remoto quebrou o
+             cenario `07-entrega`, que afirmava "sem remoto" rodando num exemplo **dentro deste
+             repositorio**. A asercao nao testava o pacote, testava o ambiente — e passava verde ha'
+             dias por coincidencia. Movida para repositorio temporario proprio.
+             Regra que sai daqui: **asercao sobre git roda em repositorio isolado, sempre.**
 ```

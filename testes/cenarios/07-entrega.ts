@@ -1,3 +1,4 @@
+import { spawnSync } from 'node:child_process'
 import {
   abrirCenario, abrirCenarioTemporario, confere, dizQue, escrever, fecharTemporario, ler, lerJson, mentor,
 } from '../apoio.ts'
@@ -29,8 +30,16 @@ export function rodar(): Cenario {
     'projeto sem repositorio git e bloqueio, e ninguem precisa lembrar de perguntar')
   fecharTemporario(solto)
 
-  dizQue(c, mentor(c, 'doctor'), 'sem remoto',
+  // Tambem fora do repositorio, e a razao vale registrar: esta asercao vivia no exemplo de dentro e
+  // quebrou no dia em que o proprio pacote ganhou um remoto. Teste que depende do estado do
+  // repositorio hospedeiro nao testa o pacote: testa o ambiente.
+  const local = abrirCenarioTemporario('sem-remoto')
+  spawnSync('git', ['init', '-q'], { cwd: local.pasta })
+  spawnSync('git', ['-c', 'user.email=t@t', '-c', 'user.name=t', 'commit', '-q', '--allow-empty', '-m', 'i'], { cwd: local.pasta })
+  mentor(local, 'init')
+  dizQue(c, mentor(local, 'doctor'), 'sem remoto',
     'versionado sem remoto vira aviso: o trabalho existe so nesta maquina')
+  fecharTemporario(local)
 
   // --- gates: usa os comandos do projeto, nunca um `npm run` suposto
   const semGate = mentor(c, 'gates')
