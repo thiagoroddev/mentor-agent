@@ -82,6 +82,14 @@ export function rodar(): Cenario {
   const deLa = deDentro('instalar', '--destino', alvo)
   dizQue(c, deLa, 'instalado em', 'instalar funciona de dentro de node_modules, que e como o npm entrega')
   confere(c, ler({ ...c, pasta: alvo }, '.mentor/nucleo.md').length > 0, 'o pacote chegou inteiro na raiz do projeto')
+  // Este e o caminho que o usuario real percorre, e ja falhou aqui uma vez: os pontos de entrada
+  // moravam num `.ts`, que de dentro de node_modules nao carrega. O `instalar` copiava o pacote e
+  // nao criava entrada nenhuma, ou seja, instalava um pacote que nada carregava.
+  dizQue(c, deLa, 'Ponto de entrada criado', 'de node_modules tambem cria os pontos de entrada')
+  for (const arquivo of ['CLAUDE.md', 'AGENTS.md', 'GEMINI.md']) {
+    confere(c, ler({ ...c, pasta: alvo }, arquivo).includes('.mentor/nucleo.md'),
+      `${arquivo} criado pelo caminho de node_modules aponta para o nucleo`)
+  }
   const semAviso = spawnSync(process.execPath, [join(alvo, 'mentor.mjs'), 'init'], { encoding: 'utf8', cwd: alvo })
   confere(c, !`${semAviso.stdout}${semAviso.stderr}`.includes('MODULE_TYPELESS'),
     'sem aviso de tipo de modulo: `.mentor/package.json` resolve sem mexer no package.json do projeto')

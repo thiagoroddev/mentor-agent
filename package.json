@@ -17,8 +17,7 @@
     "tipos": "tsc --noEmit",
     "test": "node testes/executar.ts",
     "verify": "npm run manifesto && npm run tipos && npm test",
-    "manifesto": "node mentor.mjs manifesto",
-    "postinstall": "node -e \"console.log('\\nmentor-agent instalado em node_modules. Falta o passo que muda o projeto:\\n  npx mentor instalar    copia .mentor/, mentor.mjs e os pontos de entrada de IA\\n')\""
+    "manifesto": "node mentor.mjs manifesto"
   },
   "devDependencies": {
     "@types/node": "^22.15.0",

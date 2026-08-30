@@ -620,4 +620,14 @@ Uma linha por passo concluido: `DD/MM/AA HH:MM · passo · o que mudou · o que 
              Junto: `postinstall` que imprime o passo que falta. `npm i` sozinho nao muda nada no
              projeto por desenho, e sem esse aviso o usuario ve zero diferenca e conclui que quebrou.
              Foi exatamente o que aconteceu com o humano hoje.
+30/08/26 · MESMO DEFEITO, SEGUNDA VEZ, e so' apareceu porque testei com o tarball de verdade em
+             vez de rodar do repositorio: os pontos de entrada moravam em `entrada.ts`, e o caminho
+             de node_modules nao carrega `.ts`. O `instalar` copiava o pacote e **nao criava entrada
+             nenhuma** — instalava um pacote que nada carregava, que e' o defeito que ele tinha
+             acabado de consertar. Movidos para `instalar.mjs`, em JS puro, com o resto.
+             `postinstall` removido: o npm engole a saida de script de dependencia, entao ele nao
+             imprimia nada. Aviso que nao aparece e' pior que aviso nenhum, porque da' a impressao
+             de que existe.
+             Regra que sai daqui: **todo caminho que passa por node_modules e' JS puro, e o cenario
+             `10-pacote` prova isso arquivo a arquivo.** Duas vezes nao pode virar tres.
 ```
