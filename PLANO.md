@@ -647,4 +647,11 @@ Uma linha por passo concluido: `DD/MM/AA HH:MM · passo · o que mudou · o que 
 VALIDACAO 9.3 · O pacote carregou num projeto real pela primeira vez (roteirizarj-limpo, 30/08).
              Claude, Codex e Gemini leram o nucleo pelos pontos de entrada; as demais ferramentas
              reconheceram a instrucao de ler. E' o unico teste que nenhum dos 12 cenarios faz.
+30/08/26 · REGRA VINDA DO HUMANO, e ela corrige um erro meu de metodo: **entrega se prova pelo
+             remoto, nunca pela copia local.** Eu tinha orientado a copiar de uma pasta para a
+             outra para destravar rapido, e o atalho pula justamente as etapas que falham. Se ele
+             tivesse seguido, teria instalado, funcionado, e a tag continuaria faltando no remoto
+             sem ninguem saber. Duas provas no mesmo dia: a tag errada, e a instalacao por npm que
+             nunca funcionou enquanto eu so' rodava do repositorio.
+             Registrado em `processos/entrega.md` como secao propria.
 ```

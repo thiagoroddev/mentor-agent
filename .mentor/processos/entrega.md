@@ -94,3 +94,16 @@ ninguém percebe, porque nada falha.
 
 Conferir o resultado da esteira daquele commit. **É o único passo posterior ao portão 3 do núcleo,**
 porque acontece depois de todos eles. Não é autorização e não reprova nada: o poder dele é avisar.
+
+## Entrega se prova pelo remoto, nunca pela cópia local
+
+Quem instala não tem a sua pasta. Copiar de um diretório vizinho exercita um caminho que **ninguém
+mais percorre**, e pula o que costuma falhar: a tag existir no remoto, o `files` do pacote, o que o
+gerenciador de fato empacota.
+
+**Publicou, instale do remoto uma vez, num diretório vazio, como um estranho faria.** Custa um
+minuto e é a única prova de que a versão publicada é instalável.
+
+⚠️ Medido aqui, num dia: uma tag saiu apontando para o commit errado sem ninguém notar, e a
+instalação por gerenciador nunca havia funcionado, ambas documentadas como se funcionassem.
+
