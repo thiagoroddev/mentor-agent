@@ -396,6 +396,14 @@ export function atualizarContagens(): Contexto {
   }
   ctx.auditoria.proxima_em_tarefa =
     Math.floor(concluidas / ctx.auditoria.cadencia_em_tarefas + 1) * ctx.auditoria.cadencia_em_tarefas
+  // A versao vem do manifesto do pacote INSTALADO, a cada geracao. Era gravada so' pelo `init`, e o
+  // `init` recusa rodar em projeto que ja' existe: atualizar o pacote nunca atualizava o numero.
+  // Achado em campo com a 0.1.3 instalada e o contexto ainda dizendo 0.1.2, o que faz o relatorio
+  // atribuir defeito a versao errada e destroi a unica coisa que o campo mede. Gerado, nao lembrado.
+  const manifesto = join(c.pacote, 'manifesto.json')
+  if (existe(manifesto)) {
+    ctx._meta['versao_do_pacote'] = lerJson<{ versao?: string }>(manifesto).versao ?? 'desconhecida'
+  }
   ctx._meta.atualizado_em = agoraIso()
   escreverJson(c.contexto, ctx)
   return ctx

@@ -702,4 +702,16 @@ VALIDACAO 9.3 · O pacote carregou num projeto real pela primeira vez (roteiriza
              caso do `docs/tetos.json`, que e' exatamente para isso.
              Duas mutacoes conferem: voltar ao caminho exato e ignorar o arquivo do projeto
              derrubam o cenario.
+30/08/26 · Fase 10, passo 4b. ACHADO 9, e ele veio do campo DEPOIS de instalar a 0.1.3: o pacote
+             subiu de versao e `contexto._meta.versao_do_pacote` ficou dizendo 0.1.2. So' o `init`
+             escrevia esse campo, e o `init` recusa rodar em projeto que ja' existe, entao nenhum
+             caminho de atualizacao o tocava. Congelado na versao da adocao, para sempre.
+             Grave porque e' o UNICO campo que liga achado de campo a versao: com ele mentindo, o
+             relatorio atribui a 0.1.2 defeito que a 0.1.3 ja' corrigiu.
+             Agora e' gerado a cada regeneracao, lido do manifesto do pacote instalado. P2 aplicado
+             onde faltava: se da' para gerar, gere.
+             ⚠️ O primeiro teste de mutacao saiu POLUIDO e quase me convenceu de que a asercao nao
+             mordia: eu mutei um arquivo do pacote sem regenerar o manifesto, entao as checagens de
+             divergencia caiam antes e escondiam o resultado. Mutar exige regenerar o manifesto
+             junto, senao o cenario falha pelo motivo errado. Refeito na ordem certa: morde.
 ```

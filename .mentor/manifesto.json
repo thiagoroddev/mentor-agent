@@ -1,6 +1,6 @@
 {
   "versao": "0.1.3",
-  "gerado_em": "2026-08-30T18:04:26.940Z",
+  "gerado_em": "2026-08-30T18:32:10.514Z",
   "arquivos": {
     "esquemas/contexto.json": "014c3dfe91606be9",
     "esquemas/divida-tecnica.json": "0906f6786a8e63a1",
@@ -56,7 +56,7 @@
     "scripts/entrada.ts": "1a56522a3580b616",
     "scripts/ids.ts": "63e393f8e0b27e5a",
     "scripts/tipos.ts": "ba3576f118061a5a",
-    "scripts/vistas.ts": "a8ad6ded3155766e",
+    "scripts/vistas.ts": "de86c9fe85145a5c",
     "tetos.json": "db78c8c6440aa7d5"
   }
 }

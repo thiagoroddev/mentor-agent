@@ -108,6 +108,15 @@ export function rodar(): Cenario {
   confere(c, !`${semAviso.stdout}${semAviso.stderr}`.includes('MODULE_TYPELESS'),
     'sem aviso de tipo de modulo: `.mentor/package.json` resolve sem mexer no package.json do projeto')
 
+  // A versao gravada ACOMPANHA a atualizacao. Antes so o `init` escrevia esse campo, e o `init`
+  // recusa rodar em projeto que ja existe: atualizar o pacote deixava o contexto dizendo a versao
+  // antiga para sempre, e o relatorio de campo atribuia defeito a versao errada.
+  // Por ultimo no cenario de proposito: o manifesto falso derruba a checagem de divergencia acima.
+  escrever(c, '.mentor/manifesto.json', JSON.stringify({ versao: '9.9.9', gerado_em: 'x', arquivos: {} }, null, 2))
+  mentor(c, 'gerar')
+  confere(c, lerJson<Record<string, any>>(c, 'docs/contexto.json')['_meta'].versao_do_pacote === '9.9.9',
+    'atualizar o pacote atualiza a versao gravada: o campo e gerado, nao lembrado')
+
   fecharTemporario(c)
   return c
 }

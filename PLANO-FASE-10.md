@@ -120,6 +120,22 @@ Proposta: `tetos.json` do pacote continua sendo o padrão, e um `tetos.json` **d
 O teto do `contexto.md` foi calibrado em projeto vazio, e o conteúdo é **gerado por script**, não
 prosa que se possa enxugar. Teto sobre saída gerada é teto sobre o gerador, e o gerador está certo.
 
+## Passo 4b · A versão gravada não acompanhava a atualização 🟢 *(feito, 0.1.3)*
+
+**Achado 9, vindo do campo depois de instalar a 0.1.3.** O pacote foi para 0.1.3 e
+`contexto._meta.versao_do_pacote` continuou dizendo 0.1.2.
+
+**A causa.** Só o `init` escrevia esse campo, e o `init` recusa rodar em projeto que já existe. Nenhum
+caminho de atualização o tocava, então ele ficava congelado na versão da adoção, para sempre.
+
+**Por que é grave e não cosmético.** É o único campo que liga um achado de campo a uma versão. Os 8
+furos do `roteirizarj` foram medidos na 0.1.2 e três já estavam corrigidos na 0.1.3; com o campo
+mentindo, o relatório atribuiria defeito já resolvido à versão que o resolveu.
+
+**A mudança.** O campo passa a ser gerado a cada regeneração, lido do `manifesto.json` do pacote
+**instalado**. Não é lembrado por comando nenhum: qualquer coisa que regenere o contexto o corrige.
+É o princípio P2 do pacote, "se dá para gerar, gere", aplicado onde faltava.
+
 ---
 
 # 0.2.0 · Adoção não é migração
