@@ -221,11 +221,17 @@ visita, e defeito achado ali pode nao existir em lugar nenhum (decisao do humano
 dizer *"isto aconteceu com a 0.1.0"*.
 
 ```
-no pacote:      npm pack                    -> mentor-agent-0.1.0.tgz
-no hospedeiro:  npm i -D ../mentor-agent-0.1.0.tgz
+no hospedeiro:  npm i -D github:thiagoroddev/mentor-agent#v0.1.0
                 npx mentor instalar         -> copia .mentor/ e mentor.mjs para a raiz
-                npx mentor init             -> cria docs/
+                node mentor.mjs init        -> cria docs/
 ```
+
+🟢 **30/08: repositorio publico com tag e release** (decisao do humano). O `npm i` a partir da tag
+clona e empacota sozinho, respeitando o `files` do `package.json`: chegam 60 arquivos, sem os testes
+nem os exemplos. O `.tgz` anexado a' release serve para instalar sem rede ou congelar uma copia.
+
+⚠️ **`npx mentor init` nao existe** — depois do `instalar`, os comandos rodam da raiz do projeto,
+com `node mentor.mjs`. De dentro de `node_modules` so' o `instalar` funciona, e o motivo esta' abaixo.
 
 ⚠️ **30/08: este caminho estava quebrado, e so' se descobre executando.** O Node **se recusa** a
 remover tipos de arquivo dentro de `node_modules` (`ERR_UNSUPPORTED_NODE_MODULES_TYPE_STRIPPING`),

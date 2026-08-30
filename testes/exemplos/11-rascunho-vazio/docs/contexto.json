@@ -457,7 +457,6 @@
     "5 configuracao(oes) de plataforma nao declarada(s): protecao_do_ramo_principal, apagar_ramo_apos_merge, alertas_de_vulnerabilidade, atualizacoes_de_seguranca, segredos_do_ambiente_de_esteira. Nenhum script alcanca isso",
     "nenhum requisito registrado: o que guia o trabalho nao esta escrito",
     "4 portao(oes) que a fase \"descoberta\" ja exige continuam abertos: V_negocio, C_obrigacoes, 0_rigor, P_problema",
-    "repositorio sem remoto: o trabalho existe so nesta maquina",
     "fase \"descoberta\" sem nenhum rascunho. Fluxo atual, atores, estados, entidades e telas moram em docs/rascunhos/ (processos/rascunho.md)"
   ],
   "_lembretes_nota": "GERADO pelo doctor a cada execucao. Nao digite aqui: campo livre acumula prosa como qualquer outro."

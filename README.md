@@ -3,6 +3,24 @@
 Pacote de trabalho para agentes de IA. Gerencia tarefas, orienta quem nao sabe o que precisa
 perguntar, e registra tudo de forma rastreavel.
 
+## Como instalar num projeto
+
+Na raiz do projeto que vai usar o pacote:
+
+```bash
+npm i -D github:thiagoroddev/mentor-agent#v0.1.0
+npx mentor instalar        # copia .mentor/ e mentor.mjs para a raiz
+node mentor.mjs init       # cria docs/
+```
+
+⚠️ **O pacote e' copiado PARA DENTRO do repositorio, e nao fica em `node_modules`.** E' deliberado:
+a IA le' `.mentor/` como arquivo, e o projeto versiona as convencoes dele ao lado. De dentro de
+`node_modules` so' o `instalar` roda — o Node se recusa a remover tipos ali, e o `mentor.mjs` avisa
+isso em vez de estourar.
+
+A versao instalada fica gravada em `docs/contexto.json`, senao o relatorio de campo nao consegue
+dizer *"isto aconteceu com a 0.1.0"*.
+
 ## Como rodar
 
 No terminal, **dentro da pasta do projeto**. Requer **Node 22.18 ou maior**: confira com
