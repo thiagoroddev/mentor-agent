@@ -219,6 +219,19 @@ export interface ReferenciaExterna {
   registrado_em?: string | null
 }
 
+/**
+ * Invariante de dominio ou restricao arquitetural.
+ * O codigo mostra o que e'; a invariante mostra o que precisa continuar sendo.
+ */
+export interface Invariante {
+  id: string
+  enunciado: string
+  porque: string
+  mecanismo: string | null
+  declarada_em: string
+  conferida_em: string
+}
+
 export interface Portao {
   status: 'aberto' | 'respondido' | 'dispensado'
   guia: string

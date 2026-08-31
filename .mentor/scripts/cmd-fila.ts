@@ -5,7 +5,7 @@ import {
 } from './arquivos.ts'
 import { proximoIdDeTarefa } from './ids.ts'
 import {
-  carregarContexto, carregarDividas, carregarReferencias, carregarRequisitos, carregarRiscos, carregarTarefas,
+  carregarContexto, carregarDividas, carregarInvariantes, carregarReferencias, carregarRequisitos, carregarRiscos, carregarTarefas,
   regenerarTudo, registrarRecusa,
 } from './vistas.ts'
 import type { Tarefa } from './tipos.ts'
@@ -35,6 +35,7 @@ export function origemNaoResolve(origem: string): string | null {
   const idsRequisito = new Set(carregarRequisitos().map((r) => r.id))
   const idsDivida = new Set(carregarDividas().map((d) => d.id))
   const idsRisco = new Set(carregarRiscos().map((r) => r.id))
+  const idsInvariante = new Set(carregarInvariantes().map((i) => i.id))
   const nomesAdr = listar(c.adr, '.md').map((a) => relativo(a))
   const nomesRev = listar(`${c.docs}/arquitetura/revisoes-gerais`, '.md').map((a) => relativo(a))
   const refs = carregarReferencias()
@@ -58,6 +59,7 @@ export function origemNaoResolve(origem: string): string | null {
         break
       case 'DT': if (!idsDivida.has(id)) quebrados.push(id); break
       case 'RA': if (!idsRisco.has(id)) quebrados.push(id); break
+      case 'INV': if (!idsInvariante.has(id)) quebrados.push(id); break
       case 'ADR': if (!nomesAdr.some((n) => n.includes(id))) quebrados.push(id); break
       case 'REV': if (!nomesRev.some((n) => n.includes(id))) quebrados.push(id); break
       default: quebrados.push(`${id} (familia desconhecida)`)

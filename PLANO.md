@@ -815,4 +815,10 @@ VALIDACAO 9.3 · O pacote carregou num projeto real pela primeira vez (roteiriza
              respeita `contexto.json -> offsets_de_id[prefixo]`, referências históricas `TASK-*` em
              `referencias.json` e tarefas locais. Cenário `14-offsets-de-id` prova geração sem
              colisão com offsets e referências externas. Mutação conferida.
+31/08/26 · 0.2.1 · FASE 10, PASSO 7. Documentos alem de ADR: registro de invariantes
+             (`docs-mentor/invariantes.json`) e glossario (`docs-mentor/glossario.md`). Comando
+             `mentor inv [nova|listar]`. O `doctor` afere a saude das invariantes (proporcao de
+             automatizadas com teste/tipo vs manuais). `origemNaoResolve` aceita `INV-*` validos.
+             Teto de 4000 caracteres para `glossario.md`. Diretriz no nucleo: documente so o que
+             o codigo nao responde. Cenário `15-invariantes-e-glossario` verde e verificado por mutacao.
 ```

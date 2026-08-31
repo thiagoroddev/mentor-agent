@@ -1,0 +1,18 @@
+[
+  {
+    "id": "INV-1",
+    "enunciado": "Preco final e calculado apenas no servidor",
+    "porque": "evitar adulteracao no cliente",
+    "mecanismo": "testes/preco.test.ts > recalcula no servidor",
+    "declarada_em": "29/08/26",
+    "conferida_em": "29/08/26"
+  },
+  {
+    "id": "INV-2",
+    "enunciado": "Tokens JWT nunca sao expostos em logs",
+    "porque": "seguranca da autenticacao",
+    "mecanismo": null,
+    "declarada_em": "29/08/26",
+    "conferida_em": "29/08/26"
+  }
+]

@@ -15,6 +15,7 @@ import { gerarManifesto, instalar } from './cmd-pacote.ts'
 import { anotar } from './cmd-anotar.ts'
 import { preparar as prepararAuditoria, registrar as registrarAuditoria, relatar as relatarAuditorias, resolver as resolverPendencia } from './cmd-auditar.ts'
 import { novaReferencia, relatarReferencias } from './cmd-referencia.ts'
+import { novaInvariante, relatarInvariantes } from './cmd-invariante.ts'
 import { regenerarTudo } from './vistas.ts'
 
 const AJUDA = `
@@ -23,6 +24,8 @@ mentor <comando>
   instalar [--destino <pasta>]         copia o pacote para dentro de um projeto
   manifesto                            grava o hash de cada arquivo do pacote (antes de empacotar)
   init                                 cria docs-mentor/ a partir dos esquemas
+  inv [nova|listar]                    invariante de dominio ou restricao arquitetural
+       nova --id <INV-N> --enunciado "..." --porque "..." [--mecanismo "..."]
   ref [nova|listar]                    referencia a requisito/ADR externo ou historico
        nova --id <ID> --onde <caminho> [--sistema <nome> --titulo <titulo>]
   task nova --tipo T --titulo "..."    cria tarefa (gera ID e data)
@@ -91,6 +94,13 @@ function principal(argv: string[]): number {
     case 'instalar': instalar(flags); return process.exitCode === 1 ? 1 : 0
     case 'manifesto': gerarManifesto(); return 0
     case 'init': inicializar(); return 0
+    case 'inv':
+    case 'invariante': {
+      const sub = posicionais[0]
+      if (!sub || sub === 'listar') { relatarInvariantes(); return 0 }
+      if (sub === 'nova') { novaInvariante(flags); return 0 }
+      throw new Error(`Subcomando de inv desconhecido: "${sub}". Use: mentor inv [listar|nova]`)
+    }
     case 'ref':
     case 'referencia': {
       const sub = posicionais[0]

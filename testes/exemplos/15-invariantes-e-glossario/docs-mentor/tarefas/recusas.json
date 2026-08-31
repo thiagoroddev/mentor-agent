@@ -1,0 +1,10 @@
+[
+  {
+    "quando": "29/08/26 14:00",
+    "comando": "task puxar",
+    "alvo": "TASK-BG-001",
+    "impedimentos": [
+      "origem aponta para INV-99, que nao existe. Criar o registro duravel e parte de criar a tarefa"
+    ]
+  }
+]

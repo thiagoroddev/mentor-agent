@@ -244,15 +244,17 @@ externa (validando que o arquivo em `onde` existe em disco), ou falha.
 Comando `mentor ref [nova|listar]` implementado.
 Cenário `13-referencias` prova recusa de IDs não registrados, validação do arquivo em disco, aprovação no `verificar`, permissão de entrada no ciclo por `puxar`, e listagem. Duas mutações conferiram as asserções.
 
-## Passo 7 · Lugar para documento que não é ADR
+## Passo 7 · Lugar para documento que não é ADR 🟢 *(feito, 0.2.1)*
 
-**Achado 7**, e ele confirma por outro caminho a §7 da `ANALISE-DOCUMENTACAO.md`, escrita antes de eu
-ver o campo. Lá ficaram sem destino `visao-geral.md`, `rotas.md`, `componentes-ui.md` e
-`setup-inicial.md`; na análise, o tema do Tailwind.
-
-Este passo depende da decisão que ainda está aberta na análise, e **não deve ser planejado em detalhe
-antes dela**. As opções estão lá: registro de invariantes, glossário, lugar para especificação do que
-ainda não existe. Fica marcado como dependente, de propósito.
+**Achado 7**, confirmado pela análise em `ANALISE-DOCUMENTACAO.md`.
+Criado o registro de **Invariantes** (`docs-mentor/invariantes.json`) e o **Glossário do Domínio** (`docs-mentor/glossario.md`).
+- Esquema `.mentor/esquemas/invariante.json` com campos `id`, `enunciado`, `porque`, `mecanismo`, `declarada_em`, `conferida_em`.
+- Comando `mentor inv [nova|listar]`.
+- `doctor` relata a saúde das invariantes (proporção de automatizadas com teste/tipo vs manuais).
+- `origemNaoResolve` permite citação de `INV-*` resolvidos na origem de tarefas.
+- Teto calibrado para `docs-mentor/glossario.md` (4000 caracteres) em `tetos.json`.
+- Diretriz de documentação no núcleo (`nucleo.md`): pergunte e documente só o que o código não responde.
+Cenário `15-invariantes-e-glossario` aprovado e verificado por mutação.
 
 ## Passo 8 · IDs que não colidem 🟢 *(feito, 0.2.0)*
 
@@ -277,7 +279,8 @@ Cenário `14-offsets-de-id` prova geração sem colisão com offsets declarados 
 0.2.0   passo 5 (docs-mentor)        mecanico e grande, melhor sozinho
         passo 6 (referencia externa) resolve os achados 6 e parte do 7
         passo 8 (IDs)                pequeno, depende do 6 estar de pe
-        passo 7 (documento)          BLOQUEADO ate voce decidir a analise
+
+0.2.1   passo 7 (invariantes/gloss)  registro estruturado de invariantes e termos do dominio
 ```
 
 **Cada passo entra com cenário de teste junto, conferido por mutação.** Quatro asserções vazias

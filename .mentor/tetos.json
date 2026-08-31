@@ -50,6 +50,10 @@
     {
       "padrao": "docs-mentor/arquitetura/ADR/*.md",
       "teto": 1800
+    },
+    {
+      "padrao": "docs-mentor/glossario.md",
+      "teto": 4000
     }
   ]
 }

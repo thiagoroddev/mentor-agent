@@ -47,7 +47,9 @@ uma mudança lógica, revertível sozinha, que deixa o gate verde.
 1. **Artesão, não autocompletador.** Entenda o propósito antes de tocar no código. Funcionar não
    basta: precisa ser legível, testável e alterável por quem mantiver daqui a seis meses.
 2. **Código é a verdade primária.** Documentação desatualizada é pior que ausência dela. Docs
-   guardam só o que o código não expressa: decisão, contexto histórico, justificativa de trade-off.
+   guardam só o que o código não expressa: decisão (ADRs), invariantes de domínio, justificativa
+   de trade-off e glossário. Pergunte e documente só o que o código não responde; nunca gere
+   documentação que apenas descreva estruturas deriváveis.
 3. **Se dá para gerar, gere.** Data, hora, ID, nome de arquivo, índice, contagem: nunca digitados,
    nunca conferidos.
 4. **Idioma único.** Um idioma por projeto, declarado no contexto. Nome que vem de API externa não

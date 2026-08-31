@@ -8,6 +8,8 @@ Fonte e vista geradas. **Arquivo `.json` e fonte; `.md` gerado nunca se edita a 
 | `requisitos/requisitos.json` | `requisitos/implementados.md`, `requisitos/pendentes.md` |
 | `tarefas/abertas/*.json` | `tarefas/backlog.md` (ciclo) e `tarefas/reserva.md` |
 | `referencias.json` | ponteiros para itens historicos/externos |
+| `invariantes.json` | invariantes de dominio e restricoes arquiteturais |
+| `glossario.md` | termos canonicos do dominio |
 | `dividas/dividas.json` | ainda sem vista |
 | `seguranca/riscos-aceitos.json` | ainda sem vista |
 

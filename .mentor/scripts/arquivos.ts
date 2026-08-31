@@ -96,6 +96,8 @@ export function caminhos(r: string = raizProjeto()) {
     auditorias: join(docs, 'auditorias'),
     riscos: join(docs, 'seguranca', 'riscos-aceitos.json'),
     referencias: join(docs, 'referencias.json'),
+    invariantes: join(docs, 'invariantes.json'),
+    glossario: join(docs, 'glossario.md'),
     stack: join(docs, 'padroes-de-stack'),
     adr: join(docs, 'arquitetura', 'ADR'),
   }

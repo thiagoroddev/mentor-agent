@@ -5,7 +5,7 @@ import { rascunhosParados } from './cmd-anotar.ts'
 import { PONTOS_DE_ENTRADA, pontosDeEntradaSemNucleo } from './entrada.ts'
 import { analisadoresSemIgnorar } from './instalar.mjs'
 import {
-  carregarContexto, carregarDividas, carregarRequisitos, carregarRiscos, carregarTarefas,
+  carregarContexto, carregarDividas, carregarInvariantes, carregarRequisitos, carregarRiscos, carregarTarefas,
   estadoDoPrazo, riscoVencido,
 } from './vistas.ts'
 import { CARACTERISTICAS } from './tipos.ts'
@@ -134,6 +134,15 @@ function qualidade(ctx: Contexto, tarefas: Tarefa[]): Linha[] {
 
   const dividas = carregarDividas().filter((d) => !d.paga_em)
   if (dividas.length) linhas.push({ estado: 'neutro', texto: `${dividas.length} divida(s) tecnica(s) aberta(s)` })
+
+  const invs = carregarInvariantes()
+  if (invs.length) {
+    const comMecanismo = invs.filter((i) => Boolean(i.mecanismo?.trim())).length
+    linhas.push({
+      estado: 'neutro',
+      texto: `${comMecanismo} de ${invs.length} invariante(s) com mecanismo automatizado`,
+    })
+  }
   return linhas
 }
 

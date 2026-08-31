@@ -30,6 +30,20 @@ export function inicializar(): void {
   escreverJson(c.dividas, [])
   escreverJson(c.riscos, [])
   escreverJson(c.referencias, [])
+  escreverJson(c.invariantes, [])
+
+  escreverTexto(
+    c.glossario,
+    [
+      '# Glossario do Dominio',
+      '',
+      '> Termos canonicos e conceitos do sistema. Evita ambiguidade de nomenclatura entre IA e desenvolvedores.',
+      '',
+      '| Termo | Significado no projeto | Sinonimos evitados |',
+      '|---|---|---|',
+      '',
+    ].join('\n'),
+  )
 
   escreverTexto(
     c.docs + '/LEIA.md',
@@ -44,6 +58,8 @@ export function inicializar(): void {
       '| `requisitos/requisitos.json` | `requisitos/implementados.md`, `requisitos/pendentes.md` |',
       '| `tarefas/abertas/*.json` | `tarefas/backlog.md` (ciclo) e `tarefas/reserva.md` |',
       '| `referencias.json` | ponteiros para itens historicos/externos |',
+      '| `invariantes.json` | invariantes de dominio e restricoes arquiteturais |',
+      '| `glossario.md` | termos canonicos do dominio |',
       '| `dividas/dividas.json` | ainda sem vista |',
       '| `seguranca/riscos-aceitos.json` | ainda sem vista |',
       '',

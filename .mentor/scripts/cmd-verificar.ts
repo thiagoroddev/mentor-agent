@@ -3,7 +3,7 @@ import { basename, dirname, join, resolve } from 'node:path'
 import { caminhos, existe, lerJson, lerTexto, listar, raizPacote, relativo } from './arquivos.ts'
 import { comparar } from './cmd-regras.ts'
 import { conferirManifesto } from './cmd-pacote.ts'
-import { carregarContexto, carregarReferencias, carregarRequisitos, carregarTarefas } from './vistas.ts'
+import { carregarContexto, carregarInvariantes, carregarReferencias, carregarRequisitos, carregarTarefas } from './vistas.ts'
 import { MARCADOR } from './tipos.ts'
 import type { Tetos } from './tipos.ts'
 
@@ -199,6 +199,13 @@ function referencias(): Achado[] {
       })
     } else {
       idsExternosValidos.add(ref.id)
+    }
+  }
+
+  const invs = carregarInvariantes()
+  for (const inv of invs) {
+    if (!inv.id || !inv.enunciado || !inv.porque) {
+      achados.push({ familia: 'referencia', onde: 'docs-mentor/invariantes.json', problema: `invariante ${inv.id ?? '(sem id)'} incompleta` })
     }
   }
 
