@@ -1,7 +1,7 @@
 {
   "_meta": {
     "schema": "contexto-projeto/1",
-    "versao_do_pacote": "0.2.0",
+    "versao_do_pacote": "0.2.1",
     "versao_nota": "Gravada no init a partir de .mentor/manifesto.json. Sem ela, o relatorio de campo nao consegue atribuir nada a uma versao.",
     "leia_antes": "Campo null = decisao que o guia exige e ninguem tomou ainda. Nao e' erro: e' a pauta do mentor. Nunca preencher por deducao; perguntar ao humano ou marcar dispensado com motivo.",
     "gerado_em": "2026-08-29T17:00:00.000Z",
