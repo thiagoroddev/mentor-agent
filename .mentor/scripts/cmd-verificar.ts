@@ -20,8 +20,10 @@ function casa(padrao: string, caminho: string): boolean {
  *   erro como se fosse o erro apagaria justamente a medicao de onde o pacote atrapalha.
  * - `relatorio-de-campo.md` e' entregue ao repositorio do PACOTE, nao ao projeto: os marcadores da
  *   parte B sao para quem escreve o relatorio, e nao devem barrar o trabalho do projeto.
+ * - `atrito-de-campo.md` e' a fonte escrita da mesma parte B. As tres categorias sao opcionais;
+ *   seus marcadores orientam a medicao, mas nao significam trabalho incompleto do projeto.
  */
-const MARCADOR_E_CONTEUDO = ['recusas.json', 'relatorio-de-campo.md']
+const MARCADOR_E_CONTEUDO = ['recusas.json', 'relatorio-de-campo.md', 'atrito-de-campo.md']
 
 /** Familia 1: nenhum marcador sobrevivente. O script escreve o esqueleto; ninguem entrega o esqueleto. */
 function marcadores(): Achado[] {

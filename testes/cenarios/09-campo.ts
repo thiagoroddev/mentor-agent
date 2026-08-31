@@ -15,6 +15,8 @@ export function rodar(): Cenario {
   mentor(c, 'relatorio-de-campo')
   confere(c, ler(c, 'docs/relatorio-de-campo.md').includes('Funcionalidade (RF+RN+RNF): sem dados'),
     'sem tarefa concluida a proporcao e "sem dados", nunca 0%')
+  confere(c, mentor(c, 'verificar').codigo === 0,
+    'o arquivo de atrito nasce valido: seus marcadores orientam o relatorio, nao bloqueiam o projeto')
 
   // Duas recusas de propósito: e' delas que sai a medicao mais util do relatorio.
   mentor(c, 'task', 'nova', '--tipo', 'BG', '--titulo', 'Origem inventada',
@@ -51,7 +53,7 @@ export function rodar(): Cenario {
   dizQue(c, saida, 'nao cria tarefa em lugar nenhum', 'o comando declara que nao cria tarefa')
 
   const r = ler(c, 'docs/relatorio-de-campo.md')
-  confere(c, r.includes('mentor-agent 0.1.5'), 'o relatorio atribui tudo a uma versao do pacote')
+  confere(c, r.includes('mentor-agent 0.1.6'), 'o relatorio atribui tudo a uma versao do pacote')
   // A versao saia de `join(raizPacote(), 'package.json')`, que instalado num projeto resolve para o
   // package.json DO PROJETO: o relatorio publicava a versao do app. Ancorar achado numa versao e a
   // unica coisa que este relatorio existe para fazer.

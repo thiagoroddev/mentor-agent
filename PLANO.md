@@ -221,7 +221,7 @@ visita, e defeito achado ali pode nao existir em lugar nenhum (decisao do humano
 dizer *"isto aconteceu com a 0.1.0"*.
 
 ```
-no hospedeiro:  npm i -D github:thiagoroddev/mentor-agent#v0.1.5
+no hospedeiro:  npm i -D github:thiagoroddev/mentor-agent#v0.1.6
                 npx mentor instalar         -> copia .mentor/ e mentor.mjs para a raiz
                 node mentor.mjs init        -> cria docs/
 ```
@@ -786,4 +786,11 @@ VALIDACAO 9.3 · O pacote carregou num projeto real pela primeira vez (roteiriza
              que o gerador cria uma vez e nunca sobrescreve, e copia para dentro do relatorio para
              o arquivo continuar viajando sozinho ate' o repositorio do pacote.
              Mutacao confere: tirar o `if (!existe(...))` derruba as duas asercoes.
+30/08/26 · 0.1.6 · ACHADO 13, descoberto somente depois de instalar a 0.1.5 no hospedeiro.
+             A parte B agora sobrevivia, mas sua nova fonte `atrito-de-campo.md` nascia com
+             marcadores `PREENCHER:` e o `verificar` os tratava como trabalho incompleto do
+             projeto. Instalar a correcao fazia o ciclo reprovar imediatamente.
+             As categorias do atrito sao opcionais: marcador ali orienta o relatorio, nao promete
+             trabalho do hospedeiro. O arquivo recebe a mesma excecao de conteudo que o relatorio.
+             TDD: a assercao nasceu vermelha; retirar a excecao por mutacao a derruba.
 ```

@@ -163,6 +163,21 @@ em A.10. Agora a âncora aceita três formas: `TASK-XXX-NNN`, `adocao`, ou `fase
 amostra vazia, e é a mesma família de erro do dia: **tratar ausência de dado como um valor.** Agora
 diz `sem dados`.
 
+## Passo 4d · A fonte da Parte B nascia reprovada 🟢 *(feito, 0.1.6)*
+
+**Achado 13, vindo do hospedeiro depois de instalar a 0.1.5.** A separação entre gerado e escrito
+funcionou: `atrito-de-campo.md` sobreviveu byte a byte a duas regenerações e apareceu no relatório.
+Mas o arquivo novo nascia com três marcadores `PREENCHER:`, e o `verificar` os tratava como trabalho
+incompleto do projeto. Instalar a correção fazia o ciclo reprovar imediatamente.
+
+As três categorias do atrito são opcionais. Seus marcadores são conteúdo de orientação do relatório,
+não promessa de trabalho do projeto. `atrito-de-campo.md` passou a receber a mesma exceção já dada a
+`relatorio-de-campo.md`; todo outro marcador continua reprovando.
+
+**Teste:** logo após gerar o primeiro relatório, `verificar` precisa aprovar mesmo com o esqueleto de
+atrito intacto. Visto vermelho antes da correção; remover a exceção por mutação derruba exatamente a
+nova asserção.
+
 ---
 
 # 0.2.0 · Adoção não é migração
