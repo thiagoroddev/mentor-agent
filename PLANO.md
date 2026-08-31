@@ -811,4 +811,8 @@ VALIDACAO 9.3 · O pacote carregou num projeto real pela primeira vez (roteiriza
              `mentor ref [nova|listar]`. Cenário `13-referencias` prova recusa de IDs nao
              registrados, validacao do arquivo em disco, aprovacao no `verificar`, permissao de
              entrada no ciclo por `puxar` e listagem. Duas mutacoes conferiram as assercoes.
+31/08/26 · 0.2.0 · FASE 10, PASSO 8. IDs que nao colidem com o historico. `proximoIdDeTarefa`
+             respeita `contexto.json -> offsets_de_id[prefixo]`, referências históricas `TASK-*` em
+             `referencias.json` e tarefas locais. Cenário `14-offsets-de-id` prova geração sem
+             colisão com offsets e referências externas. Mutação conferida.
 ```

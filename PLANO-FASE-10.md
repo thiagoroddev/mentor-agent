@@ -254,11 +254,15 @@ Este passo depende da decisão que ainda está aberta na análise, e **não deve
 antes dela**. As opções estão lá: registro de invariantes, glossário, lugar para especificação do que
 ainda não existe. Fica marcado como dependente, de propósito.
 
-## Passo 8 · IDs que não colidem
+## Passo 8 · IDs que não colidem 🟢 *(feito, 0.2.0)*
 
 **Achado 5.** O contador reinicia em 001 e cria `TASK-BG-001` homônimo de um antigo com escopo
-diferente. Proposta: a inicialização de projeto que já teve agente pergunta o **maior ID por prefixo
-já usado**, e o contador começa acima dele. Sem migrar nada: só não reusar número queimado.
+diferente.
+O gerador `proximoIdDeTarefa` agora calcula o maior número já usado avaliando:
+1. Arquivos locais em `abertas/` e `concluidas/`;
+2. Referências em `referencias.json` com formato `TASK-*`;
+3. Offsets declarados em `contexto.json -> offsets_de_id[prefixo]`.
+Cenário `14-offsets-de-id` prova geração sem colisão com offsets declarados e referências históricas. Mutação conferida.
 
 ---
 

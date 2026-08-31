@@ -12,9 +12,10 @@ import { rodar as pacote } from './cenarios/10-pacote.ts'
 import { rodar as rascunho } from './cenarios/11-rascunho.ts'
 import { rodar as auditoria } from './cenarios/12-auditoria.ts'
 import { rodar as referencias } from './cenarios/13-referencias.ts'
+import { rodar as offsets } from './cenarios/14-offsets-de-id.ts'
 import type { Cenario } from './apoio.ts'
 
-const CENARIOS: Array<() => Cenario> = [ciclo, epico, recusas, tdd, verificacao, saude, entrega, lanc, campo, pacote, rascunho, auditoria, referencias]
+const CENARIOS: Array<() => Cenario> = [ciclo, epico, recusas, tdd, verificacao, saude, entrega, lanc, campo, pacote, rascunho, auditoria, referencias, offsets]
 
 let falharam = 0
 for (const rodar of CENARIOS) {

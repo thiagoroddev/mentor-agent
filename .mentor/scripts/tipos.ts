@@ -245,6 +245,7 @@ export interface Contexto {
   gates: Record<string, { comando: string | null; [k: string]: unknown }>
   contagens: Record<string, number | null | boolean>
   limites: { em_execucao: number; ciclo_tarefas: number }
+  offsets_de_id?: Record<string, number>
   revisao_geral: {
     ultima_em: string | null
     ultima_na_tarefa: number | null
