@@ -26,7 +26,7 @@ function hashDe(texto: string): string {
 }
 
 function arquivosDoPacote(pasta: string): Array<[string, string]> {
-  const alvos = ['.md', '.json', '.ts'].flatMap((ext) => listar(pasta, ext))
+  const alvos = ['.md', '.json', '.ts', '.mjs'].flatMap((ext) => listar(pasta, ext))
   return alvos
     .filter((a) => !a.endsWith(NOME))
     .map((a) => [relative(pasta, a).split('\\').join('/'), hashDe(lerTexto(a))] as [string, string])

@@ -19,10 +19,13 @@ administrativa antiga. Sem a segunda flag, uma instalacao 0.1.x e recusada com i
 - nunca toca em uma `docs/` comum do aplicativo;
 - recusa quando `docs-mentor/` ja existe e nao move nenhuma das duas pastas;
 - se a copia do pacote falhar depois do rename, devolve a pasta ao nome antigo;
+- atualiza caminhos estruturados em `contexto.json`, `tetos.json` e no titulo de `LEIA.md`, sem
+  reescrever referencias livres em ADRs ou outros documentos da pessoa;
 - projeto novo cria apenas `docs-mentor/`.
 
 ## Prova
 
 - tipos aprovados;
 - os 12 cenarios usam o nome novo;
-- o cenario de pacote cobre criacao, recusa, migracao, conflito e instalacao via `node_modules`.
+- o cenario de pacote cobre criacao, recusa, migracao, conflito e instalacao via `node_modules`;
+- o manifesto tambem protege o migrador `.mjs` contra divergencia local.

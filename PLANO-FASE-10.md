@@ -220,7 +220,9 @@ existir, recusa o conflito e não move nada. Uma `docs/` alheia ao pacote fica i
 
 **Prova:** os 12 cenários usam `docs-mentor/`; o cenário de pacote cobre projeto novo com `docs/`
 preexistente, recusa sem autorização, migração autorizada, conflito sem movimento e o caminho real
-de instalação por `node_modules`.
+de instalação por `node_modules`. O ensaio no hospedeiro revelou que globs de teto ainda apontavam
+para `docs/`; a correção migra somente referências administrativas estruturadas e preserva texto
+livre. O manifesto passou a incluir `.mjs`, para proteger o próprio migrador.
 
 ## Passo 6 · Referência a sistema externo
 

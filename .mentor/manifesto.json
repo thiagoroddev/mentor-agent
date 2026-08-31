@@ -1,6 +1,6 @@
 {
   "versao": "0.2.0",
-  "gerado_em": "2026-08-31T00:59:50.908Z",
+  "gerado_em": "2026-08-31T01:08:32.272Z",
   "arquivos": {
     "esquemas/contexto.json": "e31c3ad8ec59b016",
     "esquemas/divida-tecnica.json": "0906f6786a8e63a1",
@@ -47,7 +47,7 @@
     "scripts/cmd-hooks.ts": "a301ddc62de7a155",
     "scripts/cmd-init.ts": "a567c71c4d878007",
     "scripts/cmd-lancamento.ts": "6fa8f32a5c0cab7d",
-    "scripts/cmd-pacote.ts": "82d97366aec848a9",
+    "scripts/cmd-pacote.ts": "6499cbea7f4e652e",
     "scripts/cmd-regras.ts": "a753f82f340943ca",
     "scripts/cmd-riscos.ts": "54da3ca4e24f28eb",
     "scripts/cmd-stack.ts": "b2eebe54b9a2b7cd",
@@ -55,6 +55,7 @@
     "scripts/cmd-verificar.ts": "7644895acd593c62",
     "scripts/entrada.ts": "1a56522a3580b616",
     "scripts/ids.ts": "63e393f8e0b27e5a",
+    "scripts/instalar.mjs": "1e1a2a716cb7c800",
     "scripts/tipos.ts": "ba3576f118061a5a",
     "scripts/vistas.ts": "5027d01cbde9dcdf",
     "tetos.json": "73daa2149d26904f"

@@ -29,6 +29,12 @@ export function rodar(): Cenario {
 
   confere(c, mentor(c, 'verificar').codigo === 0, 'pacote recem-instalado nao diverge de nada')
 
+  const instaladorOriginal = ler(c, '.mentor/scripts/instalar.mjs')
+  escrever(c, '.mentor/scripts/instalar.mjs', instaladorOriginal + '\n// divergencia de teste\n')
+  dizQue(c, mentor(c, 'verificar'), 'scripts/instalar.mjs',
+    'o manifesto protege o migrador em JavaScript puro, nao apenas os arquivos TypeScript')
+  escrever(c, '.mentor/scripts/instalar.mjs', instaladorOriginal)
+
   // --- o analisador do projeto encontra o pacote e reprova por estilo que nao e do projeto.
   //     Medido em campo: 1975 erros, nenhum em src/, e o ciclo travava no primeiro finalizar.
   escrever(c, 'eslint.config.js', 'export default [{ files: ["**/*.ts"] }]\n')
@@ -129,7 +135,16 @@ export function rodar(): Cenario {
   //     `docs/` pode ser documentacao do aplicativo: a presenca isolada da pasta nunca autoriza move-la.
   const legado = join(c.pasta, 'projeto-legado')
   mkdirSync(join(legado, 'docs'), { recursive: true })
-  escrever({ ...c, pasta: legado }, 'docs/contexto.json', '{"legado":true}\n')
+  escrever({ ...c, pasta: legado }, 'docs/contexto.json', JSON.stringify({
+    convencoes: { onde_ficam_as_de_stack: 'docs/padroes-de-stack/' },
+    ferramentas: [{ nome: 'github', padrao: 'docs/padroes-de-stack/github.md' }],
+  }, null, 2))
+  escrever({ ...c, pasta: legado }, 'docs/tetos.json', JSON.stringify({
+    excecoes: [{ caminho: 'docs/arquitetura/ADR/ADR-0*.md', teto: 15000 }],
+  }, null, 2))
+  escrever({ ...c, pasta: legado }, 'docs/LEIA.md', '# docs/\n')
+  escrever({ ...c, pasta: legado }, 'docs/arquitetura/ADR/ADR-001.md',
+    '# decisao\n\nReferencia historica a `docs/manual-do-aplicativo.md`.\n')
   dizQue(c, mentor(c, 'instalar', '--destino', legado, '--forcar'), '--migrar-docs',
     'instalacao 0.1.x sem autorizacao explica como migrar')
   confere(c, existsSync(join(legado, 'docs', 'contexto.json')) && !existsSync(join(legado, 'docs-mentor')),
@@ -138,6 +153,18 @@ export function rodar(): Cenario {
   confere(c, migrado.codigo === 0, 'com autorizacao explicita, instalacao 0.1.x migra')
   confere(c, !existsSync(join(legado, 'docs')) && existsSync(join(legado, 'docs-mentor', 'contexto.json')),
     'migracao autorizada renomeia docs/ para docs-mentor/ sem deixar duas fontes')
+  const contextoMigrado = lerJson<Record<string, any>>({ ...c, pasta: legado }, 'docs-mentor/contexto.json')
+  const tetosMigrados = lerJson<Record<string, any>>({ ...c, pasta: legado }, 'docs-mentor/tetos.json')
+  confere(c, contextoMigrado.convencoes.onde_ficam_as_de_stack === 'docs-mentor/padroes-de-stack/' &&
+    contextoMigrado.ferramentas[0].padrao === 'docs-mentor/padroes-de-stack/github.md',
+  'migracao atualiza somente os caminhos administrativos conhecidos do contexto')
+  confere(c, tetosMigrados.excecoes[0].caminho === 'docs-mentor/arquitetura/ADR/ADR-0*.md',
+    'migracao atualiza os globs de teto para continuarem valendo depois do rename')
+  confere(c, ler({ ...c, pasta: legado }, 'docs-mentor/LEIA.md').startsWith('# docs-mentor/'),
+    'migracao atualiza o titulo gerado da pasta')
+  confere(c, ler({ ...c, pasta: legado }, 'docs-mentor/arquitetura/ADR/ADR-001.md')
+    .includes('`docs/manual-do-aplicativo.md`'),
+  'migracao nao reescreve referencias livres em documento da pessoa')
 
   const conflito = join(c.pasta, 'projeto-em-conflito')
   mkdirSync(join(conflito, 'docs'), { recursive: true })

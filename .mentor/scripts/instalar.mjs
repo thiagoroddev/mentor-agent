@@ -6,6 +6,63 @@
 import { cpSync, existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 
+const trocarRaizAdministrativa = (valor) => typeof valor === 'string'
+  ? valor.replace(/^docs\//, 'docs-mentor/')
+  : valor
+
+/**
+ * O rename muda tres referencias estruturadas que alimentam automacao. Texto livre, ADR e tarefa
+ * nao entram: `docs/...` ali pode apontar para documentacao do aplicativo ou para um historico.
+ * Devolve uma funcao de rollback para a migracao continuar atomica se a copia falhar depois.
+ */
+function migrarReferenciasAdministrativas(pasta) {
+  const anteriores = []
+  const substituir = (caminho, transformar) => {
+    if (!existsSync(caminho)) return
+    const antes = readFileSync(caminho, 'utf8')
+    const depois = transformar(antes)
+    if (depois === antes) return
+    anteriores.push([caminho, antes])
+    writeFileSync(caminho, depois, 'utf8')
+  }
+
+  const restaurar = () => {
+    for (const [caminho, conteudo] of anteriores.toReversed()) writeFileSync(caminho, conteudo, 'utf8')
+  }
+
+  try {
+    substituir(join(pasta, 'contexto.json'), (texto) => {
+      const contexto = JSON.parse(texto)
+      if (contexto.convencoes) {
+        contexto.convencoes.onde_ficam_as_de_stack = trocarRaizAdministrativa(
+          contexto.convencoes.onde_ficam_as_de_stack,
+        )
+      }
+      if (Array.isArray(contexto.ferramentas)) {
+        for (const ferramenta of contexto.ferramentas) {
+          ferramenta.padrao = trocarRaizAdministrativa(ferramenta.padrao)
+        }
+      }
+      return JSON.stringify(contexto, null, 2) + '\n'
+    })
+    substituir(join(pasta, 'tetos.json'), (texto) => {
+      const tetos = JSON.parse(texto)
+      if (Array.isArray(tetos.excecoes)) {
+        for (const excecao of tetos.excecoes) {
+          excecao.caminho = trocarRaizAdministrativa(excecao.caminho)
+        }
+      }
+      return JSON.stringify(tetos, null, 2) + '\n'
+    })
+    substituir(join(pasta, 'LEIA.md'), (texto) =>
+      texto.replace(/^# docs\/(\r?\n)/, '# docs-mentor/$1'))
+  } catch (erro) {
+    restaurar()
+    throw erro
+  }
+  return restaurar
+}
+
 /**
  * Copia `.mentor/` e `mentor.mjs` da origem para o destino.
  * Devolve `{ ok, erro }` em vez de lancar: quem chama decide como reportar.
@@ -40,12 +97,22 @@ export function copiarPacote(origem, destino, forcar, migrarDocs = false) {
   }
 
   const deveMigrar = existsSync(contextoLegado)
-  if (deveMigrar) renameSync(documentosLegados, documentosAtuais)
+  let desfazerReferencias = () => {}
+  if (deveMigrar) {
+    renameSync(documentosLegados, documentosAtuais)
+    try {
+      desfazerReferencias = migrarReferenciasAdministrativas(documentosAtuais)
+    } catch (erro) {
+      renameSync(documentosAtuais, documentosLegados)
+      throw erro
+    }
+  }
   try {
     cpSync(join(origem, '.mentor'), pastaDestino, { recursive: true })
     cpSync(join(origem, 'mentor.mjs'), join(destino, 'mentor.mjs'))
   } catch (erro) {
     if (deveMigrar && existsSync(documentosAtuais) && !existsSync(documentosLegados)) {
+      desfazerReferencias()
       renameSync(documentosAtuais, documentosLegados)
     }
     throw erro

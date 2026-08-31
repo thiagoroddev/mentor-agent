@@ -799,4 +799,9 @@ VALIDACAO 9.3 · O pacote carregou num projeto real pela primeira vez (roteiriza
              `--forcar`; conflito entre as duas pastas recusa sem mover nada. Os 12 cenarios e os
              exemplos versionados passaram ao nome novo. Proxima unidade: passo 6, referencias a
              sistemas externos.
+30/08/26 · 0.2.0 · ACHADO DE CAMPO DO PASSO 5. O rename preservou os 35 arquivos e seus hashes, mas
+             `tetos.json` continuou com globs `docs/...`; as dez excecoes de ADR deixaram de casar
+             e o `verificar` reprovou. O migrador agora atualiza apenas caminhos estruturados em
+             contexto, tetos e LEIA, sem tocar texto livre. O manifesto tambem passou a inventariar
+             `.mjs`, pois antes a logica de instalacao podia divergir sem ser detectada.
 ```
