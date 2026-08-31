@@ -23,26 +23,26 @@ export function rodar(): Cenario {
   commit('inicio')
   mentor(c, 'init')
 
-  const ctx = lerJson<Record<string, any>>(c, 'docs/contexto.json')
+  const ctx = lerJson<Record<string, any>>(c, 'docs-mentor/contexto.json')
   ctx['gates']['testes'].comando = 'echo "1 passed"'
   ctx['qualidade'].metodo_de_teste = 'teste-depois'
   ctx['qualidade'].metodo_motivo = 'cenario de teste do proprio pacote'
   ctx['auditoria'].cadencia_em_tarefas = 2
-  escrever(c, 'docs/contexto.json', JSON.stringify(ctx, null, 2))
+  escrever(c, 'docs-mentor/contexto.json', JSON.stringify(ctx, null, 2))
   commit('mentor init')
 
   const fechar = (id: string, arquivo: string, conteudo: string) => {
     mentor(c, 'task', 'iniciar', id)
     escrever(c, arquivo, conteudo)
-    const t = lerJson<Record<string, any>>(c, `docs/tarefas/abertas/${id}.json`)
+    const t = lerJson<Record<string, any>>(c, `docs-mentor/tarefas/abertas/${id}.json`)
     t['plano'] = {
       muda: [`${arquivo} - a mudanca`],
       criterios_aceite: [{ texto: 'faz o que foi pedido', teste: 'a.test.ts > caso feliz' }],
       impacto: 'modulo a', riscos: ['nenhum identificado'], dependencias_novas: [],
       proporcionalidade: 'do tamanho do pedido',
     }
-    escrever(c, `docs/tarefas/abertas/${id}.json`, JSON.stringify(t, null, 2))
-    escrever(c, `docs/tarefas/abertas/${id}.md`,
+    escrever(c, `docs-mentor/tarefas/abertas/${id}.json`, JSON.stringify(t, null, 2))
+    escrever(c, `docs-mentor/tarefas/abertas/${id}.md`,
       '# t\n\n## Decisoes tomadas\na\n\n## O que nao foi feito, e por que\nb\n\n' +
       '## Testes de descoberta\nNenhuma.\n\n## Aprendizados\nNada.\n')
     mentor(c, 'task', 'gate', id, 'testes')
@@ -52,7 +52,7 @@ export function rodar(): Cenario {
   mentor(c, 'task', 'nova', '--tipo', 'RF', '--titulo', 'Somar parcelas', '--esforco', 'P/P', '--origem', 'titulo-autossuficiente')
   mentor(c, 'task', 'puxar', 'TASK-RF-001')
   fechar('TASK-RF-001', 'a.ts', 'export const soma = (a: number, b: number) => a + b + 0\n')
-  const t1 = lerJson<Record<string, any>>(c, 'docs/tarefas/concluidas/2026-08-29--14h00--TASK-RF-001.json')
+  const t1 = lerJson<Record<string, any>>(c, 'docs-mentor/tarefas/concluidas/2026-08-29--14h00--TASK-RF-001.json')
   confere(c, typeof t1['commit_base'] === 'string' && t1['commit_base'].length === 40,
     'o iniciar grava o commit_base, que e a base do diff da auditoria')
   commit('TASK-RF-001')
@@ -68,7 +68,7 @@ export function rodar(): Cenario {
 
   // --- o dossie
   dizQue(c, mentor(c, 'auditar', 'preparar'), '2 tarefa(s) no lote', 'o lote e o que foi concluido desde a ultima auditoria')
-  const dossie = ler(c, 'docs/auditorias/AUD-001-dossie.md')
+  const dossie = ler(c, 'docs-mentor/auditorias/AUD-001-dossie.md')
   confere(c, dossie.includes('TASK-RF-001') && dossie.includes('TASK-RF-002'), 'o dossie traz as duas tarefas')
   confere(c, dossie.includes('+export const sub'), 'o dossie traz o diff de verdade, nao a promessa de que houve um')
   confere(c, dossie.includes('Nao leia o resto do repositorio'), 'o escopo fechado vai escrito no dossie')
@@ -82,8 +82,8 @@ export function rodar(): Cenario {
     'nao se abre auditoria nova com uma pendurada: seria assim que ela vira ritual')
 
   // --- as recusas
-  const aud = () => lerJson<Record<string, any>>(c, 'docs/auditorias/AUD-001.json')
-  const gravar = (a: Record<string, any>) => escrever(c, 'docs/auditorias/AUD-001.json', JSON.stringify(a, null, 2))
+  const aud = () => lerJson<Record<string, any>>(c, 'docs-mentor/auditorias/AUD-001.json')
+  const gravar = (a: Record<string, any>) => escrever(c, 'docs-mentor/auditorias/AUD-001.json', JSON.stringify(a, null, 2))
 
   dizQue(c, mentor(c, 'auditar', 'registrar', 'AUD-001'), 'sem veredito', 'registrar sem veredito nao passa')
 
@@ -117,7 +117,7 @@ export function rodar(): Cenario {
   dizQue(c, ok, 'REPROVADO', 'com tudo no lugar, registra')
   dizQue(c, ok, 'AUD-001-B01', 'o ID do achado sai do script, nunca do auditor')
 
-  const ctxDepois = lerJson<Record<string, any>>(c, 'docs/contexto.json')
+  const ctxDepois = lerJson<Record<string, any>>(c, 'docs-mentor/contexto.json')
   confere(c, ctxDepois['auditoria'].pendencias_reportadas.length === 1, 'o bloqueio fica no contexto ate alguem decidir')
   confere(c, ctxDepois['auditoria'].ultima_na_tarefa === 2, 'a cadencia recomeca do numero certo')
   dizQue(c, mentor(c, 'doctor'), 'sem destino', 'o doctor conta o achado da auditoria como bloqueio')
@@ -127,7 +127,7 @@ export function rodar(): Cenario {
     'destino sem referencia deixa o achado em limbo')
   dizQue(c, mentor(c, 'auditar', 'resolver', 'AUD-001-B01', '--destino', 'divida_tecnica', '--ref', 'DT-1'),
     'resolvida', 'com destino e ref, o humano fecha o achado')
-  const ctxFinal = lerJson<Record<string, any>>(c, 'docs/contexto.json')
+  const ctxFinal = lerJson<Record<string, any>>(c, 'docs-mentor/contexto.json')
   confere(c, ctxFinal['auditoria'].pendencias_reportadas.length === 0, 'resolvido sai do contexto')
 
   dizQue(c, mentor(c, 'auditar', 'preparar'), 'Nada a auditar', 'sem tarefa nova, nao ha lote')

@@ -1,0 +1,66 @@
+{
+  "id": "TASK-RF-001",
+  "tipo": "RF",
+  "titulo": "Exportar relatorio em CSV",
+  "fatia_de": null,
+  "estado": "concluida",
+  "cerimonia": "Standard",
+  "valor": "importante",
+  "urgencia": "normal",
+  "esforco": {
+    "humano": "P",
+    "ia": "M"
+  },
+  "depende_de": [],
+  "fila": "ciclo",
+  "ordem": null,
+  "origem": "RF-1",
+  "requisitos": [
+    "RF-1"
+  ],
+  "criada_em": "29/08/26 14:00",
+  "iniciada_em": "29/08/26 14:00",
+  "commit_base": "c69e59247cc2bb39a52d70f63620c372b23f8b6f",
+  "concluida_em": "29/08/26 14:00",
+  "plano": {
+    "muda": [
+      "src/relatorio/exportar.ts - serializa as linhas em CSV"
+    ],
+    "criterios_aceite": [
+      {
+        "texto": "o arquivo abre no editor de planilha com as colunas separadas",
+        "teste": "exportar.test.ts > separa colunas com virgula dentro do campo"
+      }
+    ],
+    "impacto": "modulo de relatorio",
+    "riscos": [
+      "virgula dentro do campo de texto"
+    ],
+    "dependencias_novas": [],
+    "proporcionalidade": "pediram exportar, exporta. Nenhum artefato novo."
+  },
+  "gates": {
+    "testes": {
+      "rotulo": "APROVADO",
+      "vermelho_em": "29/08/26 14:00",
+      "comando": "echo \"42 passed, 0 failed\"",
+      "codigo_saida": 0,
+      "saida": "\"42 passed, 0 failed\"",
+      "executado_em": "29/08/26 14:00",
+      "evidencia_url": null,
+      "motivo": null,
+      "ressalva": null
+    }
+  },
+  "achados": [],
+  "validacao": "nao_requer",
+  "validado_em": null,
+  "validacao_motivo": null,
+  "tarefas_geradas": [],
+  "adrs": [],
+  "divida_tecnica": [],
+  "riscos_aceitos": [],
+  "absorvida_por": null,
+  "cancelamento_motivo": null,
+  "narrativa": "2026-08-29--14h00--TASK-RF-001.md"
+}

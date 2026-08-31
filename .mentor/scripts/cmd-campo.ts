@@ -166,7 +166,7 @@ export function relatorioDeCampo(flags: Record<string, string | undefined> = {})
   const atrito = `${c.docs}/atrito-de-campo.md`
   if (!existe(atrito)) escreverTexto(atrito, esqueletoDeAtrito())
   l.push('## B · Atrito (escrito a mao)', '',
-    '> Fonte: `docs/atrito-de-campo.md`, que o gerador nunca sobrescreve. Edite la; aqui e copia.', '',
+    '> Fonte: `docs-mentor/atrito-de-campo.md`, que o gerador nunca sobrescreve. Edite la; aqui e copia.', '',
     lerTexto(atrito).trim(), '',
     '## C · O que funcionou', '')
   const encerradasSemRecusa = encerradas.length - new Set(recusas.map((r) => r.alvo)).size
@@ -186,8 +186,8 @@ export function relatorioDeCampo(flags: Record<string, string | undefined> = {})
 
   const destino = `${c.docs}/relatorio-de-campo.md`
   escreverTexto(destino, l.join('\n'))
-  console.log(`Relatorio gerado em docs/relatorio-de-campo.md (${concluidas.length} tarefas).`)
-  console.log('A parte B se escreve em docs/atrito-de-campo.md, que este comando nunca sobrescreve.')
+  console.log(`Relatorio gerado em docs-mentor/relatorio-de-campo.md (${concluidas.length} tarefas).`)
+  console.log('A parte B se escreve em docs-mentor/atrito-de-campo.md, que este comando nunca sobrescreve.')
   console.log('Leve o relatorio ao repositorio do pacote. Ele nao cria tarefa em lugar nenhum.')
   return 0
 }

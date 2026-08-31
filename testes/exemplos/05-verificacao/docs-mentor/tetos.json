@@ -1,0 +1,9 @@
+{
+  "excecoes": [
+    {
+      "caminho": "docs-mentor/arquitetura/ADR/ADR-0*.md",
+      "teto": 15000,
+      "motivo": "ADRs migradas de sistema anterior: reescrever para caber apagaria contexto historico"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "id": "TASK-SPIKE-001",
+  "tipo": "SPIKE",
+  "titulo": "A biblioteca de PDF roda no navegador?",
+  "fatia_de": null,
+  "estado": "em-execucao",
+  "cerimonia": "Standard",
+  "valor": "importante",
+  "urgencia": "normal",
+  "esforco": {
+    "humano": "P",
+    "ia": "M"
+  },
+  "depende_de": [],
+  "fila": "ciclo",
+  "ordem": null,
+  "origem": "titulo-autossuficiente",
+  "requisitos": [],
+  "criada_em": "29/08/26 14:00",
+  "iniciada_em": "29/08/26 14:00",
+  "commit_base": "c69e59247cc2bb39a52d70f63620c372b23f8b6f",
+  "concluida_em": null,
+  "plano": {
+    "muda": [
+      "PREENCHER: caminho/arquivo.ext - o que muda nele, em uma linha"
+    ],
+    "criterios_aceite": [
+      {
+        "texto": "PREENCHER: a pergunta que este spike responde",
+        "teste": "nao se aplica: spike"
+      }
+    ],
+    "impacto": "PREENCHER: modulos afetados",
+    "riscos": [
+      "PREENCHER: o que pode dar errado, ou \"nenhum identificado\""
+    ],
+    "dependencias_novas": [],
+    "proporcionalidade": "PREENCHER: pediram X, proponho Y, e Y e do tamanho de X porque..."
+  },
+  "gates": {},
+  "achados": [],
+  "validacao": "nao_requer",
+  "validado_em": null,
+  "validacao_motivo": null,
+  "tarefas_geradas": [],
+  "adrs": [],
+  "divida_tecnica": [],
+  "riscos_aceitos": [],
+  "absorvida_por": null,
+  "cancelamento_motivo": null,
+  "narrativa": null
+}

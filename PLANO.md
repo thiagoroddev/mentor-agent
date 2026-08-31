@@ -793,4 +793,10 @@ VALIDACAO 9.3 · O pacote carregou num projeto real pela primeira vez (roteiriza
              As categorias do atrito sao opcionais: marcador ali orienta o relatorio, nao promete
              trabalho do hospedeiro. O arquivo recebe a mesma excecao de conteudo que o relatorio.
              TDD: a assercao nasceu vermelha; retirar a excecao por mutacao a derruba.
+30/08/26 · 0.2.0 · FASE 10, PASSO 5. O pacote deixou de reivindicar `docs/`, nome que pode pertencer
+             ao aplicativo, e passou a criar todo estado administrativo em `docs-mentor/`.
+             Instalacao 0.1.x so e' migrada com `--migrar-docs`, autorizacao separada de
+             `--forcar`; conflito entre as duas pastas recusa sem mover nada. Os 12 cenarios e os
+             exemplos versionados passaram ao nome novo. Proxima unidade: passo 6, referencias a
+             sistemas externos.
 ```

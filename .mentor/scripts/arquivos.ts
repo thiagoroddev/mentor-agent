@@ -14,8 +14,9 @@ export function raizPacote(): string {
  * Onde o projeto mora. Em uso normal e' a mesma pasta do pacote; em teste, cada mini-projeto tem
  * a sua. A ordem de resolucao e' explicita de proposito:
  *   1. `MENTOR_RAIZ`, para quem sabe o que quer
- *   2. o ancestral mais proximo que ja' tem `docs/contexto.json`, que e' o projeto inicializado
- *   3. o ancestral mais proximo que tem `.mentor`, que e' o caso de antes do `init`
+ *   2. o ancestral mais proximo que ja' tem `docs-mentor/contexto.json`, que e' o projeto inicializado
+ *   3. durante a transicao 0.1 -> 0.2, um ancestral com `docs/contexto.json`
+ *   4. o ancestral mais proximo que tem `.mentor`, que e' o caso de antes do `init`
  */
 export function raizProjeto(partida: string = process.cwd()): string {
   const declarada = process.env['MENTOR_RAIZ']
@@ -24,6 +25,7 @@ export function raizProjeto(partida: string = process.cwd()): string {
   let atual = resolve(partida)
   const candidatos: string[] = []
   for (;;) {
+    if (existsSync(join(atual, 'docs-mentor', 'contexto.json'))) return atual
     if (existsSync(join(atual, 'docs', 'contexto.json'))) return atual
     if (existsSync(join(atual, '.mentor'))) candidatos.push(atual)
     const pai = dirname(atual)
@@ -51,33 +53,52 @@ function pacoteDoProjeto(r: string): string {
   return existsSync(local) ? local : join(raizPacote(), '.mentor')
 }
 
-export const caminhos = (r: string = raizProjeto()) => ({
-  raiz: r,
-  pacote: pacoteDoProjeto(r),
-  esquemas: join(pacoteDoProjeto(r), 'esquemas'),
-  tetos: join(pacoteDoProjeto(r), 'tetos.json'),
-  /**
-   * Tetos **do projeto**, fora de `.mentor/`. Existe porque excecao de teto morando dentro do
-   * pacote some no proximo `instalar --forcar`: e' decisao do projeto guardada na pasta do pacote.
-   */
-  tetosProjeto: join(r, 'docs', 'tetos.json'),
-  docs: join(r, 'docs'),
-  contexto: join(r, 'docs', 'contexto.json'),
-  contextoMd: join(r, 'docs', 'contexto.md'),
-  requisitos: join(r, 'docs', 'requisitos', 'requisitos.json'),
-  tarefas: join(r, 'docs', 'tarefas'),
-  abertas: join(r, 'docs', 'tarefas', 'abertas'),
-  concluidas: join(r, 'docs', 'tarefas', 'concluidas'),
-  backlog: join(r, 'docs', 'tarefas', 'backlog.md'),
-  recusas: join(r, 'docs', 'tarefas', 'recusas.json'),
-  reservaMd: join(r, 'docs', 'tarefas', 'reserva.md'),
-  indiceConcluidas: join(r, 'docs', 'tarefas', 'concluidas', '0-indice.md'),
-  dividas: join(r, 'docs', 'dividas', 'dividas.json'),
-  auditorias: join(r, 'docs', 'auditorias'),
-  riscos: join(r, 'docs', 'seguranca', 'riscos-aceitos.json'),
-  stack: join(r, 'docs', 'padroes-de-stack'),
-  adr: join(r, 'docs', 'arquitetura', 'ADR'),
-})
+export const NOME_DOS_DOCUMENTOS = 'docs-mentor'
+const NOME_LEGADO_DOS_DOCUMENTOS = 'docs'
+
+/**
+ * Projeto novo usa `docs-mentor/`. O caminho antigo e' reconhecido apenas para que uma instalacao
+ * 0.1 continue legivel ate o usuario autorizar a migracao explicita do instalador 0.2.
+ */
+export function pastaDeDocumentos(r: string): string {
+  const atual = join(r, NOME_DOS_DOCUMENTOS)
+  if (existsSync(join(atual, 'contexto.json'))) return atual
+  const legado = join(r, NOME_LEGADO_DOS_DOCUMENTOS)
+  if (existsSync(join(legado, 'contexto.json'))) return legado
+  return atual
+}
+
+export function caminhos(r: string = raizProjeto()) {
+  const pacote = pacoteDoProjeto(r)
+  const docs = pastaDeDocumentos(r)
+  return {
+    raiz: r,
+    pacote,
+    esquemas: join(pacote, 'esquemas'),
+    tetos: join(pacote, 'tetos.json'),
+    /**
+     * Tetos **do projeto**, fora de `.mentor/`. Existe porque excecao de teto morando dentro do
+     * pacote some no proximo `instalar --forcar`: e' decisao do projeto guardada na pasta do pacote.
+     */
+    tetosProjeto: join(docs, 'tetos.json'),
+    docs,
+    contexto: join(docs, 'contexto.json'),
+    contextoMd: join(docs, 'contexto.md'),
+    requisitos: join(docs, 'requisitos', 'requisitos.json'),
+    tarefas: join(docs, 'tarefas'),
+    abertas: join(docs, 'tarefas', 'abertas'),
+    concluidas: join(docs, 'tarefas', 'concluidas'),
+    backlog: join(docs, 'tarefas', 'backlog.md'),
+    recusas: join(docs, 'tarefas', 'recusas.json'),
+    reservaMd: join(docs, 'tarefas', 'reserva.md'),
+    indiceConcluidas: join(docs, 'tarefas', 'concluidas', '0-indice.md'),
+    dividas: join(docs, 'dividas', 'dividas.json'),
+    auditorias: join(docs, 'auditorias'),
+    riscos: join(docs, 'seguranca', 'riscos-aceitos.json'),
+    stack: join(docs, 'padroes-de-stack'),
+    adr: join(docs, 'arquitetura', 'ADR'),
+  }
+}
 
 export function garantirPasta(caminho: string): void {
   mkdirSync(caminho, { recursive: true })

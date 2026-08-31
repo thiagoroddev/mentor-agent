@@ -21,7 +21,7 @@ mentor <comando>
 
   instalar [--destino <pasta>]         copia o pacote para dentro de um projeto
   manifesto                            grava o hash de cada arquivo do pacote (antes de empacotar)
-  init                                 cria docs/ a partir dos esquemas
+  init                                 cria docs-mentor/ a partir dos esquemas
   task nova --tipo T --titulo "..."    cria tarefa (gera ID e data)
        --esforco H/IA --origem "..."
        [--valor --urgencia --depende --requisitos --cerimonia --fatia-de]

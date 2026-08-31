@@ -7,7 +7,7 @@ Regras que o agente aplica **por conta própria**, sem depender de o usuário sa
 > **Regra de ouro.** Silêncio do usuário nunca equivale a dispensa. Requisito não verbalizado que
 > este guia prevê é responsabilidade do agente levantar. Toda dispensa é explícita e datada.
 
-> **Como se consulta.** Nunca do começo ao fim. Campo `null` no `docs/contexto.json` nomeia o portão,
+> **Como se consulta.** Nunca do começo ao fim. Campo `null` no `docs-mentor/contexto.json` nomeia o portão,
 > o portão nomeia o arquivo. Fora disso, o guia fica fechado.
 
 ## Severidade

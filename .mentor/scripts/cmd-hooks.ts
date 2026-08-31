@@ -16,7 +16,7 @@ export function instalarHooks(): void {
 
   escreverTexto(arquivo, [
     '#!/bin/sh',
-    '# Gerado por `mentor hooks --instalar`. Roda os gates declarados em docs/contexto.json.',
+    '# Gerado por `mentor hooks --instalar`. Roda os gates declarados em docs-mentor/contexto.json.',
     '# Em pre-push, nao em pre-commit: commit barato evita que alguem aprenda `--no-verify`.',
     'node mentor.mjs gates || {',
     '  echo ""',

@@ -8,9 +8,9 @@ perguntar, e registra tudo de forma rastreavel.
 Na raiz do projeto que vai usar o pacote:
 
 ```bash
-npm i -D github:thiagoroddev/mentor-agent#v0.1.6
+npm i -D github:thiagoroddev/mentor-agent#v0.2.0
 npx mentor instalar        # copia .mentor/ e mentor.mjs para a raiz
-node mentor.mjs init       # cria docs/
+node mentor.mjs init       # cria docs-mentor/, sem tocar na docs/ do aplicativo
 ```
 
 O `instalar` cria tambem os pontos de entrada das ferramentas de IA (`CLAUDE.md`, `AGENTS.md`,
@@ -23,8 +23,23 @@ a IA le' `.mentor/` como arquivo, e o projeto versiona as convencoes dele ao lad
 `node_modules` so' o `instalar` roda — o Node se recusa a remover tipos ali, e o `mentor.mjs` avisa
 isso em vez de estourar.
 
-A versao instalada fica gravada em `docs/contexto.json`, senao o relatorio de campo nao consegue
-dizer *"isto aconteceu com a 0.1.6"*.
+A versao instalada fica gravada em `docs-mentor/contexto.json`, senao o relatorio de campo nao consegue
+dizer *"isto aconteceu com a 0.2.0"*.
+
+### Atualizar uma instalacao 0.1.x
+
+A versao 0.1.x guardava o estado do mentor em `docs/`. A 0.2.0 nao renomeia essa pasta sem uma
+autorizacao especifica: `--forcar` permite substituir `.mentor/`, mas nao permite mover documentos.
+
+```bash
+npm i -D github:thiagoroddev/mentor-agent#v0.2.0
+npx mentor instalar --forcar --migrar-docs
+node mentor.mjs gerar
+```
+
+O instalador so reconhece uma instalacao antiga quando existe `docs/contexto.json`. Se
+`docs-mentor/` tambem existir, ele recusa o conflito e nao move nada. Uma `docs/` comum, sem o
+contexto do mentor, pertence ao aplicativo e permanece intocada.
 
 ## Como rodar
 
@@ -33,7 +48,7 @@ No terminal, **dentro da pasta do projeto**. Requer **Node 22.18 ou maior**: con
 
 ```bash
 node mentor.mjs                 # ajuda: lista todos os comandos
-node mentor.mjs init            # cria docs/ neste projeto
+node mentor.mjs init            # cria docs-mentor/ neste projeto
 
 node mentor.mjs task nova --tipo RF --titulo "Listar registros por data" --esforco M/G --origem RF-1
 node mentor.mjs task iniciar TASK-RF-001
@@ -65,7 +80,7 @@ Titulo com espaco vai entre aspas, no PowerShell e no cmd igual: `--titulo "text
 | Onde | O que e' |
 | :-- | :-- |
 | [`ESPECIFICACAO.md`](./ESPECIFICACAO.md) | o desenho inteiro, com os numeros que o justificam |
-| `docs/auditorias/` | um dossie e um veredito por auditoria, no seu projeto |
+| `docs-mentor/auditorias/` | um dossie e um veredito por auditoria, no seu projeto |
 | `.mentor/nucleo.md` | as leis. Sempre carregado |
 | `.mentor/processos/` | como conduzir o trabalho. Carregados por gatilho |
 | `.mentor/guia/` | 13 areas de orientacao. Consultadas por lacuna, nunca inteiras |

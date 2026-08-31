@@ -1,6 +1,6 @@
 # Fase 10 · O que o campo achou
 
-Proposta para aprovação. **Nada executado.** Origem: `roteirizarj-limpo/docs/melhorias-do-pacote.md`,
+Plano aprovado e em execucao. Origem: `roteirizarj-limpo/docs/melhorias-do-pacote.md`,
 8 achados de uso real em 30/08, mais duas decisões suas nesta conversa.
 
 Duas versões, porque a natureza do trabalho é diferente:
@@ -209,13 +209,18 @@ migra, se referencia.**
 | ADRs | não, **mas precisam ser citáveis** | fica, referenciada |
 | Documento histórico | não | fica, referenciada |
 
-## Passo 5 · `docs/` passa a `docs-mentor/`
+## Passo 5 · `docs/` passa a `docs-mentor/` 🟢 *(feito, 0.2.0)*
 
 Muda `caminhos()`, os 12 cenários, os exemplos versionados, os textos dos pontos de entrada, o README
 e a ESPECIFICACAO. É mecânico e grande.
 
-**Caminho de saída para quem já instalou** (você, no `roteirizarj-limpo`): um passo do `instalar` que
-detecta `docs/contexto.json`, renomeia a pasta e avisa. Nunca silencioso, nunca automático sem dizer.
+**Caminho de saída para quem já instalou:** `instalar --forcar --migrar-docs` reconhece somente uma
+`docs/` com `contexto.json` e a renomeia. Sem a flag, recusa e explica. Se `docs-mentor/` também
+existir, recusa o conflito e não move nada. Uma `docs/` alheia ao pacote fica intacta.
+
+**Prova:** os 12 cenários usam `docs-mentor/`; o cenário de pacote cobre projeto novo com `docs/`
+preexistente, recusa sem autorização, migração autorizada, conflito sem movimento e o caminho real
+de instalação por `node_modules`.
 
 ## Passo 6 · Referência a sistema externo
 

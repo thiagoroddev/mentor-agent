@@ -64,7 +64,7 @@ export function registrarRecusa(comando: string, alvo: string, impedimentos: str
 export function carregarContexto(): Contexto {
   const c = caminhos()
   if (!existe(c.contexto)) {
-    throw new Error('docs/contexto.json nao existe neste projeto. Rode "mentor init" primeiro.')
+    throw new Error('docs-mentor/contexto.json nao existe neste projeto. Rode "mentor init" primeiro.')
   }
   return lerJson<Contexto>(c.contexto)
 }
@@ -357,7 +357,7 @@ export function gerarContextoMd(): { cheios: number; vazios: number } {
     linhas.push(`${padroes.length} campo(s) vieram preenchidos pelo pacote e ainda nao foram olhados.`)
     linhas.push('Valem enquanto ninguem decidir outra coisa.')
   }
-  linhas.push('', '> O JSON completo, com os campos em aberto, esta' + "'" + ' em `docs/contexto.json`.')
+  linhas.push('', '> O JSON completo, com os campos em aberto, esta' + "'" + ' em `docs-mentor/contexto.json`.')
   escreverTexto(c.contextoMd, linhas.join('\n'))
   return { cheios: cheios.length, vazios: vazios.length }
 }

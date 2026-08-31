@@ -15,10 +15,11 @@ export interface Cenario {
   falhas: string[]
 }
 
-/** Apaga so' o `docs/` do exemplo: o que o cenario nao gera nao deveria estar la'. */
+/** Apaga as duas geracoes de documentos: cada cenario precisa provar sozinho o que cria. */
 export function abrirCenario(nome: string): Cenario {
   const pasta = join(RAIZ_REPO, 'testes', 'exemplos', nome)
   rmSync(join(pasta, 'docs'), { recursive: true, force: true })
+  rmSync(join(pasta, 'docs-mentor'), { recursive: true, force: true })
   mkdirSync(pasta, { recursive: true })
   return { nome, pasta, falhas: [] }
 }

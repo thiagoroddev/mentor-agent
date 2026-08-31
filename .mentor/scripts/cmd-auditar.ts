@@ -1,5 +1,5 @@
 import { spawnSync } from 'node:child_process'
-import { agora, caminhos, escreverJson, escreverTexto, lerJson, listar, relativo } from './arquivos.ts'
+import { agora, caminhos, escreverJson, escreverTexto, lerJson, listar, NOME_DOS_DOCUMENTOS, relativo } from './arquivos.ts'
 import { carregarContexto, carregarRequisitos, regenerarTudo, registrarRecusa } from './vistas.ts'
 import { DESTINOS_DE_ACHADO, MARCADOR, NIVEIS_DE_AUDITORIA, VEREDITOS_DE_REVISAO } from './tipos.ts'
 import type {
@@ -30,10 +30,11 @@ const LIMITE_ARQUIVO_NOVO = 20_000
  * Requisitos, ADRs e rascunhos ficam no diff de proposito: aquilo e' conteudo, nao contabilidade.
  */
 const VISTAS_GERADAS = [
-  'docs/contexto.json', 'docs/contexto.md', 'docs/tarefas/backlog.md', 'docs/tarefas/reserva.md',
-  'docs/tarefas/recusas.json', 'docs/tarefas/concluidas/0-indice.md',
-  'docs/requisitos/implementados.md', 'docs/requisitos/pendentes.md', 'docs/auditorias',
-].map((v) => `:(exclude)${v}`)
+  'contexto.json', 'contexto.md', 'tarefas/backlog.md', 'tarefas/reserva.md',
+  'tarefas/recusas.json', 'tarefas/concluidas/0-indice.md',
+  'requisitos/implementados.md', 'requisitos/pendentes.md', 'auditorias',
+].map((v) => `${NOME_DOS_DOCUMENTOS}/${v}`)
+  .map((v) => `:(exclude)${v}`)
 
 export function carregarAuditorias(): Auditoria[] {
   return listar(caminhos().auditorias, '.json').map((a) => lerJson<Auditoria>(a))
@@ -150,7 +151,7 @@ function dossie(id: string, lote: Tarefa[], base: string | null, final: string |
   // Arquivo criado e nunca commitado nao aparece em `git diff` — e e' justamente onde o erro novo
   // mora. Entra aqui inteiro, por `--no-index`, que le' sem tocar no indice de ninguem.
   const novos = git(['ls-files', '--others', '--exclude-standard']).saida.split('\n')
-    .filter(Boolean).filter((f) => !f.startsWith('docs/'))
+    .filter(Boolean).filter((f) => !f.startsWith(`${NOME_DOS_DOCUMENTOS}/`))
   let inteiros = ''
   for (const f of novos) {
     const conteudo = git(['diff', '--no-index', '--', '/dev/null', f]).saida

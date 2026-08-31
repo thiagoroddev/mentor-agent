@@ -5,10 +5,10 @@ import type { Cenario } from '../apoio.ts'
 export function rodar(): Cenario {
   const c = abrirCenario('08-lancamento')
   mentor(c, 'init')
-  const ctx = lerJson<Record<string, any>>(c, 'docs/contexto.json')
+  const ctx = lerJson<Record<string, any>>(c, 'docs-mentor/contexto.json')
   ctx['estado'].fase = 'pre-lancamento'
   ctx['gates'].testes.comando = 'echo "12 passed"'
-  const salvar = () => escrever(c, 'docs/contexto.json', JSON.stringify(ctx, null, 2))
+  const salvar = () => escrever(c, 'docs-mentor/contexto.json', JSON.stringify(ctx, null, 2))
   salvar()
 
   // --- nenhum campo do registro e opcional: e por isso que ele funciona
@@ -26,19 +26,19 @@ export function rodar(): Cenario {
   dizQue(c, criado, 'RA-001 registrado', 'com todos os campos, o registro nasce')
   dizQue(c, criado, 'vencido reprova mais alto que o problema original', 'o comando avisa o que o prazo significa')
 
-  const vista = ler(c, 'docs/seguranca/riscos-aceitos.md')
+  const vista = ler(c, 'docs-mentor/seguranca/riscos-aceitos.md')
   confere(c, vista.includes('no prazo'), 'a vista mostra o estado do risco')
   confere(c, vista.includes('## Encerrados'), 'a vista tem secao de encerrados: encerrar move, nunca apaga')
 
   // --- prazo acima de 90 dias e invalido
-  const riscos = lerJson<Array<Record<string, any>>>(c, 'docs/seguranca/riscos-aceitos.json')
+  const riscos = lerJson<Array<Record<string, any>>>(c, 'docs-mentor/seguranca/riscos-aceitos.json')
   riscos[0]!['data_revisao'] = '29/03/27 14:00'
-  escrever(c, 'docs/seguranca/riscos-aceitos.json', JSON.stringify(riscos, null, 2))
+  escrever(c, 'docs-mentor/seguranca/riscos-aceitos.json', JSON.stringify(riscos, null, 2))
   dizQue(c, mentor(c, 'ra'), 'acima do maximo de 90', 'prazo maior que 90 dias invalida o registro')
 
   // --- vencido
   riscos[0]!['data_revisao'] = '01/08/26 14:00'
-  escrever(c, 'docs/seguranca/riscos-aceitos.json', JSON.stringify(riscos, null, 2))
+  escrever(c, 'docs-mentor/seguranca/riscos-aceitos.json', JSON.stringify(riscos, null, 2))
   dizQue(c, mentor(c, 'ra'), 'VENCIDO', 'data no passado deixa o registro vencido')
 
   // --- `ra` e `doctor` nunca podem discordar sobre o mesmo risco.
@@ -46,7 +46,7 @@ export function rodar(): Cenario {
   //     "vencido", e so uma estava certa. Registrar um risco aceito PIORAVA o doctor.
   const prazo = (data: string) => {
     riscos[0]!['data_revisao'] = data
-    escrever(c, 'docs/seguranca/riscos-aceitos.json', JSON.stringify(riscos, null, 2))
+    escrever(c, 'docs-mentor/seguranca/riscos-aceitos.json', JSON.stringify(riscos, null, 2))
     const ra = mentor(c, 'ra').saida
     const dr = mentor(c, 'doctor').saida
     // Ancorado no texto que so existe quando ha vencido. `/risco.*vencido/i` casava com a
@@ -70,14 +70,14 @@ export function rodar(): Cenario {
 
   // --- vencido barra o lancamento
   riscos[0]!['data_revisao'] = '01/08/26 14:00'
-  escrever(c, 'docs/seguranca/riscos-aceitos.json', JSON.stringify(riscos, null, 2))
+  escrever(c, 'docs-mentor/seguranca/riscos-aceitos.json', JSON.stringify(riscos, null, 2))
   const barrado = mentor(c, 'lancamento')
   confere(c, barrado.codigo === 1, 'risco vencido barra o lancamento')
   dizQue(c, barrado, 'REPROVADO', 'o portao reprova')
 
   // --- consertado, o portao passa a barrar so o que nunca foi executado
   riscos[0]!['data_revisao'] = '15/11/26 14:00'
-  escrever(c, 'docs/seguranca/riscos-aceitos.json', JSON.stringify(riscos, null, 2))
+  escrever(c, 'docs-mentor/seguranca/riscos-aceitos.json', JSON.stringify(riscos, null, 2))
   const semReversao = mentor(c, 'lancamento')
   dizQue(c, semReversao, 'NÃO EXECUTADO', 'reversao nunca executada barra')
   dizQue(c, semReversao, 'Saber voltar e mais importante que publicar rapido', 'e diz por que')
@@ -92,7 +92,7 @@ export function rodar(): Cenario {
 
   // --- encerrar move, nunca apaga
   mentor(c, 'ra', 'encerrar', 'RA-001', '--motivo', 'dependencia atualizada na TASK-BG-001')
-  const depois = ler(c, 'docs/seguranca/riscos-aceitos.md')
+  const depois = ler(c, 'docs-mentor/seguranca/riscos-aceitos.md')
   confere(c, /## Encerrados[\s\S]*RA-001/.test(depois), 'o risco encerrado aparece na secao de encerrados')
   return c
 }

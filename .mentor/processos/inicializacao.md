@@ -4,7 +4,7 @@ carrega_quando: projeto novo, projeto legado, ou atualização do pacote
 
 # Processo · Inicialização
 
-Produz `docs/contexto.json` e a estrutura de `docs/`. Roda uma vez por projeto, e de novo quando o
+Produz `docs-mentor/contexto.json` e a estrutura de `docs-mentor/`. Roda uma vez por projeto, e de novo quando o
 pacote é atualizado.
 
 ## Princípio

@@ -22,12 +22,14 @@ if (aqui.split(/[\\/]/).includes('node_modules')) {
   } else {
     const i = args.indexOf('--destino')
     const destino = i >= 0 && args[i + 1] ? args[i + 1] : process.cwd()
-    const r = copiarPacote(aqui, destino, args.includes('--forcar'))
+    const r = copiarPacote(aqui, destino, args.includes('--forcar'), args.includes('--migrar-docs'))
     if (!r.ok) {
-      console.error(`${r.erro}\nUse --forcar para sobrescrever.`)
+      console.error(r.erro)
+      if (r.erro.startsWith('Ja existe .mentor/')) console.error('Use --forcar para sobrescrever.')
       process.exitCode = 1
     } else {
       console.log(`mentor-agent instalado em ${destino}.`)
+      if (r.migrouDocs) console.log('Migracao concluida: docs/ foi renomeada para docs-mentor/.')
       const e = criarPontosDeEntrada(destino)
       if (e.criados.length) console.log(`Ponto de entrada criado: ${e.criados.join(', ')}.`)
       if (e.preservados.length) {
@@ -49,7 +51,7 @@ if (aqui.split(/[\\/]/).includes('node_modules')) {
       }
       // Reinstalar sobre projeto inicializado nao pede `init`: convidar a refazer os portoes ja
       // respondidos e' o comando desaprendendo o estado do projeto a cada atualizacao.
-      const jaInicializado = existsSync(join(destino, 'docs', 'contexto.json'))
+      const jaInicializado = existsSync(join(destino, 'docs-mentor', 'contexto.json'))
       console.log(jaInicializado
         ? '\nProjeto ja inicializado. Proximo passo: `node mentor.mjs gerar`, para regenerar as vistas com a versao nova.'
         : '\nProximo passo: `node mentor.mjs init`, e depois responder os portoes V, C e 0.')

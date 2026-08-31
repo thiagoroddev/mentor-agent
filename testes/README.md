@@ -14,9 +14,9 @@ aqui, onde o pacote e' editado o tempo todo, ele precisa ser regenerado a cada r
 
 ## Por que os projetos gerados ficam versionados
 
-`exemplos/*/docs/` e' resultado, e esta' no repositorio de proposito. Serve para duas coisas:
+`exemplos/*/docs-mentor/` e' resultado, e esta' no repositorio de proposito. Serve para duas coisas:
 
-1. **Ler.** Abrir `exemplos/02-epico-fatiado/docs/tarefas/backlog.md` mostra como o pacote se
+1. **Ler.** Abrir `exemplos/02-epico-fatiado/docs-mentor/tarefas/backlog.md` mostra como o pacote se
    comporta, sem precisar rodar nada.
 2. **Ver o que mudou.** Uma alteracao no gerador aparece como diff nos exemplos. Se o diff nao era
    esperado, o defeito apareceu antes de chegar num projeto real.

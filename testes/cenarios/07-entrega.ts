@@ -8,8 +8,8 @@ import type { Cenario } from '../apoio.ts'
 export function rodar(): Cenario {
   const c = abrirCenario('07-entrega')
   mentor(c, 'init')
-  const ctx = lerJson<Record<string, any>>(c, 'docs/contexto.json')
-  const salvar = () => escrever(c, 'docs/contexto.json', JSON.stringify(ctx, null, 2))
+  const ctx = lerJson<Record<string, any>>(c, 'docs-mentor/contexto.json')
+  const salvar = () => escrever(c, 'docs-mentor/contexto.json', JSON.stringify(ctx, null, 2))
 
   // --- o gatilho: versionamento se cobra em CONSTRUCAO, nao em pre-lancamento
   ctx['estado'].fase = 'ideia'
@@ -64,14 +64,14 @@ export function rodar(): Cenario {
 
   // --- rascunho de stack: escrito, mas marcado para confirmar
   mentor(c, 'stack', 'github')
-  const convencao = ler(c, 'docs/padroes-de-stack/github.md')
+  const convencao = ler(c, 'docs-mentor/padroes-de-stack/github.md')
   confere(c, convencao.includes('Ramo principal protegido'), 'a convencao de github ja vem rascunhada')
   confere(c, (convencao.match(/PREENCHER: confirmar ou trocar/g) ?? []).length >= 7,
     'toda linha do rascunho vem marcada para confirmar ou trocar: nao e padrao imposto')
-  const depois = lerJson<Array<Record<string, any>>>(c, 'docs/contexto.json')
+  const depois = lerJson<Array<Record<string, any>>>(c, 'docs-mentor/contexto.json')
   confere(c, Array.isArray(depois) === false, 'contexto continua sendo objeto')
 
-  const ctxFinal = lerJson<Record<string, any>>(c, 'docs/contexto.json')
+  const ctxFinal = lerJson<Record<string, any>>(c, 'docs-mentor/contexto.json')
   confere(c, ctxFinal['ferramentas'].some((f: Record<string, any>) => f['nome'] === 'github'),
     'a ferramenta fica registrada no contexto, ligada ao arquivo de padrao')
   return c

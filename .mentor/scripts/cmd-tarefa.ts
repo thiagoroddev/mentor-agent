@@ -200,7 +200,7 @@ export function registrarGate(id: string, gate: string, flags: Flags): void {
 
   const comando = ctx.gates[gate]?.comando
   if (!comando) {
-    throw new Error(`O projeto nao declarou comando para o gate "${gate}" em docs/contexto.json. Declarar e a primeira coisa a resolver, nunca inventar um comando.`)
+    throw new Error(`O projeto nao declarou comando para o gate "${gate}" em docs-mentor/contexto.json. Declarar e a primeira coisa a resolver, nunca inventar um comando.`)
   }
   const r = spawnSync(comando, { shell: true, encoding: 'utf8', cwd: caminhos().raiz })
   const saida = recortar(`${r.stdout ?? ''}${r.stderr ?? ''}`.trim())

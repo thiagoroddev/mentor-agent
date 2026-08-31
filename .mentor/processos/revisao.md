@@ -77,7 +77,7 @@ que testaria para provar que está errado.
 ## Revisão geral do projeto
 
 Não é modo de tarefa. **Só nasce quando o humano pede** revisão completa, e vive em
-`docs/arquitetura/revisoes-gerais/REV-NNN.md`. A IA pode sugerir uma; não cria por iniciativa
+`docs-mentor/arquitetura/revisoes-gerais/REV-NNN.md`. A IA pode sugerir uma; não cria por iniciativa
 própria.
 
 Cada achado recebe ID (`REV-NNN-Axx`) e, se virar trabalho, é citado na origem da tarefa. Achado sem

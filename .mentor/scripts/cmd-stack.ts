@@ -1,4 +1,4 @@
-import { agora, caminhos, escreverJson, escreverTexto, existe } from './arquivos.ts'
+import { agora, caminhos, escreverJson, escreverTexto, existe, NOME_DOS_DOCUMENTOS } from './arquivos.ts'
 import { carregarContexto } from './vistas.ts'
 import { MARCADOR } from './tipos.ts'
 
@@ -68,13 +68,13 @@ export function adicionarFerramenta(nome: string, flags: Record<string, string |
       nome,
       papel: flags.papel ?? null,
       versao: flags.versao ?? null,
-      padrao: `docs/padroes-de-stack/${nome}.md`,
+      padrao: `${NOME_DOS_DOCUMENTOS}/padroes-de-stack/${nome}.md`,
       adotada_em: agora().log,
       adr: flags.adr ?? null,
     })
     escreverJson(c.contexto, ctx)
   }
-  console.log(`Convencao criada em docs/padroes-de-stack/${nome}.md`)
+  console.log(`Convencao criada em ${NOME_DOS_DOCUMENTOS}/padroes-de-stack/${nome}.md`)
   if (rascunho) {
     console.log(`${rascunho.length} linhas ja vem escritas como rascunho, cada uma marcada para confirmar ou trocar.`)
   }

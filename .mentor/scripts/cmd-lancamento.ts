@@ -25,7 +25,7 @@ export function lancamento(): number {
   // 1. Todo gate declarado, rodado agora. Nao vale evidencia antiga: o portao mede o estado atual.
   const declarados = Object.entries(ctx.gates).filter(([, g]) => g?.comando)
   if (declarados.length === 0) {
-    itens.push({ nome: 'gates do projeto', veredito: 'NÃO EXECUTADO', detalhe: 'nenhum gate declarado em docs/contexto.json' })
+    itens.push({ nome: 'gates do projeto', veredito: 'NÃO EXECUTADO', detalhe: 'nenhum gate declarado em docs-mentor/contexto.json' })
   } else {
     for (const [nome, g] of declarados) {
       const r = spawnSync(g!.comando!, { shell: true, encoding: 'utf8', cwd: caminhos().raiz })

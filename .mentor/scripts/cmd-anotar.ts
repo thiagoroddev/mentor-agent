@@ -31,7 +31,7 @@ export function anotar(texto: string | undefined, sobre: string | undefined): vo
     ].join('\n')
     const anterior = existe(caminho) ? lerTexto(caminho) : cabecalho
     escreverTexto(caminho, `${anterior.trimEnd()}\n\n- **${agora().log}** · ${texto}\n`)
-    console.log('Anotado em docs/melhorias-do-pacote.md. Nao vira tarefa daqui.')
+    console.log('Anotado em docs-mentor/melhorias-do-pacote.md. Nao vira tarefa daqui.')
     console.log('Entra no relatorio de campo; o trabalho acontece no repositorio do pacote.')
     return
   }

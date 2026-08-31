@@ -12,7 +12,7 @@ export function rodar(): Cenario {
     escrever(c, arquivo, `# entrada\n\nLeia .mentor/nucleo.md.\n`)
   }
 
-  const ctx = lerJson<Record<string, any>>(c, 'docs/contexto.json')
+  const ctx = lerJson<Record<string, any>>(c, 'docs-mentor/contexto.json')
   ctx['estado'].fase = 'construcao'
   for (const p of Object.keys(ctx['estado'].portoes)) {
     ctx['estado'].portoes[p].status = 'respondido'
@@ -24,7 +24,7 @@ export function rodar(): Cenario {
   for (const k of Object.keys(ctx['versionamento'])) {
     if (!k.startsWith('_')) ctx['versionamento'][k] = k === 'esteira_barra' ? ['testes'] : 'declarado'
   }
-  const salvar = () => escrever(c, 'docs/contexto.json', JSON.stringify(ctx, null, 2))
+  const salvar = () => escrever(c, 'docs-mentor/contexto.json', JSON.stringify(ctx, null, 2))
   salvar()
 
   const limpo = mentor(c, 'doctor')
@@ -66,14 +66,14 @@ export function rodar(): Cenario {
       tarefas_geradas: [], adrs: [], divida_tecnica: [], riscos_aceitos: [],
       absorvida_por: null, cancelamento_motivo: null, narrativa: null,
     }
-    escrever(c, `docs/tarefas/concluidas/x-${t.id}.json`, JSON.stringify(t, null, 2))
+    escrever(c, `docs-mentor/tarefas/concluidas/x-${t.id}.json`, JSON.stringify(t, null, 2))
   }
   for (let i = 1; i <= 21; i++) escalar(i)
   dizQue(c, mentor(c, 'doctor'), 'revisao geral pendente ha 21 tarefas', 'em 20 tarefas o doctor avisa')
   for (let i = 22; i <= 41; i++) escalar(i)
   dizQue(c, mentor(c, 'doctor'), '41 tarefas desde a ultima revisao geral', 'em 40 tarefas vira bloqueio')
 
-  const depois = lerJson<Record<string, any>>(c, 'docs/contexto.json')
+  const depois = lerJson<Record<string, any>>(c, 'docs-mentor/contexto.json')
   confere(c, Array.isArray(depois['lembretes']) && depois['lembretes'].length > 0,
     'os lembretes sao gravados no contexto pelo doctor')
   confere(c, depois['qualidade'].perfil.reprovadas === 1, 'o perfil fica registrado no contexto')

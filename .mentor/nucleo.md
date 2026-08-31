@@ -11,7 +11,7 @@ teto: 120
 
 ## 1 · Hierarquia
 
-`docs/contexto.json` → `nucleo.md` → `processos/` → `guia/`
+`docs-mentor/contexto.json` → `nucleo.md` → `processos/` → `guia/`
 
 O contexto do projeto vence, **exceto** nestas quatro, que nenhum projeto anula sem autorização
 escrita do humano:
@@ -131,7 +131,7 @@ prós e contras, recomende uma, e espere.
 |---|---|
 | Tarefa Standard ou Strict | `processos/tarefa.md` |
 | Projeto novo ou legado | `processos/inicializacao.md` |
-| Tocar ferramenta específica | `docs/padroes-de-stack/<ferramenta>.md`. Não existe? Criá-lo é parte da tarefa: `processos/padroes-de-stack.md` |
+| Tocar ferramenta específica | `docs-mentor/padroes-de-stack/<ferramenta>.md`. Não existe? Criá-lo é parte da tarefa: `processos/padroes-de-stack.md` |
 | Decisão arquitetural relevante | `processos/analise-de-impacto.md` |
 | Ideia nova, planejamento inicial, anotar melhoria | `processos/rascunho.md` |
 | Escrever ou ajustar teste | `processos/teste.md` |

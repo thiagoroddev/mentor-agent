@@ -88,7 +88,13 @@ export function instalar(flags: Record<string, string | undefined>): void {
     return
   }
 
-  copiarPacote(origem, destino, true)
+  const copia = copiarPacote(origem, destino, true, Boolean(flags['migrar-docs']))
+  if (!copia.ok) {
+    console.error(copia.erro)
+    process.exitCode = 1
+    return
+  }
+  if (copia.migrouDocs) console.log('Migracao concluida: docs/ foi renomeada para docs-mentor/.')
   // Manifesto primeiro, `package.json` so' como reserva. Rodando de dentro de um projeto ja
   // instalado, `origem` e' a raiz DELE, e o `package.json` de la e' o do app: a mensagem sairia
   // anunciando a versao do projeto do usuario como se fosse a do pacote. Irmao do achado 10,
@@ -121,7 +127,7 @@ export function instalar(flags: Record<string, string | undefined>): void {
   }
   // Reinstalar sobre projeto inicializado nao pede `init`: convidar a refazer os portoes ja
   // respondidos e' o comando desaprendendo o estado do projeto a cada atualizacao.
-  console.log(existe(join(destino, 'docs', 'contexto.json'))
+  console.log(existe(join(destino, 'docs-mentor', 'contexto.json'))
     ? '\nProjeto ja inicializado. Proximo passo: `node mentor.mjs gerar`, para regenerar as vistas com a versao nova.'
     : '\nProximo passo: `node mentor.mjs init`, e depois responder os portoes V, C e 0.')
 

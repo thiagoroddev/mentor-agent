@@ -1,4 +1,4 @@
-import { cpSync, mkdirSync } from 'node:fs'
+import { cpSync, existsSync, mkdirSync, readFileSync } from 'node:fs'
 import { spawnSync } from 'node:child_process'
 import { join } from 'node:path'
 import {
@@ -13,10 +13,18 @@ import type { Cenario } from '../apoio.ts'
 export function rodar(): Cenario {
   const c = abrirCenarioTemporario('10-pacote')
   dizQue(c, mentor(c, 'instalar', '--destino', c.pasta), 'instalado em', 'instalar copia o pacote')
+  escrever(c, 'docs/README.md', '# documentacao do aplicativo\n')
   mentor(c, 'init')
 
-  const ctx = lerJson<Record<string, any>>(c, 'docs/contexto.json')
-  confere(c, ctx['_meta'].versao_do_pacote === '0.1.6',
+  confere(c, existsSync(join(c.pasta, 'docs-mentor', 'contexto.json')),
+    'projeto novo cria a administracao em docs-mentor/')
+  confere(c, !existsSync(join(c.pasta, 'docs', 'contexto.json')),
+    'projeto novo nao coloniza docs/ com o contexto do mentor')
+  confere(c, readFileSync(join(c.pasta, 'docs', 'README.md'), 'utf8').includes('documentacao do aplicativo'),
+    'docs/ preexistente e alheio ao mentor fica intacto')
+
+  const ctx = lerJson<Record<string, any>>(c, 'docs-mentor/contexto.json')
+  confere(c, ctx['_meta'].versao_do_pacote === '0.2.0',
     'a versao do pacote fica gravada no contexto: sem ela o relatorio nao atribui nada')
 
   confere(c, mentor(c, 'verificar').codigo === 0, 'pacote recem-instalado nao diverge de nada')
@@ -117,13 +125,54 @@ export function rodar(): Cenario {
   confere(c, !`${semAviso.stdout}${semAviso.stderr}`.includes('MODULE_TYPELESS'),
     'sem aviso de tipo de modulo: `.mentor/package.json` resolve sem mexer no package.json do projeto')
 
+  // --- atualizar 0.1.x exige consentimento explicito para renomear a pasta administrativa.
+  //     `docs/` pode ser documentacao do aplicativo: a presenca isolada da pasta nunca autoriza move-la.
+  const legado = join(c.pasta, 'projeto-legado')
+  mkdirSync(join(legado, 'docs'), { recursive: true })
+  escrever({ ...c, pasta: legado }, 'docs/contexto.json', '{"legado":true}\n')
+  dizQue(c, mentor(c, 'instalar', '--destino', legado, '--forcar'), '--migrar-docs',
+    'instalacao 0.1.x sem autorizacao explica como migrar')
+  confere(c, existsSync(join(legado, 'docs', 'contexto.json')) && !existsSync(join(legado, 'docs-mentor')),
+    'sem --migrar-docs, instalador nao move nenhum arquivo legado')
+  const migrado = mentor(c, 'instalar', '--destino', legado, '--forcar', '--migrar-docs')
+  confere(c, migrado.codigo === 0, 'com autorizacao explicita, instalacao 0.1.x migra')
+  confere(c, !existsSync(join(legado, 'docs')) && existsSync(join(legado, 'docs-mentor', 'contexto.json')),
+    'migracao autorizada renomeia docs/ para docs-mentor/ sem deixar duas fontes')
+
+  const conflito = join(c.pasta, 'projeto-em-conflito')
+  mkdirSync(join(conflito, 'docs'), { recursive: true })
+  escrever({ ...c, pasta: conflito }, 'docs/contexto.json', '{"legado":true}\n')
+  mkdirSync(join(conflito, 'docs-mentor'), { recursive: true })
+  escrever({ ...c, pasta: conflito }, 'docs-mentor/sentinela.txt', 'nao mover\n')
+  const recusado = mentor(c, 'instalar', '--destino', conflito, '--forcar', '--migrar-docs')
+  confere(c, recusado.codigo === 1, 'conflito entre docs/ legado e docs-mentor/ e recusado')
+  confere(c, existsSync(join(conflito, 'docs', 'contexto.json')) &&
+    ler({ ...c, pasta: conflito }, 'docs-mentor/sentinela.txt').includes('nao mover'),
+  'conflito nao move nem sobrescreve nenhuma das duas pastas')
+
+  const legadoNpm = join(c.pasta, 'projeto-legado-via-node-modules')
+  mkdirSync(join(legadoNpm, 'docs'), { recursive: true })
+  escrever({ ...c, pasta: legadoNpm }, 'docs/contexto.json', '{"legado":true}\n')
+  const recusadoPeloNpm = spawnSync(process.execPath, [
+    join(dentro, 'mentor.mjs'), 'instalar', '--destino', legadoNpm,
+  ], { encoding: 'utf8', cwd: legadoNpm })
+  confere(c, recusadoPeloNpm.status === 1 &&
+    `${recusadoPeloNpm.stdout}${recusadoPeloNpm.stderr}`.includes('--migrar-docs') &&
+    existsSync(join(legadoNpm, 'docs', 'contexto.json')),
+  'via node_modules, a migracao sem flag tambem e recusada e explicada sem mover dados')
+  const migradoPeloNpm = spawnSync(process.execPath, [
+    join(dentro, 'mentor.mjs'), 'instalar', '--destino', legadoNpm, '--migrar-docs',
+  ], { encoding: 'utf8', cwd: legadoNpm })
+  confere(c, migradoPeloNpm.status === 0 && existsSync(join(legadoNpm, 'docs-mentor', 'contexto.json')),
+    'o caminho real de node_modules tambem reconhece --migrar-docs')
+
   // A versao gravada ACOMPANHA a atualizacao. Antes so o `init` escrevia esse campo, e o `init`
   // recusa rodar em projeto que ja existe: atualizar o pacote deixava o contexto dizendo a versao
   // antiga para sempre, e o relatorio de campo atribuia defeito a versao errada.
   // Por ultimo no cenario de proposito: o manifesto falso derruba a checagem de divergencia acima.
   escrever(c, '.mentor/manifesto.json', JSON.stringify({ versao: '9.9.9', gerado_em: 'x', arquivos: {} }, null, 2))
   mentor(c, 'gerar')
-  confere(c, lerJson<Record<string, any>>(c, 'docs/contexto.json')['_meta'].versao_do_pacote === '9.9.9',
+  confere(c, lerJson<Record<string, any>>(c, 'docs-mentor/contexto.json')['_meta'].versao_do_pacote === '9.9.9',
     'atualizar o pacote atualiza a versao gravada: o campo e gerado, nao lembrado')
 
   fecharTemporario(c)

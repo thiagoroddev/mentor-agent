@@ -27,7 +27,7 @@ execucao, e' de proporcao. Medido no proprio repositorio:
 | Carregado em toda interacao | 765 linhas |
 | Carregado para abrir uma tarefa Standard | 3.042 linhas |
 | Passos manuais para fechar uma tarefa | 9 |
-| `docs/requisitos/funcionais.md` depois de 95 tarefas | vazio |
+| `docs-mentor/requisitos/funcionais.md` depois de 95 tarefas | vazio |
 
 **Mecanismo do defeito:** o pacote transformou orientacao em lei. Lei exige mecanismo de
 verificacao, mecanismo encontra violacao, violacao vira tarefa, tarefa gera regra nova. N regras
@@ -120,7 +120,7 @@ cada decisao que o guia exige, e campo `null` e' a pergunta que a IA faz.
 1  NUCLEO        lei     ~120 linhas   sempre carregado
 2  PROCESSOS     como    ~80 cada      por gatilho
 3  GUIA          conselho 13 arquivos  consultado por lacuna, nunca inteiro
-4  docs/         estado do projeto     gerado ou preenchido por entrevista
+4  docs-mentor/         estado do projeto     gerado ou preenchido por entrevista
 ```
 
 O que decide a camada de uma frase:
@@ -130,7 +130,7 @@ O que decide a camada de uma frase:
 | E' verificavel por script E caro de desfazer? | sim | nucleo |
 | Descreve uma transicao de estado do trabalho? | sim | processo |
 | E' conselho, criterio ou julgamento? | sim | guia |
-| Precisa nomear uma ferramenta para ser escrita? | sim | `docs/padroes-de-stack/` do projeto |
+| Precisa nomear uma ferramenta para ser escrita? | sim | `docs-mentor/padroes-de-stack/` do projeto |
 
 ---
 
@@ -142,7 +142,7 @@ mentor-agent/
     nucleo.md                    sempre carregado
     processos/                   carregados por gatilho
       tarefa.md                  ciclo, campos, gates, fechamento
-      inicializacao.md           entrevista pelos portoes, gera docs/
+      inicializacao.md           entrevista pelos portoes, gera docs-mentor/
       padroes-de-stack.md        como escrever a convencao de uma ferramenta
       analise-de-impacto.md      antes de decisao arquitetural
       revisao.md                 revisao de codigo e revisao geral
@@ -166,7 +166,7 @@ mentor-agent/
       vistas.ts                  backlog.md, contexto.md, requisitos, contagens
       cmd-init.ts  cmd-tarefa.ts  cmd-stack.ts  cmd-verificar.ts  cmd-auditar.ts
       cli.ts                     despacho
-  docs/                          o que o script cria na inicializacao, a partir
+  docs-mentor/                          o que o script cria na inicializacao, a partir
                                  de esquemas/. O proprio pacote tem o seu, com
                                  contexto e sem tarefas (ver secao 15, decisao 10)
     contexto.json                fonte
@@ -258,7 +258,7 @@ convencoes de codigo (guia + stack).
 
 ## 7. O contexto
 
-`docs/contexto.json`, gerado pelo script na inicializacao. Template completo em
+`docs-mentor/contexto.json`, gerado pelo script na inicializacao. Template completo em
 `_rascunho/contexto.template.json` (197 linhas, JSON valido).
 
 Blocos, um por portao do guia:
@@ -331,7 +331,7 @@ ferramenta de desenvolvimento, para `tsc --noEmit`. `tsconfig` em `strict`, com
 
 | Comando | O que faz |
 | :-- | :-- |
-| `init` | cria `docs/` a partir dos esquemas. Nao preenche nada |
+| `init` | cria `docs-mentor/` a partir dos esquemas. Nao preenche nada |
 | `task nova` | gera ID e data, valida os enums. Nasce na **reserva** |
 | `task puxar` / `guardar` | reserva ↔ ciclo, com a regra de passagem conferida |
 | `task fila <n>` / `--soltar` | fixa a posicao a mao, ou devolve a' ordem calculada |
@@ -400,7 +400,7 @@ ferramenta sem arquivo de padrao · tetos estourados · itens de lista de fase n
 
 ## 12. Convencoes de stack
 
-Toda regra ou preferencia que nomeie ferramenta mora em `docs/padroes-de-stack/<ferramenta>.md`,
+Toda regra ou preferencia que nomeie ferramenta mora em `docs-mentor/padroes-de-stack/<ferramenta>.md`,
 teto de 60 linhas, forma fixa:
 
 ```
@@ -501,7 +501,7 @@ testes existe mas ninguem sabe o que deveria estar cobrindo.
 | 8 | Modelo de tarefa | um so', dois niveis de preenchimento |
 | 9 | Auditoria | a cada 10 tarefas, por fase, por promocao de rigor |
 | 10 | O pacote roda as **proprias checagens** | sim: `verificar`, `gates`, `doctor`. E' controle de qualidade, nao tem laco. Corrigido em 29/08: eu tinha proibido demais |
-| 10b | O pacote gerencia as **proprias tarefas** | nao. O backlog dele e' o `PLANO.md`, a mao. Migrar para `docs/tarefas/` seria o laco que produziu 79% de CHORE+DOC no antecessor |
+| 10b | O pacote gerencia as **proprias tarefas** | nao. O backlog dele e' o `PLANO.md`, a mao. Migrar para `docs-mentor/tarefas/` seria o laco que produziu 79% de CHORE+DOC no antecessor |
 | 10c | Usar o pacote em si mesmo **durante o desenvolvimento** | nao (decisao do humano, 29/08): ambiente em mudanca gera estado que nenhum projeto real visita, e defeito achado ali pode nao existir em lugar nenhum. Depois de estavel, sim |
 
 ## 16. Decisoes pendentes

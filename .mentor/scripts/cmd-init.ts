@@ -4,14 +4,14 @@ import { regenerarTudo } from './vistas.ts'
 import type { Contexto } from './tipos.ts'
 
 /**
- * Cria a estrutura de docs/ do projeto a partir dos esquemas do pacote.
+ * Cria a estrutura de docs-mentor/ do projeto a partir dos esquemas do pacote.
  * Nao preenche nada: campo null e' a pauta que o mentor cobra depois.
  */
 export function inicializar(): void {
   // O `init` e' o unico comando que nao procura o projeto: ele o cria onde voce esta'.
   const c = caminhos(process.env['MENTOR_RAIZ'] ?? process.cwd())
   if (existe(c.contexto)) {
-    console.log('docs/contexto.json ja existe. Nada a fazer.')
+    console.log('docs-mentor/contexto.json ja existe. Nada a fazer.')
     return
   }
   for (const pasta of [c.abertas, c.concluidas, c.stack, c.adr, c.docs + '/requisitos', c.docs + '/dividas', c.docs + '/seguranca']) {
@@ -33,7 +33,7 @@ export function inicializar(): void {
   escreverTexto(
     c.docs + '/LEIA.md',
     [
-      '# docs/',
+      '# docs-mentor/',
       '',
       'Fonte e vista geradas. **Arquivo `.json` e fonte; `.md` gerado nunca se edita a mao.**',
       '',

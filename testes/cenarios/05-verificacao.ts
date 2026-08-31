@@ -11,7 +11,7 @@ export function rodar(): Cenario {
 
   // Padrao do pacote nao e decisao. O primeiro contexto.md de um projeto real dizia
   // "Decidido: 25 campos" com zero decisao tomada, e campo pre-preenchido some da pauta do mentor.
-  const recem = ler(c, 'docs/contexto.md')
+  const recem = ler(c, 'docs-mentor/contexto.md')
   confere(c, recem.includes('**Respondido por voce:** 0'),
     'projeto recem-criado nao decidiu nada, por mais campos que venham preenchidos')
   confere(c, recem.includes('vieram preenchidos pelo pacote e ainda nao foram olhados'),
@@ -23,53 +23,53 @@ export function rodar(): Cenario {
   //     proximo `instalar --forcar` apagaria.
   const gordo = 'x'.repeat(4000)
   for (const n of ['001', '002', '003']) {
-    escrever(c, `docs/arquitetura/ADR/ADR-${n}.md`, `# ADR-${n}\n\n${gordo}\n`)
+    escrever(c, `docs-mentor/arquitetura/ADR/ADR-${n}.md`, `# ADR-${n}\n\n${gordo}\n`)
   }
   const estourando = mentor(c, 'verificar')
   confere(c, estourando.codigo === 1, 'ADR acima do teto reprova')
   dizQue(c, estourando, 'ADR-003.md', 'e nomeia cada arquivo')
 
-  escrever(c, 'docs/tetos.json', JSON.stringify({
+  escrever(c, 'docs-mentor/tetos.json', JSON.stringify({
     excecoes: [{
-      caminho: 'docs/arquitetura/ADR/ADR-0*.md', teto: 15000,
+      caminho: 'docs-mentor/arquitetura/ADR/ADR-0*.md', teto: 15000,
       motivo: 'ADRs migradas de sistema anterior: reescrever para caber apagaria contexto historico',
     }],
   }, null, 2))
   confere(c, mentor(c, 'verificar').codigo === 0,
     'uma excecao com glob no arquivo do PROJETO cobre as tres, e sobrevive ao instalar --forcar')
 
-  const antes = lerJson<Record<string, any>>(c, 'docs/contexto.json')
+  const antes = lerJson<Record<string, any>>(c, 'docs-mentor/contexto.json')
   antes['limites'].ciclo_tarefas = 8
-  escrever(c, 'docs/contexto.json', JSON.stringify(antes, null, 2))
+  escrever(c, 'docs-mentor/contexto.json', JSON.stringify(antes, null, 2))
   mentor(c, 'gerar')
-  const depois = ler(c, 'docs/contexto.md')
+  const depois = ler(c, 'docs-mentor/contexto.md')
   confere(c, depois.includes('**Respondido por voce:** 1') && depois.includes('`limites.ciclo_tarefas`: 8'),
     'valor diferente do esquema conta como decisao, e aparece na secao certa')
   confere(c, mentor(c, 'verificar').codigo === 0, 'projeto recem-criado passa')
 
   // --- link que nao resolve
-  escrever(c, 'docs/arquitetura/ADR/ADR-001.md',
+  escrever(c, 'docs-mentor/arquitetura/ADR/ADR-001.md',
     '# ADR-001\n\nVer [a analise](./analise-que-nao-existe.md) para o contexto.\n')
   const quebrado = mentor(c, 'verificar')
   confere(c, quebrado.codigo === 1, 'link que nao resolve reprova')
   dizQue(c, quebrado, 'nao resolve', 'a mensagem diz que o link nao resolve')
 
   // --- link dentro de bloco de codigo nao conta
-  escrever(c, 'docs/arquitetura/ADR/ADR-001.md',
+  escrever(c, 'docs-mentor/arquitetura/ADR/ADR-001.md',
     '# ADR-001\n\nExemplo:\n\n```md\n[isto e exemplo](./tambem-nao-existe.md)\n```\n\n' +
     'E um `[inline](./nem-este.md)` tambem nao.\n')
   confere(c, mentor(c, 'verificar').codigo === 0, 'link dentro de bloco de codigo e ignorado')
 
   // --- grafia diferente da do arquivo
-  escrever(c, 'docs/arquitetura/ADR/ADR-002.md', '# ADR-002\n')
-  escrever(c, 'docs/arquitetura/ADR/ADR-001.md', '# ADR-001\n\nVer [a outra](./adr-002.md).\n')
+  escrever(c, 'docs-mentor/arquitetura/ADR/ADR-002.md', '# ADR-002\n')
+  escrever(c, 'docs-mentor/arquitetura/ADR/ADR-001.md', '# ADR-001\n\nVer [a outra](./adr-002.md).\n')
   const caixa = mentor(c, 'verificar')
   confere(c, caixa.codigo === 1, 'link com a grafia errada reprova, mesmo no Windows')
   dizQue(c, caixa, 'adr-002.md', 'a mensagem nomeia o link errado')
 
   // --- extensao dupla
-  escrever(c, 'docs/arquitetura/ADR/ADR-001.md', '# ADR-001\n\nVer [a outra](./ADR-002.md).\n')
-  escrever(c, 'docs/arquitetura/ADR/ADR-003.md.md', '# vazio\n')
+  escrever(c, 'docs-mentor/arquitetura/ADR/ADR-001.md', '# ADR-001\n\nVer [a outra](./ADR-002.md).\n')
+  escrever(c, 'docs-mentor/arquitetura/ADR/ADR-003.md.md', '# vazio\n')
   const dupla = mentor(c, 'verificar')
   confere(c, dupla.codigo === 1, 'extensao dupla .md.md reprova')
   dizQue(c, dupla, 'extensao dupla', 'a mensagem nomeia a extensao dupla')
@@ -80,7 +80,7 @@ export function rodar(): Cenario {
 
   // Deixa o exemplo num estado que passa: o valor de um exemplo versionado e' mostrar o normal,
   // e as falhas ja' foram provadas acima.
-  apagar(c, 'docs/arquitetura/ADR/ADR-003.md.md')
+  apagar(c, 'docs-mentor/arquitetura/ADR/ADR-003.md.md')
   confere(c, mentor(c, 'verificar').codigo === 0, 'com os defeitos removidos, volta a passar')
   return c
 }

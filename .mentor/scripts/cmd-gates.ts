@@ -11,7 +11,7 @@ export function gates(): number {
   const ctx = carregarContexto()
   const declarados = Object.entries(ctx.gates).filter(([, g]) => g?.comando)
   if (declarados.length === 0) {
-    console.log('Nenhum gate declarado em docs/contexto.json. Declarar e a primeira coisa a resolver.')
+    console.log('Nenhum gate declarado em docs-mentor/contexto.json. Declarar e a primeira coisa a resolver.')
     return 0
   }
   let reprovou = 0

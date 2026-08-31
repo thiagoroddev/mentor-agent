@@ -8,7 +8,7 @@ O pacote **não traz o padrão da sua ferramenta pronto: traz como escrever o se
 envelhece com a ferramenta, impõe preferência que não é do projeto, e é pago por quem não usa
 aquela ferramenta.
 
-O padrão mora em `docs/padroes-de-stack/<ferramenta>.md`, dentro do projeto, e **sobrevive a toda
+O padrão mora em `docs-mentor/padroes-de-stack/<ferramenta>.md`, dentro do projeto, e **sobrevive a toda
 atualização do pacote**. Sair de uma ferramenta é apagar um arquivo; entrar em outra é criar um.
 
 ## Quando dispara

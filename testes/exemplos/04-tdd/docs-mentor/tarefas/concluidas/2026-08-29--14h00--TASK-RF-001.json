@@ -1,0 +1,62 @@
+{
+  "id": "TASK-RF-001",
+  "tipo": "RF",
+  "titulo": "Somar as parcelas",
+  "fatia_de": null,
+  "estado": "concluida",
+  "cerimonia": "Standard",
+  "valor": "importante",
+  "urgencia": "normal",
+  "esforco": {
+    "humano": "P",
+    "ia": "P"
+  },
+  "depende_de": [],
+  "fila": "ciclo",
+  "ordem": null,
+  "origem": "titulo-autossuficiente",
+  "requisitos": [],
+  "criada_em": "29/08/26 14:00",
+  "iniciada_em": "29/08/26 14:00",
+  "commit_base": "c69e59247cc2bb39a52d70f63620c372b23f8b6f",
+  "concluida_em": "29/08/26 14:00",
+  "plano": {
+    "muda": [
+      "a.ts"
+    ],
+    "criterios_aceite": [
+      {
+        "texto": "faz o que foi pedido",
+        "teste": "soma.test.ts > soma duas parcelas"
+      }
+    ],
+    "impacto": "modulo a",
+    "riscos": [],
+    "dependencias_novas": [],
+    "proporcionalidade": "do tamanho do pedido"
+  },
+  "gates": {
+    "testes": {
+      "rotulo": "APROVADO",
+      "vermelho_em": null,
+      "comando": "echo \"3 passed\"",
+      "codigo_saida": 0,
+      "saida": "\"3 passed\"",
+      "executado_em": "29/08/26 14:00",
+      "evidencia_url": null,
+      "motivo": null,
+      "ressalva": null
+    }
+  },
+  "achados": [],
+  "validacao": "nao_requer",
+  "validado_em": null,
+  "validacao_motivo": null,
+  "tarefas_geradas": [],
+  "adrs": [],
+  "divida_tecnica": [],
+  "riscos_aceitos": [],
+  "absorvida_por": null,
+  "cancelamento_motivo": null,
+  "narrativa": "2026-08-29--14h00--TASK-RF-001.md"
+}

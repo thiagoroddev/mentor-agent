@@ -6,7 +6,7 @@ carrega_quando: ideia nova, planejamento inicial, ou anotar melhoria
 
 ## Toda ideia nova começa em rascunho
 
-`docs/rascunhos/`. **Rascunho não é tarefa**: não tem gate, não tem critério de aceite, não entra na
+`docs-mentor/rascunhos/`. **Rascunho não é tarefa**: não tem gate, não tem critério de aceite, não entra na
 fila e não conta no ciclo. É onde a ideia pode estar errada sem custar nada.
 
 Projeto novo tem muito rascunho, e isso é o estado saudável. Requisito que nasce direto como tarefa
@@ -42,8 +42,8 @@ começou a construir antes de entender.
 Você vai ver algo que precisa mudar no meio do trabalho. **Não decida de cabeça onde aplicar.**
 
 ```
-mentor anotar --sobre pacote  "texto"      -> docs/melhorias-do-pacote.md
-mentor anotar --sobre projeto "texto"      -> docs/rascunhos/<data>-<slug>.md
+mentor anotar --sobre pacote  "texto"      -> docs-mentor/melhorias-do-pacote.md
+mentor anotar --sobre projeto "texto"      -> docs-mentor/rascunhos/<data>-<slug>.md
 ```
 
 A decisão entre os dois tem regra, e ela é curta:
@@ -58,7 +58,7 @@ O terceiro caso é legítimo. O que não pode é editar e esquecer: o `verificar
 instalado com as assinaturas da versão e nomeia o que divergiu.
 
 ⚠️ **Anotação sobre o pacote não vira tarefa deste projeto.** Ela vai para
-`docs/melhorias-do-pacote.md`, entra no relatório de campo, e o trabalho acontece no repositório do
+`docs-mentor/melhorias-do-pacote.md`, entra no relatório de campo, e o trabalho acontece no repositório do
 pacote. Sem essa separação, todo projeto vira aos poucos um projeto sobre o pacote.
 
 **Não interrompa o projeto por incômodo.** Só pare se o pacote estiver bloqueando de verdade: cada

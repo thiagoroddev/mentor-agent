@@ -8,9 +8,9 @@ import type { Cenario } from '../apoio.ts'
 export function rodar(): Cenario {
   const c = abrirCenario('03-recusas')
   mentor(c, 'init')
-  const ctx = lerJson<Record<string, any>>(c, 'docs/contexto.json')
+  const ctx = lerJson<Record<string, any>>(c, 'docs-mentor/contexto.json')
   ctx['gates']['testes'].comando = 'echo "falhou de proposito" && exit 1'
-  escrever(c, 'docs/contexto.json', JSON.stringify(ctx, null, 2))
+  escrever(c, 'docs-mentor/contexto.json', JSON.stringify(ctx, null, 2))
 
   mentor(c, 'task', 'nova', '--tipo', 'CHORE', '--titulo', 'Primeira',
     '--esforco', 'P/P', '--origem', 'titulo-autossuficiente')
@@ -39,14 +39,14 @@ export function rodar(): Cenario {
 
   dizQue(c, mentor(c, 'task', 'gate', 'TASK-CHORE-001', 'testes'), 'FALHOU', 'gate vermelho e' + ' registrado como FALHOU')
 
-  const t = lerJson<Record<string, any>>(c, 'docs/tarefas/abertas/TASK-CHORE-001.json')
+  const t = lerJson<Record<string, any>>(c, 'docs-mentor/tarefas/abertas/TASK-CHORE-001.json')
   t['plano'] = {
     muda: ['a.ts'], criterios_aceite: [{ texto: 'x', teste: '' }],
     impacto: 'y', riscos: [], dependencias_novas: [], proporcionalidade: 'z',
   }
   t['achados'] = [{ classe: 1, descricao: 'token no log', destino: 'divida_tecnica', ref: '' }]
-  escrever(c, 'docs/tarefas/abertas/TASK-CHORE-001.json', JSON.stringify(t, null, 2))
-  escrever(c, 'docs/tarefas/abertas/TASK-CHORE-001.md',
+  escrever(c, 'docs-mentor/tarefas/abertas/TASK-CHORE-001.json', JSON.stringify(t, null, 2))
+  escrever(c, 'docs-mentor/tarefas/abertas/TASK-CHORE-001.md',
     '# t\n\n## Decisoes tomadas\na\n\n## O que nao foi feito, e por que\nb\n\n## Aprendizados\nNada.\n')
 
   const recusa = mentor(c, 'task', 'finalizar', 'TASK-CHORE-001')
