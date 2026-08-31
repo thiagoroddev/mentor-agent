@@ -20,6 +20,7 @@ export function abrirCenario(nome: string): Cenario {
   const pasta = join(RAIZ_REPO, 'testes', 'exemplos', nome)
   rmSync(join(pasta, 'docs'), { recursive: true, force: true })
   rmSync(join(pasta, 'docs-mentor'), { recursive: true, force: true })
+  rmSync(join(pasta, 'arquivo-historico'), { recursive: true, force: true })
   mkdirSync(pasta, { recursive: true })
   return { nome, pasta, falhas: [] }
 }
@@ -65,7 +66,7 @@ export function escrever(c: Cenario, relativo: string, conteudo: string): void {
 }
 
 export function apagar(c: Cenario, relativo: string): void {
-  rmSync(join(c.pasta, relativo), { force: true })
+  rmSync(join(c.pasta, relativo), { recursive: true, force: true })
 }
 
 export function confere(c: Cenario, condicao: boolean, oQue: string): void {

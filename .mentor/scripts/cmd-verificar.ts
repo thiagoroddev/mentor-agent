@@ -3,7 +3,7 @@ import { basename, dirname, join, resolve } from 'node:path'
 import { caminhos, existe, lerJson, lerTexto, listar, raizPacote, relativo } from './arquivos.ts'
 import { comparar } from './cmd-regras.ts'
 import { conferirManifesto } from './cmd-pacote.ts'
-import { carregarContexto, carregarRequisitos, carregarTarefas } from './vistas.ts'
+import { carregarContexto, carregarReferencias, carregarRequisitos, carregarTarefas } from './vistas.ts'
 import { MARCADOR } from './tipos.ts'
 import type { Tetos } from './tipos.ts'
 
@@ -182,8 +182,28 @@ function referencias(): Achado[] {
   const ctx = carregarContexto()
   const tarefas = carregarTarefas()
   const reqs = carregarRequisitos()
+  const refs = carregarReferencias()
+
+  const idsExternosValidos = new Set<string>()
+  for (const ref of refs) {
+    if (!ref.id || !ref.onde) {
+      achados.push({ familia: 'referencia', onde: 'docs-mentor/referencias.json', problema: 'referencia incompleta (id ou onde ausente)' })
+      continue
+    }
+    const alvo = join(c.raiz, ref.onde)
+    if (!existeComGrafiaExata(alvo)) {
+      achados.push({
+        familia: 'referencia',
+        onde: 'docs-mentor/referencias.json',
+        problema: `referencia ${ref.id} aponta para ${ref.onde}, que nao existe`,
+      })
+    } else {
+      idsExternosValidos.add(ref.id)
+    }
+  }
+
   const idsTarefa = new Set(tarefas.map((t) => t.id))
-  const idsReq = new Set(reqs.map((r) => r.id))
+  const idsReq = new Set([...reqs.map((r) => r.id), ...idsExternosValidos])
 
   for (const f of ctx.ferramentas) {
     if (f.dispensa_motivo) continue

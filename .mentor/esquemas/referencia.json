@@ -1,0 +1,13 @@
+{
+  "_meta": {
+    "schema": "referencia/1",
+    "leia_antes": "Registra identificadores de sistemas externos ou historicos (ex: requisitos antigos, ADRs preexistentes, Jira) para resolubilidade sem exigir migracao."
+  },
+  "id": null,
+  "onde": null,
+  "onde_nota": "Caminho relativo a raiz do projeto para o arquivo onde o item esta documentado.",
+  "sistema": null,
+  "sistema_nota": "Nome do sistema de origem (ex: esquadro-agents, jira, redmine, planilha).",
+  "titulo": null,
+  "registrado_em": null
+}

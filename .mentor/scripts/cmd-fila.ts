@@ -1,10 +1,11 @@
 import { rmSync } from 'node:fs'
+import { join } from 'node:path'
 import {
   agora, caminhos, escreverJson, escreverTexto, existe, lerJson, lerTexto, listar, relativo,
 } from './arquivos.ts'
 import { proximoIdDeTarefa } from './ids.ts'
 import {
-  carregarContexto, carregarDividas, carregarRequisitos, carregarRiscos, carregarTarefas,
+  carregarContexto, carregarDividas, carregarReferencias, carregarRequisitos, carregarRiscos, carregarTarefas,
   regenerarTudo, registrarRecusa,
 } from './vistas.ts'
 import type { Tarefa } from './tipos.ts'
@@ -36,11 +37,20 @@ export function origemNaoResolve(origem: string): string | null {
   const idsRisco = new Set(carregarRiscos().map((r) => r.id))
   const nomesAdr = listar(c.adr, '.md').map((a) => relativo(a))
   const nomesRev = listar(`${c.docs}/arquitetura/revisoes-gerais`, '.md').map((a) => relativo(a))
+  const refs = carregarReferencias()
+  const mapaRefs = new Map(refs.map((r) => [r.id, r]))
 
   const quebrados: string[] = []
   for (const bruto of texto.split(',')) {
     const id = bruto.trim()
     if (!id) continue
+    if (mapaRefs.has(id)) {
+      const ref = mapaRefs.get(id)!
+      if (!existe(join(c.raiz, ref.onde))) {
+        quebrados.push(`${id} (referencia externa aponta para ${ref.onde}, que nao existe)`)
+      }
+      continue
+    }
     const familia = /^([A-Z]+)-/.exec(id)?.[1]
     switch (familia) {
       case 'RF': case 'RN': case 'RNF':

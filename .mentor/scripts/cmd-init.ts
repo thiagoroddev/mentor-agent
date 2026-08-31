@@ -29,6 +29,7 @@ export function inicializar(): void {
   escreverJson(c.requisitos, [])
   escreverJson(c.dividas, [])
   escreverJson(c.riscos, [])
+  escreverJson(c.referencias, [])
 
   escreverTexto(
     c.docs + '/LEIA.md',
@@ -42,6 +43,7 @@ export function inicializar(): void {
       '| `contexto.json` | `contexto.md` |',
       '| `requisitos/requisitos.json` | `requisitos/implementados.md`, `requisitos/pendentes.md` |',
       '| `tarefas/abertas/*.json` | `tarefas/backlog.md` (ciclo) e `tarefas/reserva.md` |',
+      '| `referencias.json` | ponteiros para itens historicos/externos |',
       '| `dividas/dividas.json` | ainda sem vista |',
       '| `seguranca/riscos-aceitos.json` | ainda sem vista |',
       '',

@@ -14,6 +14,7 @@ import { relatorioDeCampo } from './cmd-campo.ts'
 import { gerarManifesto, instalar } from './cmd-pacote.ts'
 import { anotar } from './cmd-anotar.ts'
 import { preparar as prepararAuditoria, registrar as registrarAuditoria, relatar as relatarAuditorias, resolver as resolverPendencia } from './cmd-auditar.ts'
+import { novaReferencia, relatarReferencias } from './cmd-referencia.ts'
 import { regenerarTudo } from './vistas.ts'
 
 const AJUDA = `
@@ -22,6 +23,8 @@ mentor <comando>
   instalar [--destino <pasta>]         copia o pacote para dentro de um projeto
   manifesto                            grava o hash de cada arquivo do pacote (antes de empacotar)
   init                                 cria docs-mentor/ a partir dos esquemas
+  ref [nova|listar]                    referencia a requisito/ADR externo ou historico
+       nova --id <ID> --onde <caminho> [--sistema <nome> --titulo <titulo>]
   task nova --tipo T --titulo "..."    cria tarefa (gera ID e data)
        --esforco H/IA --origem "..."
        [--valor --urgencia --depende --requisitos --cerimonia --fatia-de]
@@ -88,6 +91,13 @@ function principal(argv: string[]): number {
     case 'instalar': instalar(flags); return process.exitCode === 1 ? 1 : 0
     case 'manifesto': gerarManifesto(); return 0
     case 'init': inicializar(); return 0
+    case 'ref':
+    case 'referencia': {
+      const sub = posicionais[0]
+      if (!sub || sub === 'listar') { relatarReferencias(); return 0 }
+      if (sub === 'nova') { novaReferencia(flags); return 0 }
+      throw new Error(`Subcomando de ref desconhecido: "${sub}". Use: mentor ref [listar|nova]`)
+    }
     case 'gerar': regenerarTudo(); console.log('Vistas regeneradas.'); return 0
     case 'anotar': anotar(posicionais[0], flags.sobre); return 0
     case 'reserva': listarReserva(); return 0

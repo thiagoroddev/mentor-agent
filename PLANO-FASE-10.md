@@ -224,7 +224,7 @@ de instalação por `node_modules`. O ensaio no hospedeiro revelou que globs de 
 para `docs/`; a correção migra somente referências administrativas estruturadas e preserva texto
 livre. O manifesto passou a incluir `.mjs`, para proteger o próprio migrador.
 
-## Passo 6 · Referência a sistema externo
+## Passo 6 · Referência a sistema externo 🟢 *(feito, 0.2.0)*
 
 É aqui que o **achado 6** deixa de ser problema de migração e vira o que sempre foi: um problema de
 **resolubilidade**. Uma tarefa precisa citar `RF-12` na origem e o `verificar` precisa resolver esse
@@ -239,13 +239,10 @@ ID. Não é preciso importar o requisito. É preciso saber que ele existe e onde
 }
 ```
 
-⚠️ **Isto é exatamente o atalho que você propôs para invariantes**, duas mensagens atrás: apontar
-documento e data em vez de copiar conteúdo. O mesmo mecanismo resolve migração e invariante, e essa
-convergência é o argumento mais forte de que a ideia está certa.
-
-O `verificar` passa a resolver ID por três caminhos, nessa ordem: registro nativo, referência
-externa, ou falha. Hoje ele só conhece o primeiro, e é por isso que requisito implementado não tem
-como ser citado.
+O `verificar` e o `puxar` passam a resolver ID por três caminhos, nessa ordem: registro nativo, referência
+externa (validando que o arquivo em `onde` existe em disco), ou falha.
+Comando `mentor ref [nova|listar]` implementado.
+Cenário `13-referencias` prova recusa de IDs não registrados, validação do arquivo em disco, aprovação no `verificar`, permissão de entrada no ciclo por `puxar`, e listagem. Duas mutações conferiram as asserções.
 
 ## Passo 7 · Lugar para documento que não é ADR
 

@@ -1,6 +1,6 @@
 import { agora, agoraIso, caminhos, escreverJson, escreverTexto, existe, lerData, lerJson, listar, relogioDoPacote } from './arquivos.ts'
 import { join } from 'node:path'
-import type { Contexto, DividaTecnica, Recusa, Requisito, RiscoAceito, Tarefa } from './tipos.ts'
+import type { Contexto, DividaTecnica, Recusa, ReferenciaExterna, Requisito, RiscoAceito, Tarefa } from './tipos.ts'
 
 const AVISO = '<!-- Gerado por `node mentor.mjs gerar`. Nao edite a mao: a proxima geracao sobrescreve. -->'
 
@@ -12,6 +12,11 @@ export function carregarTarefas(): Tarefa[] {
 export function carregarRequisitos(): Requisito[] {
   const c = caminhos()
   return existe(c.requisitos) ? lerJson<Requisito[]>(c.requisitos) : []
+}
+
+export function carregarReferencias(): ReferenciaExterna[] {
+  const c = caminhos()
+  return existe(c.referencias) ? lerJson<ReferenciaExterna[]>(c.referencias) : []
 }
 
 export function carregarDividas(): DividaTecnica[] {

@@ -207,6 +207,18 @@ export interface Requisito {
   pendente_de_validacao: boolean
 }
 
+/**
+ * Ponteiro para documento ou identificador de sistema externo/historico.
+ * Permite resolubilidade de requisitos, ADRs ou dividas sem exigir migracao de documentos imutaveis.
+ */
+export interface ReferenciaExterna {
+  id: string
+  onde: string
+  sistema?: string | null
+  titulo?: string | null
+  registrado_em?: string | null
+}
+
 export interface Portao {
   status: 'aberto' | 'respondido' | 'dispensado'
   guia: string

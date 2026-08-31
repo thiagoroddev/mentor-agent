@@ -804,4 +804,11 @@ VALIDACAO 9.3 · O pacote carregou num projeto real pela primeira vez (roteiriza
              e o `verificar` reprovou. O migrador agora atualiza apenas caminhos estruturados em
              contexto, tetos e LEIA, sem tocar texto livre. O manifesto tambem passou a inventariar
              `.mjs`, pois antes a logica de instalacao podia divergir sem ser detectada.
+31/08/26 · 0.2.0 · FASE 10, PASSO 6. Resolubilidade de identificadores externos e historicos sem
+             exigir migracao ou duplicacao de documentos imutaveis. `docs-mentor/referencias.json`
+             guarda ponteiros `{id, onde, sistema, titulo, registrado_em}`. `verificar` e `puxar`
+             resolvem IDs externos conferindo a existencia real do arquivo apontado. Comando
+             `mentor ref [nova|listar]`. Cenário `13-referencias` prova recusa de IDs nao
+             registrados, validacao do arquivo em disco, aprovacao no `verificar`, permissao de
+             entrada no ciclo por `puxar` e listagem. Duas mutacoes conferiram as assercoes.
 ```
