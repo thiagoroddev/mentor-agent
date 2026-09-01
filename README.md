@@ -8,7 +8,7 @@ perguntar, e registra tudo de forma rastreavel.
 Na raiz do projeto que vai usar o pacote:
 
 ```bash
-npm i -D github:thiagoroddev/mentor-agent#v0.2.0
+npm i -D github:thiagoroddev/mentor-agent#v0.2.2
 npx mentor instalar        # copia .mentor/ e mentor.mjs para a raiz
 node mentor.mjs init       # cria docs-mentor/, sem tocar na docs/ do aplicativo
 ```
@@ -24,7 +24,7 @@ a IA le' `.mentor/` como arquivo, e o projeto versiona as convencoes dele ao lad
 isso em vez de estourar.
 
 A versao instalada fica gravada em `docs-mentor/contexto.json`, senao o relatorio de campo nao consegue
-dizer *"isto aconteceu com a 0.2.0"*.
+dizer *"isto aconteceu com a 0.2.2"*.
 
 ### Atualizar uma instalacao 0.1.x
 
@@ -32,7 +32,7 @@ A versao 0.1.x guardava o estado do mentor em `docs/`. A 0.2.0 nao renomeia essa
 autorizacao especifica: `--forcar` permite substituir `.mentor/`, mas nao permite mover documentos.
 
 ```bash
-npm i -D github:thiagoroddev/mentor-agent#v0.2.0
+npm i -D github:thiagoroddev/mentor-agent#v0.2.2
 npx mentor instalar --forcar --migrar-docs
 node mentor.mjs gerar
 ```
