@@ -16,7 +16,7 @@ Nada que o script escreve é digitado ou conferido pela IA.
 
 ## Campos
 
-`tipo` RF · RN · RNF · BG · REF · DOC · CHORE · TEST
+`tipo` RF · RN · RNF · BG · REF · DOC · CHORE · TEST · SPIKE
 `valor` crítico · importante · desejável
 `urgencia` imediata · normal
 `esforco` duplo, humano/IA, cada um P · M · G · XG
@@ -64,7 +64,7 @@ gate de testes precisa ter sido visto vermelho antes do verde.
 
 ## Gates
 
-Rodados por `task registrar-gate`, que executa o comando declarado no contexto e grava comando,
+Rodados por `task gate <ID> <gate>`, que executa o comando declarado no contexto e grava comando,
 saída e horário. **Declaração escrita à mão não vale como evidência.**
 
 Sete rótulos, e nenhum outro:

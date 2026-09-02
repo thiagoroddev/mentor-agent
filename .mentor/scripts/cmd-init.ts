@@ -68,6 +68,7 @@ export function inicializar(): void {
   )
 
   regenerarTudo()
-  console.log('Projeto inicializado. Proximo passo: responder os portoes V, C e 0,')
-  console.log('que decidem o nivel de rigor. Processo em .mentor/processos/inicializacao.md')
+  console.log('Projeto inicializado com sucesso!')
+  console.log('Proximo passo: ler docs/ e codigo se for legado, e responder os portoes V, C e 0 (nivel de rigor).')
+  console.log('Roteiro detalhado em .mentor/processos/inicializacao.md')
 }

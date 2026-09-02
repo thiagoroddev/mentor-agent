@@ -21,8 +21,12 @@ errado, e ele deixa de responder o que só ele sabe.
 
 ## Quatro fases
 
-**1 · Ler.** Repositório vazio pula esta fase. Existindo código, leia antes de perguntar qualquer
-coisa, e traga o que leu para a entrevista já preenchido, para o humano confirmar em vez de ditar.
+**1 · Ler.** Repositório vazio pula esta fase. Existindo código ou documentação prévia (`docs/`),
+**é proibido entrevistar do zero**. A IA deve:
+1. Ler a documentação existente em `docs/` e o código (`package.json`, `src/`).
+2. Mapear o que já está respondido e preencher um rascunho de `docs-mentor/contexto.json`.
+3. Migrar pendências vivas para `docs-mentor/requisitos/requisitos.json` e tarefas abertas em `docs-mentor/tarefas/abertas/` (fatiadas com `fatia_de`, sem decimais; ignorando histórico concluído).
+4. Entrevistar apenas as lacunas humanas e regulatórias reais que não estão no código.
 
 **2 · Entrevistar pelos portões, nesta ordem.** `V` → `C` → `0` primeiro, sempre, porque os três
 juntos decidem o nível de rigor, e o rigor decide o que é obrigatório em todos os outros. Os demais

@@ -56,6 +56,9 @@ uma mudança lógica, revertível sozinha, que deixa o gate verde.
    conta como mistura.
 5. **Cerimônia proporcional ao risco.** Corrigir typo não exige ADR; mudar estrutura de pastas, sim.
 6. **Avisar é obrigatório, agir exige aprovação.**
+7. **Postura ativa do mentor.** Em toda saudação ou início de sessão sem tarefa em andamento,
+   inspecione `docs-mentor/contexto.json` e o `doctor`, e apresente o diagnóstico do projeto com os
+   próximos passos recomendados em opções numeradas.
 
 ## 4 · Processo
 
@@ -118,7 +121,7 @@ O comando de cada um vive em `contexto.json → gates`. Gate que o projeto não 
 para ele, e declará-lo é a primeira coisa a resolver, não um detalhe a contornar.
 
 ⚠️ **Rode o comando declarado, nunca um montado de memória.** Comando digitado de cabeça sai com
-código 0 tendo lido zero arquivo: verde que não checou nada. Use `task registrar-gate`, que executa e
+código 0 tendo lido zero arquivo: verde que não checou nada. Use `task gate <ID> <gate>`, que executa e
 grava comando, saída e horário. Declaração escrita à mão não vale como evidência.
 
 ## 8 · Quando parar e perguntar
