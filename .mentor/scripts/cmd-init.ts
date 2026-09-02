@@ -87,6 +87,17 @@ export function inicializar(): void {
     ].join('\n'),
   )
 
+  const gitignore = join(c.raiz, '.gitignore')
+  const entradaSaidas = '.mentor-saidas/'
+  if (existe(gitignore)) {
+    const conteudo = lerTexto(gitignore)
+    if (!conteudo.includes('.mentor-saidas')) {
+      escreverTexto(gitignore, `${conteudo.trimEnd()}\n\n# Logs e saidas temporarias do mentor\n${entradaSaidas}\n`)
+    }
+  } else {
+    escreverTexto(gitignore, `# Logs e saidas temporarias do mentor\n${entradaSaidas}\n`)
+  }
+
   regenerarTudo()
   console.log('Projeto inicializado com sucesso!')
   console.log('Proximo passo: ler docs/ e codigo se for legado, e responder os portoes V, C e 0 (nivel de rigor).')

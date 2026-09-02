@@ -110,6 +110,18 @@ export function copiarPacote(origem, destino, forcar, migrarDocs = false) {
   try {
     cpSync(join(origem, '.mentor'), pastaDestino, { recursive: true })
     cpSync(join(origem, 'mentor.mjs'), join(destino, 'mentor.mjs'))
+
+    const gitignore = join(destino, '.gitignore')
+    if (existsSync(gitignore)) {
+      try {
+        const conteudo = readFileSync(gitignore, 'utf8')
+        if (!conteudo.includes('.mentor-saidas')) {
+          writeFileSync(gitignore, `${conteudo.trimEnd()}\n\n# Logs e saidas temporarias do mentor\n.mentor-saidas/\n`, 'utf8')
+        }
+      } catch {
+        // continua
+      }
+    }
   } catch (erro) {
     if (deveMigrar && existsSync(documentosAtuais) && !existsSync(documentosLegados)) {
       desfazerReferencias()

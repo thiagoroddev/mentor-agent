@@ -1,0 +1,10 @@
+[
+  {
+    "quando": "29/08/26 14:00",
+    "comando": "task puxar",
+    "alvo": "TASK-RF-002",
+    "impedimentos": [
+      "origem aponta para chat (familia desconhecida), que nao existe. Criar o registro duravel e parte de criar a tarefa"
+    ]
+  }
+]

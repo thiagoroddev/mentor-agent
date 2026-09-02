@@ -202,7 +202,10 @@ export function registrarGate(id: string, gate: string, flags: Flags): void {
   if (!comando) {
     throw new Error(`O projeto nao declarou comando para o gate "${gate}" em docs-mentor/contexto.json. Declarar e a primeira coisa a resolver, nunca inventar um comando.`)
   }
-  const r = spawnSync(comando, { shell: true, encoding: 'utf8', cwd: caminhos().raiz })
+  const r = spawnSync(comando, { shell: true, encoding: 'utf8', cwd: caminhos().raiz, timeout: 120_000 })
+  if (r.error && (r.error as { code?: string }).code === 'ETIMEDOUT') {
+    throw new Error(`Comando do gate "${gate}" excedeu o timeout de 120s: ${comando}`)
+  }
   const saida = recortar(`${r.stdout ?? ''}${r.stderr ?? ''}`.trim())
 
   // Registrar o vermelho antes de implementar. Se sair verde aqui, o teste passa sem o codigo:
@@ -224,14 +227,19 @@ export function registrarGate(id: string, gate: string, flags: Flags): void {
     return
   }
 
-  const rotulo: Rotulo = r.status === 0 ? 'APROVADO' : 'FALHOU'
+  let rotulo: Rotulo = r.status === 0 ? 'APROVADO' : 'FALHOU'
+  let motivo: string | null = null
+  if (r.status === 0 && (!saida || !saida.trim())) {
+    rotulo = 'INVÁLIDO como gate'
+    motivo = 'Saída vazia: o comando não produziu evidência verificável'
+  }
   tarefa.gates[gate] = {
     rotulo, vermelho_em: tarefa.gates[gate]?.vermelho_em ?? null,
-    comando, codigo_saida: r.status, saida,
+    comando, codigo_saida: r.status, saida: saida || null,
     executado_em: agora().log, evidencia_url: flags.url ?? null,
-    motivo: null, ressalva: flags.ressalva ?? null,
+    motivo, ressalva: flags.ressalva ?? null,
   }
-  if (flags.ressalva) tarefa.gates[gate]!.rotulo = 'APROVADO com ressalva'
+  if (flags.ressalva && rotulo === 'APROVADO') tarefa.gates[gate]!.rotulo = 'APROVADO com ressalva'
   escreverJson(caminho, tarefa)
   console.log(`${id} · ${gate}: ${tarefa.gates[gate]!.rotulo} (saida ${r.status})`)
 }

@@ -28,7 +28,7 @@ export function lancamento(): number {
     itens.push({ nome: 'gates do projeto', veredito: 'NÃO EXECUTADO', detalhe: 'nenhum gate declarado em docs-mentor/contexto.json' })
   } else {
     for (const [nome, g] of declarados) {
-      const r = spawnSync(g!.comando!, { shell: true, encoding: 'utf8', cwd: caminhos().raiz })
+      const r = spawnSync(g!.comando!, { shell: true, encoding: 'utf8', cwd: caminhos().raiz, timeout: 120_000 })
       itens.push({
         nome: `gate ${nome}`,
         veredito: r.status === 0 ? 'APROVADO' : 'REPROVADO',

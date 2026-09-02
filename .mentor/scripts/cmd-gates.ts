@@ -18,7 +18,7 @@ export function gates(): number {
   for (const [nome, g] of declarados) {
     const comando = g?.comando
     if (!comando) continue
-    const r = spawnSync(comando, { shell: true, stdio: 'inherit', cwd: caminhos().raiz })
+    const r = spawnSync(comando, { shell: true, stdio: 'inherit', cwd: caminhos().raiz, timeout: 120_000 })
     const ok = r.status === 0
     if (!ok) reprovou++
     console.log(`${ok ? '✓' : '✗'} ${nome}: ${comando}`)

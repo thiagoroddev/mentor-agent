@@ -145,7 +145,8 @@ function encerrar(id: string, motivo: string, absorvidaPor: string | null): void
   tarefa.cancelamento_motivo = motivo
   tarefa.absorvida_por = absorvidaPor
   tarefa.concluida_em = agora().log
-  const base = `${agora().nome}--${tarefa.id}--CANCELADA`
+  const sufixo = absorvidaPor ? 'ABSORVIDA' : 'CANCELADA'
+  const base = `${agora().nome}--${tarefa.id}--${sufixo}`
   const narrativa = caminho.replace(/\.json$/, '.md')
   if (existe(narrativa)) {
     escreverTexto(`${c.concluidas}/${base}.md`, lerTexto(narrativa))
