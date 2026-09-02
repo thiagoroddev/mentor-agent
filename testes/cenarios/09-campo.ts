@@ -53,7 +53,7 @@ export function rodar(): Cenario {
   dizQue(c, saida, 'nao cria tarefa em lugar nenhum', 'o comando declara que nao cria tarefa')
 
   const r = ler(c, 'docs-mentor/relatorio-de-campo.md')
-  confere(c, r.includes('mentor-agent 0.2.2'), 'o relatorio atribui tudo a uma versao do pacote')
+  confere(c, r.includes('mentor-agent 0.3.0'), 'o relatorio atribui tudo a uma versao do pacote')
   // A versao saia de `join(raizPacote(), 'package.json')`, que instalado num projeto resolve para o
   // package.json DO PROJETO: o relatorio publicava a versao do app. Ancorar achado numa versao e a
   // unica coisa que este relatorio existe para fazer.

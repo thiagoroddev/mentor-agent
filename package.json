@@ -1,6 +1,6 @@
 {
   "name": "mentor-agent",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "type": "module",
   "description": "Pacote de trabalho para agentes de IA: gerencia tarefas, orienta e registra.",
   "engines": {
