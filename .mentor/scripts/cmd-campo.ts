@@ -141,13 +141,16 @@ export function relatorioDeCampo(flags: Record<string, string | undefined> = {})
   const estouros = tetos()
   l.push(estouros.length ? estouros.map((a) => `- ${a.onde}: ${a.problema}`).join('\n') : 'Nenhum estouro.', '')
 
-  const anotadas = join(c.docs, 'melhorias-do-pacote.md')
-  if (existe(anotadas)) {
-    const itens = lerTexto(anotadas).split('\n').filter((x: string) => x.startsWith('- **'))
+  const anotadasDocs = join(c.docs, 'melhorias-do-pacote.md')
+  const anotadasMentor = join(c.pacote, 'melhorias-do-pacote.md')
+  const caminhosAnotadas = [anotadasDocs, anotadasMentor].filter((p) => existe(p))
+  if (caminhosAnotadas.length) {
+    const todosItens = caminhosAnotadas.flatMap((p) => lerTexto(p).split('\n').filter((x: string) => x.startsWith('- **')))
+    const itensUnicos = [...new Set(todosItens)]
     l.push('### A.10 Melhorias anotadas durante o uso', '')
-    l.push(`${itens.length} anotacao(oes) por \`mentor anotar --sobre pacote\`.`, '')
+    l.push(`${itensUnicos.length} anotacao(oes) por \`mentor anotar --sobre pacote\`.`, '')
     if (flags.detalhado) {
-      l.push(...itens, '')
+      l.push(...itensUnicos, '')
     } else {
       l.push('> Conteudo omitido: rode com `--detalhado` se voce e dono do projeto **e** do pacote.', '')
     }

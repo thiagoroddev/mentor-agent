@@ -10,7 +10,9 @@ Fonte e vista geradas. **Arquivo `.json` e fonte; `.md` gerado nunca se edita a 
 | `referencias.json` | ponteiros para itens historicos/externos |
 | `invariantes.json` | invariantes de dominio e restricoes arquiteturais |
 | `glossario.md` | termos canonicos do dominio |
+| `rascunhos/` | zona livre para ideias, pesquisas e analises de negocio |
+| `melhorias-do-pacote.md` | anotacoes sobre o mentor-agent (criado por `mentor anotar --sobre pacote`) |
 | `dividas/dividas.json` | ainda sem vista |
 | `seguranca/riscos-aceitos.json` | ainda sem vista |
 
-Escritos a mao: a narrativa de cada tarefa concluida, as ADRs e as convencoes de stack.
+Escritos a mao: a narrativa de cada tarefa concluida, as ADRs, as convencoes de stack e os rascunhos.

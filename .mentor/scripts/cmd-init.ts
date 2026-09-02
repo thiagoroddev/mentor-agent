@@ -14,7 +14,7 @@ export function inicializar(): void {
     console.log('docs-mentor/contexto.json ja existe. Nada a fazer.')
     return
   }
-  for (const pasta of [c.abertas, c.concluidas, c.stack, c.adr, c.docs + '/requisitos', c.docs + '/dividas', c.docs + '/seguranca']) {
+  for (const pasta of [c.abertas, c.concluidas, c.stack, c.adr, c.docs + '/requisitos', c.docs + '/dividas', c.docs + '/seguranca', c.docs + '/rascunhos']) {
     garantirPasta(pasta)
   }
 
@@ -46,6 +46,24 @@ export function inicializar(): void {
   )
 
   escreverTexto(
+    c.docs + '/rascunhos/LEIA-ME.md',
+    [
+      '# Rascunhos',
+      '',
+      '> **Zona livre para exploracao, analises comerciais, pesquisas, ideias e prototipos.**',
+      '> Rascunho nao e tarefa: nao tem gate, nao tem criterio de aceite e nao conta no ciclo.',
+      '',
+      'Organize livremente em arquivos ou subpastas (ex: `comercial/`, `pesquisas/`, `prototipos/`).',
+      '',
+      '**Destinos possiveis para um rascunho:**',
+      '1. **Requisito (`RF`, `RN`, `RNF`)**: quando a ideia vira o que o produto faz.',
+      '2. **ADR**: quando e uma decisao arquitetural cara de reverter.',
+      '3. **Tarefa**: quando vira trabalho acionavel e bem resolvido.',
+      '4. **Descartado**: com uma linha justificando o descarte.',
+    ].join('\n'),
+  )
+
+  escreverTexto(
     c.docs + '/LEIA.md',
     [
       '# docs-mentor/',
@@ -60,10 +78,12 @@ export function inicializar(): void {
       '| `referencias.json` | ponteiros para itens historicos/externos |',
       '| `invariantes.json` | invariantes de dominio e restricoes arquiteturais |',
       '| `glossario.md` | termos canonicos do dominio |',
+      '| `rascunhos/` | zona livre para ideias, pesquisas e analises de negocio |',
+      '| `melhorias-do-pacote.md` | anotacoes sobre o mentor-agent (criado por `mentor anotar --sobre pacote`) |',
       '| `dividas/dividas.json` | ainda sem vista |',
       '| `seguranca/riscos-aceitos.json` | ainda sem vista |',
       '',
-      'Escritos a mao: a narrativa de cada tarefa concluida, as ADRs e as convencoes de stack.',
+      'Escritos a mao: a narrativa de cada tarefa concluida, as ADRs, as convencoes de stack e os rascunhos.',
     ].join('\n'),
   )
 

@@ -227,7 +227,7 @@ function processo(ctx: Contexto, tarefas: Tarefa[]): Linha[] {
   // Fase inicial sem nenhum rascunho: comecou-se a construir antes de entender.
   const FASE_INICIAL: Fase[] = ['ideia', 'descoberta']
   if (fase && FASE_INICIAL.includes(fase)) {
-    const rascunhos = listar(`${caminhos().docs}/rascunhos`, '.md').length
+    const rascunhos = listar(`${caminhos().docs}/rascunhos`, '.md').filter((a) => !a.endsWith('LEIA-ME.md') && !a.endsWith('README.md')).length
     linhas.push(rascunhos === 0
       ? { estado: 'atencao', texto: `fase "${fase}" sem nenhum rascunho. Fluxo atual, atores, estados, entidades e telas moram em docs-mentor/rascunhos/ (processos/rascunho.md)` }
       : { estado: 'ok', texto: `${rascunhos} rascunho(s) na fase "${fase}"` })

@@ -9,6 +9,11 @@ carrega_quando: ideia nova, planejamento inicial, ou anotar melhoria
 `docs-mentor/rascunhos/`. **Rascunho não é tarefa**: não tem gate, não tem critério de aceite, não entra na
 fila e não conta no ciclo. É onde a ideia pode estar errada sem custar nada.
 
+IA e desenvolvedor têm **liberdade total** nesta pasta: nenhum documento aqui precisa de formato rígido.
+Pode-se organizar livremente em arquivos ou subpastas por tema (ex: `comercial/`, `pesquisas/`, `prototipos/`, `analises/`).
+Se uma discussão de ideias ou levantamento comercial acontecer no chat, o mentor deve lembrar ativamente:
+*"Vou registrar essa análise em `docs-mentor/rascunhos/...` para mantermos o histórico preservado."*
+
 Projeto novo tem muito rascunho, e isso é o estado saudável. Requisito que nasce direto como tarefa
 é requisito que ninguém pensou.
 

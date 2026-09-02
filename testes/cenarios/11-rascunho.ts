@@ -6,6 +6,13 @@ export function rodar(): Cenario {
   const c = abrirCenario('11-rascunho')
   mentor(c, 'init')
 
+  const leiaMeRascunho = ler(c, 'docs-mentor/rascunhos/LEIA-ME.md')
+  confere(c, leiaMeRascunho.includes('Zona livre para exploracao'), 'init cria LEIA-ME.md na pasta de rascunhos')
+
+  const leiaGeral = ler(c, 'docs-mentor/LEIA.md')
+  confere(c, leiaGeral.includes('rascunhos/') && leiaGeral.includes('melhorias-do-pacote.md'),
+    'LEIA.md documenta rascunhos e melhorias-do-pacote')
+
   dizQue(c, mentor(c, 'anotar', 'a fila recusou sem dizer o que fazer'),
     'Falta --sobre pacote|projeto', 'o comando recusa decidir por voce onde a anotacao vai')
   dizQue(c, mentor(c, 'anotar', 'x'), 'a regra atrapalhou', 'e mostra a regra que decide, na propria recusa')
