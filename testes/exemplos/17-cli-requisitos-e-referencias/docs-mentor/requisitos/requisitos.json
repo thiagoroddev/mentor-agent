@@ -1,0 +1,51 @@
+[
+  {
+    "id": "RF-1",
+    "tipo": "RF",
+    "enunciado": "Exportar relatorio em CSV",
+    "historia": "Como analista quero exportar dados para CSV",
+    "prioridade": "essencial",
+    "status": "pendente",
+    "criterios_aceite": [
+      "Suporta .csv",
+      "Separador por virgula"
+    ],
+    "tarefas": [],
+    "adr": null,
+    "criado_em": "29/08/26 14:00",
+    "implementado_em": null,
+    "pendente_de_validacao": false
+  },
+  {
+    "id": "RN-1",
+    "tipo": "RN",
+    "enunciado": "Desconto maximo de 10% para compras a vista",
+    "historia": null,
+    "prioridade": "importante",
+    "status": "pendente",
+    "criterios_aceite": [
+      "Apenas para pagamento via PIX"
+    ],
+    "tarefas": [],
+    "adr": null,
+    "criado_em": "29/08/26 14:00",
+    "implementado_em": null,
+    "pendente_de_validacao": false
+  },
+  {
+    "id": "RNF-1",
+    "tipo": "RNF",
+    "enunciado": "Tempo de resposta inferior a 200ms",
+    "historia": null,
+    "prioridade": "importante",
+    "status": "pendente",
+    "criterios_aceite": [
+      "Medido no percentil 95"
+    ],
+    "tarefas": [],
+    "adr": null,
+    "criado_em": "29/08/26 14:00",
+    "implementado_em": null,
+    "pendente_de_validacao": false
+  }
+]

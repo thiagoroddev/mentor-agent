@@ -15,9 +15,10 @@ import { rodar as referencias } from './cenarios/13-referencias.ts'
 import { rodar as offsets } from './cenarios/14-offsets-de-id.ts'
 import { rodar as invariantes } from './cenarios/15-invariantes-e-glossario.ts'
 import { rodar as postura } from './cenarios/16-postura-ativa-e-legados.ts'
+import { rodar as requisitos } from './cenarios/17-cli-requisitos-e-referencias.ts'
 import type { Cenario } from './apoio.ts'
 
-const CENARIOS: Array<() => Cenario> = [ciclo, epico, recusas, tdd, verificacao, saude, entrega, lanc, campo, pacote, rascunho, auditoria, referencias, offsets, invariantes, postura]
+const CENARIOS: Array<() => Cenario> = [ciclo, epico, recusas, tdd, verificacao, saude, entrega, lanc, campo, pacote, rascunho, auditoria, referencias, offsets, invariantes, postura, requisitos]
 
 let falharam = 0
 for (const rodar of CENARIOS) {

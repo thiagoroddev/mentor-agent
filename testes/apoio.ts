@@ -18,9 +18,9 @@ export interface Cenario {
 /** Apaga as duas geracoes de documentos: cada cenario precisa provar sozinho o que cria. */
 export function abrirCenario(nome: string): Cenario {
   const pasta = join(RAIZ_REPO, 'testes', 'exemplos', nome)
-  rmSync(join(pasta, 'docs'), { recursive: true, force: true })
-  rmSync(join(pasta, 'docs-mentor'), { recursive: true, force: true })
-  rmSync(join(pasta, 'arquivo-historico'), { recursive: true, force: true })
+  rmSync(join(pasta, 'docs'), { recursive: true, force: true, maxRetries: 5, retryDelay: 50 })
+  rmSync(join(pasta, 'docs-mentor'), { recursive: true, force: true, maxRetries: 5, retryDelay: 50 })
+  rmSync(join(pasta, 'arquivo-historico'), { recursive: true, force: true, maxRetries: 5, retryDelay: 50 })
   mkdirSync(pasta, { recursive: true })
   return { nome, pasta, falhas: [] }
 }

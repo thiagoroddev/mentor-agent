@@ -66,3 +66,54 @@ export function proximoIdSimples(prefixo: string, existentes: string[]): string 
   }
   return `${prefixo}-${maior + 1}`
 }
+
+/**
+ * Proximo ID de requisito (RF, RN, RNF).
+ * Considera offsets em contexto.json, requisitos.json e referencias.json.
+ */
+export function proximoIdDeRequisito(tipo: 'RF' | 'RN' | 'RNF'): string {
+  const c = caminhos()
+  let maior = 0
+
+  if (existe(c.contexto)) {
+    try {
+      const ctx = carregarContexto()
+      const offset = (ctx.offsets_de_id as Record<string, number> | undefined)?.[tipo]
+      if (typeof offset === 'number' && Number.isInteger(offset) && offset > 0) {
+        maior = Math.max(maior, offset)
+      }
+    } catch {
+      // continua
+    }
+  }
+
+  if (existe(c.requisitos)) {
+    try {
+      const reqs = lerJson<Array<{ id?: string }>>(c.requisitos)
+      const re = new RegExp(`^${tipo}-(\\d+)$`)
+      for (const r of reqs) {
+        if (typeof r.id !== 'string') continue
+        const casou = re.exec(r.id)
+        if (casou?.[1]) maior = Math.max(maior, Number(casou[1]))
+      }
+    } catch {
+      // continua
+    }
+  }
+
+  if (existe(c.referencias)) {
+    try {
+      const refs = carregarReferencias()
+      const re = new RegExp(`^${tipo}-(\\d+)$`)
+      for (const ref of refs) {
+        if (typeof ref.id !== 'string') continue
+        const casou = re.exec(ref.id)
+        if (casou?.[1]) maior = Math.max(maior, Number(casou[1]))
+      }
+    } catch {
+      // continua
+    }
+  }
+
+  return `${tipo}-${maior + 1}`
+}

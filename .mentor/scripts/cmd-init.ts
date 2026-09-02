@@ -75,7 +75,7 @@ export function inicializar(): void {
       '| `contexto.json` | `contexto.md` |',
       '| `requisitos/requisitos.json` | `requisitos/implementados.md`, `requisitos/pendentes.md` |',
       '| `tarefas/abertas/*.json` | `tarefas/backlog.md` (ciclo) e `tarefas/reserva.md` |',
-      '| `referencias.json` | ponteiros para itens historicos/externos |',
+      '| `referencias.json` | `referencias.md` (mapa de links para documentos do projeto) |',
       '| `invariantes.json` | invariantes de dominio e restricoes arquiteturais |',
       '| `glossario.md` | termos canonicos do dominio |',
       '| `rascunhos/` | zona livre para ideias, pesquisas e analises de negocio |',

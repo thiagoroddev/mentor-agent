@@ -16,6 +16,7 @@ import { anotar } from './cmd-anotar.ts'
 import { preparar as prepararAuditoria, registrar as registrarAuditoria, relatar as relatarAuditorias, resolver as resolverPendencia } from './cmd-auditar.ts'
 import { novaReferencia, relatarReferencias } from './cmd-referencia.ts'
 import { novaInvariante, relatarInvariantes } from './cmd-invariante.ts'
+import { novoRequisito, relatarRequisitos } from './cmd-requisito.ts'
 import { regenerarTudo } from './vistas.ts'
 
 const AJUDA = `
@@ -24,6 +25,8 @@ mentor <comando>
   instalar [--destino <pasta>]         copia o pacote para dentro de um projeto
   manifesto                            grava o hash de cada arquivo do pacote (antes de empacotar)
   init                                 cria docs-mentor/ a partir dos esquemas
+  req [nova|listar]                    requisito funcional (RF), de negocio (RN) ou nao-funcional (RNF)
+       nova --tipo <RF|RN|RNF> --titulo "..." [--criterios "a|b" --prioridade <p>]
   inv [nova|listar]                    invariante de dominio ou restricao arquitetural
        nova --id <INV-N> --enunciado "..." --porque "..." [--mecanismo "..."]
   ref [nova|listar]                    referencia a requisito/ADR externo ou historico
@@ -94,6 +97,13 @@ function principal(argv: string[]): number {
     case 'instalar': instalar(flags); return process.exitCode === 1 ? 1 : 0
     case 'manifesto': gerarManifesto(); return 0
     case 'init': inicializar(); return 0
+    case 'req':
+    case 'requisito': {
+      const sub = posicionais[0]
+      if (!sub || sub === 'listar') { relatarRequisitos(flags); return 0 }
+      if (sub === 'nova') { novoRequisito(flags); return 0 }
+      throw new Error(`Subcomando de req desconhecido: "${sub}". Use: mentor req [listar|nova]`)
+    }
     case 'inv':
     case 'invariante': {
       const sub = posicionais[0]

@@ -1,6 +1,6 @@
 import { join } from 'node:path'
 import { agora, caminhos, escreverJson, existe } from './arquivos.ts'
-import { carregarReferencias } from './vistas.ts'
+import { carregarReferencias, regenerarTudo } from './vistas.ts'
 import type { ReferenciaExterna } from './tipos.ts'
 
 export function relatarReferencias(): void {
@@ -45,5 +45,6 @@ export function novaReferencia(flags: Record<string, string | undefined>): void 
 
   refs.push(nova)
   escreverJson(c.referencias, refs)
+  regenerarTudo()
   console.log(`Referencia ${id} registrada -> ${onde}`)
 }

@@ -264,10 +264,17 @@ export function gerarIndiceDeConcluidas(): void {
 export function gerarVistasDeRequisitos(): void {
   const c = caminhos()
   const reqs = carregarRequisitos()
+  const todasTarefas = carregarTarefas()
   const monta = (titulo: string, lista: Requisito[], colunaTarefa: string) => {
     const l = [`# ${titulo}`, '', AVISO, '', `| ID | Tipo | Enunciado | Prioridade | ${colunaTarefa} |`, '|---|---|---|---|---|']
     for (const r of lista) {
-      const t = r.tarefas.length ? r.tarefas.join(', ') : '-'
+      const tarefasVinculadas = new Set(r.tarefas)
+      for (const t of todasTarefas) {
+        if (t.requisitos.includes(r.id) || t.origem.includes(r.id)) {
+          tarefasVinculadas.add(t.id)
+        }
+      }
+      const t = tarefasVinculadas.size ? [...tarefasVinculadas].join(', ') : '-'
       l.push(`| \`${r.id}\` | ${r.tipo} | ${r.enunciado} | ${r.prioridade} | ${t} |`)
     }
     if (lista.length === 0) l.push('| | | Nenhum ainda | | |')
@@ -276,6 +283,29 @@ export function gerarVistasDeRequisitos(): void {
   const base = c.docs + '/requisitos'
   escreverTexto(base + '/implementados.md', monta('Requisitos implementados', reqs.filter((r) => r.status === 'implementado'), 'Tarefas'))
   escreverTexto(base + '/pendentes.md', monta('Requisitos ainda nao implementados', reqs.filter((r) => r.status !== 'implementado' && r.status !== 'cancelado'), 'Tarefa prevista'))
+}
+
+export function gerarReferenciasMd(): void {
+  const c = caminhos()
+  const refs = carregarReferencias()
+  const l = [
+    '# Referencias e Documentos do Projeto',
+    '',
+    AVISO,
+    '',
+    '> Mapa de links para documentos historicos, externos e complementares do projeto.',
+    '',
+    '| ID | Descricao | Link / Localizacao | Sistema |',
+    '|---|---|---|---|',
+  ]
+  for (const ref of refs) {
+    const link = ref.onde.startsWith('http')
+      ? `[${ref.onde}](${ref.onde})`
+      : `[\`${ref.onde}\`](../${ref.onde})`
+    l.push(`| \`${ref.id}\` | ${ref.titulo ?? '-'} | ${link} | ${ref.sistema ?? '-'} |`)
+  }
+  if (refs.length === 0) l.push('| | | Nenhuma referencia externa registrada | |')
+  escreverTexto(c.docs + '/referencias.md', l.join('\n'))
 }
 
 const IGNORAR = (chave: string) =>
@@ -424,5 +454,6 @@ export function regenerarTudo(): void {
   gerarReserva()
   gerarIndiceDeConcluidas()
   gerarVistasDeRequisitos()
+  gerarReferenciasMd()
   atualizarContagens()
 }
