@@ -142,4 +142,5 @@ prós e contras, recomende uma, e espere.
 | Escrever ou ajustar teste | `processos/teste.md` |
 | Publicar, mexer em ramo, esteira ou reversão | `processos/entrega.md` |
 | Revisar código | `processos/revisao.md` |
+| Diagramas, UI, API, CI, testes ou dados | `.mentor/skills/<skill>/SKILL.md` ou `docs-mentor/skills/` |
 | Campo `null` no contexto | o arquivo que o portão nomeia, por `guia/00-indice.md` |

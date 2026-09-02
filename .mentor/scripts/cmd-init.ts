@@ -1,5 +1,5 @@
 import { join } from 'node:path'
-import { agoraIso, caminhos, escreverJson, escreverTexto, existe, garantirPasta, lerJson } from './arquivos.ts'
+import { agoraIso, caminhos, escreverJson, escreverTexto, existe, garantirPasta, lerJson, lerTexto } from './arquivos.ts'
 import { regenerarTudo } from './vistas.ts'
 import type { Contexto } from './tipos.ts'
 
@@ -14,7 +14,7 @@ export function inicializar(): void {
     console.log('docs-mentor/contexto.json ja existe. Nada a fazer.')
     return
   }
-  for (const pasta of [c.abertas, c.concluidas, c.stack, c.adr, c.docs + '/requisitos', c.docs + '/dividas', c.docs + '/seguranca', c.docs + '/rascunhos']) {
+  for (const pasta of [c.abertas, c.concluidas, c.stack, c.adr, c.docs + '/requisitos', c.docs + '/dividas', c.docs + '/seguranca', c.docs + '/rascunhos', c.docs + '/skills']) {
     garantirPasta(pasta)
   }
 
@@ -42,6 +42,20 @@ export function inicializar(): void {
       '| Termo | Significado no projeto | Sinonimos evitados |',
       '|---|---|---|',
       '',
+    ].join('\n'),
+  )
+
+  escreverTexto(
+    c.docs + '/skills/LEIA-ME.md',
+    [
+      '# Skills do Projeto',
+      '',
+      '> **Habilidades e instrucoes customizadas especificas deste projeto.**',
+      '> Esta pasta e sagrada: sobrevive a `mentor instalar --forcar`.',
+      '',
+      'Para adicionar uma habilidade no projeto:',
+      '1. Crie uma subpasta com o nome da habilidade: `docs-mentor/skills/<nome-da-habilidade>/`',
+      '2. Crie o arquivo `SKILL.md` contendo frontmatter YAML (`name`, `description`) e o roteiro tatico.',
     ].join('\n'),
   )
 
@@ -78,12 +92,13 @@ export function inicializar(): void {
       '| `referencias.json` | `referencias.md` (mapa de links para documentos do projeto) |',
       '| `invariantes.json` | invariantes de dominio e restricoes arquiteturais |',
       '| `glossario.md` | termos canonicos do dominio |',
+      '| `skills/` | habilidades e instrucoes customizadas do projeto |',
       '| `rascunhos/` | zona livre para ideias, pesquisas e analises de negocio |',
       '| `melhorias-do-pacote.md` | anotacoes sobre o mentor-agent (criado por `mentor anotar --sobre pacote`) |',
       '| `dividas/dividas.json` | ainda sem vista |',
       '| `seguranca/riscos-aceitos.json` | ainda sem vista |',
       '',
-      'Escritos a mao: a narrativa de cada tarefa concluida, as ADRs, as convencoes de stack e os rascunhos.',
+      'Escritos a mao: a narrativa de cada tarefa concluida, as ADRs, as convencoes de stack, as skills e os rascunhos.',
     ].join('\n'),
   )
 

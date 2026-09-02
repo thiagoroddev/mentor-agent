@@ -1,6 +1,6 @@
 {
   "versao": "0.2.2",
-  "gerado_em": "2026-09-02T20:19:28.254Z",
+  "gerado_em": "2026-09-02T21:52:30.812Z",
   "arquivos": {
     "esquemas/contexto.json": "e31c3ad8ec59b016",
     "esquemas/divida-tecnica.json": "0906f6786a8e63a1",
@@ -27,7 +27,7 @@
     "modelos/fichas.md": "92cdc7020d33fcc1",
     "modelos/listas-por-fase.md": "57377dc4538acc80",
     "modelos/varredura.md": "f3016bd789b30a83",
-    "nucleo.md": "768e5abd6c3e154f",
+    "nucleo.md": "0f46525fbffebec0",
     "package.json": "1c9a0949072c4ea1",
     "processos/analise-de-impacto.md": "60318cd6189f0f28",
     "processos/entrega.md": "4aecc0aee0269a5a",
@@ -47,7 +47,7 @@
     "scripts/cmd-fila.ts": "12b00455fc0284ec",
     "scripts/cmd-gates.ts": "dc5b327389ce58c6",
     "scripts/cmd-hooks.ts": "a301ddc62de7a155",
-    "scripts/cmd-init.ts": "55daaa0e403205e5",
+    "scripts/cmd-init.ts": "06b09e41f47d97a6",
     "scripts/cmd-invariante.ts": "6e387ba8d0eb96ab",
     "scripts/cmd-lancamento.ts": "ec12f32185df06e7",
     "scripts/cmd-pacote.ts": "6499cbea7f4e652e",
@@ -63,6 +63,13 @@
     "scripts/instalar.mjs": "f7aedd63b9d19976",
     "scripts/tipos.ts": "3fba3f49ec481de5",
     "scripts/vistas.ts": "801d14702bff037d",
+    "skills/contratos-de-api/SKILL.md": "99943749d9a1771e",
+    "skills/data-modeling/SKILL.md": "346a6a6afd3be72d",
+    "skills/github-ci/SKILL.md": "f21a4d25d5161474",
+    "skills/mermaid/SKILL.md": "cf7a4a723b7129f1",
+    "skills/spike-e-investigacao/SKILL.md": "5ab362eee5800a83",
+    "skills/test-design/SKILL.md": "0a58f5132c66958c",
+    "skills/ui-design/SKILL.md": "58eed0c8f16f9911",
     "tetos.json": "87d25dd810f228b7"
   }
 }
