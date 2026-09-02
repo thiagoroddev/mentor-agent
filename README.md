@@ -8,7 +8,7 @@ perguntar, e registra tudo de forma rastreavel.
 Na raiz do projeto que vai usar o pacote:
 
 ```bash
-npm i -D github:thiagoroddev/mentor-agent#v0.2.2
+npm i -D github:thiagoroddev/mentor-agent#v0.3.0
 npx mentor instalar        # copia .mentor/ e mentor.mjs para a raiz
 node mentor.mjs init       # cria docs-mentor/, sem tocar na docs/ do aplicativo
 ```
@@ -24,15 +24,15 @@ a IA le' `.mentor/` como arquivo, e o projeto versiona as convencoes dele ao lad
 isso em vez de estourar.
 
 A versao instalada fica gravada em `docs-mentor/contexto.json`, senao o relatorio de campo nao consegue
-dizer *"isto aconteceu com a 0.2.2"*.
+dizer *"isto aconteceu com a 0.3.0"*.
 
 ### Atualizar uma instalacao 0.1.x
 
-A versao 0.1.x guardava o estado do mentor em `docs/`. A 0.2.0 nao renomeia essa pasta sem uma
+A versao 0.1.x guardava o estado do mentor em `docs/`. A versao atual nao renomeia essa pasta sem uma
 autorizacao especifica: `--forcar` permite substituir `.mentor/`, mas nao permite mover documentos.
 
 ```bash
-npm i -D github:thiagoroddev/mentor-agent#v0.2.2
+npm i -D github:thiagoroddev/mentor-agent#v0.3.0
 npx mentor instalar --forcar --migrar-docs
 node mentor.mjs gerar
 ```
@@ -80,8 +80,10 @@ Titulo com espaco vai entre aspas, no PowerShell e no cmd igual: `--titulo "text
 | Onde | O que e' |
 | :-- | :-- |
 | [`ESPECIFICACAO.md`](./ESPECIFICACAO.md) | o desenho inteiro, com os numeros que o justificam |
+| [`CHANGELOG.md`](./CHANGELOG.md) | historico de mudancas e notas de cada versao |
 | `docs-mentor/auditorias/` | um dossie e um veredito por auditoria, no seu projeto |
 | `.mentor/nucleo.md` | as leis. Sempre carregado |
+| `.mentor/skills/` | catalogo de 7 habilidades nativas de apoio |
 | `.mentor/processos/` | como conduzir o trabalho. Carregados por gatilho |
 | `.mentor/guia/` | 13 areas de orientacao. Consultadas por lacuna, nunca inteiras |
 | `.mentor/esquemas/` | a forma dos JSON, com os valores possiveis de cada campo |
