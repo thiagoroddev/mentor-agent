@@ -108,7 +108,7 @@ export function garantirPasta(caminho: string): void {
 }
 
 export function lerJson<T>(caminho: string): T {
-  return JSON.parse(readFileSync(caminho, 'utf8')) as T
+  return JSON.parse(lerTexto(caminho)) as T
 }
 
 export function escreverJson(caminho: string, dado: unknown): void {
@@ -117,7 +117,23 @@ export function escreverJson(caminho: string, dado: unknown): void {
 }
 
 export function lerTexto(caminho: string): string {
-  return readFileSync(caminho, 'utf8')
+  const buf = readFileSync(caminho)
+  if (buf.length >= 2 && buf[0] === 0xff && buf[1] === 0xfe) {
+    return buf.subarray(2).toString('utf16le')
+  }
+  if (buf.length >= 2 && buf[0] === 0xfe && buf[1] === 0xff) {
+    const trocado = Buffer.from(buf.subarray(2))
+    trocado.swap16()
+    return trocado.toString('utf16le')
+  }
+  if (buf.length >= 3 && buf[0] === 0xef && buf[1] === 0xbb && buf[2] === 0xbf) {
+    return buf.subarray(3).toString('utf8')
+  }
+  // Heuristica para redirecionamento do PowerShell (*>) sem BOM: sequencia de bytes pares imprimiveis e impares nulos
+  if (buf.length >= 4 && buf[1] === 0x00 && buf[3] === 0x00) {
+    return buf.toString('utf16le')
+  }
+  return buf.toString('utf8')
 }
 
 export function escreverTexto(caminho: string, texto: string): void {

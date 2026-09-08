@@ -88,8 +88,11 @@ proibido:** é ambíguo entre *"não temos"* e *"esquecemos de escrever"*.
 
 ## Fechamento
 
-A narrativa é o único texto livre da tarefa, teto 2.400 caracteres: decisões tomadas · o que **não**
-foi feito e por quê · aprendizados. O resto o script grava.
+A narrativa é o texto livre da tarefa, voltada para aprendizado humano, com teto expandido de 10.000
+caracteres (a IA consome o `.json` da tarefa concluída quando precisa apenas do resumo operacional):
+decisões tomadas · o que **não** foi feito e por quê · **armadilhas técnicas e aprendizados reais de
+testes manuais** (conflitos de porta/cache, persistência, peculiaridades de ambiente, falhas conceituais
+de UX). Resumo protocolar breve que omite armadilhas e histórico útil não é aceito. O resto o script grava.
 
 Duas listas separadas, e a separação é o que impede tarefa de gerar tarefa:
 

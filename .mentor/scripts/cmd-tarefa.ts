@@ -198,50 +198,69 @@ export function registrarGate(id: string, gate: string, flags: Flags): void {
     return
   }
 
-  const comando = ctx.gates[gate]?.comando
-  if (!comando) {
-    throw new Error(`O projeto nao declarou comando para o gate "${gate}" em docs-mentor/contexto.json. Declarar e a primeira coisa a resolver, nunca inventar um comando.`)
+  const caminhoArquivo = flags.arquivo
+  let comandoExecutado: string | null = null
+  let codigoSaida: number | null = null
+  let saidaBruta = ''
+
+  if (caminhoArquivo) {
+    if (!existe(caminhoArquivo)) {
+      throw new Error(`Arquivo de evidencia nao encontrado: "${caminhoArquivo}".`)
+    }
+    saidaBruta = lerTexto(caminhoArquivo)
+    comandoExecutado = ctx.gates[gate]?.comando ?? `arquivo:${caminhoArquivo}`
+    codigoSaida = flags['codigo-saida'] !== undefined ? Number(flags['codigo-saida']) : 0
+    if (isNaN(codigoSaida)) throw new Error(`--codigo-saida invalido: "${flags['codigo-saida']}". Deve ser numero.`)
+  } else {
+    const comando = ctx.gates[gate]?.comando
+    if (!comando) {
+      throw new Error(`O projeto nao declarou comando para o gate "${gate}" em docs-mentor/contexto.json. Declarar e a primeira coisa a resolver, nunca inventar um comando.`)
+    }
+    const r = spawnSync(comando, { shell: true, encoding: 'utf8', cwd: caminhos().raiz, timeout: 120_000 })
+    if (r.error && (r.error as { code?: string }).code === 'ETIMEDOUT') {
+      throw new Error(`Comando do gate "${gate}" excedeu o timeout de 120s: ${comando}`)
+    }
+    comandoExecutado = comando
+    codigoSaida = r.status
+    saidaBruta = `${r.stdout ?? ''}${r.stderr ?? ''}`
   }
-  const r = spawnSync(comando, { shell: true, encoding: 'utf8', cwd: caminhos().raiz, timeout: 120_000 })
-  if (r.error && (r.error as { code?: string }).code === 'ETIMEDOUT') {
-    throw new Error(`Comando do gate "${gate}" excedeu o timeout de 120s: ${comando}`)
-  }
-  const saida = recortar(`${r.stdout ?? ''}${r.stderr ?? ''}`.trim())
+
+  const saida = recortar(saidaBruta.trim())
 
   // Registrar o vermelho antes de implementar. Se sair verde aqui, o teste passa sem o codigo:
   // ele nao testa o que promete, e isso e' pior que nao existir.
   if (flags['esperando-vermelho']) {
-    if (r.status === 0) {
+    if (codigoSaida === 0) {
       throw new Error(
-        `Esperava vermelho e saiu verde. O teste passa sem o codigo, entao nao testa o que promete. Comando: ${comando}`,
+        `Esperava vermelho e saiu verde. O teste passa sem o codigo, entao nao testa o que promete. Comando: ${comandoExecutado}`,
       )
     }
     const anterior = tarefa.gates[gate]
     tarefa.gates[gate] = {
-      rotulo: 'FALHOU', vermelho_em: agora().log, comando, codigo_saida: r.status, saida,
+      rotulo: 'FALHOU', vermelho_em: agora().log, comando: comandoExecutado, codigo_saida: codigoSaida, saida,
       executado_em: agora().log, evidencia_url: anterior?.evidencia_url ?? null,
       motivo: null, ressalva: null,
     }
     escreverJson(caminho, tarefa)
-    console.log(`${id} · ${gate}: vermelho registrado (saida ${r.status}). Agora implemente ate o verde.`)
+    console.log(`${id} · ${gate}: vermelho registrado (saida ${codigoSaida}). Agora implemente ate o verde.`)
     return
   }
 
-  let rotulo: Rotulo = r.status === 0 ? 'APROVADO' : 'FALHOU'
+  let rotulo: Rotulo = codigoSaida === 0 ? 'APROVADO' : 'FALHOU'
   let motivo: string | null = null
-  if (r.status === 0 && (!saida || !saida.trim())) {
+  if (codigoSaida === 0 && (!saida || !saida.trim())) {
     rotulo = 'INVÁLIDO como gate'
     motivo = 'Saída vazia: o comando não produziu evidência verificável'
   }
   tarefa.gates[gate] = {
     rotulo, vermelho_em: tarefa.gates[gate]?.vermelho_em ?? null,
-    comando, codigo_saida: r.status, saida: saida || null,
+    comando: comandoExecutado, codigo_saida: codigoSaida, saida: saida || null,
     executado_em: agora().log, evidencia_url: flags.url ?? null,
     motivo, ressalva: flags.ressalva ?? null,
   }
   if (flags.ressalva && rotulo === 'APROVADO') tarefa.gates[gate]!.rotulo = 'APROVADO com ressalva'
   escreverJson(caminho, tarefa)
-  console.log(`${id} · ${gate}: ${tarefa.gates[gate]!.rotulo} (saida ${r.status})`)
+  console.log(`${id} · ${gate}: ${tarefa.gates[gate]!.rotulo} (saida ${codigoSaida})`)
 }
 
 // ---------------------------------------------------------------- finalizar

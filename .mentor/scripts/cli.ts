@@ -44,6 +44,7 @@ mentor <comando>
   task iniciar <ID>                    escreve o esqueleto do plano e da narrativa
   task gate <ID> <gate>                executa o comando declarado e grava a evidencia
        [--esperando-vermelho]          registra o gate falhando ANTES de implementar (tdd/bdd)
+       [--arquivo <caminho> [--codigo-saida <n>]] registra evidencia de saida capturada em arquivo
        [--rotulo "..." --motivo "..."] so para os rotulos que nao nascem de execucao
        [--ressalva "..." --url "..."]
   task fila <ID> <n> | --soltar         fixa no topo da fila, ou devolve a ordem calculada

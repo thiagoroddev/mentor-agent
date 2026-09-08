@@ -4,6 +4,20 @@ Todas as mudanças notáveis no **mentor-agent** são documentadas neste arquivo
 
 O formato baseia-se em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [Não publicado]
+
+### Adicionado
+- **Evidência Externa em Gates**: Suporte à flag `--arquivo <caminho>` e opcional `--codigo-saida <n>` no comando `task gate <ID> <gate>`, permitindo registrar saídas de comandos executados fora do ambiente direto do agente.
+- **Tolerância a UTF-16 e BOM**: Leitura resiliente em `lerTexto` para arquivos codificados em UTF-16LE com BOM (comuns em redirecionamentos do PowerShell `*>`), UTF-16BE e UTF-8 com BOM.
+- **Guia Operacional de CI na Skill `github-ci`**: Seção 7 com troubleshooting prático para latência do GitHub Actions, isolamento de falhas de `npm audit`, contorno de erro 403 em logs e fila de PRs do Dependabot sob Branch Protection.
+- **Cenário de Teste 20**: Cobertura ponta a ponta para evidências externas e leitura UTF-16 (`20-evidencia-externa-e-narrativa.ts`).
+
+### Modificado
+- **Teto da Narrativa de Conclusão Expandido (10.000 caracteres)**: O limite de `docs-mentor/tarefas/concluidas/*.md` foi elevado de 2.400 para 10.000 caracteres no `tetos.json` e em `processos/tarefa.md`. O markdown destina-se ao aprendizado humano e histórico técnico detalhado (armadilhas, bugs sutis, testes manuais); agentes de IA que precisarem apenas do resumo operacional consomem o `.json` estruturado da tarefa.
+- **Narrativa Técnica de Tarefa**: Processo de fechamento em `processos/tarefa.md` agora exige expressamente armadilhas técnicas e aprendizados reais de testes manuais (cache, portas, persistência, UX), barrando resumos protocolares rasos.
+- **Orientação em Requisitos Vazios**: O `doctor` agora orienta ações recuperáveis para projetos legados (`"nenhum requisito registrado: se migrou projeto legado, preencha docs-mentor/requisitos/requisitos.json..."`).
+- **Rotas de Plataforma no `doctor`**: O diagnóstico de configurações de plataforma não declaradas agora indica as seções correspondentes no GitHub (*Settings > Branches / Code security; veja .mentor/skills/github-ci/*).
+
 ---
 
 ## [0.3.0] - 2026-09-02

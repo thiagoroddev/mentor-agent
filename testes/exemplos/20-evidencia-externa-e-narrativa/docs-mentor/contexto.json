@@ -395,8 +395,8 @@
   "contagens": {
     "_gerado_por_script": true,
     "tarefas_concluidas": 0,
-    "tarefas_abertas": 2,
-    "tarefas_no_ciclo": 1,
+    "tarefas_abertas": 1,
+    "tarefas_no_ciclo": 0,
     "tarefas_na_reserva": 1,
     "validacoes_pendentes": 0,
     "requisitos_total": 0,
@@ -408,7 +408,7 @@
     "tarefas_desde_revisao_geral": 0,
     "adrs": 0,
     "ferramentas_sem_padrao": 0,
-    "campos_nulos_do_contexto": 161,
+    "campos_nulos_do_contexto": 168,
     "divida_tecnica_com_gatilho_vencido": null
   },
   "auditoria": {

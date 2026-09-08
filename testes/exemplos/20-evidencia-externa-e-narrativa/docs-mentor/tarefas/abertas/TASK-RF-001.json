@@ -1,9 +1,9 @@
 {
   "id": "TASK-RF-001",
   "tipo": "RF",
-  "titulo": "Somar as parcelas",
+  "titulo": "Teste de gate externo",
   "fatia_de": null,
-  "estado": "concluida",
+  "estado": "aberta",
   "cerimonia": "Standard",
   "valor": "importante",
   "urgencia": "normal",
@@ -12,39 +12,32 @@
     "ia": "P"
   },
   "depende_de": [],
-  "fila": "ciclo",
+  "fila": "reserva",
   "ordem": null,
-  "origem": "titulo-autossuficiente",
+  "origem": "chat",
   "requisitos": [],
   "criada_em": "29/08/26 14:00",
-  "iniciada_em": "29/08/26 14:00",
-  "commit_base": "8f0f34d7386b789666f01fd95f50f3244522d239",
-  "concluida_em": "29/08/26 14:00",
+  "iniciada_em": null,
+  "commit_base": null,
+  "concluida_em": null,
   "plano": {
-    "muda": [
-      "a.ts"
-    ],
-    "criterios_aceite": [
-      {
-        "texto": "faz o que foi pedido",
-        "teste": "soma.test.ts > soma duas parcelas"
-      }
-    ],
-    "impacto": "modulo a",
+    "muda": [],
+    "criterios_aceite": [],
+    "impacto": null,
     "riscos": [],
     "dependencias_novas": [],
-    "proporcionalidade": "do tamanho do pedido"
+    "proporcionalidade": null
   },
   "gates": {
-    "testes": {
-      "rotulo": "APROVADO",
+    "build": {
+      "rotulo": "INVÁLIDO como gate",
       "vermelho_em": null,
-      "comando": "echo \"3 passed\"",
+      "comando": "arquivo:E:\\repositorios\\projetos-pessoais\\mentor-agent\\testes\\exemplos\\20-evidencia-externa-e-narrativa\\vazio.log",
       "codigo_saida": 0,
-      "saida": "\"3 passed\"",
+      "saida": null,
       "executado_em": "29/08/26 14:00",
       "evidencia_url": null,
-      "motivo": null,
+      "motivo": "Saída vazia: o comando não produziu evidência verificável",
       "ressalva": null
     }
   },
@@ -58,5 +51,5 @@
   "riscos_aceitos": [],
   "absorvida_por": null,
   "cancelamento_motivo": null,
-  "narrativa": "2026-08-29--14h00--TASK-RF-001.md"
+  "narrativa": null
 }

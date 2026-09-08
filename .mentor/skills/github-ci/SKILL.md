@@ -188,3 +188,40 @@ jobs:
       - name: Executar Analise CodeQL
         uses: github/codeql-action/analyze@v3
 ```
+
+---
+
+## 7. Operacoes e Troubleshooting de CI com GitHub CLI
+
+### A. Latencia de Disparo do GitHub Actions
+Apos o `git push`, o GitHub Actions pode levar alguns segundos para registrar a execucao. Consultar imediatamente com `gh run list --commit <hash>` pode retornar `"no runs found"`.
+* **Como proceder:** Aguarde de 5 a 10 segundos antes da primeira consulta ou filtre pela branch ativa:
+  ```bash
+  gh run list --branch main --limit 3
+  ```
+
+### B. Diagnostico Isolado de Falhas
+Nem toda quebra de CI significa erro no codigo implementado:
+1. **Falha de Codigo (Lint, Typecheck, Testes, Build):** Quebra direta das invariantes do projeto; deve ser corrigida na tarefa.
+2. **Falha de Auditoria de Seguranca (`npm audit` / Dependency Review):** Novos advisories no banco de dados do npm podem reprovar commits verdes anteriores. Trate como evento operacional: consulte o advisory reportado e, se for falso positivo ou sem patch disponivel imediato, registre em `docs-mentor/seguranca/riscos-aceitos.json` com prazo e responsavel.
+
+### C. Acesso a Logs com Erro 403 / Permissao Restrita
+Se a API do GitHub negar a leitura detalhada do log via API REST por token com escopo restrito, use a extracao direta da falha para arquivo local isolado:
+```bash
+gh run view <run-id> --log-failed > .mentor-saidas/ci-falha.log
+```
+
+### D. Fila de Dependabot sob Branch Protection
+Apos proteger o ramo `main`, PRs automaticos do Dependabot que forem abertos em lote nao devem ser aprovados simultaneamente:
+1. Ao mesclar o primeiro PR, o ramo `main` avanca e os demais PRs tornam-se desatualizados.
+2. Atualize um PR por vez (comentando `@dependabot rebase` ou via botao de update branch).
+3. Espere a esteira verde e faca o merge antes de avancar para o proximo.
+
+### E. Roteiro Pratico de Branch Protection (Repo Solo no GitHub)
+Em repositorios mantidos por uma pessoa, configure para garantir integridade sem burocracia de multiplas aprovacoes:
+1. Acesse **Settings > Branches** (ou **Rulesets**) no GitHub.
+2. Crie uma regra para o ramo `main`.
+3. Ative **Require status checks to pass before merging** e selecione o job `check / Gates de Qualidade`.
+4. Se exigir Pull Request, configure **Required approvals: 0** para permitir auto-merge do autor solo com esteira verde.
+5. Marque **Block force pushes** e **Block deletions**.
+

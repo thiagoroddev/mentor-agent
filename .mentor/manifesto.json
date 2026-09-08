@@ -1,6 +1,6 @@
 {
   "versao": "0.3.0",
-  "gerado_em": "2026-09-02T22:06:03.785Z",
+  "gerado_em": "2026-09-08T05:46:29.401Z",
   "arquivos": {
     "esquemas/contexto.json": "e31c3ad8ec59b016",
     "esquemas/divida-tecnica.json": "0906f6786a8e63a1",
@@ -35,15 +35,15 @@
     "processos/padroes-de-stack.md": "7d7df1b15ba7de44",
     "processos/rascunho.md": "13c19607b370fe9f",
     "processos/revisao.md": "4c1e2e6a1722b5ab",
-    "processos/tarefa.md": "095e4a1e8011a837",
+    "processos/tarefa.md": "01a17a880ac4c948",
     "processos/teste.md": "e904b9a054de5187",
     "regras.json": "5f5ddff0c236ed68",
-    "scripts/arquivos.ts": "59468fe870034096",
-    "scripts/cli.ts": "aa364b82e4a6286a",
+    "scripts/arquivos.ts": "3abda70bd0f1fb4c",
+    "scripts/cli.ts": "f177e05ec830b5bc",
     "scripts/cmd-anotar.ts": "140d6492fb55d524",
     "scripts/cmd-auditar.ts": "b3f05b8c8293c963",
     "scripts/cmd-campo.ts": "ab1eed484b32ace9",
-    "scripts/cmd-doctor.ts": "f676b591bd7fb079",
+    "scripts/cmd-doctor.ts": "ca2f4ecaf2915a86",
     "scripts/cmd-fila.ts": "12b00455fc0284ec",
     "scripts/cmd-gates.ts": "dc5b327389ce58c6",
     "scripts/cmd-hooks.ts": "a301ddc62de7a155",
@@ -56,7 +56,7 @@
     "scripts/cmd-requisito.ts": "4bbd2c116b8bcd63",
     "scripts/cmd-riscos.ts": "54da3ca4e24f28eb",
     "scripts/cmd-stack.ts": "b2eebe54b9a2b7cd",
-    "scripts/cmd-tarefa.ts": "7041e83bb6d8ceee",
+    "scripts/cmd-tarefa.ts": "15f919fb6602ec99",
     "scripts/cmd-verificar.ts": "ff9f198a535599d5",
     "scripts/entrada.ts": "1a56522a3580b616",
     "scripts/ids.ts": "d91879ce4c0c51ba",
@@ -65,11 +65,11 @@
     "scripts/vistas.ts": "801d14702bff037d",
     "skills/contratos-de-api/SKILL.md": "99943749d9a1771e",
     "skills/data-modeling/SKILL.md": "346a6a6afd3be72d",
-    "skills/github-ci/SKILL.md": "f21a4d25d5161474",
+    "skills/github-ci/SKILL.md": "7fbecc6df0749576",
     "skills/mermaid/SKILL.md": "cf7a4a723b7129f1",
     "skills/spike-e-investigacao/SKILL.md": "5ab362eee5800a83",
     "skills/test-design/SKILL.md": "0a58f5132c66958c",
     "skills/ui-design/SKILL.md": "58eed0c8f16f9911",
-    "tetos.json": "87d25dd810f228b7"
+    "tetos.json": "2a7bf1f5b72f482f"
   }
 }

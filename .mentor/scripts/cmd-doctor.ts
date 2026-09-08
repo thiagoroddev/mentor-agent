@@ -73,7 +73,10 @@ function seguranca(ctx: Contexto): Linha[] {
     ? Object.entries(plataforma).filter(([k, v]) => !k.startsWith('_') && k !== 'outras' && v === null).map(([k]) => k)
     : []
   if (pendentes.length) {
-    linhas.push({ estado: 'atencao', texto: `${pendentes.length} configuracao(oes) de plataforma nao declarada(s): ${pendentes.join(', ')}. Nenhum script alcanca isso` })
+    linhas.push({
+      estado: 'atencao',
+      texto: `${pendentes.length} configuracao(oes) de plataforma nao declarada(s): ${pendentes.join(', ')}. Nenhum script alcanca isso (roteiro: Settings no GitHub -> Branches / Code security; veja .mentor/skills/github-ci/)`,
+    })
   }
   return linhas
 }
@@ -117,7 +120,10 @@ function qualidade(ctx: Contexto, tarefas: Tarefa[]): Linha[] {
   if (reqs.length) {
     linhas.push({ estado: 'neutro', texto: `${implementados} de ${reqs.length} requisitos implementados` })
   } else {
-    linhas.push({ estado: 'atencao', texto: 'nenhum requisito registrado: o que guia o trabalho nao esta escrito' })
+    linhas.push({
+      estado: 'atencao',
+      texto: 'nenhum requisito registrado: se migrou projeto legado, preencha docs-mentor/requisitos/requisitos.json com as pendencias vivas (ou use mentor req nova)',
+    })
   }
 
   const metodo = (ctx['qualidade'] as { metodo_de_teste?: string })?.metodo_de_teste

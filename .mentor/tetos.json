@@ -45,7 +45,8 @@
     },
     {
       "padrao": "docs-mentor/tarefas/concluidas/*.md",
-      "teto": 2400
+      "teto": 10000,
+      "_motivo": "Narrativa de fechamento voltada para aprendizado humano e documentacao tecnica aprofundada (armadilhas tecnicas, licoes aprendidas, testes manuais, persistencia, UX). A IA consome o .json estruturado para resumos operacionais."
     },
     {
       "padrao": "docs-mentor/arquitetura/ADR/*.md",
