@@ -51,8 +51,41 @@ export function mentor(c: Cenario, ...args: string[]): Resultado {
   return { codigo: r.status ?? 1, saida: `${r.stdout ?? ''}${r.stderr ?? ''}`.trim() }
 }
 
+function tentarLer(caminho: string): string {
+  for (let i = 0; i < 5; i++) {
+    try {
+      return readFileSync(caminho, 'utf8')
+    } catch (e: any) {
+      if (i < 4 && (e.code === 'EBUSY' || e.code === 'UNKNOWN' || e.code === 'EPERM')) {
+        const t = Date.now() + 50
+        while (Date.now() < t) {}
+        continue
+      }
+      throw e
+    }
+  }
+  return readFileSync(caminho, 'utf8')
+}
+
+function tentarEscrever(caminho: string, conteudo: string): void {
+  for (let i = 0; i < 5; i++) {
+    try {
+      writeFileSync(caminho, conteudo, 'utf8')
+      return
+    } catch (e: any) {
+      if (i < 4 && (e.code === 'EBUSY' || e.code === 'UNKNOWN' || e.code === 'EPERM')) {
+        const t = Date.now() + 50
+        while (Date.now() < t) {}
+        continue
+      }
+      throw e
+    }
+  }
+  writeFileSync(caminho, conteudo, 'utf8')
+}
+
 export function ler(c: Cenario, relativo: string): string {
-  return readFileSync(join(c.pasta, relativo), 'utf8')
+  return tentarLer(join(c.pasta, relativo))
 }
 
 export function lerJson<T>(c: Cenario, relativo: string): T {
@@ -62,11 +95,11 @@ export function lerJson<T>(c: Cenario, relativo: string): T {
 export function escrever(c: Cenario, relativo: string, conteudo: string): void {
   const destino = join(c.pasta, relativo)
   mkdirSync(dirname(destino), { recursive: true })
-  writeFileSync(destino, conteudo, 'utf8')
+  tentarEscrever(destino, conteudo)
 }
 
 export function apagar(c: Cenario, relativo: string): void {
-  rmSync(join(c.pasta, relativo), { recursive: true, force: true })
+  rmSync(join(c.pasta, relativo), { recursive: true, force: true, maxRetries: 5, retryDelay: 50 })
 }
 
 export function confere(c: Cenario, condicao: boolean, oQue: string): void {

@@ -107,17 +107,50 @@ export function garantirPasta(caminho: string): void {
   mkdirSync(caminho, { recursive: true })
 }
 
+function tentarLerArquivo(caminho: string): Buffer {
+  for (let i = 0; i < 5; i++) {
+    try {
+      return readFileSync(caminho)
+    } catch (e: any) {
+      if (i < 4 && (e.code === 'EBUSY' || e.code === 'UNKNOWN' || e.code === 'EPERM')) {
+        const t = Date.now() + 50
+        while (Date.now() < t) {}
+        continue
+      }
+      throw e
+    }
+  }
+  return readFileSync(caminho)
+}
+
+function tentarEscreverArquivo(caminho: string, conteudo: string | Buffer): void {
+  for (let i = 0; i < 5; i++) {
+    try {
+      writeFileSync(caminho, conteudo)
+      return
+    } catch (e: any) {
+      if (i < 4 && (e.code === 'EBUSY' || e.code === 'UNKNOWN' || e.code === 'EPERM')) {
+        const t = Date.now() + 50
+        while (Date.now() < t) {}
+        continue
+      }
+      throw e
+    }
+  }
+  writeFileSync(caminho, conteudo)
+}
+
 export function lerJson<T>(caminho: string): T {
   return JSON.parse(lerTexto(caminho)) as T
 }
 
 export function escreverJson(caminho: string, dado: unknown): void {
   garantirPasta(dirname(caminho))
-  writeFileSync(caminho, JSON.stringify(dado, null, 2) + '\n', 'utf8')
+  tentarEscreverArquivo(caminho, JSON.stringify(dado, null, 2) + '\n')
 }
 
 export function lerTexto(caminho: string): string {
-  const buf = readFileSync(caminho)
+  const buf = tentarLerArquivo(caminho)
   if (buf.length >= 2 && buf[0] === 0xff && buf[1] === 0xfe) {
     return buf.subarray(2).toString('utf16le')
   }
@@ -138,7 +171,7 @@ export function lerTexto(caminho: string): string {
 
 export function escreverTexto(caminho: string, texto: string): void {
   garantirPasta(dirname(caminho))
-  writeFileSync(caminho, texto.endsWith('\n') ? texto : texto + '\n', 'utf8')
+  tentarEscreverArquivo(caminho, texto.endsWith('\n') ? texto : texto + '\n')
 }
 
 export function existe(caminho: string): boolean {

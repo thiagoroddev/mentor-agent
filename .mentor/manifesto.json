@@ -1,6 +1,6 @@
 {
-  "versao": "0.3.0",
-  "gerado_em": "2026-09-08T05:46:29.401Z",
+  "versao": "0.3.1",
+  "gerado_em": "2026-09-08T06:10:13.397Z",
   "arquivos": {
     "esquemas/contexto.json": "e31c3ad8ec59b016",
     "esquemas/divida-tecnica.json": "0906f6786a8e63a1",
@@ -38,7 +38,7 @@
     "processos/tarefa.md": "01a17a880ac4c948",
     "processos/teste.md": "e904b9a054de5187",
     "regras.json": "5f5ddff0c236ed68",
-    "scripts/arquivos.ts": "3abda70bd0f1fb4c",
+    "scripts/arquivos.ts": "52ec2cbb98ef40e1",
     "scripts/cli.ts": "f177e05ec830b5bc",
     "scripts/cmd-anotar.ts": "140d6492fb55d524",
     "scripts/cmd-auditar.ts": "b3f05b8c8293c963",
