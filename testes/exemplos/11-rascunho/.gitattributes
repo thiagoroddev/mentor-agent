@@ -1,0 +1,7 @@
+# Gerados pelo mentor-agent (merge=ours e regeneracao via mentor resolver-gerados)
+docs-mentor/contexto.md merge=ours
+docs-mentor/tarefas/backlog.md merge=ours
+docs-mentor/tarefas/reserva.md merge=ours
+docs-mentor/tarefas/concluidas/0-indice.md merge=ours
+# recusas.jsonl usa union: duplicatas de append entre branches sao toleradas no log
+docs-mentor/tarefas/recusas.jsonl merge=union

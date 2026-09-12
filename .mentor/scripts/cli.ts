@@ -7,7 +7,8 @@ import { verificar } from './cmd-verificar.ts'
 import { relatar as relatarRegras, sincronizar as sincronizarRegras } from './cmd-regras.ts'
 import { doctor } from './cmd-doctor.ts'
 import { gates } from './cmd-gates.ts'
-import { instalarHooks } from './cmd-hooks.ts'
+import { instalarHooks, prePush } from './cmd-hooks.ts'
+import { resolverGerados } from './cmd-resolver.ts'
 import { encerrar as encerrarRisco, nova as novoRisco, relatar as relatarRiscos } from './cmd-riscos.ts'
 import { lancamento } from './cmd-lancamento.ts'
 import { relatorioDeCampo } from './cmd-campo.ts'
@@ -44,6 +45,7 @@ mentor <comando>
   task iniciar <ID>                    escreve o esqueleto do plano e da narrativa
   task gate <ID> <gate>                executa o comando declarado e grava a evidencia
        [--esperando-vermelho]          registra o gate falhando ANTES de implementar (tdd/bdd)
+       [--vermelho-dispensado --motivo "..."] dispensa de vermelho com prova por mutacao (tdd/bdd)
        [--arquivo <caminho> [--codigo-saida <n>]] registra evidencia de saida capturada em arquivo
        [--rotulo "..." --motivo "..."] so para os rotulos que nao nascem de execucao
        [--ressalva "..." --url "..."]
@@ -52,10 +54,11 @@ mentor <comando>
   stack <ferramenta> [--versao --papel] cria a convencao e registra no contexto
   regras [--sincronizar]               inventario das regras do pacote: quais viraram comando
   verificar                            marcadores, tetos de texto, integridade referencial
+  resolver-gerados                     resolve conflitos em gerados e funde contexto.json
   anotar --sobre pacote|projeto "..."  onde a melhoria vai nao e decisao de memoria
   reserva                              lista a reserva (nao entra no contexto)
   gates                                roda todos os gates declarados pelo projeto
-  hooks --instalar                     barreira de pre-push, sem dependencia (core.hooksPath)
+  hooks [--instalar|--pre-push]        barreira de pre-push: gates, branch principal e commits sem ID
   ra [nova|encerrar <ID>]              registro de riscos aceitos
        nova --titulo --justificativa --evidencia --aceito-por
             --revisar-em --tarefa-de-saida [--severidade --pacote --advisory]
@@ -127,9 +130,11 @@ function principal(argv: string[]): number {
       else relatarRegras()
       return 0
     case 'verificar': return verificar()
+    case 'resolver-gerados': return resolverGerados()
     case 'gates': return gates()
     case 'hooks':
-      if (!flags.instalar) throw new Error('Use: mentor hooks --instalar')
+      if (flags['pre-push']) return prePush()
+      if (!flags.instalar) throw new Error('Use: mentor hooks --instalar ou mentor hooks --pre-push')
       instalarHooks(); return 0
     case 'lancamento': return lancamento()
     case 'relatorio-de-campo': return relatorioDeCampo(flags)

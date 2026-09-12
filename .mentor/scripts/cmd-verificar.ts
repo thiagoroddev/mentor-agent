@@ -23,13 +23,13 @@ function casa(padrao: string, caminho: string): boolean {
  * - `atrito-de-campo.md` e' a fonte escrita da mesma parte B. As tres categorias sao opcionais;
  *   seus marcadores orientam a medicao, mas nao significam trabalho incompleto do projeto.
  */
-const MARCADOR_E_CONTEUDO = ['recusas.json', 'relatorio-de-campo.md', 'atrito-de-campo.md']
+const MARCADOR_E_CONTEUDO = ['recusas.json', 'recusas.jsonl', 'relatorio-de-campo.md', 'atrito-de-campo.md']
 
 /** Familia 1: nenhum marcador sobrevivente. O script escreve o esqueleto; ninguem entrega o esqueleto. */
 function marcadores(): Achado[] {
   const c = caminhos()
   const achados: Achado[] = []
-  const alvos = [...listar(c.docs, '.md'), ...listar(c.docs, '.json')]
+  const alvos = [...listar(c.docs, '.md'), ...listar(c.docs, '.json'), ...listar(c.docs, '.jsonl')]
     .filter((a) => !MARCADOR_E_CONTEUDO.some((nome) => a.endsWith(nome)))
   for (const a of alvos) {
     if (lerTexto(a).includes(MARCADOR)) {

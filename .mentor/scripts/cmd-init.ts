@@ -1,5 +1,6 @@
 import { join } from 'node:path'
-import { agoraIso, caminhos, escreverJson, escreverTexto, existe, garantirPasta, lerJson, lerTexto } from './arquivos.ts'
+import { spawnSync } from 'node:child_process'
+import { agoraIso, caminhos, escreverJson, escreverTexto, existe, garantirPasta, lerJson, lerTexto, NOME_DOS_DOCUMENTOS } from './arquivos.ts'
 import { regenerarTudo } from './vistas.ts'
 import type { Contexto } from './tipos.ts'
 
@@ -111,6 +112,34 @@ export function inicializar(): void {
     }
   } else {
     escreverTexto(gitignore, `# Logs e saidas temporarias do mentor\n${entradaSaidas}\n`)
+  }
+
+  const gitattributes = join(c.raiz, '.gitattributes')
+  const regrasGitattributes = [
+    '# Gerados pelo mentor-agent (merge=ours e regeneracao via mentor resolver-gerados)',
+    `${NOME_DOS_DOCUMENTOS}/contexto.md merge=ours`,
+    `${NOME_DOS_DOCUMENTOS}/tarefas/backlog.md merge=ours`,
+    `${NOME_DOS_DOCUMENTOS}/tarefas/reserva.md merge=ours`,
+    `${NOME_DOS_DOCUMENTOS}/tarefas/concluidas/0-indice.md merge=ours`,
+    '# recusas.jsonl usa union: duplicatas de append entre branches sao toleradas no log',
+    `${NOME_DOS_DOCUMENTOS}/tarefas/recusas.jsonl merge=union`,
+  ].join('\n')
+
+  if (existe(gitattributes)) {
+    const conteudoAttr = lerTexto(gitattributes)
+    if (!conteudoAttr.includes('recusas.jsonl')) {
+      escreverTexto(gitattributes, `${conteudoAttr.trimEnd()}\n\n${regrasGitattributes}\n`)
+    }
+  } else {
+    escreverTexto(gitattributes, `${regrasGitattributes}\n`)
+  }
+
+  if (existe(join(c.raiz, '.git'))) {
+    try {
+      spawnSync('git', ['config', 'merge.ours.driver', 'true'], { cwd: c.raiz })
+    } catch {
+      // continua
+    }
   }
 
   regenerarTudo()

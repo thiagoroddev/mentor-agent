@@ -4,6 +4,21 @@ Todas as mudanças notáveis no **mentor-agent** são documentadas neste arquivo
 
 O formato baseia-se em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [0.4.0] - 2026-09-11
+
+### Adicionado
+- **Disciplina de Escopo Determinística**: `task nova --tipo RF|RN|RNF` exige obrigatoriamente `--requisitos <ID>` (ou inferido via `--origem`) ou `--sem-requisito --motivo "<justificativa>"`, impedindo que funcionalidades e regras de negócio sejam implementadas sem vínculo ao catálogo de requisitos.
+- **Dispensa de Vermelho com Prova por Mutação**: Suporte a `--vermelho-dispensado --motivo "<mutacao>"` no gate `testes`, permitindo fechar tarefas em TDD sem teste vermelho prévio desde que haja prova por mutação registrada.
+- **Dossiê de Auditoria com Defesa Preservada**: `cmd-auditar.ts` exibe a dispensa de vermelho e sua justificativa técnica na tabela de gates do dossiê, e inclui alerta nos fatos mecânicos para que o auditor verifique a prova por mutação.
+- **Alocação de IDs Multi-Branch no Git**: `proximoIdDeTarefa` e `proximoIdDeRequisito` consultam todo o histórico e todas as refs Git (`refs/heads/*`, `refs/remotes/*`), garantindo IDs monotônicos crescentes mesmo com desenvolvimento paralelo em múltiplas branches.
+- **Doctor Concorrência**: O `doctor` agora detecta e alerta sobre tarefas concluídas existentes em branches irmãs mas ainda não integradas na branch principal ou HEAD.
+- **Pre-Push Hook com Proteções Operacionais**: Hook em `.githooks/pre-push` verifica se o projeto exige PR e bloqueia push direto no ramo principal, além de barrar commits em arquivos de código de produção que não contenham `<tipo>(<ID>): <descrição>`.
+- **Fusão Semântica e Concorrência de Arquivos Gerados**: Comando `mentor resolver-gerados` para mesclagem semântica de `contexto.json` (preservando respostas humanas em portões V/C/0 e metas ISO 25010), regeneração limpa de markdowns derivados e união determinística de `recusas.jsonl`.
+- **Migração de `recusas.jsonl` com `merge=union`**: Transição do arquivo de recusas para JSON Lines com configuração automática de `.gitattributes` para evitar conflitos de merge.
+- **Cenário de Teste 21**: Cobertura integrada para concorrência Git, branches irmãs, dispensas e hooks (`21-concorrencia-git-e-dispensas.ts`).
+
+---
+
 ## [0.3.1] - 2026-09-08
 
 ### Adicionado

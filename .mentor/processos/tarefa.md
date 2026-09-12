@@ -43,6 +43,10 @@ Se nem uma coisa nem outra, **criar o registro durável é parte de criar a tare
 quem for executá-la. O teste que falsifica: *alguém que não estava na conversa consegue planejar
 esta tarefa?*
 
+**Rastreabilidade de Funcionalidades:** para tarefas do tipo `RF`, `RN` ou `RNF`, o `mentor task nova` exige
+obrigatoriamente `--requisitos <ID>` (ou `--sem-requisito --motivo "<justificativa>"` se for meramente técnica).
+Funcionalidade e regra de negócio não entram no código sem estarem catalogadas no `requisitos.json`.
+
 > **Medido:** quando o ponteiro não resolve, o texto vaza para dentro do backlog. Foram 57 linhas de
 > detalhamento em três tarefas não iniciadas, cerca de 90% duplicando documento que já existia. A
 > tarefa não tinha para onde apontar, então apontou para dentro de si mesma.
@@ -61,6 +65,12 @@ nasce, o que fazer quando a asercao nao escreve, e por que o vermelho e' obrigat
 
 Duas checagens caem no fechamento: todo criterio de aceite nomeia um teste, e com `tdd` ou `bdd` o
 gate de testes precisa ter sido visto vermelho antes do verde.
+
+**Reconciliação e Tarefa Retroativa:** quando o código já existe em produção ou já passa verde antes da tarefa,
+o vermelho não pode ser visto por ordem cronológica. Nesses casos, registre com:
+`mentor task gate <ID> testes --vermelho-dispensado --motivo "<evidencia de mutacao>"`
+⚠️ **A dispensa exige prova por teste de mutação:** documente no motivo como uma alteração proposital na regra de negócio
+faz o teste falhar. Sem teste de mutação, a dispensa vira passe-livre e a auditoria acusará teste sem exercício do código.
 
 ## Gates
 

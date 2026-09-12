@@ -25,8 +25,25 @@ foram entregues juntas.
 
 **Sempre publicável** (guia OPS-20). Quebrada, consertá-la vem antes de qualquer funcionalidade.
 
-**Protegida:** não aceita envio direto. Toda mudança entra por revisão com a esteira verde. Isso é
-configuração de plataforma, não código — ver a seção final.
+**Protegida:** não aceita envio direto. Toda mudança entra por revisão com a esteira verde. Quando `contexto.json` declara `revisao_antes_do_merge`, o hook de pre-push barra envios diretos para a `main`. A `main` local é espelho estrito de `origin/main` e não recebe trabalho em andamento.
+
+**Prova por Árvore em Squash Merge:**
+Quando o projeto adota merge por *squash* (gerando um commit único com novo SHA na linha principal), o Git local perde o vínculo de ancestrais e comandos como `git branch --merged` não reconhecem o ramo como entregue, fazendo o `git branch -d` recusar a exclusão.
+A evidência determinística de que o trabalho está entregue é a **prova por árvore vazia**:
+```bash
+git diff origin/main <branch>
+```
+Se o diff não contiver mudanças da branch (ou estiver vazio após sincronizar com `origin/main`), a árvore de trabalho da branch está 100% incorporada. O ramo local pode então ser excluído com segurança:
+```bash
+git branch -D <branch>
+```
+
+**Resolução de Conflitos em Gerados:**
+Conflitos concorrentes em arquivos derivados (`contexto.md`, `backlog.md`, `reserva.md`, `0-indice.md`), no log `recusas.jsonl` ou no modelo `contexto.json` são resolvidos determinísticamente pelo comando:
+```bash
+mentor resolver-gerados
+```
+Ele faz a fusão semântica de `contexto.json` preservando decisões de ambos os lados, une as linhas de `recusas.jsonl` e regenera as visões markdown diretamente do estado consolidado, sem riscos de inversão de `--ours` entre merge e rebase.
 
 **Integrar cedo e com frequência** (OPS-15). Ramo aberto há semanas é a forma mais invisível de
 desperdício, porque parece progresso.

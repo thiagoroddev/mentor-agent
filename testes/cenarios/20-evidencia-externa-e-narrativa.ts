@@ -22,7 +22,7 @@ export function rodar(): Cenario {
   confere(c, lido.trim() === textoOriginal, 'lerTexto decodifica UTF-16LE com BOM corretamente')
 
   // 2. Criar e iniciar tarefa para teste de gate com --arquivo
-  mentor(c, 'task', 'nova', '--tipo', 'RF', '--titulo', 'Teste de gate externo', '--esforco', 'P/P', '--origem', 'chat')
+  mentor(c, 'task', 'nova', '--tipo', 'RF', '--titulo', 'Teste de gate externo', '--esforco', 'P/P', '--origem', 'chat', '--sem-requisito', '--motivo', 'teste de gate')
   mentor(c, 'task', 'puxar', 'TASK-RF-001')
   mentor(c, 'task', 'iniciar', 'TASK-RF-001')
 

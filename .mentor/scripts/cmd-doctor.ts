@@ -205,6 +205,64 @@ function processo(ctx: Contexto, tarefas: Tarefa[]): Linha[] {
     } else {
       linhas.push({ estado: 'ok', texto: `versionado, ${commits.stdout?.trim()} commit(s), remoto configurado` })
     }
+
+    // GIT 2/5: Detectar tarefas concluidas em branches locais ou remotas que nao chegaram na main/HEAD
+    try {
+      const rRefs = spawnSync('git', ['for-each-ref', '--format=%(refname:short)', 'refs/heads', 'refs/remotes'], {
+        cwd: raiz,
+        encoding: 'utf8',
+        timeout: 5_000,
+      })
+      if (rRefs.status === 0 && rRefs.stdout) {
+        const todasRefs = rRefs.stdout.split('\n').map((s) => s.trim()).filter(Boolean)
+        const c = caminhos()
+        const tarefasHead = new Set(
+          listar(c.concluidas, '.json').map((f) => f.replace(/^.*[\\/]/, '')),
+        )
+        const refMain = todasRefs.find((r) => r === 'origin/main' || r === 'main' || r === 'origin/master' || r === 'master')
+        if (refMain) {
+          const rMain = spawnSync('git', ['ls-tree', '-r', '--name-only', refMain, '--', 'docs-mentor/tarefas/concluidas', 'docs/tarefas/concluidas'], {
+            cwd: raiz,
+            encoding: 'utf8',
+            timeout: 5_000,
+          })
+          if (rMain.status === 0 && rMain.stdout) {
+            for (const f of rMain.stdout.split('\n').map((s) => s.trim()).filter(Boolean)) {
+              tarefasHead.add(f.replace(/^.*[\\/]/, ''))
+            }
+          }
+        }
+
+        const orfasPorBranch: Record<string, string[]> = {}
+        for (const ref of todasRefs) {
+          if (ref === 'HEAD' || ref === 'origin/HEAD' || ref === refMain) continue
+          const rTree = spawnSync('git', ['ls-tree', '-r', '--name-only', ref, '--', 'docs-mentor/tarefas/concluidas', 'docs/tarefas/concluidas'], {
+            cwd: raiz,
+            encoding: 'utf8',
+            timeout: 5_000,
+          })
+          if (rTree.status === 0 && rTree.stdout) {
+            const arquivos = rTree.stdout.split('\n').map((s) => s.trim().replace(/^.*[\\/]/, '')).filter((f) => f.endsWith('.json'))
+            const orfas = arquivos.filter((f) => !tarefasHead.has(f))
+            if (orfas.length > 0) {
+              orfasPorBranch[ref] = orfas
+            }
+          }
+        }
+
+        const totalOrfas = Object.values(orfasPorBranch).reduce((acc, l) => acc + l.length, 0)
+        if (totalOrfas > 0) {
+          const nomesBranches = Object.keys(orfasPorBranch).slice(0, 3).join(', ')
+          const nomesTarefas = Object.values(orfasPorBranch).flat().map((f) => f.replace(/\.json$/, '').replace(/^.*--/, '')).slice(0, 5).join(', ')
+          linhas.push({
+            estado: 'atencao',
+            texto: `${totalOrfas} tarefa(s) concluida(s) existem apenas em branches nao mergeadas (${nomesBranches}: ${nomesTarefas}). Mergear ou descartar antes de recriar.`,
+          })
+        }
+      }
+    } catch {
+      // continua
+    }
   }
 
   // Versionamento se responde em CONSTRUCAO, nao em pre-lancamento: quando ha o que publicar,

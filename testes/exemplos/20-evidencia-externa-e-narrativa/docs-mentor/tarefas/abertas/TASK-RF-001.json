@@ -16,6 +16,7 @@
   "ordem": null,
   "origem": "chat",
   "requisitos": [],
+  "sem_requisito_motivo": "teste de gate",
   "criada_em": "29/08/26 14:00",
   "iniciada_em": null,
   "commit_base": null,
@@ -38,7 +39,8 @@
       "executado_em": "29/08/26 14:00",
       "evidencia_url": null,
       "motivo": "Saída vazia: o comando não produziu evidência verificável",
-      "ressalva": null
+      "ressalva": null,
+      "vermelho_dispensado": null
     }
   },
   "achados": [],

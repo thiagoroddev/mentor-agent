@@ -1,8 +1,5 @@
 #!/bin/sh
-# Gerado por `mentor hooks --instalar`. Roda os gates declarados em docs-mentor/contexto.json.
+# Gerado por `mentor hooks --instalar`. Roda os gates e verificacoes de pre-push do mentor.
 # Em pre-push, nao em pre-commit: commit barato evita que alguem aprenda `--no-verify`.
-node mentor.mjs gates || {
-  echo ""
-  echo "Envio barrado: gate reprovado. Conserte, ou envie com --no-verify e assuma."
-  exit 1
-}
+node mentor.mjs gates || exit 1
+node mentor.mjs hooks --pre-push "$@" || exit 1

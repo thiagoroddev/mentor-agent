@@ -18,6 +18,7 @@
   "requisitos": [
     "RF-012"
   ],
+  "sem_requisito_motivo": null,
   "criada_em": "29/08/26 14:00",
   "iniciada_em": null,
   "commit_base": null,

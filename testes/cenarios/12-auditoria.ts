@@ -49,7 +49,7 @@ export function rodar(): Cenario {
     return mentor(c, 'task', 'finalizar', id)
   }
 
-  mentor(c, 'task', 'nova', '--tipo', 'RF', '--titulo', 'Somar parcelas', '--esforco', 'P/P', '--origem', 'titulo-autossuficiente')
+  mentor(c, 'task', 'nova', '--tipo', 'RF', '--titulo', 'Somar parcelas', '--esforco', 'P/P', '--origem', 'titulo-autossuficiente', '--sem-requisito', '--motivo', 'teste de auditoria')
   mentor(c, 'task', 'puxar', 'TASK-RF-001')
   fechar('TASK-RF-001', 'a.ts', 'export const soma = (a: number, b: number) => a + b + 0\n')
   const t1 = lerJson<Record<string, any>>(c, 'docs-mentor/tarefas/concluidas/2026-08-29--14h00--TASK-RF-001.json')
@@ -57,7 +57,7 @@ export function rodar(): Cenario {
     'o iniciar grava o commit_base, que e a base do diff da auditoria')
   commit('TASK-RF-001')
 
-  mentor(c, 'task', 'nova', '--tipo', 'RF', '--titulo', 'Subtrair parcelas', '--esforco', 'P/P', '--origem', 'titulo-autossuficiente')
+  mentor(c, 'task', 'nova', '--tipo', 'RF', '--titulo', 'Subtrair parcelas', '--esforco', 'P/P', '--origem', 'titulo-autossuficiente', '--sem-requisito', '--motivo', 'teste de auditoria')
   mentor(c, 'task', 'puxar', 'TASK-RF-002')
   const fim = fechar('TASK-RF-002', 'b.ts', 'export const sub = (a: number, b: number) => a - b\n')
   dizQue(c, fim, 'sem auditoria', 'ao bater a cadencia, o finalizar avisa sozinho')

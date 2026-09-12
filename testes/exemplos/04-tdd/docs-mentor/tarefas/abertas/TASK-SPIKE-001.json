@@ -16,9 +16,10 @@
   "ordem": null,
   "origem": "titulo-autossuficiente",
   "requisitos": [],
+  "sem_requisito_motivo": null,
   "criada_em": "29/08/26 14:00",
   "iniciada_em": "29/08/26 14:00",
-  "commit_base": "1fd81a22c2ad00704c53a5b2f7dabd6f44264fc3",
+  "commit_base": "a9dae3ac69db8e9d318a04e2ab8e80c29f840041",
   "concluida_em": null,
   "plano": {
     "muda": [

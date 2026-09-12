@@ -23,10 +23,12 @@ export function rodar(): Cenario {
     '--esforco', 'P/P', '--origem', 'RF-99')
   mentor(c, 'task', 'puxar', 'TASK-BG-001')
   mentor(c, 'task', 'nova', '--tipo', 'RF', '--titulo', 'Epico grande',
-    '--esforco', 'XG/XG', '--origem', 'titulo-autossuficiente')
+    '--esforco', 'XG/XG', '--origem', 'titulo-autossuficiente',
+    '--sem-requisito', '--motivo', 'epico para teste de recusas')
   mentor(c, 'task', 'puxar', 'TASK-RF-001')
 
-  const recusas = lerJson<Array<Record<string, any>>>(c, 'docs-mentor/tarefas/recusas.json')
+  const recusasTexto = ler(c, 'docs-mentor/tarefas/recusas.jsonl')
+  const recusas = recusasTexto.trim().split('\n').filter(Boolean).map((l: string) => JSON.parse(l))
   confere(c, recusas.length === 2, 'toda recusa fica gravada quando acontece')
 
   // Uma tarefa que fecha, para o relatorio ter o lado bom tambem.
@@ -53,7 +55,7 @@ export function rodar(): Cenario {
   dizQue(c, saida, 'nao cria tarefa em lugar nenhum', 'o comando declara que nao cria tarefa')
 
   const r = ler(c, 'docs-mentor/relatorio-de-campo.md')
-  confere(c, r.includes('mentor-agent 0.3.1'), 'o relatorio atribui tudo a uma versao do pacote')
+  confere(c, r.includes('mentor-agent 0.4.0'), 'o relatorio atribui tudo a uma versao do pacote')
   // A versao saia de `join(raizPacote(), 'package.json')`, que instalado num projeto resolve para o
   // package.json DO PROJETO: o relatorio publicava a versao do app. Ancorar achado numa versao e a
   // unica coisa que este relatorio existe para fazer.

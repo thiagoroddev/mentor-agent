@@ -49,7 +49,7 @@ export function rodar(): Cenario {
 
   // 5. Tarefa com origem INV-1 é aceita pelo puxar
   mentor(c, 'task', 'nova', '--tipo', 'RF', '--titulo', 'Reforcar calculo backend',
-    '--esforco', 'P/P', '--origem', 'INV-1')
+    '--esforco', 'P/P', '--origem', 'INV-1', '--sem-requisito', '--motivo', 'invariante INV-1')
   const puxarValido = mentor(c, 'task', 'puxar', 'TASK-RF-001')
   confere(c, puxarValido.codigo === 0, 'puxar aceita origem com INV-1 valido')
 

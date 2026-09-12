@@ -7,6 +7,16 @@
       "caminho": ".mentor/guia/06-persistencia.md",
       "teto": 20000,
       "motivo": "Unica secao que cobre dois paradigmas de persistencia (relacional BD e nao-relacional NS), em dez subsecoes. Dividir quebraria o mapeamento 1:1 entre secao do guia e portao, que o contexto.json usa para enderecar lacuna."
+    },
+    {
+      "caminho": ".mentor/processos/entrega.md",
+      "teto": 8000,
+      "motivo": "Documenta protecao da main com PR, prova-por-arvore em squash merge e mentor resolver-gerados."
+    },
+    {
+      "caminho": ".mentor/processos/tarefa.md",
+      "teto": 8000,
+      "motivo": "Documenta dispensa de vermelho com prova por mutacao e rastreabilidade obrigatoria de requisitos."
     }
   ],
   "regras": [

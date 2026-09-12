@@ -8,7 +8,8 @@ export function rodar(): Cenario {
 
   mentor(c, 'task', 'nova', '--tipo', 'RF', '--titulo', 'Modo execucao do roteiro',
     '--esforco', 'XG/XG', '--valor', 'critico', '--urgencia', 'imediata',
-    '--cerimonia', 'Strict', '--origem', 'titulo-autossuficiente')
+    '--cerimonia', 'Strict', '--origem', 'titulo-autossuficiente',
+    '--sem-requisito', '--motivo', 'epico de teste')
 
   dizQue(c, mentor(c, 'task', 'puxar', 'TASK-RF-001'),
     'esforco XG para IA', 'XG nao entra no ciclo')

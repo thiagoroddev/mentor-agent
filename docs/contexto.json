@@ -451,11 +451,11 @@
   },
   "lembretes": [
     "analise de dependencias nao e automatica, e o rigor e N2 (guia OPS-27)",
-    "5 configuracao(oes) de plataforma nao declarada(s): protecao_do_ramo_principal, apagar_ramo_apos_merge, alertas_de_vulnerabilidade, atualizacoes_de_seguranca, segredos_do_ambiente_de_esteira. Nenhum script alcanca isso",
-    "nenhum requisito registrado: o que guia o trabalho nao esta escrito",
+    "5 configuracao(oes) de plataforma nao declarada(s): protecao_do_ramo_principal, apagar_ramo_apos_merge, alertas_de_vulnerabilidade, atualizacoes_de_seguranca, segredos_do_ambiente_de_esteira. Nenhum script alcanca isso (roteiro: Settings no GitHub -> Branches / Code security; veja .mentor/skills/github-ci/)",
+    "nenhum requisito registrado: se migrou projeto legado, preencha docs-mentor/requisitos/requisitos.json com as pendencias vivas (ou use mentor req nova)",
     "4 portao(oes) que a fase \"construcao\" ja exige continuam abertos: C_obrigacoes, P_problema, I_uso, N_persistencia",
-    "repositorio sem remoto: o trabalho existe so nesta maquina",
-    "versionamento nao declarado, e a fase \"construcao\" ja exige (processos/entrega.md)"
+    "versionamento nao declarado, e a fase \"construcao\" ja exige (processos/entrega.md)",
+    "nenhum ponto de entrada de IA no projeto: nada carrega o nucleo, e sem o nucleo o pacote nao existe. Rode: mentor instalar"
   ],
   "_lembretes_nota": "GERADO pelo doctor a cada execucao. Nao digite aqui: campo livre acumula prosa como qualquer outro."
 }

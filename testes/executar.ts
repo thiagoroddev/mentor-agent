@@ -19,9 +19,10 @@ import { rodar as requisitos } from './cenarios/17-cli-requisitos-e-referencias.
 import { rodar as robustez } from './cenarios/18-robustez-gates-e-absorcao.ts'
 import { rodar as skills } from './cenarios/19-skills-nativas-e-seguranca.ts'
 import { rodar as evidencia } from './cenarios/20-evidencia-externa-e-narrativa.ts'
+import { rodar as concorrencia } from './cenarios/21-concorrencia-git-e-dispensas.ts'
 import type { Cenario } from './apoio.ts'
 
-const CENARIOS: Array<() => Cenario> = [ciclo, epico, recusas, tdd, verificacao, saude, entrega, lanc, campo, pacote, rascunho, auditoria, referencias, offsets, invariantes, postura, requisitos, robustez, skills, evidencia]
+const CENARIOS: Array<() => Cenario> = [ciclo, epico, recusas, tdd, verificacao, saude, entrega, lanc, campo, pacote, rascunho, auditoria, referencias, offsets, invariantes, postura, requisitos, robustez, skills, evidencia, concorrencia]
 
 let falharam = 0
 for (const rodar of CENARIOS) {

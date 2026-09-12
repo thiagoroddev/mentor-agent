@@ -5,6 +5,7 @@
 // chama daqui quando roda do repositorio. Duas copias da mesma logica divergiriam.
 import { cpSync, existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
+import { spawnSync } from 'node:child_process'
 
 const trocarRaizAdministrativa = (valor) => typeof valor === 'string'
   ? valor.replace(/^docs\//, 'docs-mentor/')
@@ -118,6 +119,42 @@ export function copiarPacote(origem, destino, forcar, migrarDocs = false) {
         if (!conteudo.includes('.mentor-saidas')) {
           writeFileSync(gitignore, `${conteudo.trimEnd()}\n\n# Logs e saidas temporarias do mentor\n.mentor-saidas/\n`, 'utf8')
         }
+      } catch {
+        // continua
+      }
+    }
+
+    const gitattributes = join(destino, '.gitattributes')
+    const regrasGitattributes = [
+      '# Gerados pelo mentor-agent (merge=ours e regeneracao via mentor resolver-gerados)',
+      'docs-mentor/contexto.md merge=ours',
+      'docs-mentor/tarefas/backlog.md merge=ours',
+      'docs-mentor/tarefas/reserva.md merge=ours',
+      'docs-mentor/tarefas/concluidas/0-indice.md merge=ours',
+      '# recusas.jsonl usa union: duplicatas de append entre branches sao toleradas no log',
+      'docs-mentor/tarefas/recusas.jsonl merge=union',
+    ].join('\n')
+
+    if (existsSync(gitattributes)) {
+      try {
+        const conteudoAttr = readFileSync(gitattributes, 'utf8')
+        if (!conteudoAttr.includes('recusas.jsonl')) {
+          writeFileSync(gitattributes, `${conteudoAttr.trimEnd()}\n\n${regrasGitattributes}\n`, 'utf8')
+        }
+      } catch {
+        // continua
+      }
+    } else {
+      try {
+        writeFileSync(gitattributes, `${regrasGitattributes}\n`, 'utf8')
+      } catch {
+        // continua
+      }
+    }
+
+    if (existsSync(join(destino, '.git'))) {
+      try {
+        spawnSync('git', ['config', 'merge.ours.driver', 'true'], { cwd: destino })
       } catch {
         // continua
       }

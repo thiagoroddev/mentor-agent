@@ -49,6 +49,37 @@ export function nova(flags: Flags): void {
   const c = caminhos()
   const tipo = umDe<TipoTarefa>(exigir(flags, 'tipo'), TIPOS_TAREFA, 'tipo')
   const [humano, ia] = exigir(flags, 'esforco').split('/')
+  const reqs = (flags.requisitos ?? '').split(',').map((s) => s.trim()).filter(Boolean)
+  let semRequisitoMotivo: string | null = null
+
+  if (['RF', 'RN', 'RNF'].includes(tipo)) {
+    if (reqs.length === 0) {
+      if (flags['sem-requisito'] && flags.motivo && flags.motivo.trim()) {
+        semRequisitoMotivo = flags.motivo.trim()
+      } else {
+        throw new Error(
+          `Tarefa do tipo "${tipo}" exige --requisitos <ID> ou --sem-requisito --motivo "<justificativa>". Funcionalidade e regra de negocio precisam estar rastreadas no catalogo de requisitos.`,
+        )
+      }
+    } else if (existe(c.requisitos)) {
+      try {
+        const catalogo = lerJson<Array<{ id?: string }>>(c.requisitos)
+        const ids = new Set(catalogo.map((r) => r.id).filter(Boolean))
+        if (ids.size > 0) {
+          for (const rid of reqs) {
+            if (!ids.has(rid)) {
+              throw new Error(
+                `Requisito "${rid}" nao encontrado no catalogo (${c.requisitos}). Cadastre primeiro com "mentor req nova" ou vincule a um ID existente.`,
+              )
+            }
+          }
+        }
+      } catch (e: any) {
+        if (e.message?.includes('Requisito "')) throw e
+      }
+    }
+  }
+
   const t: Tarefa = {
     id: proximoIdDeTarefa(tipo),
     tipo,
@@ -68,7 +99,8 @@ export function nova(flags: Flags): void {
     fila: 'reserva',
     ordem: null,
     origem: exigir(flags, 'origem'),
-    requisitos: (flags.requisitos ?? '').split(',').map((s) => s.trim()).filter(Boolean),
+    requisitos: reqs,
+    sem_requisito_motivo: semRequisitoMotivo,
     criada_em: agora().log,
     iniciada_em: null,
     commit_base: null,
@@ -198,6 +230,29 @@ export function registrarGate(id: string, gate: string, flags: Flags): void {
     return
   }
 
+  if (flags['vermelho-dispensado']) {
+    if (gate !== 'testes') {
+      throw new Error('Dispensa de vermelho so e valida para o gate "testes".')
+    }
+    if (!flags.motivo || !flags.motivo.trim()) {
+      throw new Error(
+        '--vermelho-dispensado exige --motivo com a evidencia de teste por mutacao (ex: provar que alteracao intencional no codigo faz o teste falhar).',
+      )
+    }
+    const gateExistente = tarefa.gates[gate]
+    if (gateExistente && (gateExistente.rotulo === 'APROVADO' || gateExistente.rotulo === 'APROVADO com ressalva')) {
+      if (!flags.arquivo && Boolean(flags['executar']) !== true) {
+        gateExistente.vermelho_dispensado = {
+          dispensado_em: agora().log,
+          motivo: flags.motivo.trim(),
+        }
+        escreverJson(caminho, tarefa)
+        console.log(`${id} · ${gate}: vermelho dispensado com justificativa de mutacao.`)
+        return
+      }
+    }
+  }
+
   const caminhoArquivo = flags.arquivo
   let comandoExecutado: string | null = null
   let codigoSaida: number | null = null
@@ -246,17 +301,29 @@ export function registrarGate(id: string, gate: string, flags: Flags): void {
     return
   }
 
+  if (flags['vermelho-dispensado'] && codigoSaida !== 0) {
+    throw new Error(
+      `Comando do gate falhou (saida ${codigoSaida}). A dispensa de vermelho exige que o teste passe verde (APROVADO). Se o teste falhou, voce tem um vermelho real — use --esperando-vermelho.`,
+    )
+  }
+
   let rotulo: Rotulo = codigoSaida === 0 ? 'APROVADO' : 'FALHOU'
   let motivo: string | null = null
   if (codigoSaida === 0 && (!saida || !saida.trim())) {
     rotulo = 'INVÁLIDO como gate'
     motivo = 'Saída vazia: o comando não produziu evidência verificável'
   }
+  const anterior = tarefa.gates[gate]
+  const disp = flags['vermelho-dispensado']
+    ? { dispensado_em: agora().log, motivo: (flags.motivo ?? '').trim() }
+    : (anterior?.vermelho_dispensado ?? null)
+
   tarefa.gates[gate] = {
-    rotulo, vermelho_em: tarefa.gates[gate]?.vermelho_em ?? null,
+    rotulo, vermelho_em: anterior?.vermelho_em ?? null,
     comando: comandoExecutado, codigo_saida: codigoSaida, saida: saida || null,
     executado_em: agora().log, evidencia_url: flags.url ?? null,
     motivo, ressalva: flags.ressalva ?? null,
+    vermelho_dispensado: disp,
   }
   if (flags.ressalva && rotulo === 'APROVADO') tarefa.gates[gate]!.rotulo = 'APROVADO com ressalva'
   escreverJson(caminho, tarefa)
@@ -298,9 +365,13 @@ export function finalizar(id: string): void {
   const metodo = (ctx['qualidade'] as { metodo_de_teste?: MetodoDeTeste } | undefined)?.metodo_de_teste
   if (metodo && METODOS_COM_VERMELHO.includes(metodo) && tarefa.tipo !== 'SPIKE') {
     const gateTestes = tarefa.gates['testes']
-    if (ctx.gates['testes']?.comando && gateTestes && !gateTestes.vermelho_em) {
+    const foiDispensado = Boolean(
+      gateTestes?.vermelho_dispensado?.dispensado_em ||
+      (gateTestes as any)?.vermelho_dispensado_em,
+    )
+    if (ctx.gates['testes']?.comando && gateTestes && !gateTestes.vermelho_em && !foiDispensado) {
       impedimentos.push(
-        `metodo "${metodo}" exige o gate "testes" visto vermelho antes do verde. Registre com: task gate ${id} testes --esperando-vermelho`,
+        `metodo "${metodo}" exige o gate "testes" visto vermelho antes do verde (ou dispensado com: task gate ${id} testes --vermelho-dispensado --motivo "<mutacao>"). Registre com: task gate ${id} testes --esperando-vermelho`,
       )
     }
   }

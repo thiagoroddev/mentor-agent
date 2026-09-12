@@ -1,4 +1,4 @@
-import { agora, agoraIso, caminhos, escreverJson, escreverTexto, existe, lerData, lerJson, listar, relogioDoPacote } from './arquivos.ts'
+import { agora, agoraIso, caminhos, escreverJson, escreverTexto, existe, lerData, lerJson, lerTexto, listar, relogioDoPacote } from './arquivos.ts'
 import { join } from 'node:path'
 import type { Contexto, DividaTecnica, Invariante, Recusa, ReferenciaExterna, Requisito, RiscoAceito, Tarefa } from './tipos.ts'
 
@@ -57,18 +57,51 @@ export function riscoVencido(r: RiscoAceito): boolean {
 
 export function carregarRecusas(): Recusa[] {
   const c = caminhos()
-  return existe(c.recusas) ? lerJson<Recusa[]>(c.recusas) : []
+  if (existe(c.recusas)) {
+    const texto = lerTexto(c.recusas).trim()
+    if (!texto) return []
+    const linhas = texto.split('\n').map((l) => l.trim()).filter(Boolean)
+    const recusas: Recusa[] = []
+    for (const linha of linhas) {
+      try {
+        recusas.push(JSON.parse(linha))
+      } catch {
+        // ignora linha malformada em merge
+      }
+    }
+    return recusas
+  }
+  if (existe(c.recusasLegado)) {
+    try {
+      return lerJson<Recusa[]>(c.recusasLegado)
+    } catch {
+      return []
+    }
+  }
+  return []
 }
 
 /**
- * Grava a recusa no momento em que ela acontece. E' o unico registro do pacote que so' cresce:
- * apagar recusa seria apagar a evidencia de onde ele atrapalha.
+ * Grava a recusa no momento em que ela acontece em formato JSON Lines (recusas.jsonl).
+ * E' o unico registro do pacote que so' cresce. O uso de JSON Lines com merge=union
+ * permite concorrencia append-only segura entre branches irmas.
  */
 export function registrarRecusa(comando: string, alvo: string, impedimentos: string[]): void {
   const c = caminhos()
-  const anteriores = carregarRecusas()
-  anteriores.push({ quando: agora().log, comando, alvo, impedimentos })
-  escreverJson(c.recusas, anteriores)
+  const nova: Recusa = { quando: agora().log, comando, alvo, impedimentos }
+  const linhaNova = JSON.stringify(nova) + '\n'
+
+  if (existe(c.recusas)) {
+    const atual = lerTexto(c.recusas).trimEnd()
+    escreverTexto(c.recusas, (atual ? atual + '\n' : '') + linhaNova)
+  } else if (existe(c.recusasLegado)) {
+    const anteriores = carregarRecusas()
+    anteriores.push(nova)
+    const conteudo = anteriores.map((r) => JSON.stringify(r)).join('\n') + '\n'
+    escreverTexto(c.recusas, conteudo)
+  } else {
+    escreverTexto(c.recusas, linhaNova)
+  }
 }
 
 export function carregarContexto(): Contexto {

@@ -31,7 +31,7 @@ const LIMITE_ARQUIVO_NOVO = 20_000
  */
 const VISTAS_GERADAS = [
   'contexto.json', 'contexto.md', 'tarefas/backlog.md', 'tarefas/reserva.md',
-  'tarefas/recusas.json', 'tarefas/concluidas/0-indice.md',
+  'tarefas/recusas.json', 'tarefas/recusas.jsonl', 'tarefas/concluidas/0-indice.md',
   'requisitos/implementados.md', 'requisitos/pendentes.md', 'auditorias',
 ].map((v) => `${NOME_DOS_DOCUMENTOS}/${v}`)
   .map((v) => `:(exclude)${v}`)
@@ -119,8 +119,16 @@ function fatosMecanicos(lote: Tarefa[], arquivosDoDiff: string[]): string[] {
       if (g.rotulo === 'NÃO EXECUTADO' || g.rotulo === 'INVÁLIDO como gate') {
         fatos.push(`${t.id}: gate "${nome}" fechou como ${g.rotulo} — motivo declarado: ${g.motivo ?? '(nenhum)'}`)
       }
-      if (nome === 'testes' && !g.vermelho_em) {
-        fatos.push(`${t.id}: o gate "testes" nunca foi visto vermelho. Teste que nunca falhou pode estar passando sem exercitar o codigo`)
+      if (nome === 'testes') {
+        const disp = g.vermelho_dispensado ?? ((g as any).vermelho_dispensado_em ? {
+          dispensado_em: (g as any).vermelho_dispensado_em,
+          motivo: (g as any).vermelho_motivo ?? g.motivo ?? 'dispensado sem motivo registrado',
+        } : null)
+        if (disp) {
+          fatos.push(`${t.id}: o gate "testes" teve o vermelho dispensado: "${disp.motivo}". Auditor: verificar se ha prova por mutacao`)
+        } else if (!g.vermelho_em) {
+          fatos.push(`${t.id}: o gate "testes" nunca foi visto vermelho. Teste que nunca falhou pode estar passando sem exercitar o codigo`)
+        }
       }
     }
     if (t.achados.length) fatos.push(`${t.id}: fechou com ${t.achados.length} achado(s) proprio(s) ja com destino`)
@@ -213,7 +221,13 @@ function dossie(id: string, lote: Tarefa[], base: string | null, final: string |
     l.push('| :-- | :-- | :-- | --: | :-- |')
     for (const [nome, g] of Object.entries(t.gates)) {
       if (!g) continue
-      l.push(`| ${nome} | ${g.rotulo} | ${g.vermelho_em ?? '—'} | ${g.codigo_saida ?? '—'} | ${g.motivo ?? g.ressalva ?? '—'} |`)
+      const disp = g.vermelho_dispensado ?? ((g as any).vermelho_dispensado_em ? {
+        dispensado_em: (g as any).vermelho_dispensado_em,
+        motivo: (g as any).vermelho_motivo ?? g.motivo ?? '—',
+      } : null)
+      const vermelhoTexto = g.vermelho_em ?? (disp ? `dispensado (${disp.dispensado_em})` : '—')
+      const motivoTexto = g.motivo ?? g.ressalva ?? disp?.motivo ?? '—'
+      l.push(`| ${nome} | ${g.rotulo} | ${vermelhoTexto} | ${g.codigo_saida ?? '—'} | ${motivoTexto} |`)
     }
     l.push('')
     if (t.plano.riscos.length) { l.push(`**Riscos declarados:** ${t.plano.riscos.join(' · ')}`); l.push('') }

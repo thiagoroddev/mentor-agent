@@ -23,7 +23,8 @@ export function rodar(): Cenario {
   }
 
   mentor(c, 'task', 'nova', '--tipo', 'RF', '--titulo', 'Somar as parcelas',
-    '--esforco', 'P/P', '--origem', 'titulo-autossuficiente')
+    '--esforco', 'P/P', '--origem', 'titulo-autossuficiente',
+    '--sem-requisito', '--motivo', 'teste de tdd')
   mentor(c, 'task', 'puxar', 'TASK-RF-001')
   mentor(c, 'task', 'iniciar', 'TASK-RF-001')
   preparar('TASK-RF-001', 'soma.test.ts > soma duas parcelas')

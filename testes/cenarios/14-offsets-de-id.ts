@@ -42,12 +42,14 @@ export function rodar(): Cenario {
   ], null, 2))
 
   mentor(c, 'task', 'nova', '--tipo', 'RF', '--titulo', 'Feature apos ref historica',
-    '--esforco', 'P/P', '--origem', 'titulo-autossuficiente')
+    '--esforco', 'P/P', '--origem', 'titulo-autossuficiente',
+    '--sem-requisito', '--motivo', 'teste de offset')
   const rf43 = lerJson<any>(c, 'docs-mentor/tarefas/abertas/TASK-RF-043.json')
   confere(c, rf43.id === 'TASK-RF-043', 'com TASK-RF-042 em referencias gera TASK-RF-043')
 
   mentor(c, 'task', 'nova', '--tipo', 'RF', '--titulo', 'Feature seguinte',
-    '--esforco', 'P/P', '--origem', 'titulo-autossuficiente')
+    '--esforco', 'P/P', '--origem', 'titulo-autossuficiente',
+    '--sem-requisito', '--motivo', 'teste de offset')
   const rf44 = lerJson<any>(c, 'docs-mentor/tarefas/abertas/TASK-RF-044.json')
   confere(c, rf44.id === 'TASK-RF-044', 'incrementa sequencialmente para TASK-RF-044')
 

@@ -14,8 +14,8 @@ export function rodar(): Cenario {
   confere(c, gitignore.includes('.mentor-saidas/'), 'init adiciona .mentor-saidas/ ao .gitignore')
 
   // 2. Criar duas tarefas: TASK-RF-001 e TASK-RF-002
-  mentor(c, 'task', 'nova', '--tipo', 'RF', '--titulo', 'Tarefa original', '--esforco', 'P/P', '--origem', 'chat')
-  mentor(c, 'task', 'nova', '--tipo', 'RF', '--titulo', 'Tarefa abrangente', '--esforco', 'M/M', '--origem', 'chat')
+  mentor(c, 'task', 'nova', '--tipo', 'RF', '--titulo', 'Tarefa original', '--esforco', 'P/P', '--origem', 'chat', '--sem-requisito', '--motivo', 'teste de absorcao')
+  mentor(c, 'task', 'nova', '--tipo', 'RF', '--titulo', 'Tarefa abrangente', '--esforco', 'M/M', '--origem', 'chat', '--sem-requisito', '--motivo', 'teste de absorcao')
 
   // 3. Absorver TASK-RF-001 por TASK-RF-002
   const saidaAbsorver = mentor(c, 'task', 'absorver', 'TASK-RF-001', '--por', 'TASK-RF-002')

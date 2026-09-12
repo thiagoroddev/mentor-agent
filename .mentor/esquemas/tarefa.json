@@ -79,6 +79,7 @@
   "origem": null,
   "origem_aceita": "IDs resolviveis (RF RN RNF ADR DT REV) ou o token literal 'titulo-autossuficiente'. Vazio e' proibido.",
   "requisitos": [],
+  "sem_requisito_motivo": null,
   "criada_em": null,
   "iniciada_em": null,
   "commit_base": null,
@@ -115,6 +116,8 @@
       "executado_em": null,
       "vermelho_em": null,
       "vermelho_nota": "Quando o gate foi visto falhando antes de passar. Com metodo tdd ou bdd, o fechamento exige. Grave com: task gate <id> testes --esperando-vermelho",
+      "vermelho_dispensado": null,
+      "vermelho_dispensado_nota": "Quando o vermelho foi dispensado com prova por mutacao ({ dispensado_em, motivo }). Gravado com: task gate <id> testes --vermelho-dispensado --motivo \"...\"",
       "evidencia_url": null,
       "motivo": null
     }

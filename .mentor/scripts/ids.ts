@@ -1,8 +1,75 @@
+import { spawnSync } from 'node:child_process'
+import { join } from 'node:path'
 import { caminhos, existe, lerJson, listar } from './arquivos.ts'
 import { carregarContexto, carregarReferencias } from './vistas.ts'
 import type { Tarefa } from './tipos.ts'
 
 const PADRAO_ID = /^TASK-([A-Z]+)-(\d{3})$/
+
+function obterRefsGit(raiz: string): string[] {
+  if (!existe(join(raiz, '.git'))) return []
+  try {
+    const r = spawnSync('git', ['for-each-ref', '--format=%(refname)', 'refs/heads', 'refs/remotes'], {
+      cwd: raiz,
+      encoding: 'utf8',
+      timeout: 5_000,
+    })
+    if (r.status !== 0 || !r.stdout) return []
+    return r.stdout.split('\n').map((s) => s.trim()).filter(Boolean)
+  } catch {
+    return []
+  }
+}
+
+function maiorIdDeTarefaNoGit(raiz: string, prefixo: string): number {
+  if (!existe(join(raiz, '.git'))) return 0
+  try {
+    const r = spawnSync('git', ['log', '--all', '--name-only', '--format=', '--', 'docs-mentor/tarefas/*', 'docs/tarefas/*'], {
+      cwd: raiz,
+      encoding: 'utf8',
+      timeout: 5_000,
+    })
+    let maior = 0
+    if (r.status === 0 && r.stdout) {
+      const re = new RegExp(`TASK-${prefixo}-(\\d{3})\\.json`)
+      for (const linha of r.stdout.split('\n')) {
+        const casou = re.exec(linha.trim())
+        if (casou && casou[1]) {
+          maior = Math.max(maior, Number(casou[1]))
+        }
+      }
+    }
+    return maior
+  } catch {
+    return 0
+  }
+}
+
+function maiorIdDeRequisitoNoGit(raiz: string, tipo: string): number {
+  if (!existe(join(raiz, '.git'))) return 0
+  try {
+    const refs = obterRefsGit(raiz)
+    if (refs.length === 0) return 0
+    const r = spawnSync('git', ['grep', '-h', '-E', `"id":\\s*"${tipo}-[0-9]+"`, ...refs, '--', 'docs-mentor/requisitos/*', 'docs/requisitos/*'], {
+      cwd: raiz,
+      encoding: 'utf8',
+      timeout: 5_000,
+    })
+    let maior = 0
+    if (r.status === 0 && r.stdout) {
+      const re = new RegExp(`"${tipo}-(\\d+)"`)
+      for (const linha of r.stdout.split('\n')) {
+        const casou = re.exec(linha)
+        if (casou && casou[1]) {
+          maior = Math.max(maior, Number(casou[1]))
+        }
+      }
+    }
+    return maior
+  } catch {
+    return 0
+  }
+}
 
 /**
  * Proximo ID de um prefixo: maior ja' usado, mais um, tres digitos.
@@ -11,7 +78,8 @@ const PADRAO_ID = /^TASK-([A-Z]+)-(\d{3})$/
  * Considera:
  * 1. Offsets declarados em `contexto.json -> offsets_de_id[prefixo]`;
  * 2. Tarefas locais em `abertas/` e `concluidas/`;
- * 3. Referencias externas em `referencias.json`.
+ * 3. Referencias externas em `referencias.json`;
+ * 4. Historico e branches irmas no Git (todas as refs).
  */
 export function proximoIdDeTarefa(prefixo: string): string {
   const c = caminhos()
@@ -52,6 +120,9 @@ export function proximoIdDeTarefa(prefixo: string): string {
       // continua
     }
   }
+
+  // 4. Git (todas as branches e historico)
+  maior = Math.max(maior, maiorIdDeTarefaNoGit(c.raiz, prefixo))
 
   return `TASK-${prefixo}-${String(maior + 1).padStart(3, '0')}`
 }
@@ -114,6 +185,9 @@ export function proximoIdDeRequisito(tipo: 'RF' | 'RN' | 'RNF'): string {
       // continua
     }
   }
+
+  // 4. Git (todas as branches e historico)
+  maior = Math.max(maior, maiorIdDeRequisitoNoGit(c.raiz, tipo))
 
   return `${tipo}-${maior + 1}`
 }
