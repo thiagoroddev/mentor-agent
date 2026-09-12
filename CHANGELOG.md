@@ -4,6 +4,38 @@ Todas as mudanças notáveis no **mentor-agent** são documentadas neste arquivo
 
 O formato baseia-se em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [0.6.0] - 2026-09-12
+
+### Adicionado
+- **Mérito Técnico e Postura Ativa: O Dever de Contrariar**:
+  - Novo Princípio 8 em `.mentor/nucleo.md`: a IA parceira tem o dever de contrariar tecnicamente durante o planejamento (Portão 1), apontando problemas de arquitetura, custo de oportunidade e alternativas consolidadas, sem tratar restrições fundadoras como dogmas eternos.
+  - Atualização do checklist do Portão 1 no núcleo e no texto de boas-vindas do `mentor instalar` (`AGENTS.md`): o mentor não aprova planos sem mérito técnico, sem nome canônico e sem alternativas avaliadas.
+  - Seção 9 em `MELHORIAS.md` formalizando a evolução de auditor de forma procedimental para conselheiro de mérito técnico.
+- **Problema Canônico Obrigatório (M2)**:
+  - Todo plano de tarefa exige o campo `problema_canonico` preenchido com o nome canônico do problema na literatura de ciência da computação ou engenharia (ex: TSP, VRP, CRDT, LR/GLR parsing), ou expressamente `"sem nome canonico"`. Planos sem o campo ou com marcadores são recusados no fechamento.
+- **Seção de Discordância Obrigatória no Plano (M7)**:
+  - Todo plano de tarefa agora possui a seção `discordancia` contendo:
+    - `o_que_faria_diferente`: alternativas de desenho ou arquitetura consideradas pela IA.
+    - `o_que_preocupa`: riscos operacionais, manutenibilidade ou gargalos do plano.
+    - `o_que_existe_pronto_80_porcento`: bibliotecas ou ferramentas consolidadas que resolveriam 80% do problema.
+    - Aceita formalmente `"Nada a objetar"` / `"Nenhuma conhecida"` quando a IA honestamente concordar com o plano.
+- **Estado da Arte e Custo de Oportunidade para Tarefas G/XG (M1 e M8)**:
+  - Tarefas com esforço de IA `G` ou `XG` (ou motores proprietários do zero) passam a exigir no plano:
+    - `estado_da_arte`: implementações consolidadas de mercado avaliadas, motivo técnico do descarte e o que resta construir caso fossem adotadas.
+    - `custo_de_oportunidade`: o que existe pronto (software livre ou serviço), custo estimado, dependências introduzidas e tempo humano/IA substituído pela construção manual.
+    - Bloqueio mecânico em `mentor task finalizar` se as seções estiverem ausentes ou incompletas.
+- **Três Réguas Obrigatórias para Spikes de Medição (M4)**:
+  - Spikes com critérios de aceite de medição/otimização (melhora, ganho, otimização, redução, desempenho, latência) exigem `reguas_de_medicao` contendo: `piso` (baseline trivial a superar), `teto` (ótimo teórico calculado ou benchmark externo) e `padrao` (solução consolidada da indústria ou biblioteca padrão).
+- **Bloqueio por Premissa Refutada (M5)**:
+  - Se um spike ou tarefa anterior registrar achado de classe 3 ou 4 refutando premissa, `mentor task puxar` bloqueia tarefas dependentes no ciclo, impedindo que a esteira continue construindo sobre hipóteses invalidadas.
+  - Desbloqueio explícito com `mentor task puxar <ID> --premissa-reconfirmada --motivo "<justificativa>"`.
+- **Prevenção de Reincidência de Spikes Inconclusivos (M6)**:
+  - Alerta no `mentor doctor` e bloqueio automático em `mentor task iniciar` ao tentar abrir um terceiro spike consecutivo quando os últimos dois fecharam inconclusivos sem validar premissa.
+  - Desbloqueio explícito via `mentor task iniciar <ID> --estrategia-revisada`.
+- **Cenário de Teste 23 (`23-merito-tecnico-e-discordancia.ts`)**: Cobertura ponta a ponta de todas as regras de mérito técnico, réguas de spike, estado da arte, bloqueio por refutação e reincidência de spikes inconclusivos.
+
+---
+
 ## [0.5.0] - 2026-09-12
 
 ### Adicionado

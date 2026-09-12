@@ -51,6 +51,33 @@ Funcionalidade e regra de negócio não entram no código sem estarem catalogada
 > detalhamento em três tarefas não iniciadas, cerca de 90% duplicando documento que já existia. A
 > tarefa não tinha para onde apontar, então apontou para dentro de si mesma.
 
+## Plano e Mérito Técnico (Portão 1)
+
+O plano não é apenas um formulário de procedimento: ele é a **defesa de mérito técnico** da tarefa.
+O `mentor-agent` recusa planos que constroem do zero sem pesquisar o estado da arte ou sem exercer o dever de contrariar.
+
+### Campos Obrigatórios de Mérito no Plano
+
+1. **`problema_canonico`**: Se o problema tem nome na literatura científica ou de engenharia (ex: TSP, VRP, CRDT, LR parser, rate limiting, sincronização offline), declare o nome canônico. Se genuinamente não tiver, declare explicitamente `"sem nome canonico"`. Nome canônico traz literatura, bibliotecas testadas e benchmarks conhecidos.
+2. **`discordancia`**: Exercício ativo e obrigatório para combater a complacência da IA. Deve responder:
+   - *O que eu faria diferente:* a abordagem alternativa que o mentor recomendaria.
+   - *O que me preocupa neste plano:* riscos de arquitetura, limites de escala ou dívida técnica gerada.
+   - *O que existe pronto que faz 80% disso:* bibliotecas, solvers ou ferramentas de mercado existentes.
+   *(Valor `"Nada a objetar"` é aceito se não houver ressalvas, mas deve ser explicitamente digitado).*
+3. **`estado_da_arte` e `custo_de_oportunidade`**:
+   - Disparo: esforço IA `G` ou `XG`, ou quando a tarefa constrói motor, algoritmo, heurística, protocolo ou parser próprio.
+   - Exige: 2 a 4 implementações consolidadas de mercado com licenças, motivo do descarte de cada uma, o que restaria construir caso uma delas fosse adotada, e estimativa de semanas de desenvolvimento economizadas.
+4. **Spikes de Medição — As Três Réguas**:
+   - Todo spike cujo critério cite "melhora", "ganho", "otimiza", "reduz" ou "taxa" exige:
+     - **Piso**: o baseline trivial que o resultado tem obrigação mínima de superar.
+     - **Teto**: o ótimo matemático calculado ou a melhor referência externa conhecida.
+     - **Padrão**: o que uma solução padrão da indústria entrega na mesma instância.
+   - Sem as três réguas, o spike é recusado. "Inconclusivo por falta de régua" é classificado como defeito de planejamento.
+5. **Restrições Fundadoras e Premissas Refutadas**:
+   - Restrições herdadas de README ou arquivos antigos não são leis eternas. Se eliminam alternativas de mercado nesta tarefa, devem ser reavaliadas e reconfirmadas pelo mantenedor (reconfirmada 3 vezes vira ADR).
+   - Se um achado de classe 3 ou 4 refuta a premissa de um spike ou tarefa anterior, as tarefas dependentes não podem ser puxadas para o ciclo sem reconfirmação explícita.
+   - Dois spikes consecutivos que fecham como "inconclusivo" no mesmo tema bloqueiam novos spikes e exigem **Revisão de Estratégia**.
+
 ## Fatia
 
 Sub-numeração decimal não existe. Fatia se declara no título: `[fatia de TASK-RF-005]`.

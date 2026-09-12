@@ -71,8 +71,7 @@ export function origemNaoResolve(origem: string): string | null {
 
 // ---------------------------------------------------------------- puxar e guardar
 
-/** Regra de passagem (guia ES-54): o que precisa ser verdade para a tarefa entrar no ciclo. */
-export function puxar(id: string): void {
+export function puxar(id: string, flags: Flags = {}): void {
   const c = caminhos()
   const { caminho, tarefa } = localizarViva(id)
   const ctx = carregarContexto()
@@ -88,6 +87,23 @@ export function puxar(id: string): void {
   const noCiclo = new Set(todas.filter((t) => t.fila === 'ciclo').map((t) => t.id))
   for (const d of tarefa.depende_de) {
     if (!concluidas.has(d) && !noCiclo.has(d)) impedimentos.push(`depende de ${d}, que nao esta concluida nem no ciclo`)
+  }
+
+  // M5: Bloqueio por premissa refutada em dependencia
+  for (const d of tarefa.depende_de) {
+    const depConcluida = todas.find((t) => t.id === d && t.estado === 'concluida')
+    if (depConcluida) {
+      const achadoRefutador = depConcluida.achados?.find(
+        (a) =>
+          (a.classe === 3 || a.classe === 4) &&
+          /\b(refuta|refutou|contradiz|premissa refutada|hipotese refutada)\b/i.test(`${a.descricao} ${a.ref}`),
+      )
+      if (achadoRefutador && !flags['premissa-reconfirmada']) {
+        impedimentos.push(
+          `dependencia ${d} possui achado refutando a premissa ("${achadoRefutador.descricao}"). Replaneje a tarefa ou passe: mentor task puxar ${id} --premissa-reconfirmada --motivo "<justificativa>"`,
+        )
+      }
+    }
   }
 
   const ocupadas = todas.filter(

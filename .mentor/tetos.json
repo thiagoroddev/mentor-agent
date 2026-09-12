@@ -4,6 +4,11 @@
   "fator_linha": 60,
   "excecoes": [
     {
+      "caminho": ".mentor/nucleo.md",
+      "teto": 8800,
+      "motivo": "Incorpora o principio 8: o dever de contrariar, persona ativa e exigencias de merito tecnico no Portao 1."
+    },
+    {
       "caminho": ".mentor/guia/06-persistencia.md",
       "teto": 20000,
       "motivo": "Unica secao que cobre dois paradigmas de persistencia (relacional BD e nao-relacional NS), em dez subsecoes. Dividir quebraria o mapeamento 1:1 entre secao do guia e portao, que o contexto.json usa para enderecar lacuna."
@@ -15,8 +20,8 @@
     },
     {
       "caminho": ".mentor/processos/tarefa.md",
-      "teto": 8000,
-      "motivo": "Documenta dispensa de vermelho com prova por mutacao e rastreabilidade obrigatoria de requisitos."
+      "teto": 12000,
+      "motivo": "Documenta merito tecnico do plano, discordancia obrigatoria, estado da arte, reguas de medicao de spikes e rastreabilidade de requisitos."
     }
   ],
   "regras": [

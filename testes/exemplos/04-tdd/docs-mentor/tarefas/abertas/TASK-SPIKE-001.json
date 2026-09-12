@@ -19,7 +19,7 @@
   "sem_requisito_motivo": null,
   "criada_em": "29/08/26 14:00",
   "iniciada_em": "29/08/26 14:00",
-  "commit_base": "fb98653e83e09da12ebf4186e832bf5d2ede94b2",
+  "commit_base": "424207bb10c8d706b950b88439cd911210bcd2cc",
   "concluida_em": null,
   "plano": {
     "muda": [
@@ -31,6 +31,12 @@
         "teste": "nao se aplica: spike"
       }
     ],
+    "problema_canonico": "PREENCHER: nome canonico na literatura (ex: TSP, CRDT), ou \"sem nome canonico\"",
+    "discordancia": {
+      "o_que_faria_diferente": "PREENCHER: o que eu faria diferente, ou \"Nada a objetar\"",
+      "o_que_preocupa": "PREENCHER: o que me preocupa neste plano, ou \"Nada a objetar\"",
+      "o_que_existe_pronto_80_porcento": "PREENCHER: ferramenta/lib consolidada que resolve 80%, ou \"Nenhuma conhecida\""
+    },
     "impacto": "PREENCHER: modulos afetados",
     "riscos": [
       "PREENCHER: o que pode dar errado, ou \"nenhum identificado\""

@@ -8,7 +8,7 @@ perguntar, e registra tudo de forma rastreavel.
 Na raiz do projeto que vai usar o pacote:
 
 ```bash
-npm i -D github:thiagoroddev/mentor-agent#v0.5.0
+npm i -D github:thiagoroddev/mentor-agent#v0.6.0
 npx mentor instalar        # copia .mentor/ e mentor.mjs para a raiz
 node mentor.mjs init       # cria docs-mentor/, sem tocar na docs/ do aplicativo
 ```
@@ -24,14 +24,14 @@ a IA le' `.mentor/` como arquivo, e o projeto versiona as convencoes dele ao lad
 isso em vez de estourar.
 
 A versao instalada fica gravada em `docs-mentor/contexto.json`, senao o relatorio de campo nao consegue
-dizer *"isto aconteceu com a 0.5.0"*.
+dizer *"isto aconteceu com a 0.6.0"*.
 
 ### Atualizar uma instalacao existente
 
 Para atualizar o pacote mantendo seus documentos preservados:
 
 ```bash
-npm i -D github:thiagoroddev/mentor-agent#v0.5.0
+npm i -D github:thiagoroddev/mentor-agent#v0.6.0
 npx mentor instalar --forcar
 node mentor.mjs resolver-gerados # regenera markdowns derivados e alinha contexto
 node mentor.mjs verificar
@@ -54,11 +54,17 @@ node mentor.mjs init                          # cria docs-mentor/ neste projeto
 node mentor.mjs req nova --tipo RF --titulo "Exportar relatorio em CSV"
 node mentor.mjs req listar
 
-# 2. Ciclo de Vida da Tarefa
+# 2. Ciclo de Vida da Tarefa & Merito Tecnico (Portao 1)
 node mentor.mjs task nova --tipo RF --titulo "Listar registros por data" --esforco M/G --requisitos RF-001
 # (ou --sem-requisito --motivo "justificativa tecnica" para tarefas sem vinculo de produto)
 
+# Puxar para o ciclo (bloqueia se dependencia anterior teve premissa refutada em spike/achado)
+node mentor.mjs task puxar TASK-RF-001
+# (se premissa foi reconfirmada: --premissa-reconfirmada --motivo "decisao de produto")
+
+# Iniciar tarefa (preenche modelo com problema_canonico e discordancia obrigatorios)
 node mentor.mjs task iniciar TASK-RF-001
+# (spikes consecutivos inconclusivos exigem: --estrategia-revisada)
 
 # Gates automatizados (Tipos, Lint, Testes, Build)
 node mentor.mjs task gate TASK-RF-001 testes
@@ -67,10 +73,23 @@ node mentor.mjs task gate TASK-RF-001 testes
 # Validacao Manual Ativa (obrigatoria para UI, persistencia, esquemas e calculos)
 node mentor.mjs task validar TASK-RF-001 --evidencia "Teste manual no navegador confirmou renderizacao dos 50 itens"
 
-# Conclusao com protecao contra arquivos fantasma (compara git diff contra plano.muda)
+# Conclusao com verificacao de merito tecnico e escopo (git diff contra plano.muda)
 node mentor.mjs task finalizar TASK-RF-001 --validado-por-humano
 # (ou --validacao-dispensada --motivo "ajuste de tipos puros sem impacto em runtime")
 ```
+
+### Mérito Técnico e o Dever de Contrariar (v0.6.0)
+
+O mentor não é um despachante burocrático: ele audita o mérito técnico antes de qualquer código ser escrito.
+
+- **O Dever de Contrariar (Portão 1)**: A IA parceira tem a obrigação de apontar soluções existentes na indústria, evitar a invenção da roda e questionar restrições dogmáticas.
+- **Problema Canônico (`problema_canonico`)**: Todo plano deve identificar o nome formal do problema na ciência da computação/engenharia (ex.: TSP, CRDT, LR parsing), ou explicitar `"sem nome canonico"`.
+- **Seção de Discordância (`discordancia`)**: Todo plano registra o que a IA faria diferente, o que preocupa e o que existe pronto resolvendo 80% do problema (aceita `"Nada a objetar"` quando alinhado).
+- **Estado da Arte e Custo de Oportunidade**: Tarefas de porte `G` ou `XG` exigem comparação explícita com implementações consolidadas e cálculo do custo de construir do zero.
+- **Disciplina de Spikes**:
+  - Spikes de medição/otimização exigem 3 réguas: `piso` (baseline trivial), `teto` (ótimo teórico/benchmark) e `padrao` (biblioteca padrão/mercado).
+  - Achados que refutam premissas bloqueiam automaticamente tarefas dependentes na esteira.
+  - Dois spikes consecutivos inconclusivos disparam alerta no `doctor` e exigem revisão de estratégia antes do terceiro.
 
 ### Saude, Concorrencia e Integridade
 

@@ -176,8 +176,8 @@ function principal(argv: string[]): number {
       const id = posicionais[1]
       if (sub === 'nova') { nova(flags); return 0 }
       if (!id) throw new Error(`Falta o ID da tarefa. Use: mentor task ${sub ?? '<sub>'} <ID>`)
-      if (sub === 'iniciar') { iniciar(id); return 0 }
-      if (sub === 'puxar') { puxar(id); return process.exitCode === 1 ? 1 : 0 }
+      if (sub === 'iniciar') { iniciar(id, flags); return process.exitCode === 1 ? 1 : 0 }
+      if (sub === 'puxar') { puxar(id, flags); return process.exitCode === 1 ? 1 : 0 }
       if (sub === 'guardar') { guardar(id); return 0 }
       if (sub === 'fatiar') { fatiar(id, flags); return 0 }
       if (sub === 'cancelar') { cancelar(id, flags.motivo); return 0 }

@@ -115,9 +115,47 @@ export interface RegistroGate {
   vermelho_motivo?: string | null
 }
 
+export interface DiscordanciaPlano {
+  o_que_faria_diferente: string | null
+  o_que_preocupa: string | null
+  o_que_existe_pronto_80_porcento: string | null
+}
+
+export interface EstadoDaArtePlano {
+  implementacoes_consolidadas: string[]
+  motivo_descarte: string | null
+  o_que_resta_construir: string | null
+}
+
+export interface CustoDeOportunidadePlano {
+  o_que_existe_pronto: string | null
+  custo_estimado: string | null
+  dependencias_ou_infra: string | null
+  tempo_substituido: string | null
+}
+
+export interface ReguasDeMedicao {
+  piso: string | null
+  teto: string | null
+  padrao: string | null
+}
+
+export interface RestricaoReavaliada {
+  restricao: string
+  onde_foi_escrita: string
+  o_que_elimina_nesta_tarefa: string
+  reconfirmada?: boolean
+}
+
 export interface Plano {
   muda: string[]
   criterios_aceite: CriterioDeAceite[]
+  problema_canonico?: string | null
+  discordancia?: DiscordanciaPlano | null
+  estado_da_arte?: EstadoDaArtePlano | null
+  custo_de_oportunidade?: CustoDeOportunidadePlano | null
+  reguas_de_medicao?: ReguasDeMedicao | null
+  restricoes_reavaliadas?: RestricaoReavaliada[]
   impacto: string | null
   riscos: string[]
   dependencias_novas: string[]

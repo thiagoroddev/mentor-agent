@@ -712,6 +712,40 @@ seguinte conclui que nada presta.
 
 ---
 
+## 9 · Mérito técnico vs. forma: o dever de contrariar e o estado da arte 🟢 *(implementado 12/09, fase 12)*
+
+**O problema, medido em campo (12/09/26):** Três spikes consecutivos foram planejados, aprovados
+e concluídos construindo algoritmo e motor próprio do zero, sem nunca citar o nome canônico do
+problema na literatura nem implementações consolidadas de código aberto. Em `recusas.jsonl`, 11 de 11
+recusas eram procedimentais (TDD sem vermelho, marcadores vazios, arquivos fora do plano). **Zero recusas
+por mérito técnico.** O mentor auditava rigorosamente a forma, mas era complacente quanto ao conteúdo
+e à estratégia.
+
+### 9.1 A Persona: o dever de contrariar
+O comportamento padrão de LLMs é concordar e cooperar com o enquadramento recebido. O mentor precisa
+de diretriz explícita:
+- O valor do mentor está em dizer o que o mantenedor não sabe que precisa saber.
+- Obrigação de contrariar sem ser perguntado no planejamento (Portão 1). Silêncio sobre alternativa consolidada é falha grave.
+- Antes de aprovar: *este problema tem nome? existe biblioteca? por que não estamos usando?*
+- Discordar uma vez com custo de oportunidade e clareza; depois executar a decisão informada do mantenedor.
+
+### 9.2 As oito melhorias mecânicas
+1. **M1 · Gate de estado da arte:** obrigatório para motores, heurísticas, algoritmos ou esforço IA `G`/`XG`.
+   Exige nome canônico, 2-4 implementações consolidadas, motivo de descarte e o que restaria construir.
+2. **M2 · Campo `problema_canonico`:** obrigatório em todo plano. Aceita `"sem nome canonico"` como declaração explícita.
+3. **M3 · Restrição fundadora tem prazo de validade:** restrição herdada de README/package.json/ADR antiga que colide
+   com alternativas deve ser reconfirmada; após 3 reconfirmações, vira ADR.
+4. **M4 · Três réguas para spike de medição:** critérios com "melhora", "ganho", "otimiza", "reduz" exigem **Piso**
+   (baseline trivial), **Teto** (ótimo calculado/referência externa) e **Padrão** (solução consolidada da indústria).
+5. **M5 · Bloqueio por premissa refutada:** achado de classe 3 ou 4 que refuta premissa impede puxar tarefas dependentes
+   sem reconfirmação explícita do mantenedor.
+6. **M6 · Reincidência de inconclusivo:** dois spikes consecutivos inconclusivos abrem obrigatoriamente revisão de estratégia.
+7. **M7 · Campo `discordancia` obrigatório em todo plano:** *"O que eu faria diferente"*, *"O que me preocupa neste plano"*
+   e *"O que existe pronto que faz 80% disso"*. `"Nada a objetar"` é válido se explicitamente digitado.
+8. **M8 · Custo de oportunidade em plano `G`/`XG`:** estimativa de ferramentas prontas, backend, custo e tempo substituído.
+
+---
+
 ## 7 · Descartados ⚪
 
 | O que | Motivo |

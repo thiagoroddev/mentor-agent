@@ -1,5 +1,6 @@
 import { spawnSync } from 'node:child_process'
-import { agora, caminhos, diasDesde, escreverJson, listar } from './arquivos.ts'
+import { join } from 'node:path'
+import { agora, caminhos, diasDesde, escreverJson, existe, lerTexto, listar } from './arquivos.ts'
 import { tetos } from './cmd-verificar.ts'
 import { rascunhosParados } from './cmd-anotar.ts'
 import { PONTOS_DE_ENTRADA, pontosDeEntradaSemNucleo } from './entrada.ts'
@@ -133,6 +134,28 @@ function qualidade(ctx: Contexto, tarefas: Tarefa[]): Linha[] {
   linhas.push(semTeste.length
     ? { estado: 'bloqueio', texto: `${semTeste.length} tarefa(s) concluida(s) com criterio sem teste nomeado` }
     : { estado: 'ok', texto: `metodo de teste "${metodo ?? 'nao declarado'}", todo criterio com teste nomeado` })
+
+  // M6: Reincidência de spikes inconclusivos
+  const c = caminhos()
+  const spikesConcluidos = tarefas.filter((t) => t.tipo === 'SPIKE' && t.estado === 'concluida')
+  if (spikesConcluidos.length >= 2) {
+    const ultimos2 = spikesConcluidos.slice(-2)
+    const inconclusivos = ultimos2.filter((s) => {
+      const nar = s.narrativa ? join(c.concluidas, s.narrativa) : null
+      const txt = nar && existe(nar) ? lerTexto(nar).toLowerCase() : ''
+      return (
+        txt.includes('inconclusivo') ||
+        txt.includes('sem conclusao') ||
+        s.achados.some((a) => a.descricao?.toLowerCase().includes('inconclusivo'))
+      )
+    })
+    if (inconclusivos.length >= 2) {
+      linhas.push({
+        estado: 'atencao',
+        texto: 'reincidencia de spikes inconclusivos: os ultimos 2 spikes fecharam inconclusivos. Abra revisao de estrategia antes de planejar novo spike.',
+      })
+    }
+  }
 
   const estouros = tetos()
   linhas.push(estouros.length

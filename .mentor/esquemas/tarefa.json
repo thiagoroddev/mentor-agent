@@ -93,6 +93,17 @@
         "teste": null
       }
     ],
+    "problema_canonico": null,
+    "problema_canonico_nota": "Nome canonico na literatura (ex: TSP, VRP, CRDT) ou token 'sem nome canonico'. Obrigatorio.",
+    "discordancia": {
+      "o_que_faria_diferente": null,
+      "o_que_preocupa": null,
+      "o_que_existe_pronto_80_porcento": null
+    },
+    "discordancia_nota": "Obrigatorio em todo plano. 'Nada a objetar' e valido se explicitado. Forca a busca por alternativas.",
+    "estado_da_arte": null,
+    "custo_de_oportunidade": null,
+    "reguas_de_medicao": null,
     "impacto": null,
     "riscos": [],
     "dependencias_novas": [],
