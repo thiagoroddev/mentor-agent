@@ -8,7 +8,7 @@ perguntar, e registra tudo de forma rastreavel.
 Na raiz do projeto que vai usar o pacote:
 
 ```bash
-npm i -D github:thiagoroddev/mentor-agent#v0.4.0
+npm i -D github:thiagoroddev/mentor-agent#v0.5.0
 npx mentor instalar        # copia .mentor/ e mentor.mjs para a raiz
 node mentor.mjs init       # cria docs-mentor/, sem tocar na docs/ do aplicativo
 ```
@@ -24,48 +24,83 @@ a IA le' `.mentor/` como arquivo, e o projeto versiona as convencoes dele ao lad
 isso em vez de estourar.
 
 A versao instalada fica gravada em `docs-mentor/contexto.json`, senao o relatorio de campo nao consegue
-dizer *"isto aconteceu com a 0.4.0"*.
+dizer *"isto aconteceu com a 0.5.0"*.
 
-### Atualizar uma instalacao 0.1.x
+### Atualizar uma instalacao existente
 
-A versao 0.1.x guardava o estado do mentor em `docs/`. A versao atual nao renomeia essa pasta sem uma
-autorizacao especifica: `--forcar` permite substituir `.mentor/`, mas nao permite mover documentos.
+Para atualizar o pacote mantendo seus documentos preservados:
 
 ```bash
-npm i -D github:thiagoroddev/mentor-agent#v0.4.0
-npx mentor instalar --forcar --migrar-docs
-node mentor.mjs gerar
+npm i -D github:thiagoroddev/mentor-agent#v0.5.0
+npx mentor instalar --forcar
+node mentor.mjs resolver-gerados # regenera markdowns derivados e alinha contexto
+node mentor.mjs verificar
 ```
 
-O instalador so reconhece uma instalacao antiga quando existe `docs/contexto.json`. Se
-`docs-mentor/` tambem existir, ele recusa o conflito e nao move nada. Uma `docs/` comum, sem o
-contexto do mentor, pertence ao aplicativo e permanece intocada.
+*(Se estiver migrando de uma instalacao legada 0.1.x que usava a pasta `docs/`, use `--forcar --migrar-docs`)*.
 
 ## Como rodar
 
 No terminal, **dentro da pasta do projeto**. Requer **Node 22.18 ou maior**: confira com
 `node --version`. Nao ha etapa de build nem dependencia de execucao.
 
+### Ciclo de Requisitos e Tarefas
+
 ```bash
-node mentor.mjs                 # ajuda: lista todos os comandos
-node mentor.mjs init            # cria docs-mentor/ neste projeto
+node mentor.mjs                               # ajuda: lista todos os comandos
+node mentor.mjs init                          # cria docs-mentor/ neste projeto
 
-node mentor.mjs task nova --tipo RF --titulo "Listar registros por data" --esforco M/G --origem RF-1
+# 1. Catalogo de Requisitos
+node mentor.mjs req nova --tipo RF --titulo "Exportar relatorio em CSV"
+node mentor.mjs req listar
+
+# 2. Ciclo de Vida da Tarefa
+node mentor.mjs task nova --tipo RF --titulo "Listar registros por data" --esforco M/G --requisitos RF-001
+# (ou --sem-requisito --motivo "justificativa tecnica" para tarefas sem vinculo de produto)
+
 node mentor.mjs task iniciar TASK-RF-001
+
+# Gates automatizados (Tipos, Lint, Testes, Build)
 node mentor.mjs task gate TASK-RF-001 testes
-node mentor.mjs task finalizar TASK-RF-001
+# (suporta --vermelho-dispensado --motivo "<mutacao>" no TDD com prova por mutacao)
 
-node mentor.mjs verificar
-node mentor.mjs doctor          # folha de saude do projeto, com veredito binario
+# Validacao Manual Ativa (obrigatoria para UI, persistencia, esquemas e calculos)
+node mentor.mjs task validar TASK-RF-001 --evidencia "Teste manual no navegador confirmou renderizacao dos 50 itens"
 
-node mentor.mjs auditar preparar            # a cada N tarefas: monta o dossie do lote
-node mentor.mjs auditar registrar AUD-001   # veredito, escrito por uma sessao NOVA de IA
+# Conclusao com protecao contra arquivos fantasma (compara git diff contra plano.muda)
+node mentor.mjs task finalizar TASK-RF-001 --validado-por-humano
+# (ou --validacao-dispensada --motivo "ajuste de tipos puros sem impacto em runtime")
+```
+
+### Saude, Concorrencia e Integridade
+
+```bash
+node mentor.mjs verificar                     # integridade dos arquivos e do manifesto
+node mentor.mjs doctor                        # diagnostico completo de saude do projeto
+
+# Git multi-branch e protecao operacional
+node mentor.mjs hooks --instalar              # instala .githooks/pre-push protegendo main e commits
+node mentor.mjs resolver-gerados              # fusao semantica pos-merge de branches irmas
+```
+
+### Auditoria de Lote (Contexto Isolado)
+
+```bash
+node mentor.mjs auditar preparar              # cadencia por tarefas ou diff em caracteres (evita truncamento)
+node mentor.mjs auditar registrar AUD-001     # veredito independente produzido por uma sessao NOVA de IA
+node mentor.mjs auditar resolver AUD-001      # transforma recomendacoes em plano de acao
 ```
 
 **Sobre o `auditar`.** Quem escreve nao aprova: contexto compartilhado propaga vies. O `preparar`
-monta um dossie com o diff do lote, os registros e os requisitos citados — **e nada mais** — e voce
+monta um dossie com o diff do lote, os registros, as justificativas e os requisitos citados — **e nada mais** — e voce
 o entrega a uma sessao de IA zerada. O escopo fechado nao e' promessa: e' o unico material que ela
 recebe. Ela reporta achados; **quem decide o que vira trabalho e voce**, no `auditar resolver`.
+
+A cadencia de auditoria e' hibrida: alerta por quantidade de tarefas concluidas ou pelo volume acumulado
+de diff (`cadencia_em_caracteres`, padrao 80.000), garantindo que grandes refatoracoes nao excedam a
+janela de contexto nem gerem truncamento de codigo.
+
+### Dicas de Linha de Comando
 
 Os que nao levam flag tambem tem atalho: `npm run init`, `npm run verificar`, `npm run auditar`,
 `npm run gerar`, `npm run tipos`.
@@ -77,18 +112,23 @@ detalhe que se esquece.
 
 Titulo com espaco vai entre aspas, no PowerShell e no cmd igual: `--titulo "texto assim"`.
 
+## Estrutura de Arquivos
+
 | Onde | O que e' |
 | :-- | :-- |
 | [`ESPECIFICACAO.md`](./ESPECIFICACAO.md) | o desenho inteiro, com os numeros que o justificam |
 | [`CHANGELOG.md`](./CHANGELOG.md) | historico de mudancas e notas de cada versao |
+| `docs-mentor/tarefas/` | ciclo de vida das tarefas (`abertas/`, `concluidas/`) |
+| `docs-mentor/requisitos/` | catalogo rastreavel de requisitos (`RF`, `RN`, `RNF`) |
 | `docs-mentor/auditorias/` | um dossie e um veredito por auditoria, no seu projeto |
-| `.mentor/nucleo.md` | as leis. Sempre carregado |
-| `.mentor/skills/` | catalogo de 7 habilidades nativas de apoio |
-| `.mentor/processos/` | como conduzir o trabalho. Carregados por gatilho |
+| `docs-mentor/rascunhos/` | gaveta livre para prototipos, pesquisas e anotacoes |
+| `.mentor/nucleo.md` | as leis do mentor. Sempre carregado pelas ferramentas de IA |
+| `.mentor/skills/` | catalogo de 7 habilidades nativas de apoio (`github-ci`, `ui-design`, etc.) |
+| `.mentor/processos/` | como conduzir o trabalho (`tarefa.md`, `entrega.md`). Carregados por gatilho |
 | `.mentor/guia/` | 13 areas de orientacao. Consultadas por lacuna, nunca inteiras |
 | `.mentor/esquemas/` | a forma dos JSON, com os valores possiveis de cada campo |
-| `.mentor/scripts/` | os comandos |
-| `.mentor/manifesto.json` | o hash de cada arquivo do pacote, para saber se algum foi alterado depois de instalado |
+| `.mentor/scripts/` | os comandos CLI em TypeScript |
+| `.mentor/manifesto.json` | hash sha256 de cada arquivo do pacote, para detectar alteracoes indevidas |
 
 **A ideia em uma frase:** o que da' para gerar, o script gera; o que exige julgamento, a pessoa
 decide; e campo vazio no contexto e' a pergunta que a IA faz, em vez de silencio.
