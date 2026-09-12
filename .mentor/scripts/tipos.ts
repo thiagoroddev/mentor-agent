@@ -281,6 +281,7 @@ export interface Contexto {
   lembretes: string[]
   auditoria: {
     cadencia_em_tarefas: number
+    cadencia_em_caracteres?: number
     ultima_em: string | null
     /** Quantas tarefas estavam concluidas quando a ultima auditoria foi registrada. */
     ultima_na_tarefa: number | null

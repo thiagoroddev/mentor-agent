@@ -46,8 +46,33 @@ function git(args: string[]): { ok: boolean; saida: string } {
 }
 
 /** Ordem de conclusao: o nome do arquivo de concluida comeca pelo carimbo, entao a lista ja' vem em ordem. */
-function concluidasEmOrdem(): Tarefa[] {
+export function concluidasEmOrdem(): Tarefa[] {
   return listar(caminhos().concluidas, '.json').map((a) => lerJson<Tarefa>(a)).filter((t) => t.estado === 'concluida')
+}
+
+export function loteNaoAuditado(): Tarefa[] {
+  const auditorias = carregarAuditorias()
+  const jaAuditadas = new Set(auditorias.flatMap((a) => a.lote))
+  return concluidasEmOrdem().filter((t) => !jaAuditadas.has(t.id))
+}
+
+export function baseDoLote(ctx: ReturnType<typeof carregarContexto>, lote: Tarefa[]): string | null {
+  return ctx.auditoria.ultimo_commit ?? lote[0]?.commit_base ?? null
+}
+
+export function medirDiffAcumulado(base: string | null): number {
+  if (!base) return 0
+  const recorteDoProjeto = ['--relative', '--', '.', ...VISTAS_GERADAS]
+  const r = git(['diff', base, ...recorteDoProjeto])
+  let tamanho = r.ok ? r.saida.length : 0
+
+  const novos = git(['ls-files', '--others', '--exclude-standard']).saida.split('\n')
+    .filter(Boolean).filter((f) => !f.startsWith(`${NOME_DOS_DOCUMENTOS}/`) && !f.startsWith('docs/'))
+  for (const f of novos) {
+    const conteudo = git(['diff', '--no-index', '--', '/dev/null', f]).saida
+    tamanho += (conteudo || `+++ ${f}`).slice(0, LIMITE_ARQUIVO_NOVO).length
+  }
+  return tamanho
 }
 
 // ---------------------------------------------------------------- preparar
@@ -56,8 +81,7 @@ export function preparar(): number {
   const c = caminhos()
   const ctx = carregarContexto()
   const auditorias = carregarAuditorias()
-  const jaAuditadas = new Set(auditorias.flatMap((a) => a.lote))
-  const lote = concluidasEmOrdem().filter((t) => !jaAuditadas.has(t.id))
+  const lote = loteNaoAuditado()
 
   const pendente = auditorias.find((a) => !a.registrada_em)
   if (pendente) {
@@ -96,8 +120,11 @@ export function preparar(): number {
 }
 
 /** Fatos, nunca julgamento: o script mede, o auditor decide o nivel. */
-function fatosMecanicos(lote: Tarefa[], arquivosDoDiff: string[]): string[] {
+function fatosMecanicos(lote: Tarefa[], arquivosDoDiff: string[], diffTotalChars: number = 0): string[] {
   const fatos: string[] = []
+  if (diffTotalChars > LIMITE_DIFF) {
+    fatos.push(`⚠️ DIFF TRUNCADO: o lote acumulou ${diffTotalChars} caracteres de diff, excedendo o teto de ${LIMITE_DIFF}. A cadencia por caracteres foi desrespeitada. Auditor: liste as partes nao verificadas em "nao_verificado".`)
+  }
   const declarados = new Set<string>()
   for (const t of lote) {
     for (const linha of t.plano.muda) {
@@ -131,6 +158,17 @@ function fatosMecanicos(lote: Tarefa[], arquivosDoDiff: string[]): string[] {
         }
       }
     }
+    const tocaSensivel = /schema|migration|persist|banco|db_|calcul|algoritmo|formula|romaneio|haversine/i.test(
+      `${t.titulo} ${t.plano.muda.join(' ')} ${t.plano.impacto ?? ''}`,
+    ) || t.tipo === 'RN' || t.tipo === 'RNF'
+    if (tocaSensivel) {
+      if (t.validacao === 'aprovado') {
+        const ev = t.gates['validacao_manual']?.saida ?? t.validacao_motivo ?? 'aprovado pelo humano'
+        fatos.push(`${t.id}: alterou persistencia/calculo e possui revisao humana aprovada: "${ev}" (Regra 4 atendida)`)
+      } else {
+        fatos.push(`${t.id}: alterou persistencia/calculo ("${t.titulo}") sem registro de revisao humana aprovada (atencao a Regra 4)`)
+      }
+    }
     if (t.achados.length) fatos.push(`${t.id}: fechou com ${t.achados.length} achado(s) proprio(s) ja com destino`)
   }
   return fatos.length ? fatos : ['nada a assinalar mecanicamente. Isso nao e um veredito: e a ausencia de sinal barato']
@@ -147,10 +185,12 @@ function dossie(id: string, lote: Tarefa[], base: string | null, final: string |
   // relativos a ela. Assim um projeto dentro de um repositorio maior audita **so' a si mesmo**, e
   // o dossie nao muda de forma entre Windows e Linux por causa de caminho absoluto.
   const recorteDoProjeto = ['--relative', '--', '.', ...VISTAS_GERADAS]
+  let diffTotal = 0
   if (base) {
     stat = git(['diff', '--stat', base, ...recorteDoProjeto]).saida
     arquivos = git(['diff', '--name-only', base, ...recorteDoProjeto]).saida.split('\n').map((x) => x.trim()).filter(Boolean)
     diff = git(['diff', base, ...recorteDoProjeto]).saida
+    diffTotal = diff.length
     if (diff.length > LIMITE_DIFF) {
       recorte = `\n\n⚠️ **O diff foi recortado em ${LIMITE_DIFF} de ${diff.length} caracteres.** O que nao coube nao foi auditado, e isso entra em "nao verificado" do relatorio.`
       diff = diff.slice(0, LIMITE_DIFF) + '\n[...recortado...]'
@@ -226,7 +266,7 @@ function dossie(id: string, lote: Tarefa[], base: string | null, final: string |
         motivo: (g as any).vermelho_motivo ?? g.motivo ?? '—',
       } : null)
       const vermelhoTexto = g.vermelho_em ?? (disp ? `dispensado (${disp.dispensado_em})` : '—')
-      const motivoTexto = g.motivo ?? g.ressalva ?? disp?.motivo ?? '—'
+      const motivoTexto = g.motivo ?? g.ressalva ?? disp?.motivo ?? (nome === 'validacao_manual' && g.saida ? g.saida : '—')
       l.push(`| ${nome} | ${g.rotulo} | ${vermelhoTexto} | ${g.codigo_saida ?? '—'} | ${motivoTexto} |`)
     }
     l.push('')
@@ -255,7 +295,7 @@ function dossie(id: string, lote: Tarefa[], base: string | null, final: string |
   l.push('')
   l.push('Fatos, nao vereditos. Quem da o nivel e voce.')
   l.push('')
-  for (const f of fatosMecanicos(lote, arquivos)) l.push(`- ${f}`)
+  for (const f of fatosMecanicos(lote, arquivos, diffTotal)) l.push(`- ${f}`)
   l.push('')
   l.push('## O diff')
   l.push('')

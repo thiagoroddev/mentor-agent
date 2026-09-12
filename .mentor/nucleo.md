@@ -35,6 +35,7 @@ explícita**. Nunca deduza intenção. **Termina, apresenta, aguarda.**
 - A tarefa termina aberta e espera ali. Escrever o registro de conclusão antes do portão 2
   transforma a pergunta em aviso: o humano recebe fato consumado com aparência de consulta.
 - **Autorização vale por ato, nunca por sessão.** Aprovar o plano não autoriza fechar.
+- **Validação manual ativa antes do fechamento:** Em tarefas que alteram UI/Telas, Persistência/Esquema, Cálculos/Algoritmos ou Spikes, a IA é **proibida de pedir fechamento (Portão 2) ou push (Portão 3) sem antes apresentar o roteiro de testes manuais e aguardar a confirmação explícita do humano**. Finalizar sem registrar evidência no gate `validacao_manual` quebra a auditoria (Regra 4 e Bloqueios AUD-001-B01/B02/B04).
 - O `push` é sempre pedido à parte: é o único ato que sai da máquina e alcança outras pessoas.
 - Depois do push, conferir o resultado da integração. Não é portão, e o poder dele é avisar.
 - Vale em qualquer modo de cerimônia, inclusive Light.
@@ -115,7 +116,7 @@ encontrado é resposta legítima, e se escreve. Risco que o humano já recusou p
 | Lint | nenhuma violação das regras de estilo do projeto |
 | Testes | a suíte passa inteira |
 | Build | o artefato de produção é gerado sem erro |
-| Validação manual | o que só humano confere, quando o projeto declara que existe |
+| Validação manual | o que só humano confere. Obrigatório em UI, persistência/esquema, cálculos e spikes, ou quando declarado ativo pelo projeto |
 
 O comando de cada um vive em `contexto.json → gates`. Gate que o projeto não declarou **não existe**
 para ele, e declará-lo é a primeira coisa a resolver, não um detalhe a contornar.

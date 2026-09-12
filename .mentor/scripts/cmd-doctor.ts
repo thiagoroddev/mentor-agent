@@ -10,6 +10,7 @@ import {
 } from './vistas.ts'
 import { CARACTERISTICAS } from './tipos.ts'
 import type { Caracteristica, Contexto, EstadoDaCaracteristica, Fase, MetaDeQualidade, Tarefa } from './tipos.ts'
+import { baseDoLote, loteNaoAuditado, medirDiffAcumulado } from './cmd-auditar.ts'
 
 /**
  * Folha de saude do projeto. Tres propriedades a sustentam, e as tres foram medidas em campo:
@@ -327,17 +328,30 @@ function processo(ctx: Contexto, tarefas: Tarefa[]): Linha[] {
     }
   }
 
-  // Auditoria: o doctor mede a cadencia e conta os bloqueios que ela reportou. Nao julga nada
-  // do que ela achou — julgar e' da auditoria, e ela ja' julgou em contexto novo.
+  // Auditoria: o doctor mede a cadencia (tarefas e diff acumulado) e conta os bloqueios que ela reportou.
   const concluidasParaAuditoria = tarefas.filter((t) => t.estado === 'concluida').length
   const au = ctx.auditoria
   const semAuditar = concluidasParaAuditoria - (au.ultima_na_tarefa ?? 0)
-  if (semAuditar >= au.cadencia_em_tarefas * 2) {
-    linhas.push({ estado: 'bloqueio', texto: `${semAuditar} tarefas sem auditoria, e a cadencia e ${au.cadencia_em_tarefas}. Rode: mentor auditar preparar` })
-  } else if (semAuditar >= au.cadencia_em_tarefas) {
-    linhas.push({ estado: 'atencao', texto: `${semAuditar} tarefas sem auditoria (cadencia ${au.cadencia_em_tarefas}). Rode: mentor auditar preparar` })
+  const cadenciaChars = au.cadencia_em_caracteres ?? 80_000
+  const lote = loteNaoAuditado()
+  const base = baseDoLote(ctx, lote)
+  const diffChars = medirDiffAcumulado(base)
+
+  if (semAuditar >= au.cadencia_em_tarefas * 2 || (cadenciaChars > 0 && diffChars >= cadenciaChars * 1.5)) {
+    linhas.push({
+      estado: 'bloqueio',
+      texto: `${semAuditar} tarefa(s) / ${diffChars} caracteres de diff sem auditoria (cadencias: ${au.cadencia_em_tarefas} tarefas, ${cadenciaChars} chars). Risco critico de truncamento no dossie. Rode: mentor auditar preparar`,
+    })
+  } else if (semAuditar >= au.cadencia_em_tarefas || (cadenciaChars > 0 && diffChars >= cadenciaChars)) {
+    linhas.push({
+      estado: 'atencao',
+      texto: `${semAuditar} tarefa(s) / ${diffChars} caracteres de diff sem auditoria (cadencias: ${au.cadencia_em_tarefas} tarefas, ${cadenciaChars} chars). Rode: mentor auditar preparar`,
+    })
   } else if (au.ultima_em) {
-    linhas.push({ estado: 'ok', texto: `auditoria em dia: ultima em ${au.ultima_em}, ${semAuditar} tarefa(s) desde entao` })
+    linhas.push({
+      estado: 'ok',
+      texto: `auditoria em dia: ultima em ${au.ultima_em}, ${semAuditar} tarefa(s) e ${diffChars} chars de diff desde entao`,
+    })
   }
   const bloqueiosDeAuditoria = au.pendencias_reportadas
   if (bloqueiosDeAuditoria.length) {

@@ -1,7 +1,7 @@
 {
   "_meta": {
     "schema": "contexto-projeto/1",
-    "versao_do_pacote": "0.4.0",
+    "versao_do_pacote": "0.5.0",
     "versao_nota": "Gravada no init a partir de .mentor/manifesto.json. Sem ela, o relatorio de campo nao consegue atribuir nada a uma versao.",
     "leia_antes": "Campo null = decisao que o guia exige e ninguem tomou ainda. Nao e' erro: e' a pauta do mentor. Nunca preencher por deducao; perguntar ao humano ou marcar dispensado com motivo.",
     "gerado_em": "2026-08-29T17:00:00.000Z",
@@ -413,7 +413,8 @@
   },
   "auditoria": {
     "cadencia_em_tarefas": 10,
-    "cadencia_nota": "A cada N tarefas concluidas, 'mentor auditar preparar' monta o dossie do lote. O auditor le so o diff do lote, os registros e os requisitos citados: nunca o repositorio.",
+    "cadencia_em_caracteres": 80000,
+    "cadencia_nota": "A cada N tarefas concluidas ou X caracteres de diff acumulados, 'mentor auditar preparar' monta o dossie do lote. O auditor le so o diff do lote, os registros e os requisitos citados: nunca o repositorio.",
     "ultima_em": null,
     "ultima_na_tarefa": null,
     "ultimo_commit": null,

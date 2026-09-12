@@ -1,6 +1,6 @@
 import { spawnSync } from 'node:child_process'
 import { renameSync, rmSync } from 'node:fs'
-import { agora, caminhos, escreverJson, escreverTexto, existe, lerJson, lerTexto, listar } from './arquivos.ts'
+import { agora, caminhos, escreverJson, escreverTexto, existe, lerJson, lerTexto, listar, NOME_DOS_DOCUMENTOS } from './arquivos.ts'
 import { proximoIdDeTarefa } from './ids.ts'
 import { carregarContexto, carregarRequisitos, carregarTarefas, fixar, regenerarTudo, registrarRecusa, soltar } from './vistas.ts'
 import {
@@ -10,6 +10,7 @@ import {
 import type {
   Cerimonia, Escala, MetodoDeTeste, Requisito, Rotulo, Tarefa, TipoTarefa, Urgencia, ValorTarefa,
 } from './tipos.ts'
+import { baseDoLote, loteNaoAuditado, medirDiffAcumulado } from './cmd-auditar.ts'
 
 type Flags = Record<string, string | undefined>
 
@@ -148,6 +149,10 @@ export function iniciar(id: string): void {
   // Marca o ponto de partida no historico. Sem ele a auditoria nao consegue recortar o diff da
   // tarefa e so' sobraria "o repositorio inteiro", que e' exatamente o escopo que gera o loop.
   tarefa.commit_base = cabecaDoGit()
+  const validacaoManual = carregarContexto().gates['validacao_manual'] as { existe?: boolean } | undefined
+  if (validacaoManual?.existe === true && tarefa.validacao === 'nao_requer') {
+    tarefa.validacao = 'pendente'
+  }
   const ehSpike = tarefa.tipo === 'SPIKE'
   tarefa.plano = {
     muda: [`${MARCADOR} caminho/arquivo.ext - o que muda nele, em uma linha`],
@@ -340,7 +345,7 @@ function marcadoresEm(valor: unknown, onde: string, achados: string[]): void {
   }
 }
 
-export function finalizar(id: string): void {
+export function finalizar(id: string, flags: Flags = {}): void {
   const c = caminhos()
   const { caminho, tarefa } = localizar(id)
   const ctx = carregarContexto()
@@ -351,6 +356,45 @@ export function finalizar(id: string): void {
   const marcadores: string[] = []
   marcadoresEm(tarefa.plano, 'plano', marcadores)
   if (marcadores.length) impedimentos.push(`marcador ${MARCADOR} nao preenchido em ${marcadores.join(', ')}`)
+
+  // Validação manual: atalho direto na finalização
+  if (flags['validado-por-humano']) {
+    tarefa.validacao = 'aprovado'
+    tarefa.validado_em = agora().log
+    tarefa.validacao_motivo = flags['validado-por-humano']
+    tarefa.gates['validacao_manual'] = {
+      rotulo: 'APROVADO', comando: null, codigo_saida: 0,
+      saida: flags['validado-por-humano'], executado_em: tarefa.validado_em,
+      evidencia_url: null, motivo: null, ressalva: null, vermelho_em: null,
+    }
+  } else if (flags['validacao-dispensada']) {
+    tarefa.validacao = 'dispensado'
+    tarefa.validado_em = agora().log
+    tarefa.validacao_motivo = flags.motivo ?? 'dispensada na finalizacao'
+    tarefa.gates['validacao_manual'] = {
+      rotulo: 'não se aplica', comando: null, codigo_saida: null,
+      saida: null, executado_em: tarefa.validado_em,
+      evidencia_url: null, motivo: tarefa.validacao_motivo, ressalva: null, vermelho_em: null,
+    }
+  }
+
+  // Se o projeto declara validação manual ativa, tarefa que não requer vira pendente
+  const validacaoManual = ctx.gates['validacao_manual'] as { existe?: boolean } | undefined
+  if (validacaoManual?.existe === true && tarefa.validacao === 'nao_requer') {
+    tarefa.validacao = 'pendente'
+  }
+
+  // Trava de validação manual
+  if (tarefa.validacao === 'pendente') {
+    impedimentos.push(
+      `validacao manual pendente. A conclusao exige aprovacao humana. Execute o teste manual com o usuario e registre: mentor task validar ${id} --aprovado --evidencia "..." (ou use: mentor task finalizar ${id} --validado-por-humano "...")`,
+    )
+  }
+
+  const gManual = tarefa.gates['validacao_manual']
+  if (gManual && (gManual.rotulo === 'NÃO EXECUTADO' || gManual.rotulo === 'BLOQUEADO') && !gManual.motivo) {
+    impedimentos.push('gate "validacao_manual" pendente sem aprovacao humana ou motivo de dispensa')
+  }
 
   // Todo criterio de aceite nomeia um teste. Vale em qualquer metodo, ate' em `teste-depois`.
   if (tarefa.tipo !== 'SPIKE') {
@@ -398,6 +442,41 @@ export function finalizar(id: string): void {
     if (ROTULOS_QUE_EXIGEM_MOTIVO.includes(reg.rotulo) && !reg.motivo) impedimentos.push(`gate "${nome}" esta ${reg.rotulo} sem motivo`)
   }
 
+  // Disciplina de escopo Git vs plano.muda (AUD-001-B05: previne arquivos fantasmas)
+  if (tarefa.commit_base) {
+    const rDiff = spawnSync('git', ['diff', '--name-only', tarefa.commit_base, '--relative'], {
+      cwd: caminhos().raiz,
+      encoding: 'utf8',
+    })
+    const rUntracked = spawnSync('git', ['ls-files', '--others', '--exclude-standard'], {
+      cwd: caminhos().raiz,
+      encoding: 'utf8',
+    })
+    const diffFiles = rDiff.status === 0 && rDiff.stdout ? rDiff.stdout.split('\n') : []
+    const untrackedFiles = rUntracked.status === 0 && rUntracked.stdout ? rUntracked.stdout.split('\n') : []
+    const arquivosModificados = [...diffFiles, ...untrackedFiles].map((s) => s.trim().replace(/\\/g, '/')).filter(Boolean)
+    const declarados = new Set<string>()
+    for (const linha of tarefa.plano.muda) {
+      const arq = linha.split(/[\s:—-]/)[0]?.trim().replace(/\\/g, '/')
+      if (arq && !arq.startsWith(MARCADOR)) declarados.add(arq)
+    }
+    const ignorados = [
+      `${NOME_DOS_DOCUMENTOS}/`,
+      'docs/',
+      'docs-mentor/',
+      'package-lock.json',
+    ]
+    const naoDeclarados = arquivosModificados.filter((arq) => {
+      if (ignorados.some((ig) => arq.startsWith(ig) || arq === ig)) return false
+      return ![...declarados].some((d) => arq === d || arq.endsWith(d) || d.endsWith(arq))
+    })
+    if (naoDeclarados.length > 0) {
+      impedimentos.push(
+        `${naoDeclarados.length} arquivo(s) de codigo modificado(s) no Git fora do plano.muda: ${naoDeclarados.slice(0, 5).join(', ')}. Declare-os no plano antes de fechar a tarefa para manter o escopo rastreado (AUD-001-B05).`,
+      )
+    }
+  }
+
   if (impedimentos.length) {
     registrarRecusa('task finalizar', id, impedimentos)
     console.error(`Nao da para fechar ${id}:`)
@@ -409,11 +488,6 @@ export function finalizar(id: string): void {
   tarefa.estado = 'concluida'
   tarefa.concluida_em = agora().log
 
-  // "Smoke pendente" deixa de ser frase solta: vira estado que o doctor conta e cobra.
-  const validacaoManual = ctx.gates['validacao_manual'] as { existe?: boolean } | undefined
-  if (validacaoManual?.existe === true && tarefa.validacao === 'nao_requer') {
-    tarefa.validacao = 'pendente'
-  }
   const base = `${agora().nome}--${tarefa.id}`
   tarefa.narrativa = `${base}.md`
   escreverJson(`${c.concluidas}/${base}.json`, tarefa)
@@ -436,15 +510,18 @@ export function finalizar(id: string): void {
 
   const ctxAtualizado = regenerarTudoEDevolverContexto()
   console.log(`${id} concluida.`)
-  if (tarefa.validacao === 'pendente') {
-    console.log('Validacao manual pendente. Quando conferir: mentor task validar ' + id + ' --aprovado')
-  }
-  // A cadencia da auditoria e' contada aqui porque e' aqui que o numero muda. Avisar so' no doctor
-  // faria o lembrete depender de alguem lembrar de rodar o doctor.
+
+  // A cadencia da auditoria e' contada aqui porque e' aqui que o numero muda.
   const feitas = Number(ctxAtualizado.contagens.tarefas_concluidas ?? 0)
   const desde = feitas - (ctxAtualizado.auditoria.ultima_na_tarefa ?? 0)
-  if (desde >= ctxAtualizado.auditoria.cadencia_em_tarefas) {
-    console.log(`\n>>> ${desde} tarefas concluidas sem auditoria. Rode: node mentor.mjs auditar preparar`)
+  const cadenciaTarefas = ctxAtualizado.auditoria.cadencia_em_tarefas ?? 10
+  const cadenciaChars = ctxAtualizado.auditoria.cadencia_em_caracteres ?? 80_000
+  const lote = loteNaoAuditado()
+  const baseLote = baseDoLote(ctxAtualizado, lote)
+  const diffChars = medirDiffAcumulado(baseLote)
+
+  if (desde >= cadenciaTarefas || (cadenciaChars > 0 && diffChars >= cadenciaChars)) {
+    console.log(`\n>>> Cadencia de auditoria atingida: ${desde} tarefas concluidas sem auditoria (${diffChars} caracteres de diff acumulados, limite ${cadenciaChars}). Rode: node mentor.mjs auditar preparar`)
     console.log('    O dossie vai para uma sessao NOVA de IA. Quem escreve nao aprova.')
   }
 }
@@ -476,15 +553,38 @@ export function validar(id: string, flags: Flags): void {
   const { caminho, tarefa } = localizar(id)
   if (flags.aprovado) {
     tarefa.validacao = 'aprovado'
-    tarefa.validacao_motivo = null
+    tarefa.validacao_motivo = flags.evidencia ?? flags.motivo ?? null
+    tarefa.validado_em = agora().log
+    tarefa.gates['validacao_manual'] = {
+      rotulo: 'APROVADO',
+      comando: null,
+      codigo_saida: 0,
+      saida: tarefa.validacao_motivo ?? 'Validado e aprovado pelo humano.',
+      executado_em: tarefa.validado_em,
+      evidencia_url: flags.url ?? null,
+      motivo: null,
+      ressalva: null,
+      vermelho_em: null,
+    }
   } else if (flags.dispensado) {
     if (!flags.motivo) throw new Error('Dispensar validacao exige --motivo.')
     tarefa.validacao = 'dispensado'
     tarefa.validacao_motivo = flags.motivo
+    tarefa.validado_em = agora().log
+    tarefa.gates['validacao_manual'] = {
+      rotulo: 'não se aplica',
+      comando: null,
+      codigo_saida: null,
+      saida: null,
+      executado_em: tarefa.validado_em,
+      evidencia_url: null,
+      motivo: flags.motivo,
+      ressalva: null,
+      vermelho_em: null,
+    }
   } else {
-    throw new Error('Use --aprovado ou --dispensado --motivo "...".')
+    throw new Error('Use --aprovado [--evidencia "..."] ou --dispensado --motivo "...".')
   }
-  tarefa.validado_em = agora().log
   escreverJson(caminho, tarefa)
   regenerarTudo()
   console.log(`${id} · validacao ${tarefa.validacao}.`)

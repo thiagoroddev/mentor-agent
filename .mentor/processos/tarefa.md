@@ -96,6 +96,51 @@ Corolário com dentes: gate cujo run **já existe** e não tem o link é tratado
 Gate declarado tem linha própria. Os `não se aplica` podem dividir uma linha só. **Omitir é
 proibido:** é ambíguo entre *"não temos"* e *"esquecemos de escrever"*.
 
+## Validação Manual Humana & Alerta Proativo da IA
+
+A validação manual é o portão humano que impede que alucinações ou suposições da IA cheguem a produção.
+
+### Quando precisa de validação manual? Em todas as tarefas?
+
+**NÃO em todas.** A exigência segue uma taxonomia fechada:
+
+| Caso | Validação Manual | Justificativa |
+|---|:---:|---|
+| **UI / Frontend / Telas** | **SIM (Obrigatória)** | Componentes visuais, CSS, formulários, responsividade e fluxos só o uso humano consegue atestar. |
+| **Persistência / Esquema (Regra 4)** | **SIM (Obrigatória)** | Alterações de schema, migrations, `DB_VERSION`, IndexedDB e persistência exigem revisão humana no dossiê de auditoria. |
+| **Cálculos / Algoritmos (Regra 4)** | **SIM (Obrigatória)** | Fórmulas, penalidades de rota, heurísticas de busca e totalizadores exigem conferência de resultado pelo usuário. |
+| **Spikes** | **SIM (Obrigatória)** | O spike responde a uma pergunta de arquitetura ou produto que orienta decisões humanas. |
+| **Refatoração Interna Pura (REF)** | **NÃO (Dispensada)** | Sem alteração de comportamento, coberta 100% por suíte automatizada verde. |
+| **Tipagem pura (`.d.ts`, `types.ts`)** | **NÃO (Dispensada)** | Verificada pelo gate de tipos (`tsc`). |
+| **Documentação pura (DOC)** | **NÃO (Dispensada)** | Sem impacto executável no produto. |
+| **Chores de Build/CI** | **NÃO (Dispensada)** | Sem impacto funcional direto no usuário. |
+
+### Postura Ativa da IA (Shift-Left)
+A IA é **proibida** de tentar fechar a tarefa ou pedir autorização para `push` sem antes apresentar o roteiro de testes:
+```markdown
+### 🧪 Roteiro de Validação Manual (Obrigatório)
+Esta tarefa altera [UI / Persistência / Algoritmo]. A validação humana é obrigatória antes da finalização.
+
+**Passos para validação:**
+1. Abra [...]
+2. Execute [...]
+3. Verifique se [...]
+
+Por favor, valide e confirme com o resultado para registro do gate.
+```
+A IA **nunca** finaliza nem faz push antes de receber essa confirmação escrita.
+
+### Travas no Fechamento
+O CLI recusa o `mentor task finalizar` se:
+1. A tarefa estiver com `validacao: "pendente"` sem validação aprovada ou dispensada.
+2. O gate `validacao_manual` estiver `NÃO EXECUTADO` sem motivo.
+3. Arquivos de código de produção tiverem sido modificados no Git sem constar no `plano.muda` (prevenção de arquivos fantasmas AUD-001-B05).
+
+**Como registrar:**
+- Humano aprovou: `mentor task validar <ID> --aprovado --evidencia "<resumo dos testes>"`
+- Atalho na finalização: `mentor task finalizar <ID> --validado-por-humano "<evidencia>"`
+- Dispensa justificada: `mentor task validar <ID> --dispensado --motivo "<justificativa>"`
+
 ## Fechamento
 
 A narrativa é o texto livre da tarefa, voltada para aprendizado humano, com teto expandido de 10.000

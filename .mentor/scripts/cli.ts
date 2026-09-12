@@ -189,7 +189,7 @@ function principal(argv: string[]): number {
         if (!liberar && (!Number.isInteger(posicao) || posicao < 1)) throw new Error('Use: mentor task fila <ID> <posicao> | mentor task fila <ID> --soltar')
         fila(id, posicao, liberar); return 0
       }
-      if (sub === 'finalizar') { finalizar(id); return process.exitCode === 1 ? 1 : 0 }
+      if (sub === 'finalizar') { finalizar(id, flags); return process.exitCode === 1 ? 1 : 0 }
       if (sub === 'gate') {
         const gate = posicionais[2]
         if (!gate) throw new Error('Falta o nome do gate.')

@@ -4,6 +4,27 @@ Todas as mudanças notáveis no **mentor-agent** são documentadas neste arquivo
 
 O formato baseia-se em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [0.5.0] - 2026-09-12
+
+### Adicionado
+- **Cadência Híbrida de Auditoria por Volume de Diff (`cadencia_em_caracteres`)**:
+  - Novo parâmetro de auditoria em `contexto.json` (padrão: 80.000 caracteres) que monitora o acúmulo real de alterações git somando arquivos rastreados e não rastreados (`git ls-files --others`).
+  - O `cmd-tarefa.ts` ao finalizar uma tarefa e o `cmd-doctor.ts` agora disparam alerta de auditoria necessária quando o número de tarefas OU o volume de diff acumulado atinge o limite configurado (com bloqueio severo no doctor a 1.5x o teto).
+  - Prevenção ativa de truncamento em dossiês de auditoria (evita o cenário crítico de truncamento de 91% do diff detectado em auditorias reais como `AUD-001`).
+- **Disciplina Ativa de Validação Manual**:
+  - Taxonomia clara em `processos/tarefa.md` dividindo o que é estritamente obrigatório de validação manual humana (UI/Visual/UX, Persistência e Esquemas de dados, Fórmulas/Cálculos algorítmicos e spikes) versus o que é dispensável (refatores internos, tipos puros, correções de documentação e chores).
+  - Postura ativa obrigatória da IA antes do Gate 2 e Gate 3: a IA deve formular um roteiro conciso de teste manual com passos, dados e resultado esperado antes de submeter a tarefa para encerramento ou solicitar autorização de push.
+  - Trava mecânica na CLI (`mentor task finalizar`): bloqueia a finalização com erro explícito se houver validação manual pendente (`validacao === 'pendente'`) ou gate `validacao_manual` marcado como `NÃO EXECUTADO` sem justificativa.
+  - Suporte às flags `--validado-por-humano` e `--validacao-dispensada --motivo "<justificativa>"` diretamente no comando `mentor task finalizar`, além de `--evidencia "<texto>"` no comando `mentor task validar`.
+- **Prevenção Mecânica de Arquivos Fantasma (Disciplina de Escopo)**:
+  - `mentor task finalizar` inspeciona arquivos alterados e novos arquivos criados (`git diff` + `git ls-files --others`) comparando-os contra os caminhos declarados em `plano.muda`. Bloqueia o fechamento da tarefa se arquivos de código forem tocados fora do escopo planejado (bloqueando desvios como `AUD-001-B05`).
+- **Defesa no Dossiê de Auditoria e Resolução da Regra 4**:
+  - O `cmd-auditar.ts` agora expõe a saída/evidência registrada no gate `validacao_manual` na tabela de gates do dossiê.
+  - Verificação mecânica da Regra 4 (persistência/esquema e cálculos) no dossiê de auditoria reconhece explicitamente aprovação humana documentada em tarefas marcadas como `validado_por_humano` ou com evidência registrada.
+- **Cenário de Teste 22**: Cobertura ponta a ponta em `testes/cenarios/22-cadencia-diff-e-validacao-manual.ts` validando cadência por diff em caracteres, trava de arquivos fantasma, bloqueio de validação manual pendente e aprovação com evidência.
+
+---
+
 ## [0.4.0] - 2026-09-11
 
 ### Adicionado
