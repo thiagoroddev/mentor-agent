@@ -107,7 +107,7 @@ export function puxar(id: string, flags: Flags = {}): void {
   }
 
   const ocupadas = todas.filter(
-    (t) => t.fila === 'ciclo' && (t.estado === 'aberta' || t.estado === 'em-execucao'),
+    (t) => t.fila === 'ciclo' && (t.estado === 'aberta' || t.estado === 'em-execucao' || t.estado === 'pausada'),
   ).length
   if (ocupadas >= ctx.limites.ciclo_tarefas) {
     impedimentos.push(`ciclo cheio: ${ocupadas} de ${ctx.limites.ciclo_tarefas}. Guarde outra antes`)
@@ -128,7 +128,9 @@ export function puxar(id: string, flags: Flags = {}): void {
 
 export function guardar(id: string): void {
   const { caminho, tarefa } = localizarViva(id)
-  if (tarefa.estado === 'em-execucao') throw new Error(`${id} esta em execucao. Termine ou cancele antes de guardar.`)
+  if (tarefa.estado === 'em-execucao' || tarefa.estado === 'pausada') {
+    throw new Error(`${id} esta em "${tarefa.estado}". Termine ou cancele antes de guardar.`)
+  }
   tarefa.fila = 'reserva'
   tarefa.ordem = null
   escreverJson(caminho, tarefa)
@@ -140,7 +142,7 @@ export function listarReserva(): void {
   const todas = carregarTarefas()
   // Epico so' sai daqui quando ja' aparece como cabecalho do backlog: antes disso, some das duas.
   const temFatiaNoCiclo = (id: string) =>
-    todas.some((f) => f.fatia_de === id && f.fila === 'ciclo' && (f.estado === 'aberta' || f.estado === 'em-execucao'))
+    todas.some((f) => f.fatia_de === id && f.fila === 'ciclo' && (f.estado === 'aberta' || f.estado === 'em-execucao' || f.estado === 'pausada'))
   const guardadas = todas.filter(
     (t) => t.estado === 'aberta' && t.fila === 'reserva' && !temFatiaNoCiclo(t.id),
   )

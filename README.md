@@ -66,6 +66,12 @@ node mentor.mjs task puxar TASK-RF-001
 node mentor.mjs task iniciar TASK-RF-001
 # (spikes consecutivos inconclusivos exigem: --estrategia-revisada)
 
+# Pausar para executar trabalho bloqueador urgente (auto-commit de WIP e libera slot)
+node mentor.mjs task pausar TASK-RF-001 --motivo "aguarda ajuste de UI" --bloqueada-por TASK-RF-002 --commit
+
+# Retomar apos conclusao das tarefas bloqueadoras
+node mentor.mjs task retomar TASK-RF-001
+
 # Gates automatizados (Tipos, Lint, Testes, Build)
 node mentor.mjs task gate TASK-RF-001 testes
 # (suporta --vermelho-dispensado --motivo "<mutacao>" no TDD com prova por mutacao)

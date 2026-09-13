@@ -115,7 +115,7 @@ export function carregarContexto(): Contexto {
 const PESO_VALOR = { critico: 0, importante: 1, desejavel: 2 } as const
 const PESO_ESFORCO = { P: 0, M: 1, G: 2, XG: 3 } as const
 
-const viva = (t: Tarefa) => t.estado === 'aberta' || t.estado === 'em-execucao'
+const viva = (t: Tarefa) => t.estado === 'aberta' || t.estado === 'em-execucao' || t.estado === 'pausada'
 
 /** Uma tarefa com fatias abertas nao se executa: ela e' o epico. Sai da fila e vira cabecalho. */
 function fatiasVivasDe(id: string, todas: Tarefa[]): Tarefa[] {
@@ -168,7 +168,7 @@ export function fixar(id: string, posicao: number): Tarefa[] {
   if (!alvo) throw new Error(`${id} nao encontrada.`)
   if (alvo.estado === 'concluida' || alvo.estado === 'cancelada') throw new Error(`${id} esta ${alvo.estado}.`)
   const fixadas = todas
-    .filter((t) => t.ordem !== null && t.id !== id && (t.estado === 'aberta' || t.estado === 'em-execucao'))
+    .filter((t) => t.ordem !== null && t.id !== id && (t.estado === 'aberta' || t.estado === 'em-execucao' || t.estado === 'pausada'))
     .sort((a, b) => (a.ordem ?? 0) - (b.ordem ?? 0))
   const nova = [...fixadas.slice(0, posicao - 1), alvo, ...fixadas.slice(posicao - 1)]
   nova.forEach((t, i) => { t.ordem = i + 1 })
@@ -218,11 +218,12 @@ export function gerarBacklog(): void {
   fila.forEach((t, i) => {
     const presos = t.depende_de.filter((d) => !concluidas.has(d))
     const espera = t.validacao === 'pendente' ? ' 🔍' : ''
-    const trava = presos.length ? presos.join(', ') : '-'
+    const pausa = t.estado === 'pausada' ? ' ⏸️ [PAUSADA]' : ''
+    const trava = t.bloqueada_por?.length ? t.bloqueada_por.join(', ') : (presos.length ? presos.join(', ') : '-')
     const fixa = t.ordem === null ? '' : '📌'
     const aviso = t.esforco.ia === 'XG' ? ' ⚠️ dividir antes' : ''
     linhas.push(
-      `| ${i + 1}${fixa} | \`${t.id}\` | ${t.titulo}${aviso}${espera} | ${posicaoNaFatia(t, todas)} | ${t.valor} | ${t.urgencia} | ${t.esforco.humano}/${t.esforco.ia} | ${trava} | ${t.origem} |`,
+      `| ${i + 1}${fixa} | \`${t.id}\` | ${t.titulo}${aviso}${espera}${pausa} | ${posicaoNaFatia(t, todas)} | ${t.valor} | ${t.urgencia} | ${t.esforco.humano}/${t.esforco.ia} | ${trava} | ${t.origem} |`,
     )
   })
   if (fila.length === 0) linhas.push('| | | Nenhuma tarefa na fila | | | | | | |')
@@ -445,7 +446,7 @@ export function atualizarContagens(): Contexto {
 
   const dividas = carregarDividas()
   const riscos = carregarRiscos()
-  const vivas = tarefas.filter((t) => t.estado === 'aberta' || t.estado === 'em-execucao')
+  const vivas = tarefas.filter((t) => t.estado === 'aberta' || t.estado === 'em-execucao' || t.estado === 'pausada')
 
   ctx.contagens = {
     _gerado_por_script: true,

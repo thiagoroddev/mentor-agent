@@ -4,7 +4,7 @@ carrega_quando: tarefa Standard ou Strict
 
 # Processo · Tarefa
 
-`task nova` → **aberta** → `task iniciar` → **em execução** → `task finalizar` → **concluída**
+`task nova` → **aberta** → `task iniciar` → **em execução** (↔ `task pausar` / `task retomar`) → `task finalizar` → **concluída**
 
 | Quem | Escreve |
 |---|---|
@@ -77,6 +77,26 @@ O `mentor-agent` recusa planos que constroem do zero sem pesquisar o estado da a
    - Restrições herdadas de README ou arquivos antigos não são leis eternas. Se eliminam alternativas de mercado nesta tarefa, devem ser reavaliadas e reconfirmadas pelo mantenedor (reconfirmada 3 vezes vira ADR).
    - Se um achado de classe 3 ou 4 refuta a premissa de um spike ou tarefa anterior, as tarefas dependentes não podem ser puxadas para o ciclo sem reconfirmação explícita.
    - Dois spikes consecutivos que fecham como "inconclusivo" no mesmo tema bloqueiam novos spikes e exigem **Revisão de Estratégia**.
+
+## Pausa e Retomada de Tarefas (`task pausar` e `task retomar`)
+
+Durante o desenvolvimento ou execução de um spike, podem surgir dependências dinâmicas imprevistas — por exemplo, falta de suporte de UI para avaliar um teste manual, ou um bug bloqueador no próprio ambiente de testes.
+
+O `mentor-agent` adota o fluxo de **Pausa com Rastreabilidade de Dependências**:
+
+1. **Pausar e liberar o slot de WIP:**
+   `mentor task pausar <ID> --motivo "<motivo>" [--bloqueada-por <IDs>] [--commit]`
+   - Exige que o estado local do Git esteja limpo. Se houver alterações não commitadas, a flag `--commit` realiza o auto-commit de WIP: `wip(<ID>): pausada - <motivo>`.
+   - **Apenas commit, nunca push:** o commit de WIP existe para limpar a árvore de trabalho e isolar o contexto da próxima tarefa. Dar push de WIP quebraria pipelines de CI ou acionaria deploys de código incompleto.
+   - O slot de execução (`em_execucao`) é liberado para que as tarefas que desbloqueiam a atual possam ser puxadas, iniciadas e concluídas.
+
+2. **Retomar após resolução:**
+   `mentor task retomar <ID> [--forcar]`
+   - Verifica se as tarefas declaradas em `--bloqueada-por` já foram concluídas ou canceladas.
+   - Reassume o slot de execução (`em-execucao`).
+
+3. **Isolamento de Escopo no Git:**
+   - Ao finalizar uma tarefa que passou por pausas, o `mentor task finalizar` calcula o diff ativo excluindo os períodos em que esteve pausada (`[commit_pausa .. commit_retomada]`). As alterações de código realizadas pelas tarefas intermediárias não geram falso positivo de arquivos fora do `plano.muda`.
 
 ## Fatia
 

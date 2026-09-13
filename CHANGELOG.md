@@ -32,7 +32,19 @@ O formato baseia-se em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0
 - **Prevenção de Reincidência de Spikes Inconclusivos (M6)**:
   - Alerta no `mentor doctor` e bloqueio automático em `mentor task iniciar` ao tentar abrir um terceiro spike consecutivo quando os últimos dois fecharam inconclusivos sem validar premissa.
   - Desbloqueio explícito via `mentor task iniciar <ID> --estrategia-revisada`.
+- **Pausa e Retomada de Tarefas com Rastreabilidade de Dependências (`task pausar` e `task retomar`)**:
+  - Novo estado de tarefa `'pausada'`, permitindo suspender uma tarefa em execução para liberar o slot de WIP (`em_execucao`) e executar tarefas que surgiram como pré-requisitos urgentes (ex: recursos de UI para avaliação de spike ou correção de bugs de teste).
+  - Comando `mentor task pausar <ID> --motivo "..." [--bloqueada-por <IDs>] [--commit]`:
+    - Exige working tree limpo no Git (ou realiza auto-commit de WIP com a flag `--commit`, isolando o código).
+    - Não exige nem realiza `push`, evitando falhas na esteira de CI/CD com código em progresso.
+    - Grava histórico completo em `pausas` (`commit_pausa`, `commit_retomada`, `motivo`, `bloqueada_por`).
+  - Comando `mentor task retomar <ID> [--forcar]`:
+    - Valida que as tarefas bloqueadoras já foram concluídas ou canceladas antes de reabrir o slot ativo de execução.
+  - **Isolamento de Escopo no Git**: o cálculo do diff em `mentor task finalizar` exclui automaticamente os intervalos em que a tarefa esteve pausada, evitando que arquivos modificados pelas tarefas intermediárias gerem falsos positivos de arquivos fora de escopo (`AUD-001-B05`).
+  - Diagnóstico inteligente no `mentor doctor` alertando quando todas as tarefas bloqueadoras de uma tarefa pausada foram concluídas, orientando a retomada.
+  - Exibição de indicador `[PAUSADA]` e bloqueadores no `backlog.md`.
 - **Cenário de Teste 23 (`23-merito-tecnico-e-discordancia.ts`)**: Cobertura ponta a ponta de todas as regras de mérito técnico, réguas de spike, estado da arte, bloqueio por refutação e reincidência de spikes inconclusivos.
+- **Cenário de Teste 24 (`24-pausa-e-retomada-de-tarefas.ts`)**: Cobertura ponta a ponta de pausa com auto-commit, liberação de WIP, execução de tarefas intermediárias, isolamento de diff e retomada.
 
 ---
 

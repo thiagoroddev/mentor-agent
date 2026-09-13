@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { inicializar } from './cmd-init.ts'
-import { fila, finalizar, iniciar, nova, registrarGate, validar } from './cmd-tarefa.ts'
+import { fila, finalizar, iniciar, nova, pausar, registrarGate, retomar, validar } from './cmd-tarefa.ts'
 import { absorver, cancelar, fatiar, guardar, listarReserva, puxar } from './cmd-fila.ts'
 import { adicionarFerramenta } from './cmd-stack.ts'
 import { verificar } from './cmd-verificar.ts'
@@ -43,6 +43,8 @@ mentor <comando>
   task validar <ID> --aprovado         registra a validacao manual
        | --dispensado --motivo "..."
   task iniciar <ID>                    escreve o esqueleto do plano e da narrativa
+  task pausar <ID> --motivo "..."      pausa tarefa em execucao, liberando slot [--commit --bloqueada-por <IDs>]
+  task retomar <ID>                    retoma tarefa pausada [--forcar]
   task gate <ID> <gate>                executa o comando declarado e grava a evidencia
        [--esperando-vermelho]          registra o gate falhando ANTES de implementar (tdd/bdd)
        [--vermelho-dispensado --motivo "..."] dispensa de vermelho com prova por mutacao (tdd/bdd)
@@ -177,6 +179,8 @@ function principal(argv: string[]): number {
       if (sub === 'nova') { nova(flags); return 0 }
       if (!id) throw new Error(`Falta o ID da tarefa. Use: mentor task ${sub ?? '<sub>'} <ID>`)
       if (sub === 'iniciar') { iniciar(id, flags); return process.exitCode === 1 ? 1 : 0 }
+      if (sub === 'pausar') { pausar(id, flags); return process.exitCode === 1 ? 1 : 0 }
+      if (sub === 'retomar') { retomar(id, flags); return process.exitCode === 1 ? 1 : 0 }
       if (sub === 'puxar') { puxar(id, flags); return process.exitCode === 1 ? 1 : 0 }
       if (sub === 'guardar') { guardar(id); return 0 }
       if (sub === 'fatiar') { fatiar(id, flags); return 0 }

@@ -36,6 +36,7 @@
   "estados_possiveis": [
     "aberta",
     "em-execucao",
+    "pausada",
     "concluida",
     "cancelada"
   ],
@@ -166,5 +167,9 @@
   "riscos_aceitos": [],
   "absorvida_por": null,
   "cancelamento_motivo": null,
+  "pausada_em": null,
+  "pausa_motivo": null,
+  "bloqueada_por": [],
+  "pausas": [],
   "tipos_nota": "SPIKE e' exploracao declarada: responde uma pergunta, e' descartavel, e nao exige criterio com teste. Existe para a exploracao nao se disfarcar de tarefa normal."
 }

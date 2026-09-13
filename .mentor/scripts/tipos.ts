@@ -26,7 +26,7 @@ export type TipoTarefa = (typeof TIPOS_TAREFA)[number]
 export const ESCALA = ['P', 'M', 'G', 'XG'] as const
 export type Escala = (typeof ESCALA)[number]
 
-export type EstadoTarefa = 'aberta' | 'em-execucao' | 'concluida' | 'cancelada'
+export type EstadoTarefa = 'aberta' | 'em-execucao' | 'pausada' | 'concluida' | 'cancelada'
 
 /**
  * `reserva` e' lembrete e **nao entra no contexto**; `ciclo` e' compromisso do ciclo atual.
@@ -162,6 +162,15 @@ export interface Plano {
   proporcionalidade: string | null
 }
 
+export interface PausaTarefa {
+  pausada_em: string
+  retomada_em: string | null
+  motivo: string
+  bloqueada_por: string[]
+  commit_pausa: string | null
+  commit_retomada: string | null
+}
+
 export interface Tarefa {
   id: string
   tipo: TipoTarefa
@@ -184,6 +193,10 @@ export interface Tarefa {
   /** HEAD no momento do `iniciar`. E' a base do diff que a auditoria le'. `null` = projeto sem git. */
   commit_base: string | null
   concluida_em: string | null
+  pausada_em?: string | null
+  pausa_motivo?: string | null
+  bloqueada_por?: string[]
+  pausas?: PausaTarefa[]
   plano: Plano
   gates: Partial<Record<string, RegistroGate>>
   achados: Achado[]

@@ -261,6 +261,115 @@ export function iniciar(id: string, flags: Flags = {}): void {
   console.log(`${id} em execucao. Preencha o plano e apresente ao humano antes de executar (nucleo, portao 1).`)
 }
 
+// ---------------------------------------------------------------- pausar
+
+export function pausar(id: string, flags: Flags = {}): void {
+  const { caminho, tarefa } = localizar(id)
+  if (tarefa.estado !== 'em-execucao') {
+    throw new Error(`${id} esta em "${tarefa.estado}", nao em "em-execucao". So e possivel pausar tarefa em execucao.`)
+  }
+  const motivo = flags.motivo?.trim()
+  if (!motivo) {
+    throw new Error(`Falta --motivo. Informe por que a tarefa esta sendo pausada (ex: mentor task pausar ${id} --motivo "aguardando ajuste de UI e correcao de bug").`)
+  }
+
+  const c = caminhos()
+  // Inspeciona se o Git possui arquivos modificados ou untracked
+  const rStatus = spawnSync('git', ['status', '--porcelain'], { cwd: c.raiz, encoding: 'utf8' })
+  const temAlteracoes = rStatus.status === 0 && Boolean(rStatus.stdout?.trim())
+
+  if (temAlteracoes) {
+    if (flags.commit !== undefined) {
+      // Auto-commit das alterações em WIP
+      const msg = `wip(${id}): pausada - ${motivo}`
+      const add = spawnSync('git', ['add', '-A'], { cwd: c.raiz, encoding: 'utf8' })
+      if (add.status !== 0) throw new Error(`Falha ao adicionar arquivos no Git: ${add.stderr}`)
+      const com = spawnSync('git', ['commit', '-m', msg], { cwd: c.raiz, encoding: 'utf8' })
+      if (com.status !== 0) throw new Error(`Falha ao commitar no Git: ${com.stderr}`)
+      console.log(`Commit de pausa realizado: ${msg}`)
+    } else {
+      throw new Error(
+        `Existem alteracoes nao commitadas no Git. Para pausar sem contaminar a proxima tarefa, commite as alteracoes atuais (ex: git commit -m "wip(${id}): pausada - ${motivo}") ou passe a flag --commit para commitar automaticamente.`,
+      )
+    }
+  }
+
+  const commitPausa = cabecaDoGit()
+  const agoraPausa = agora().log
+  const bloqueadaPor = (flags['bloqueada-por'] ?? '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean)
+
+  if (!tarefa.pausas) tarefa.pausas = []
+  tarefa.pausas.push({
+    pausada_em: agoraPausa,
+    retomada_em: null,
+    motivo,
+    bloqueada_por: bloqueadaPor,
+    commit_pausa: commitPausa,
+    commit_retomada: null,
+  })
+
+  tarefa.estado = 'pausada'
+  tarefa.pausada_em = agoraPausa
+  tarefa.pausa_motivo = motivo
+  tarefa.bloqueada_por = bloqueadaPor
+
+  escreverJson(caminho, tarefa)
+  regenerarTudo()
+  console.log(
+    `Tarefa ${id} pausada com sucesso.${bloqueadaPor.length ? ` Bloqueada por: ${bloqueadaPor.join(', ')}.` : ''} Slot de execucao liberado.`,
+  )
+}
+
+// ---------------------------------------------------------------- retomar
+
+export function retomar(id: string, flags: Flags = {}): void {
+  const { caminho, tarefa } = localizar(id)
+  if (tarefa.estado !== 'pausada') {
+    throw new Error(`${id} esta em "${tarefa.estado}", nao em "pausada".`)
+  }
+
+  const limite = carregarContexto().limites.em_execucao
+  const emExecucao = carregarTarefas().filter((t) => t.estado === 'em-execucao')
+  if (emExecucao.length >= limite) {
+    throw new Error(
+      `Ja ha ${emExecucao.length} tarefa(s) em execucao (limite ${limite}): ${emExecucao.map((t) => t.id).join(', ')}. Feche ou pause a tarefa ativa antes de retomar ${id}.`,
+    )
+  }
+
+  // Se houver tarefas declaradas em bloqueada_por, verifica se já foram concluídas ou canceladas
+  if (tarefa.bloqueada_por && tarefa.bloqueada_por.length > 0) {
+    const todas = carregarTarefas()
+    const pendentes = tarefa.bloqueada_por.filter((bid) => {
+      const b = todas.find((t) => t.id === bid)
+      return !b || (b.estado !== 'concluida' && b.estado !== 'cancelada')
+    })
+    if (pendentes.length > 0 && !flags.forcar) {
+      throw new Error(
+        `Tarefa(s) bloqueadora(s) ainda nao concluida(s): ${pendentes.join(', ')}. Conclua-as antes de retomar ${id} (ou use --forcar).`,
+      )
+    }
+  }
+
+  const agoraRetomada = agora().log
+  const commitRetomada = cabecaDoGit()
+
+  if (tarefa.pausas && tarefa.pausas.length > 0) {
+    const ultima = tarefa.pausas[tarefa.pausas.length - 1]
+    if (ultima) {
+      ultima.retomada_em = agoraRetomada
+      ultima.commit_retomada = commitRetomada
+    }
+  }
+
+  tarefa.estado = 'em-execucao'
+  escreverJson(caminho, tarefa)
+  regenerarTudo()
+  console.log(`Tarefa ${id} retomada em execucao.`)
+}
+
 // ---------------------------------------------------------------- gate
 
 function recortar(saida: string, limite = 4000): string {
@@ -592,17 +701,47 @@ export function finalizar(id: string, flags: Flags = {}): void {
 
   // Disciplina de escopo Git vs plano.muda (AUD-001-B05: previne arquivos fantasmas)
   if (tarefa.commit_base) {
-    const rDiff = spawnSync('git', ['diff', '--name-only', tarefa.commit_base, '--relative'], {
-      cwd: caminhos().raiz,
-      encoding: 'utf8',
-    })
+    const arquivosSet = new Set<string>()
+    if (tarefa.pausas && tarefa.pausas.length > 0) {
+      let pontoAnterior: string | null = tarefa.commit_base
+      for (const p of tarefa.pausas) {
+        if (pontoAnterior && p.commit_pausa && pontoAnterior !== p.commit_pausa) {
+          const r = spawnSync('git', ['diff', '--name-only', pontoAnterior, p.commit_pausa, '--relative'], {
+            cwd: caminhos().raiz,
+            encoding: 'utf8',
+          })
+          if (r.status === 0 && r.stdout) {
+            r.stdout.split('\n').forEach((f) => arquivosSet.add(f.trim().replace(/\\/g, '/')))
+          }
+        }
+        pontoAnterior = p.commit_retomada
+      }
+      if (pontoAnterior) {
+        const r = spawnSync('git', ['diff', '--name-only', pontoAnterior, '--relative'], {
+          cwd: caminhos().raiz,
+          encoding: 'utf8',
+        })
+        if (r.status === 0 && r.stdout) {
+          r.stdout.split('\n').forEach((f) => arquivosSet.add(f.trim().replace(/\\/g, '/')))
+        }
+      }
+    } else {
+      const rDiff = spawnSync('git', ['diff', '--name-only', tarefa.commit_base, '--relative'], {
+        cwd: caminhos().raiz,
+        encoding: 'utf8',
+      })
+      if (rDiff.status === 0 && rDiff.stdout) {
+        rDiff.stdout.split('\n').forEach((f) => arquivosSet.add(f.trim().replace(/\\/g, '/')))
+      }
+    }
     const rUntracked = spawnSync('git', ['ls-files', '--others', '--exclude-standard'], {
       cwd: caminhos().raiz,
       encoding: 'utf8',
     })
-    const diffFiles = rDiff.status === 0 && rDiff.stdout ? rDiff.stdout.split('\n') : []
-    const untrackedFiles = rUntracked.status === 0 && rUntracked.stdout ? rUntracked.stdout.split('\n') : []
-    const arquivosModificados = [...diffFiles, ...untrackedFiles].map((s) => s.trim().replace(/\\/g, '/')).filter(Boolean)
+    if (rUntracked.status === 0 && rUntracked.stdout) {
+      rUntracked.stdout.split('\n').forEach((f) => arquivosSet.add(f.trim().replace(/\\/g, '/')))
+    }
+    const arquivosModificados = [...arquivosSet].filter(Boolean)
     const declarados = new Set<string>()
     for (const linha of tarefa.plano.muda) {
       const arq = linha.split(/[\s:—-]/)[0]?.trim().replace(/\\/g, '/')

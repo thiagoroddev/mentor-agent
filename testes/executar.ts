@@ -22,9 +22,10 @@ import { rodar as evidencia } from './cenarios/20-evidencia-externa-e-narrativa.
 import { rodar as concorrencia } from './cenarios/21-concorrencia-git-e-dispensas.ts'
 import { rodar as cadenciaEValidacao } from './cenarios/22-cadencia-diff-e-validacao-manual.ts'
 import { rodar as meritoEDiscordancia } from './cenarios/23-merito-tecnico-e-discordancia.ts'
+import { rodar as pausaERetomada } from './cenarios/24-pausa-e-retomada-de-tarefas.ts'
 import type { Cenario } from './apoio.ts'
 
-const CENARIOS: Array<() => Cenario> = [ciclo, epico, recusas, tdd, verificacao, saude, entrega, lanc, campo, pacote, rascunho, auditoria, referencias, offsets, invariantes, postura, requisitos, robustez, skills, evidencia, concorrencia, cadenciaEValidacao, meritoEDiscordancia]
+const CENARIOS: Array<() => Cenario> = [ciclo, epico, recusas, tdd, verificacao, saude, entrega, lanc, campo, pacote, rascunho, auditoria, referencias, offsets, invariantes, postura, requisitos, robustez, skills, evidencia, concorrencia, cadenciaEValidacao, meritoEDiscordancia, pausaERetomada]
 
 let falharam = 0
 for (const rodar of CENARIOS) {

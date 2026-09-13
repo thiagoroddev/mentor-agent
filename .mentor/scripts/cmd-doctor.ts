@@ -178,7 +178,7 @@ function qualidade(ctx: Contexto, tarefas: Tarefa[]): Linha[] {
 
 function processo(ctx: Contexto, tarefas: Tarefa[]): Linha[] {
   const linhas: Linha[] = []
-  const viva = (t: Tarefa) => t.estado === 'aberta' || t.estado === 'em-execucao'
+  const viva = (t: Tarefa) => t.estado === 'aberta' || t.estado === 'em-execucao' || t.estado === 'pausada'
   const emExecucao = tarefas.filter((t) => t.estado === 'em-execucao')
   const noCiclo = tarefas.filter((t) => viva(t) && t.fila === 'ciclo')
 
@@ -187,6 +187,28 @@ function processo(ctx: Contexto, tarefas: Tarefa[]): Linha[] {
     : { estado: 'ok', texto: `${emExecucao.length} de ${ctx.limites.em_execucao} em execucao` })
   linhas.push({ estado: noCiclo.length > ctx.limites.ciclo_tarefas ? 'atencao' : 'neutro',
     texto: `${noCiclo.length} de ${ctx.limites.ciclo_tarefas} no ciclo, ${tarefas.filter((t) => viva(t) && t.fila === 'reserva').length} na reserva` })
+
+  const pausadas = tarefas.filter((t) => t.estado === 'pausada')
+  for (const p of pausadas) {
+    const bloqueadores = p.bloqueada_por ?? []
+    const todosResolvidos =
+      bloqueadores.length > 0 &&
+      bloqueadores.every((bid) => {
+        const b = tarefas.find((t) => t.id === bid)
+        return b && (b.estado === 'concluida' || b.estado === 'cancelada')
+      })
+    if (todosResolvidos) {
+      linhas.push({
+        estado: 'atencao',
+        texto: `${p.id} esta pausada, mas seus bloqueadores (${bloqueadores.join(', ')}) ja foram concluidos. Pronta para retomar: mentor task retomar ${p.id}`,
+      })
+    } else {
+      linhas.push({
+        estado: 'neutro',
+        texto: `${p.id} pausada: "${p.pausa_motivo ?? 'sem motivo'}"${bloqueadores.length ? ` (bloqueada por ${bloqueadores.join(', ')})` : ''}`,
+      })
+    }
+  }
 
   // Trabalho parado pela metade e' o desperdicio mais invisivel, porque parece progresso (ES-50).
   for (const t of noCiclo.filter((x) => x.valor === 'critico' && x.urgencia === 'imediata')) {
