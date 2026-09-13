@@ -2,7 +2,7 @@ import { spawnSync } from 'node:child_process'
 import { cpSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
 import {
-  abrirCenarioTemporario, confere, dizQue, escrever, fecharTemporario, ler, lerJson, mentor, RAIZ_REPO,
+  abrirCenarioTemporario, apagar, confere, dizQue, escrever, fecharTemporario, ler, lerJson, mentor, RAIZ_REPO,
 } from '../apoio.ts'
 import type { Cenario } from '../apoio.ts'
 
@@ -101,12 +101,19 @@ export function rodar(): Cenario {
   dizQue(c, v, 'rascunhos/esqueleto.md', 'B4: marcador solto continua acusado')
   commit('docs: notas do cenario')
 
-  // --- B4 e B8. o pre-push mostra o verificar, nao barra por ele, e nao roda os gates
+  // --- B4 e B8. o pre-push mostra o verificar sem barrar, e os gates rodam uma vez so'
   sh('git', 'checkout', '-q', '-b', 'trabalho')
   const push = mentor(c, 'hooks', '--pre-push', 'origin')
   confere(c, push.codigo === 0, 'B4: achado do verificar nao barra o envio')
   dizQue(c, push, 'Aviso: o verificar tem', 'B4: o pre-push mostra os achados do verificar')
-  confere(c, !push.saida.includes('GATE_RODOU'), 'B8: o pre-push nao roda os gates, que o arquivo do hook ja roda')
+  // Conta a linha que o gate imprime, nao o resumo "✓ testes: <comando>", que tambem cita a palavra
+  confere(c, (push.saida.match(/^GATE_RODOU/gm) ?? []).length === 1, 'B8 (0.9.0): o pre-push roda os gates uma vez')
+  // Hook do modelo 0.8.x ja rodou os gates antes de chamar o pre-push: nao roda de novo, e avisa
+  escrever(c, '.githooks/pre-push', '#!/bin/sh\nnode mentor.mjs gates || exit 1\nnode mentor.mjs hooks --pre-push "$@" || exit 1\n')
+  const hookAntigo = mentor(c, 'hooks', '--pre-push', 'origin')
+  confere(c, !hookAntigo.saida.includes('GATE_RODOU') && hookAntigo.saida.includes('modelo antigo'),
+    'B8: com o hook antigo, o pre-push nao repete os gates e manda reinstalar o hook')
+  apagar(c, '.githooks')
 
   // --- 0.8.1. escopo qualquer nao substitui a tarefa; a marca light, sim
   escrever(c, 'src/Tela.tsx', 'export const Tela = () => null\n')

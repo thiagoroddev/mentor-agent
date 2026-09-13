@@ -4,6 +4,25 @@ Todas as mudanças notáveis no **mentor-agent** são documentadas neste arquivo
 
 O formato baseia-se em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [0.9.0] - 2026-09-13
+
+Plano em `PLANO-v0.9.0.md`. Substitui o item C6 do `PLANO-v0.8.0.md`.
+
+### Mudado
+- ⚠️ **WIP pode subir para o remoto.** A regra "apenas commit, nunca push" de `processos/tarefa.md` sai: envio so' para `refs/heads/wip/*` passa sem gates e sem checagem de ID. O proibido passa a ser o merge no ramo principal.
+- **O pre-push le os ramos enviados** (entrada padrao do hook, protocolo do git) em vez de olhar o ramo atual: envio ao principal protegido e' barrado de qualquer ramo, e a checagem de ID confere os commits do ramo enviado. Commit que ja' esta' em algum ramo remoto nao e' conferido de novo. Sem entrada (rodado a mao), vale o comportamento anterior.
+- **Os gates sairam do arquivo `.githooks/pre-push`** para o `hooks --pre-push`, que os pula no WIP. Hook antigo continua funcionando sem rodar os gates duas vezes, e avisa para reinstalar.
+- **`task retomar` recusa quando o ramo principal tem commits que o ramo nao tem** (`--sem-merge` para seguir): merge antes do retomar, nunca rebase.
+
+### Adicionado
+- **`mentor pronto-para-merge --titulo "<titulo do PR>"`** (`cmd-merge.ts`): sai 0 so' com toda tarefa do titulo concluida no ramo; PR Light passa; sem ID nem marca, falha. Modelo do job da esteira em `skills/github-ci`, com o titulo por variavel de ambiente (evita injecao de comando).
+- `instalar --forcar` regrava o `.githooks/pre-push` gerado pelo mentor (`atualizarHookDoMentor`); hook escrito pelo projeto nao e' tocado.
+- `task pausar` sugere `git push -u origin HEAD:wip/<id>`; `doctor` lista os ramos `wip/` do remoto.
+- `processos/entrega.md`: secao "Trabalho pausado (WIP)", com o fluxo do WIP ao merge e o aviso de que ramo privado em repositorio publico nao existe.
+- Cenario `28-wip-e-merge.ts`, com remoto bare e hook de verdade.
+
+---
+
 ## [0.8.1] - 2026-09-13
 
 ### Corrigido

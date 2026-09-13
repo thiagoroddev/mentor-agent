@@ -379,9 +379,25 @@ export function pausar(id: string, flags: Flags = {}): void {
   console.log(
     `Tarefa ${id} pausada com sucesso.${bloqueadaPor.length ? ` Bloqueada por: ${bloqueadaPor.join(', ')}.` : ''} Slot de execucao liberado.`,
   )
+  // Pausa so' no disco se perde com o disco. O push continua sendo ato do humano (portao 3).
+  console.log(`Para guardar fora do disco (envio para wip/ nao passa por gates nem checagem de ID): git push -u origin HEAD:wip/${id.toLowerCase()}`)
 }
 
 // ---------------------------------------------------------------- retomar
+
+/** O ramo principal (remoto, pelo ultimo fetch, ou local) com commits que o ramo atual nao tem. */
+function principalAFrente(): { ref: string; commits: number } | null {
+  const c = caminhos()
+  const git = (args: string[]) => spawnSync('git', args, { cwd: c.raiz, encoding: 'utf8' })
+  const principal = (carregarContexto()['versionamento'] as { ramo_principal?: string | null } | undefined)?.ramo_principal ?? 'main'
+  if ((git(['branch', '--show-current']).stdout ?? '').trim() === principal) return null
+  for (const ref of [`origin/${principal}`, principal]) {
+    if (git(['rev-parse', '--verify', '--quiet', ref]).status !== 0) continue
+    const contagem = Number((git(['rev-list', '--count', `HEAD..${ref}`]).stdout ?? '').trim())
+    if (contagem > 0) return { ref, commits: contagem }
+  }
+  return null
+}
 
 export function retomar(id: string, flags: Flags = {}): void {
   const { caminho, tarefa } = localizar(id)
@@ -407,6 +423,21 @@ export function retomar(id: string, flags: Flags = {}): void {
     if (pendentes.length > 0 && !flags.forcar) {
       throw new Error(
         `Tarefa(s) bloqueadora(s) ainda nao concluida(s): ${pendentes.join(', ')}. Conclua-as antes de retomar ${id} (ou use --forcar).`,
+      )
+    }
+  }
+
+  // O retomar grava o commit de volta, e o `finalizar` mede o escopo a partir dele. Merge do ramo
+  // principal DEPOIS daqui faz tudo o que veio dele parecer mudanca da tarefa, e a trava de escopo
+  // recusa por arquivos que a tarefa nunca tocou. Por isso o merge vem antes. Rebase, nunca: troca o
+  // `commit_pausa` gravado e exige push forcado do ramo WIP.
+  if (!flags['sem-merge']) {
+    const atraso = principalAFrente()
+    if (atraso) {
+      throw new Error(
+        `${atraso.ref} tem ${atraso.commits} commit(s) que este ramo nao tem. Faca o merge antes de retomar: git merge ${atraso.ref}\n` +
+        'O retomar grava o commit de volta, e o finalizar mede o escopo a partir dele: merge depois faz o que veio do ramo principal parecer mudanca da tarefa. ' +
+        'Merge, nunca rebase: o rebase troca o commit_pausa gravado. Para retomar sem trazer o ramo principal: --sem-merge',
       )
     }
   }

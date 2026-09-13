@@ -11,6 +11,7 @@ import { instalarHooks, prePush } from './cmd-hooks.ts'
 import { resolverGerados } from './cmd-resolver.ts'
 import { encerrar as encerrarRisco, nova as novoRisco, relatar as relatarRiscos } from './cmd-riscos.ts'
 import { lancamento } from './cmd-lancamento.ts'
+import { prontoParaMerge } from './cmd-merge.ts'
 import { relatorioDeCampo } from './cmd-campo.ts'
 import { gerarManifesto, instalar } from './cmd-pacote.ts'
 import { anotar } from './cmd-anotar.ts'
@@ -44,7 +45,8 @@ mentor <comando>
        | --dispensado --motivo "..."
   task iniciar <ID>                    escreve o esqueleto do plano e da narrativa
   task pausar <ID> --motivo "..."      pausa tarefa em execucao, liberando slot [--commit --bloqueada-por <IDs>]
-  task retomar <ID>                    retoma tarefa pausada [--forcar]
+  task retomar <ID>                    retoma tarefa pausada [--forcar] [--sem-merge]
+                                       (recusa se o ramo principal avancou: merge antes, nunca rebase)
   task gate <ID> <gate>                executa o comando declarado e grava a evidencia
        [--esperando-vermelho]          registra o gate falhando ANTES de implementar (tdd/bdd)
        [--vermelho-dispensado --motivo "..."] dispensa de vermelho com prova por mutacao (tdd/bdd)
@@ -63,12 +65,13 @@ mentor <comando>
   anotar --sobre pacote|projeto "..."  onde a melhoria vai nao e decisao de memoria
   reserva                              lista a reserva (nao entra no contexto)
   gates                                roda todos os gates declarados pelo projeto
-  hooks [--instalar|--pre-push]        barreira de pre-push: o hook roda os gates; --pre-push barra
-                                       ramo principal e commit sem ID, e mostra o verificar
+  hooks [--instalar|--pre-push]        barreira de pre-push: gates, envio ao ramo principal e commit
+                                       sem ID; mostra o verificar. Envio so para wip/ passa direto
   ra [nova|encerrar <ID>]              registro de riscos aceitos
        nova --titulo --justificativa --evidencia --aceito-por
             --revisar-em --tarefa-de-saida [--severidade --pacote --advisory]
   lancamento                           pode ir a publico? Roda os gates agora
+  pronto-para-merge --titulo "..."     passo da esteira no PR: toda tarefa do titulo concluida no ramo
   relatorio-de-campo [--detalhado]     medicao do uso real, para levar ao repositorio do pacote
   doctor                               folha de saude com veredito binario. Nunca cria tarefa
   auditar [preparar]                   monta o dossie do lote para uma sessao NOVA de IA auditar
@@ -143,6 +146,7 @@ function principal(argv: string[]): number {
       if (!flags.instalar) throw new Error('Use: mentor hooks --instalar ou mentor hooks --pre-push')
       instalarHooks(); return 0
     case 'lancamento': return lancamento()
+    case 'pronto-para-merge': return prontoParaMerge(flags.titulo)
     case 'relatorio-de-campo': return relatorioDeCampo(flags)
     case 'ra': {
       const sub = posicionais[0]

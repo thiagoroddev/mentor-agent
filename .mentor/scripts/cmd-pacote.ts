@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
 import { join, relative } from 'node:path'
-import { analisadoresSemIgnorar, avisoDeNormas, copiarPacote, normasQueMudam } from './instalar.mjs'
+import { analisadoresSemIgnorar, atualizarHookDoMentor, avisoDeNormas, copiarPacote, normasQueMudam } from './instalar.mjs'
 import { criarPontosDeEntrada } from './entrada.ts'
 import {
   agoraIso, caminhos, escreverJson, escreverTexto, existe, lerJson, lerTexto, listar, raizPacote,
@@ -137,6 +137,7 @@ export function instalar(flags: Record<string, string | undefined>): void {
     : lerJson<{ version?: string }>(join(origem, 'package.json')).version ?? '0.0.0'
   console.log(`mentor-agent ${versao} instalado em ${destino}.`)
   for (const linha of avisoDeNormas(normas)) console.log(linha)
+  if (atualizarHookDoMentor(destino)) console.log('Hook .githooks/pre-push regravado no modelo novo: envio para wip/ pula os gates.')
 
   // Sem ponto de entrada, nenhuma ferramenta le' o nucleo, e o pacote inteiro nao existe.
   const e = criarPontosDeEntrada(destino)

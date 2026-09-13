@@ -26,13 +26,14 @@ import { rodar as pausaERetomada } from './cenarios/24-pausa-e-retomada-de-taref
 import { rodar as auditoriaInteligente } from './cenarios/25-auditoria-inteligente-e-validacao-concreta.ts'
 import { rodar as auditoriaPorTarefa } from './cenarios/26-auditoria-por-tarefa.ts'
 import { rodar as travas } from './cenarios/27-travas-de-fechamento-e-entrega.ts'
+import { rodar as wipEMerge } from './cenarios/28-wip-e-merge.ts'
 import type { Cenario } from './apoio.ts'
 
 const CENARIOS: Array<() => Cenario> = [
   ciclo, epico, recusas, tdd, verificacao, saude, entrega, lanc, campo, pacote,
   rascunho, auditoria, referencias, offsets, invariantes, postura, requisitos,
   robustez, skills, evidencia, concorrencia, cadenciaEValidacao, meritoEDiscordancia,
-  pausaERetomada, auditoriaInteligente, auditoriaPorTarefa, travas,
+  pausaERetomada, auditoriaInteligente, auditoriaPorTarefa, travas, wipEMerge,
 ]
 
 let falharam = 0

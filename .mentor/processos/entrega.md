@@ -27,12 +27,10 @@ foram entregues juntas.
 
 **Protegida:** não aceita envio direto. Toda mudança entra por revisão com a esteira verde. Quando `contexto.json` declara `revisao_antes_do_merge`, o hook de pre-push barra envios diretos para a `main`. A `main` local é espelho estrito de `origin/main` e não recebe trabalho em andamento.
 
-**O que o hook de pre-push faz:** roda os gates do projeto (uma vez); barra envio direto na linha
-principal protegida e commit que toque código sem `(TASK-X-NNN)` nem `(light)` no título (arquivo de
-`.mentor/` igual ao manifesto não é código; patch local é); e **mostra** os achados do `verificar`, sem barrar.
-A marca `light` não tem registro, mas não some: o dossiê da auditoria lista cada commit Light com as
-linhas que tocou, para conferir se cabia na lista fechada. Tarefa em
-execução tem marcador legítimo, e travar o envio por ele vira laço: quem barra o `verificar` é a esteira.
+**O que o hook de pre-push faz,** olhando os ramos enviados e não o ramo atual: roda os gates; barra
+envio à linha principal protegida e commit que toque código sem `(TASK-X-NNN)` nem `(light)` no
+título (`.mentor/` igual ao manifesto não é código); e **mostra** o `verificar`, sem barrar. Envio
+só para `wip/` passa direto. O dossiê da auditoria lista cada commit Light com as linhas tocadas.
 
 **Prova por Árvore em Squash Merge:**
 Quando o projeto adota merge por *squash* (gerando um commit único com novo SHA na linha principal), o Git local perde o vínculo de ancestrais e comandos como `git branch --merged` não reconhecem o ramo como entregue, fazendo o `git branch -d` recusar a exclusão.
@@ -54,6 +52,17 @@ Ele faz a fusão semântica de `contexto.json` preservando decisões de ambos os
 
 **Integrar cedo e com frequência** (OPS-15). Ramo aberto há semanas é a forma mais invisível de
 desperdício, porque parece progresso.
+
+## Trabalho pausado (WIP)
+
+Pausa só no disco se perde com o disco. `task pausar --commit` e `git push -u origin HEAD:wip/<id>`:
+o envio para `wip/` não passa por gates nem checagem de ID. **O proibido é o merge**, e para voltar:
+
+1. `git merge origin/main` no ramo WIP, **antes** do `task retomar` (ele recusa na ordem errada). Merge, nunca rebase: o rebase troca o `commit_pausa` gravado.
+2. `task retomar`, trabalho, gates, `task finalizar`, PR com o ID no título.
+3. A esteira roda `node mentor.mjs pronto-para-merge --titulo "$TITULO"`: verde só com a tarefa concluída no ramo. Squash merge; os `wip(...)` somem com o ramo.
+
+Ramo privado em repositório público não existe: todo ramo e todo o histórico ficam legíveis. Dado sensível vai para outro repositório privado ou para fora do git, nunca para um ramo.
 
 ## O que a esteira barra
 

@@ -309,6 +309,17 @@ function processo(ctx: Contexto, tarefas: Tarefa[]): Linha[] {
     } catch {
       // continua
     }
+
+    // Ramos WIP no remoto: trabalho pausado guardado fora do disco. Listar e' o que impede virar ramo esquecido.
+    const rWip = spawnSync('git', ['for-each-ref', '--format=%(refname:short)', 'refs/remotes'], { cwd: raiz, encoding: 'utf8', timeout: 5_000 })
+    const wips = (rWip.stdout ?? '').split('\n').map((s) => s.trim()).filter((s) => /^[^/]+\/wip\//.test(s))
+    // Nao sugere apagar: a pausa costuma existir so' no proprio ramo WIP, e o ramo atual nao a enxerga.
+    if (wips.length) {
+      linhas.push({
+        estado: 'neutro',
+        texto: `${wips.length} ramo(s) WIP no remoto: ${wips.join(', ')}. Entram no ramo principal so por PR, com a tarefa concluida`,
+      })
+    }
   }
 
   // Versionamento se responde em CONSTRUCAO, nao em pre-lancamento: quando ha o que publicar,

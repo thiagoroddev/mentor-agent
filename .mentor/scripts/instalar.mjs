@@ -111,6 +111,38 @@ export function normasQueMudam(origem, destino) {
   return mudancas
 }
 
+// ---------------------------------------------------------------- hook de pre-push
+
+const ASSINATURA_DO_HOOK = 'Gerado por `mentor hooks --instalar`'
+
+/**
+ * O arquivo do hook. Mora aqui, em JS puro, porque o `instalar` pelo `npx` precisa regrava-lo.
+ *
+ * ⚠️ Uma linha so'. Ate' a 0.8.x o arquivo rodava `node mentor.mjs gates` antes do `hooks --pre-push`,
+ * e o shell nao sabe para onde o push vai: nao dava para pular os gates num envio de WIP. Agora quem
+ * decide e' o `hooks --pre-push`, que le da entrada padrao os ramos enviados.
+ */
+export const HOOK_PRE_PUSH = [
+  '#!/bin/sh',
+  `# ${ASSINATURA_DO_HOOK}. Roda os gates e verificacoes de pre-push do mentor.`,
+  '# Em pre-push, nao em pre-commit: commit barato evita que alguem aprenda `--no-verify`.',
+  '# O git passa na entrada padrao os ramos enviados; envio so para wip/ pula os gates.',
+  'node mentor.mjs hooks --pre-push "$@" || exit 1',
+].join('\n') + '\n'
+
+/**
+ * Regrava o `.githooks/pre-push` que o mentor gerou, se estiver no modelo antigo. Hook escrito pelo
+ * projeto (sem a assinatura) nunca e' tocado. Devolve `true` quando regravou.
+ */
+export function atualizarHookDoMentor(destino) {
+  const arquivo = join(destino, '.githooks', 'pre-push')
+  if (!existsSync(arquivo)) return false
+  const atual = readFileSync(arquivo, 'utf8').replace(/\r\n/g, '\n')
+  if (!atual.includes(ASSINATURA_DO_HOOK) || atual === HOOK_PRE_PUSH) return false
+  writeFileSync(arquivo, HOOK_PRE_PUSH, 'utf8')
+  return true
+}
+
 /** O texto do aviso, igual nos dois caminhos. */
 export function avisoDeNormas(mudancas) {
   if (!mudancas.length) return []

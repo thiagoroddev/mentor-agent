@@ -75,7 +75,25 @@ jobs:
       - name: Verificacao do Mentor
         run: node mentor.mjs verificar
         if: always()
+
+  pronto-para-merge:
+    name: Tarefa concluida no ramo
+    # So no PR, e nao nos PRs do Dependabot, que nao tem tarefa.
+    if: github.event_name == 'pull_request' && github.event.pull_request.user.login != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # O titulo e texto de quem abriu o PR: entra por variavel de ambiente, nunca interpolado no run.
+      - name: Tarefa do titulo concluida
+        env:
+          TITULO: ${{ github.event.pull_request.title }}
+        run: node mentor.mjs pronto-para-merge --titulo "$TITULO"
 ```
+
+**Por que o job `pronto-para-merge`.** Ramo `wip/<id>` pode subir com trabalho pausado (`processos/entrega.md`); o que nao pode e' entrar no `main`. O pre-push nao alcanca o merge, que acontece no servidor. O job fica vermelho enquanto a tarefa citada no titulo nao estiver concluida no ramo. ⚠️ Sem protecao de ramo (plano gratuito com repositorio privado), vermelho avisa e nao impede: so' mergear com a esteira verde.
 
 ---
 

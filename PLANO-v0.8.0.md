@@ -183,5 +183,5 @@ escolheu a marca explicita, entregue na 0.8.1.
 | C3 | Restricao fundadora (M3) | SPIKE e G/XG exigem `restricoes_reavaliadas`; na 3a reconfirmacao da mesma restricao o `doctor` pede ADR | nota 12/09 |
 | C4 | Composicao de epico fatiado | ao puxar a 3a fatia do mesmo epico, o plano exige `composicao_do_epico` | nota 12/09 |
 | C5 | Portao 2 sem mecanismo | `finalizar --autorizacao "<frase do humano>"`, mostrada no dossie. Fraco: a IA pode digitar; so' torna a violacao visivel | CHORE-019 fechada sem portao 2 |
-| C6 | Tarefa pausada so' no disco | hook aceita push de `wip/<ID>` (nunca PR, nunca main); `pausar --commit` imprime o comando | SPIKE-003 so' em ramo local |
+| C6 | Tarefa pausada so' no disco | **feito na 0.9.0, redesenhado com o humano:** WIP sobe para `wip/`, o merge e' que e' barrado (`PLANO-v0.9.0.md`) | SPIKE-003 so' em ramo local |
 | C7 | Light em codigo e a checagem de ID do hook | **decidido e feito na 0.8.1:** marca explicita `<tipo>(light): ...`, aceita pelo hook e listada no dossie com as linhas tocadas | achado da v0.8.0, secao 4 |

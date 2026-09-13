@@ -12,7 +12,7 @@ const aqui = dirname(fileURLToPath(import.meta.url))
 // coisa que precisa fazer ali (copiar-se para dentro do projeto) e todos os outros comandos passam
 // a rodar da raiz, onde a remocao de tipos funciona. Medido: sem isto, `npx mentor instalar` morre.
 if (aqui.split(/[\\/]/).includes('node_modules')) {
-  const { avisoDeNormas, copiarPacote, criarPontosDeEntrada, analisadoresSemIgnorar, normasQueMudam } = await import('./.mentor/scripts/instalar.mjs')
+  const { atualizarHookDoMentor, avisoDeNormas, copiarPacote, criarPontosDeEntrada, analisadoresSemIgnorar, normasQueMudam } = await import('./.mentor/scripts/instalar.mjs')
   const args = process.argv.slice(2)
   if (args[0] !== 'instalar') {
     console.error('Instalado como dependencia, so `instalar` roda daqui.')
@@ -32,6 +32,7 @@ if (aqui.split(/[\\/]/).includes('node_modules')) {
     } else {
       console.log(`mentor-agent instalado em ${destino}.`)
       for (const linha of avisoDeNormas(normas)) console.log(linha)
+      if (atualizarHookDoMentor(destino)) console.log('Hook .githooks/pre-push regravado no modelo novo: envio para wip/ pula os gates.')
       if (r.migrouDocs) console.log('Migracao concluida: docs/ foi renomeada para docs-mentor/.')
       const e = criarPontosDeEntrada(destino)
       if (e.criados.length) console.log(`Ponto de entrada criado: ${e.criados.join(', ')}.`)

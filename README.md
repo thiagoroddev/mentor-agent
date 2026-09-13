@@ -8,7 +8,7 @@ perguntar, e registra tudo de forma rastreavel.
 Na raiz do projeto que vai usar o pacote:
 
 ```bash
-npm i -D github:thiagoroddev/mentor-agent#v0.8.1
+npm i -D github:thiagoroddev/mentor-agent#v0.9.0
 npx mentor instalar        # copia .mentor/ e mentor.mjs para a raiz
 node mentor.mjs init       # cria docs-mentor/, sem tocar na docs/ do aplicativo
 ```
@@ -24,14 +24,14 @@ a IA le' `.mentor/` como arquivo, e o projeto versiona as convencoes dele ao lad
 isso em vez de estourar.
 
 A versao instalada fica gravada em `docs-mentor/contexto.json`, senao o relatorio de campo nao consegue
-dizer *"isto aconteceu com a 0.8.1"*.
+dizer *"isto aconteceu com a 0.9.0"*.
 
 ### Atualizar uma instalacao existente
 
 Para atualizar o pacote mantendo seus documentos preservados:
 
 ```bash
-npm i -D github:thiagoroddev/mentor-agent#v0.8.1
+npm i -D github:thiagoroddev/mentor-agent#v0.9.0
 npx mentor instalar --forcar
 node mentor.mjs resolver-gerados # regenera markdowns derivados e alinha contexto
 node mentor.mjs verificar
@@ -89,6 +89,17 @@ node mentor.mjs task finalizar TASK-RF-001 --validado-por-humano "Evidencia do t
 # Anexar evidencia externa (run de CI, link de PR) mesmo apos fechamento
 node mentor.mjs task anexar TASK-RF-001 --url "https://github.com/org/repo/actions/runs/12345" --gate build
 ```
+
+### WIP no Remoto, Merge Barrado no Principal (v0.9.0)
+
+Trabalho pausado não precisa viver só no disco. Plano em [`PLANO-v0.9.0.md`](./PLANO-v0.9.0.md).
+
+- **`git push -u origin HEAD:wip/<id>`**: envio só para `wip/` passa sem gates e sem checagem de ID. O `task pausar --commit` sugere o comando.
+- **O hook olha os ramos enviados**, não o ramo atual: `git push origin outro:main` é barrado de qualquer ramo, e a checagem de ID confere os commits do ramo que vai.
+- **Os gates saíram do arquivo do hook** para o `hooks --pre-push`, que os pula no WIP. `instalar --forcar` regrava o hook antigo gerado pelo mentor.
+- **`node mentor.mjs pronto-para-merge --titulo "$TITULO"`** é o passo da esteira no PR: verde só com a tarefa do título concluída no ramo. Modelo do job em `.mentor/skills/github-ci/`.
+- **`task retomar` recusa com o ramo principal à frente**: merge antes de retomar, nunca rebase.
+- **`doctor` lista os ramos `wip/`** do remoto.
 
 ### Auditoria por Tarefa e Travas que Não Atrapalham (v0.8.0)
 

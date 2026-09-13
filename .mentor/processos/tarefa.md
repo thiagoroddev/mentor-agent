@@ -87,12 +87,13 @@ O `mentor-agent` adota o fluxo de **Pausa com Rastreabilidade de Dependências**
 1. **Pausar e liberar o slot de WIP:**
    `mentor task pausar <ID> --motivo "<motivo>" [--bloqueada-por <IDs>] [--commit]`
    - Exige que o estado local do Git esteja limpo. Se houver alterações não commitadas, a flag `--commit` realiza o auto-commit de WIP: `wip(<ID>): pausada - <motivo>`.
-   - **Apenas commit, nunca push:** o commit de WIP existe para limpar a árvore de trabalho e isolar o contexto da próxima tarefa. Dar push de WIP quebraria pipelines de CI ou acionaria deploys de código incompleto.
+   - **Commit, e push só para `wip/<id>`:** o commit de WIP limpa a árvore e isola a próxima tarefa; o push guarda o trabalho fora do disco. Envio só para `wip/` não passa por gates nem checagem de ID. O que é proibido é o merge no ramo principal: a esteira roda `pronto-para-merge` no PR (`processos/entrega.md`).
    - O slot de execução (`em_execucao`) é liberado para que as tarefas que desbloqueiam a atual possam ser puxadas, iniciadas e concluídas.
 
 2. **Retomar após resolução:**
    `mentor task retomar <ID> [--forcar]`
    - Verifica se as tarefas declaradas em `--bloqueada-por` já foram concluídas ou canceladas.
+   - Recusa se o ramo principal tem commits que o ramo não tem: `git merge origin/main` **antes** de retomar, nunca rebase.
    - Reassume o slot de execução (`em-execucao`).
 
 3. **Isolamento de Escopo no Git:**

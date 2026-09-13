@@ -59,7 +59,8 @@ export function rodar(): Cenario {
   // --- barreira local: arquivo versionado + core.hooksPath, sem dependencia
   mentor(c, 'hooks', '--instalar')
   const hook = ler(c, '.githooks/pre-push')
-  confere(c, hook.includes('node mentor.mjs gates'), 'o hook chama os gates do projeto')
+  confere(c, hook.includes('node mentor.mjs hooks --pre-push') && !hook.includes('node mentor.mjs gates'),
+    'o hook chama o pre-push do mentor, que roda os gates e sabe pular o envio de WIP')
   confere(c, hook.includes('pre-push'), 'o hook documenta por que e pre-push e nao pre-commit')
 
   // --- rascunho de stack: escrito, mas marcado para confirmar

@@ -1,5 +1,5 @@
 #!/bin/sh
 # Gerado por `mentor hooks --instalar`. Roda os gates e verificacoes de pre-push do mentor.
 # Em pre-push, nao em pre-commit: commit barato evita que alguem aprenda `--no-verify`.
-node mentor.mjs gates || exit 1
+# O git passa na entrada padrao os ramos enviados; envio so para wip/ pula os gates.
 node mentor.mjs hooks --pre-push "$@" || exit 1
