@@ -66,22 +66,82 @@ function extrairConflitoTexto(conteudo: string): { ours: string; theirs: string 
   return { ours, theirs }
 }
 
-function carregarVersoesDeArquivo(caminhoRelativo: string): { ours: string | null; theirs: string | null } {
+function carregarVersoesDeArquivo(caminhoRelativo: string): { base: string | null; ours: string | null; theirs: string | null } {
   const c = caminhos()
+  const rBase = spawnSync('git', ['show', `:1:${caminhoRelativo}`], { cwd: c.raiz, encoding: 'utf8' })
   const rOurs = spawnSync('git', ['show', `:2:${caminhoRelativo}`], { cwd: c.raiz, encoding: 'utf8' })
   const rTheirs = spawnSync('git', ['show', `:3:${caminhoRelativo}`], { cwd: c.raiz, encoding: 'utf8' })
-  if (rOurs.status === 0 && rTheirs.status === 0 && rOurs.stdout && rTheirs.stdout) {
-    return { ours: rOurs.stdout, theirs: rTheirs.stdout }
+  const base = rBase.status === 0 && rBase.stdout ? rBase.stdout : null
+  const ours = rOurs.status === 0 && rOurs.stdout ? rOurs.stdout : null
+  const theirs = rTheirs.status === 0 && rTheirs.stdout ? rTheirs.stdout : null
+  if (ours && theirs) {
+    return { base, ours, theirs }
   }
 
   const caminhoAbs = `${c.raiz}/${caminhoRelativo}`
   if (existe(caminhoAbs)) {
     const texto = lerTexto(caminhoAbs)
     const extraido = extrairConflitoTexto(texto)
-    if (extraido) return extraido
+    if (extraido) return { base: null, ...extraido }
   }
 
-  return { ours: null, theirs: null }
+  return { base: null, ours: null, theirs: null }
+}
+
+/**
+ * Mesclagem semântica de 3 vias (3-way merge): base (:1:), ours (:2:) e theirs (:3:).
+ * Se apenas um lado mudou em relação à base, adota a alteração.
+ * Para objetos e arrays identificados por id/nome, aplica a regra campo a campo.
+ */
+export function mesclarValores3Way(vBase: any, vOurs: any, vTheirs: any): any {
+  if (vOurs === undefined || vOurs === null) return vTheirs
+  if (vTheirs === undefined || vTheirs === null) return vOurs
+  if (vBase === undefined || vBase === null) return mesclarValores(vOurs, vTheirs)
+
+  // Se theirs não mudou em relação à base, preserva ours
+  if (JSON.stringify(vTheirs) === JSON.stringify(vBase)) return vOurs
+  // Se ours não mudou em relação à base, adota theirs (mudança válida de branch remota!)
+  if (JSON.stringify(vOurs) === JSON.stringify(vBase)) return vTheirs
+
+  if (Array.isArray(vOurs) && Array.isArray(vTheirs)) {
+    const baseArr = Array.isArray(vBase) ? vBase : []
+    const resultado = [...vOurs]
+    for (const item of vTheirs) {
+      if (typeof item === 'object' && item !== null) {
+        const idOuNome = item.id ?? item.nome
+        if (idOuNome) {
+          const idx = resultado.findIndex((x) => (x.id ?? x.nome) === idOuNome)
+          const baseItem = baseArr.find((x) => (x.id ?? x.nome) === idOuNome)
+          if (idx >= 0) {
+            resultado[idx] = mesclarValores3Way(baseItem, resultado[idx], item)
+          } else {
+            resultado.push(item)
+          }
+          continue
+        }
+      }
+      if (!resultado.some((x) => JSON.stringify(x) === JSON.stringify(item))) {
+        resultado.push(item)
+      }
+    }
+    return resultado
+  }
+
+  if (typeof vOurs === 'object' && typeof vTheirs === 'object') {
+    const baseObj = (typeof vBase === 'object' && vBase !== null) ? vBase : {}
+    const chaves = new Set([...Object.keys(baseObj), ...Object.keys(vOurs), ...Object.keys(vTheirs)])
+    const res: Record<string, any> = {}
+    for (const k of chaves) {
+      res[k] = mesclarValores3Way(baseObj[k], vOurs[k], vTheirs[k])
+    }
+    return res
+  }
+
+  if (vOurs === 'aberto' && (vTheirs === 'respondido' || vTheirs === 'dispensado')) {
+    return vTheirs
+  }
+
+  return vOurs
 }
 
 export function resolverGerados(): number {
@@ -90,14 +150,38 @@ export function resolverGerados(): number {
 
   // 1. Resolver contexto.json
   const relContexto = c.contexto.replace(c.raiz + '/', '').replace(c.raiz + '\\', '').replace(/\\/g, '/')
-  const { ours: ctxOursStr, theirs: ctxTheirsStr } = carregarVersoesDeArquivo(relContexto)
+  const { base: ctxBaseStr, ours: ctxOursStr, theirs: ctxTheirsStr } = carregarVersoesDeArquivo(relContexto)
   if (ctxOursStr && ctxTheirsStr) {
     try {
+      const objBase = ctxBaseStr ? JSON.parse(ctxBaseStr) : null
       const objOurs = JSON.parse(ctxOursStr)
       const objTheirs = JSON.parse(ctxTheirsStr)
-      const mesclado = mesclarValores(objOurs, objTheirs)
+      const mesclado = mesclarValores3Way(objBase, objOurs, objTheirs)
+
+      // Regra de avanço histórico para auditoria e revisões gerais
+      if (objOurs.auditoria && objTheirs.auditoria) {
+        const nOurs = objOurs.auditoria.ultima_na_tarefa ?? 0
+        const nTheirs = objTheirs.auditoria.ultima_na_tarefa ?? 0
+        if (nTheirs > nOurs) {
+          mesclado.auditoria = { ...objTheirs.auditoria }
+        } else if (nOurs > nTheirs) {
+          mesclado.auditoria = { ...objOurs.auditoria }
+        } else {
+          const dOurs = objOurs.auditoria.ultima_em ?? ''
+          const dTheirs = objTheirs.auditoria.ultima_em ?? ''
+          mesclado.auditoria = dTheirs > dOurs ? { ...objTheirs.auditoria } : { ...objOurs.auditoria }
+        }
+      }
+      if (objOurs.revisao_geral && objTheirs.revisao_geral) {
+        const rOurs = objOurs.revisao_geral.ultima_na_tarefa ?? 0
+        const rTheirs = objTheirs.revisao_geral.ultima_na_tarefa ?? 0
+        mesclado.revisao_geral = rTheirs > rOurs ? { ...objTheirs.revisao_geral } : { ...objOurs.revisao_geral }
+      }
+      // Lembretes obsoletos nunca devem ser fundidos: sempre regenerados
+      mesclado.lembretes = []
+
       escreverTexto(c.contexto, JSON.stringify(mesclado, null, 2) + '\n')
-      console.log('✓ docs-mentor/contexto.json: fusao semantica concluida com sucesso.')
+      console.log('✓ docs-mentor/contexto.json: fusao semantica 3-way concluida com sucesso.')
     } catch (e: any) {
       console.warn(`! Nao foi possivel realizar fusao automatica de contexto.json: ${e.message}`)
     }
@@ -113,7 +197,39 @@ export function resolverGerados(): number {
     }
   }
 
-  // 2. Resolver recusas.jsonl
+  // 2. Resolver dividas.json (se houver conflito pendente)
+  const relDividas = c.dividas.replace(c.raiz + '/', '').replace(c.raiz + '\\', '').replace(/\\/g, '/')
+  const { base: divBaseStr, ours: divOursStr, theirs: divTheirsStr } = carregarVersoesDeArquivo(relDividas)
+  if (divOursStr && divTheirsStr) {
+    try {
+      const objBase = divBaseStr ? JSON.parse(divBaseStr) : null
+      const objOurs = JSON.parse(divOursStr)
+      const objTheirs = JSON.parse(divTheirsStr)
+      const mesclado = mesclarValores3Way(objBase, objOurs, objTheirs)
+      escreverTexto(c.dividas, JSON.stringify(mesclado, null, 2) + '\n')
+      console.log('✓ docs-mentor/dividas/dividas.json: fusao semantica 3-way concluida com sucesso.')
+    } catch (e: any) {
+      console.warn(`! Nao foi possivel realizar fusao automatica de dividas.json: ${e.message}`)
+    }
+  }
+
+  // 3. Resolver riscos-aceitos.json (se houver conflito pendente)
+  const relRiscos = c.riscos.replace(c.raiz + '/', '').replace(c.raiz + '\\', '').replace(/\\/g, '/')
+  const { base: risBaseStr, ours: risOursStr, theirs: risTheirsStr } = carregarVersoesDeArquivo(relRiscos)
+  if (risOursStr && risTheirsStr) {
+    try {
+      const objBase = risBaseStr ? JSON.parse(risBaseStr) : null
+      const objOurs = JSON.parse(risOursStr)
+      const objTheirs = JSON.parse(risTheirsStr)
+      const mesclado = mesclarValores3Way(objBase, objOurs, objTheirs)
+      escreverTexto(c.riscos, JSON.stringify(mesclado, null, 2) + '\n')
+      console.log('✓ docs-mentor/seguranca/riscos-aceitos.json: fusao semantica 3-way concluida com sucesso.')
+    } catch (e: any) {
+      console.warn(`! Nao foi possivel realizar fusao automatica de riscos-aceitos.json: ${e.message}`)
+    }
+  }
+
+  // 4. Resolver recusas.jsonl
   const relRecusas = c.recusas.replace(c.raiz + '/', '').replace(c.raiz + '\\', '').replace(/\\/g, '/')
   const { ours: recOursStr, theirs: recTheirsStr } = carregarVersoesDeArquivo(relRecusas)
   if (recOursStr && recTheirsStr) {
@@ -124,7 +240,7 @@ export function resolverGerados(): number {
     console.log('✓ docs-mentor/tarefas/recusas.jsonl: uniao de registros efetuada.')
   }
 
-  // 3. Regenerar todas as vistas Markdown diretamente dos modelos
+  // 5. Regenerar todas as vistas Markdown diretamente dos modelos
   try {
     regenerarTudo()
     console.log('✓ Vistas Markdown (contexto.md, backlog.md, reserva.md, 0-indice.md) regeneradas.')
@@ -132,8 +248,8 @@ export function resolverGerados(): number {
     console.warn(`! Erro ao regenerar vistas markdown: ${e.message}`)
   }
 
-  // 4. Git add nos arquivos resolvidos
-  const arquivosParaAdd = [c.contexto, c.recusas, c.contextoMd, c.backlog, c.reservaMd, c.indiceConcluidas].filter(existe)
+  // 6. Git add nos arquivos resolvidos
+  const arquivosParaAdd = [c.contexto, c.dividas, c.riscos, c.recusas, c.contextoMd, c.backlog, c.reservaMd, c.indiceConcluidas].filter(existe)
   if (arquivosParaAdd.length && existe(`${c.raiz}/.git`)) {
     spawnSync('git', ['add', ...arquivosParaAdd], { cwd: c.raiz })
     console.log('✓ Arquivos gerados adicionados ao stage do Git (git add).')

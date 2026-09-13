@@ -1,9 +1,14 @@
 import { spawnSync } from 'node:child_process'
-import { agora, caminhos, escreverJson, escreverTexto, lerJson, listar, NOME_DOS_DOCUMENTOS, relativo } from './arquivos.ts'
+import { createHash } from 'node:crypto'
+import { join, relative } from 'node:path'
+import {
+  agora, caminhos, caminhoCorrespondeDeclaracao, escreverJson, escreverTexto,
+  existe, extrairCaminhosDeclarados, lerJson, lerTexto, listar, NOME_DOS_DOCUMENTOS, relativo,
+} from './arquivos.ts'
 import { carregarContexto, carregarRequisitos, regenerarTudo, registrarRecusa } from './vistas.ts'
 import { DESTINOS_DE_ACHADO, MARCADOR, NIVEIS_DE_AUDITORIA, VEREDITOS_DE_REVISAO } from './tipos.ts'
 import type {
-  Auditoria, DestinoDeAchado, NivelDeAuditoria, Requisito, Tarefa,
+  Auditoria, DestinoDeAchado, NivelDeAuditoria, QuebraDiff, Requisito, Tarefa,
 } from './tipos.ts'
 
 /**
@@ -36,6 +41,100 @@ const VISTAS_GERADAS = [
 ].map((v) => `${NOME_DOS_DOCUMENTOS}/${v}`)
   .map((v) => `:(exclude)${v}`)
 
+function hashDe(texto: string): string {
+  return createHash('sha256').update(texto).digest('hex').slice(0, 16)
+}
+
+/**
+ * Regras compartilhadas de exclusao de diff para a cadencia e o dossie (AUD-002).
+ * Exclui vistas geradas, rascunhos, notas do pacote, e os arquivos de .mentor/
+ * cujo hash for IDENTICO ao manifesto.json (preservando patches locais no diff!).
+ */
+export function arquivosIgnoradosDoDiff(ctx: ReturnType<typeof carregarContexto>): string[] {
+  const c = caminhos()
+  const exclusoes: string[] = [...VISTAS_GERADAS]
+
+  // Rascunhos e notas de desenvolvimento interno do framework (nao sao entrega de produto)
+  exclusoes.push(`:(exclude)${NOME_DOS_DOCUMENTOS}/rascunhos/**`)
+  exclusoes.push(`:(exclude)${NOME_DOS_DOCUMENTOS}/melhorias-do-pacote.md`)
+  exclusoes.push(':(exclude)melhorias-do-pacote.md')
+
+  // Arquivos do pacote (.mentor/):
+  // Exclui apenas arquivos cujo hash SHA-256 for idêntico ao do manifesto.json.
+  // Patches locais ou arquivos novos em .mentor/ permanecem no diff para auditoria!
+  const caminhoManifesto = join(c.pacote, 'manifesto.json')
+  if (existe(caminhoManifesto)) {
+    try {
+      const manifesto = lerJson<{ arquivos: Record<string, string> }>(caminhoManifesto)
+      const arquivosLocais = listar(c.pacote)
+      for (const abs of arquivosLocais) {
+        const rel = relative(c.pacote, abs).split('\\').join('/')
+        if (rel === 'manifesto.json' || rel === 'LEIA-ME-MANIFESTO.txt') {
+          exclusoes.push(`:(exclude).mentor/${rel}`)
+          continue
+        }
+        const hashEsperado = manifesto.arquivos[rel]
+        if (hashEsperado) {
+          const hashAtual = hashDe(lerTexto(abs))
+          if (hashAtual === hashEsperado) {
+            // Intacto: exclui do diff da aplicação
+            exclusoes.push(`:(exclude).mentor/${rel}`)
+          }
+        }
+      }
+    } catch {
+      exclusoes.push(':(exclude).mentor/**')
+    }
+  } else {
+    exclusoes.push(':(exclude).mentor/**')
+  }
+
+  // Ignorados declarados no contexto (ex: fixtures geradas por script)
+  const extras = ctx.auditoria?.ignorar_diff
+  if (Array.isArray(extras)) {
+    for (const pat of extras) {
+      if (pat && typeof pat === 'string') {
+        const limpo = pat.trim().replace(/\\/g, '/')
+        if (limpo) exclusoes.push(`:(exclude)${limpo}`)
+      }
+    }
+  }
+
+  return exclusoes
+}
+
+export function deveIgnorarArquivo(caminhoRel: string, ctx: ReturnType<typeof carregarContexto>): boolean {
+  const norm = caminhoRel.replace(/\\/g, '/').replace(/^\.\//, '')
+  if (norm.startsWith(`${NOME_DOS_DOCUMENTOS}/`) || norm.startsWith('docs/')) return true
+  if (norm.includes('melhorias-do-pacote.md')) return true
+  if (norm.startsWith('.mentor/')) {
+    const c = caminhos()
+    const caminhoManifesto = join(c.pacote, 'manifesto.json')
+    if (existe(caminhoManifesto)) {
+      try {
+        const manifesto = lerJson<{ arquivos: Record<string, string> }>(caminhoManifesto)
+        const rel = norm.replace(/^\.mentor\//, '')
+        const hashEsperado = manifesto.arquivos[rel]
+        if (hashEsperado) {
+          const abs = join(c.pacote, rel)
+          if (existe(abs) && hashDe(lerTexto(abs)) === hashEsperado) return true
+        }
+      } catch {
+        return true
+      }
+    } else {
+      return true
+    }
+  }
+  const extras = ctx.auditoria?.ignorar_diff
+  if (Array.isArray(extras)) {
+    for (const pat of extras) {
+      if (pat && norm.startsWith(pat.replace(/\*+$/, ''))) return true
+    }
+  }
+  return false
+}
+
 export function carregarAuditorias(): Auditoria[] {
   return listar(caminhos().auditorias, '.json').map((a) => lerJson<Auditoria>(a))
 }
@@ -62,12 +161,14 @@ export function baseDoLote(ctx: ReturnType<typeof carregarContexto>, lote: Taref
 
 export function medirDiffAcumulado(base: string | null): number {
   if (!base) return 0
-  const recorteDoProjeto = ['--relative', '--', '.', ...VISTAS_GERADAS]
+  const ctx = carregarContexto()
+  const exclusoes = arquivosIgnoradosDoDiff(ctx)
+  const recorteDoProjeto = ['--relative', '--', '.', ...exclusoes]
   const r = git(['diff', base, ...recorteDoProjeto])
   let tamanho = r.ok ? r.saida.length : 0
 
   const novos = git(['ls-files', '--others', '--exclude-standard']).saida.split('\n')
-    .filter(Boolean).filter((f) => !f.startsWith(`${NOME_DOS_DOCUMENTOS}/`) && !f.startsWith('docs/'))
+    .filter(Boolean).filter((f) => !deveIgnorarArquivo(f, ctx))
   for (const f of novos) {
     const conteudo = git(['diff', '--no-index', '--', '/dev/null', f]).saida
     tamanho += (conteudo || `+++ ${f}`).slice(0, LIMITE_ARQUIVO_NOVO).length
@@ -125,14 +226,11 @@ function fatosMecanicos(lote: Tarefa[], arquivosDoDiff: string[], diffTotalChars
   if (diffTotalChars > LIMITE_DIFF) {
     fatos.push(`⚠️ DIFF TRUNCADO: o lote acumulou ${diffTotalChars} caracteres de diff, excedendo o teto de ${LIMITE_DIFF}. A cadencia por caracteres foi desrespeitada. Auditor: liste as partes nao verificadas em "nao_verificado".`)
   }
-  const declarados = new Set<string>()
+  const declarados: string[] = []
   for (const t of lote) {
-    for (const linha of t.plano.muda) {
-      const arquivo = linha.split(/[\s:—-]/)[0]?.trim()
-      if (arquivo) declarados.add(arquivo)
-    }
+    declarados.push(...extrairCaminhosDeclarados(t.plano.muda))
   }
-  const naoDeclarados = arquivosDoDiff.filter((a) => ![...declarados].some((d) => a === d || a.endsWith(d) || d.endsWith(a)))
+  const naoDeclarados = arquivosDoDiff.filter((a) => !caminhoCorrespondeDeclaracao(a, declarados))
   if (naoDeclarados.length) {
     fatos.push(`${naoDeclarados.length} arquivo(s) mudaram sem constar em nenhum \`plano.muda\` do lote: ${naoDeclarados.slice(0, 20).join(', ')}`)
   }
@@ -158,13 +256,16 @@ function fatosMecanicos(lote: Tarefa[], arquivosDoDiff: string[], diffTotalChars
         }
       }
     }
-    const tocaSensivel = /schema|migration|persist|banco|db_|calcul|algoritmo|formula|romaneio|haversine/i.test(
+    const tocaSensivel = /schema|migration|persist|banco|db_|calcul|algoritmo|formula/i.test(
       `${t.titulo} ${t.plano.muda.join(' ')} ${t.plano.impacto ?? ''}`,
     ) || t.tipo === 'RN' || t.tipo === 'RNF'
     if (tocaSensivel) {
       if (t.validacao === 'aprovado') {
         const ev = t.gates['validacao_manual']?.saida ?? t.validacao_motivo ?? 'aprovado pelo humano'
-        fatos.push(`${t.id}: alterou persistencia/calculo e possui revisao humana aprovada: "${ev}" (Regra 4 atendida)`)
+        fatos.push(`${t.id}: alterou persistencia/calculo e possui revisao humana declarada: "${ev}" (Regra 4 atendida)`)
+      } else if (t.validacao === 'dispensado') {
+        const mot = t.validacao_motivo ?? t.gates['validacao_manual']?.motivo ?? 'sem motivo registrado'
+        fatos.push(`⚠️ ${t.id}: alterou persistencia/calculo e teve a validacao manual DISPENSADA: "${mot}". Auditor: verificar se ha teste de combinacoes ou fixture`)
       } else {
         fatos.push(`${t.id}: alterou persistencia/calculo ("${t.titulo}") sem registro de revisao humana aprovada (atencao a Regra 4)`)
       }
@@ -177,29 +278,62 @@ function fatosMecanicos(lote: Tarefa[], arquivosDoDiff: string[], diffTotalChars
 function dossie(id: string, lote: Tarefa[], base: string | null, final: string | null): string {
   const reqs = carregarRequisitos()
   const citados = new Set(lote.flatMap((t) => t.requisitos))
+  const ctx = carregarContexto()
+  const exclusoes = arquivosIgnoradosDoDiff(ctx)
+  const recorteDoProjeto = ['--relative', '--', '.', ...exclusoes]
   let diff = ''
   let stat = ''
   let arquivos: string[] = []
   let recorte = ''
-  // Pathspec `.` com o git rodando na raiz do projeto, e `--relative` para os caminhos saírem
-  // relativos a ela. Assim um projeto dentro de um repositorio maior audita **so' a si mesmo**, e
-  // o dossie nao muda de forma entre Windows e Linux por causa de caminho absoluto.
-  const recorteDoProjeto = ['--relative', '--', '.', ...VISTAS_GERADAS]
   let diffTotal = 0
+
   if (base) {
     stat = git(['diff', '--stat', base, ...recorteDoProjeto]).saida
     arquivos = git(['diff', '--name-only', base, ...recorteDoProjeto]).saida.split('\n').map((x) => x.trim()).filter(Boolean)
-    diff = git(['diff', base, ...recorteDoProjeto]).saida
-    diffTotal = diff.length
-    if (diff.length > LIMITE_DIFF) {
-      recorte = `\n\n⚠️ **O diff foi recortado em ${LIMITE_DIFF} de ${diff.length} caracteres.** O que nao coube nao foi auditado, e isso entra em "nao verificado" do relatorio.`
-      diff = diff.slice(0, LIMITE_DIFF) + '\n[...recortado...]'
+  }
+
+  const novos = git(['ls-files', '--others', '--exclude-standard']).saida.split('\n')
+    .filter(Boolean).filter((f) => !deveIgnorarArquivo(f, ctx))
+
+  // Priorização do diff:
+  // 1. Código do produto e testes (src/, lib/, app/, test/, tests/, etc.)
+  // 2. Configurações e esquemas (package.json, tsconfig, etc.)
+  // 3. Documentação e outros
+  function pesoPrioridade(arq: string): number {
+    const a = arq.toLowerCase()
+    if (/^(src|lib|app|test|tests)\//.test(a) || a.includes('.test.') || a.includes('.spec.')) return 1
+    if (/package\.json|tsconfig|\.config\.|schema/i.test(a)) return 2
+    return 3
+  }
+
+  const arquivosOrdenados = [...arquivos].sort((a, b) => {
+    const pA = pesoPrioridade(a)
+    const pB = pesoPrioridade(b)
+    if (pA !== pB) return pA - pB
+    return a.localeCompare(b)
+  })
+
+  const arquivosOmitidos: Array<{ arq: string; tamanho: number }> = []
+
+  if (base) {
+    for (const f of arquivosOrdenados) {
+      const conteudo = git(['diff', base, '--', f]).saida
+      const tam = conteudo.length
+      diffTotal += tam
+      if (diff.length + tam > LIMITE_DIFF) {
+        arquivosOmitidos.push({ arq: f, tamanho: tam })
+      } else {
+        diff += (diff ? '\n' : '') + conteudo
+      }
+    }
+    if (arquivosOmitidos.length > 0) {
+      recorte = `\n\n⚠️ **O diff excedeu o teto de ${LIMITE_DIFF} caracteres (${diffTotal} chars acumulados).**\n` +
+        `Os seguintes arquivos de menor prioridade foram omitidos para preservar o codigo de produto:\n` +
+        arquivosOmitidos.map((o) => `- \`${o.arq}\` (${o.tamanho} caracteres) — auditor: verificar separadamente`).join('\n') +
+        `\nIsso entra em "nao_verificado" do relatorio.`
     }
   }
-  // Arquivo criado e nunca commitado nao aparece em `git diff` — e e' justamente onde o erro novo
-  // mora. Entra aqui inteiro, por `--no-index`, que le' sem tocar no indice de ninguem.
-  const novos = git(['ls-files', '--others', '--exclude-standard']).saida.split('\n')
-    .filter(Boolean).filter((f) => !f.startsWith(`${NOME_DOS_DOCUMENTOS}/`))
+
   let inteiros = ''
   for (const f of novos) {
     const conteudo = git(['diff', '--no-index', '--', '/dev/null', f]).saida
@@ -474,4 +608,54 @@ export function relatar(): number {
   const abertas = auditorias.flatMap((a) => a.pendencias).filter((p) => !p.resolvida_em).length
   console.log(`\n${abertas} pendencia(s) sem destino. A auditoria reporta; o destino e decisao sua.`)
   return 0
+}
+
+/**
+ * Calcula a quebra do diff acumulado por categoria de arquivo para exibicao no doctor (AUD-002).
+ */
+export function calcularQuebraDiff(base: string | null): QuebraDiff {
+  if (!base) {
+    return { codigo_e_testes: 0, configuracoes: 0, documentacao: 0, outros: 0, ignorado_pacote: 0, ignorado_gerados: 0, total_auditavel: 0 }
+  }
+  const ctx = carregarContexto()
+  const exclusoes = arquivosIgnoradosDoDiff(ctx)
+  const recorteDoProjeto = ['--relative', '--', '.', ...exclusoes]
+  const arquivos = git(['diff', '--name-only', base, ...recorteDoProjeto]).saida
+    .split('\n').map((x) => x.trim()).filter(Boolean)
+  const novos = git(['ls-files', '--others', '--exclude-standard']).saida.split('\n')
+    .filter(Boolean).filter((f) => !deveIgnorarArquivo(f, ctx))
+  const todos = [...new Set([...arquivos, ...novos])]
+
+  let codigo_e_testes = 0
+  let configuracoes = 0
+  let documentacao = 0
+  let outros = 0
+
+  for (const f of todos) {
+    const a = f.toLowerCase()
+    let tam = 0
+    if (novos.includes(f)) {
+      tam = (git(['diff', '--no-index', '--', '/dev/null', f]).saida || '').length
+    } else {
+      tam = git(['diff', base, '--', f]).saida.length
+    }
+    if (/^(src|lib|app|test|tests)\//.test(a) || a.includes('.test.') || a.includes('.spec.')) {
+      codigo_e_testes += tam
+    } else if (/package\.json|tsconfig|\.config\.|schema/i.test(a)) {
+      configuracoes += tam
+    } else if (/\.md$/i.test(a) || a.startsWith('docs/')) {
+      documentacao += tam
+    } else {
+      outros += tam
+    }
+  }
+  return {
+    codigo_e_testes,
+    configuracoes,
+    documentacao,
+    outros,
+    ignorado_pacote: 0,
+    ignorado_gerados: 0,
+    total_auditavel: codigo_e_testes + configuracoes + documentacao + outros,
+  }
 }

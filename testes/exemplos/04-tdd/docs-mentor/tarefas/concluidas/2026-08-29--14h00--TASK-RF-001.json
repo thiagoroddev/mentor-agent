@@ -19,7 +19,7 @@
   "sem_requisito_motivo": "teste de tdd",
   "criada_em": "29/08/26 14:00",
   "iniciada_em": "29/08/26 14:00",
-  "commit_base": "0edc987dee3f74f1d2b569da11acc299d84e7633",
+  "commit_base": "217494187d3a92c8620dece26b09ddeeb4aa727f",
   "concluida_em": "29/08/26 14:00",
   "plano": {
     "muda": [
@@ -44,6 +44,8 @@
       "codigo_saida": 0,
       "saida": "\"3 passed\"",
       "executado_em": "29/08/26 14:00",
+      "commit_execucao": "217494187d3a92c8620dece26b09ddeeb4aa727f",
+      "arvore_hash": "066584044869a93fc084e04cfb6e1c95ce840e28",
       "evidencia_url": null,
       "motivo": null,
       "ressalva": null,

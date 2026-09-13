@@ -181,12 +181,19 @@ A IA **nunca** finaliza nem faz push antes de receber essa confirmação escrita
 O CLI recusa o `mentor task finalizar` se:
 1. A tarefa estiver com `validacao: "pendente"` sem validação aprovada ou dispensada.
 2. O gate `validacao_manual` estiver `NÃO EXECUTADO` sem motivo.
-3. Arquivos de código de produção tiverem sido modificados no Git sem constar no `plano.muda` (prevenção de arquivos fantasmas AUD-001-B05).
+3. Arquivos de código de produção tiverem sido modificados no Git sem constar no `plano.muda` (suporta kebab-case e globs `*`, `**` para subpastas).
+4. Tarefa retroativa for detectada (arquivos de `plano.muda` já commitados antes de `commit_base` e diff ativo vazio), a menos que finalizada com a flag explícita `--retroativa`.
+5. Em tarefas de cálculo, persistência/banco, algoritmos ou spikes, a dispensa de validação (`--dispensado`) exige justificativa detalhada (`--motivo`) com no mínimo 30 caracteres.
 
-**Como registrar:**
-- Humano aprovou: `mentor task validar <ID> --aprovado --evidencia "<resumo dos testes>"`
-- Atalho na finalização: `mentor task finalizar <ID> --validado-por-humano "<evidencia>"`
-- Dispensa justificada: `mentor task validar <ID> --dispensado --motivo "<justificativa>"`
+**Como registrar evidências e validação:**
+- Humano aprovou: `mentor task validar <ID> --aprovado --evidencia "<resumo dos testes>"` (exige evidência substantiva, grava `codigo_saida: null`).
+- Atalho na finalização: `mentor task finalizar <ID> --validado-por-humano "<evidencia>"`.
+- Dispensa justificada: `mentor task validar <ID> --dispensado --motivo "<justificativa substantiva>"`.
+- Evidenciar critério de aceite com comando: `mentor task criterio <ID> <indice> --comando "<cmd>"` ou `--saida "<texto>"`.
+- Anexar link externo (CI / PR) a gate de tarefa aberta ou já concluída: `mentor task anexar <ID> --url "<url>" [--gate <nome>]`.
+
+### Agilidade de Feedback & Fixtures Rápidas
+Gates locais do mentor devem ser rápidos para não desencorajar a execução contínua. Para baterias pesadas (ex.: suítes E2E completas ou benchmarks lentos), utilize fixtures rápidas nos testes locais e anexe a prova completa da esteira remota via `mentor task anexar <ID> --url "<run do CI>"`.
 
 ## Fechamento
 

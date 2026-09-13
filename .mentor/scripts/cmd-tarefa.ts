@@ -1,7 +1,10 @@
 import { spawnSync } from 'node:child_process'
 import { renameSync, rmSync } from 'node:fs'
 import { join } from 'node:path'
-import { agora, caminhos, escreverJson, escreverTexto, existe, lerJson, lerTexto, listar, NOME_DOS_DOCUMENTOS } from './arquivos.ts'
+import {
+  agora, caminhos, caminhoCorrespondeDeclaracao, extrairCaminhosDeclarados, escreverJson,
+  escreverTexto, existe, lerJson, lerTexto, listar, NOME_DOS_DOCUMENTOS,
+} from './arquivos.ts'
 import { proximoIdDeTarefa } from './ids.ts'
 import { carregarContexto, carregarRequisitos, carregarTarefas, fixar, regenerarTudo, registrarRecusa, soltar } from './vistas.ts'
 import {
@@ -44,6 +47,31 @@ function cabecaDoGit(): string | null {
   const r = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: caminhos().raiz, encoding: 'utf8' })
   return r.status === 0 ? (r.stdout ?? '').trim() || null : null
 }
+
+/**
+ * O hash da arvore de trabalho atual. Se o working tree estiver com alteracoes locais (staged ou unstaged),
+ * usa `git stash create` para obter o hash exato da arvore testada sem alterar o estado do indice ou do disco.
+ * Se a arvore estiver limpa, usa HEAD^{tree}.
+ */
+export function hashDaArvoreAtual(): string | null {
+  const c = caminhos()
+  const rStash = spawnSync('git', ['stash', 'create'], { cwd: c.raiz, encoding: 'utf8' })
+  if (rStash.status === 0 && rStash.stdout && rStash.stdout.trim()) {
+    const commitStash = rStash.stdout.trim()
+    const rTree = spawnSync('git', ['rev-parse', `${commitStash}^{tree}`], { cwd: c.raiz, encoding: 'utf8' })
+    if (rTree.status === 0 && rTree.stdout && rTree.stdout.trim()) {
+      return rTree.stdout.trim()
+    }
+    return commitStash
+  }
+  const rHeadTree = spawnSync('git', ['rev-parse', 'HEAD^{tree}'], { cwd: c.raiz, encoding: 'utf8' })
+  if (rHeadTree.status === 0 && rHeadTree.stdout && rHeadTree.stdout.trim()) {
+    return rHeadTree.stdout.trim()
+  }
+  return cabecaDoGit()
+}
+
+export { caminhoCorrespondeDeclaracao, extrairCaminhosDeclarados } from './arquivos.ts'
 
 // ---------------------------------------------------------------- nova
 
@@ -169,6 +197,10 @@ export function iniciar(id: string, flags: Flags = {}): void {
     throw new Error(
       `Ja ha ${emExecucao.length} tarefa(s) em execucao (limite ${limite}): ${emExecucao.map((t) => t.id).join(', ')}. Feche antes de abrir outra.`,
     )
+  }
+  const statusGit = spawnSync('git', ['status', '--porcelain'], { cwd: caminhos().raiz, encoding: 'utf8' })
+  if (statusGit.status === 0 && statusGit.stdout && statusGit.stdout.trim()) {
+    console.warn('! Aviso: a arvore de trabalho possui alteracoes locais nao commitadas. Certifique-se de que correspondem a esta tarefa.')
   }
   tarefa.estado = 'em-execucao'
   tarefa.iniciada_em = agora().log
@@ -465,7 +497,8 @@ export function registrarGate(id: string, gate: string, flags: Flags): void {
     const anterior = tarefa.gates[gate]
     tarefa.gates[gate] = {
       rotulo: 'FALHOU', vermelho_em: agora().log, comando: comandoExecutado, codigo_saida: codigoSaida, saida,
-      executado_em: agora().log, evidencia_url: anterior?.evidencia_url ?? null,
+      executado_em: agora().log, commit_execucao: cabecaDoGit(), arvore_hash: hashDaArvoreAtual(),
+      evidencia_url: anterior?.evidencia_url ?? null,
       motivo: null, ressalva: null,
     }
     escreverJson(caminho, tarefa)
@@ -493,7 +526,8 @@ export function registrarGate(id: string, gate: string, flags: Flags): void {
   tarefa.gates[gate] = {
     rotulo, vermelho_em: anterior?.vermelho_em ?? null,
     comando: comandoExecutado, codigo_saida: codigoSaida, saida: saida || null,
-    executado_em: agora().log, evidencia_url: flags.url ?? null,
+    executado_em: agora().log, commit_execucao: cabecaDoGit(), arvore_hash: hashDaArvoreAtual(),
+    evidencia_url: flags.url ?? null,
     motivo, ressalva: flags.ressalva ?? null,
     vermelho_dispensado: disp,
   }
@@ -536,22 +570,37 @@ export function finalizar(id: string, flags: Flags = {}): void {
 
   // Validação manual: atalho direto na finalização
   if (flags['validado-por-humano']) {
+    const ev = flags['validado-por-humano'].trim()
+    if (!ev || ev.length < 10) {
+      throw new Error('--validado-por-humano exige evidencia conferivel detalhada (passos testados e resultado observado).')
+    }
     tarefa.validacao = 'aprovado'
     tarefa.validado_em = agora().log
-    tarefa.validacao_motivo = flags['validado-por-humano']
+    tarefa.validacao_motivo = ev
     tarefa.gates['validacao_manual'] = {
-      rotulo: 'APROVADO', comando: null, codigo_saida: 0,
-      saida: flags['validado-por-humano'], executado_em: tarefa.validado_em,
+      rotulo: 'APROVADO', comando: null, codigo_saida: null,
+      saida: ev, executado_em: tarefa.validado_em,
+      commit_execucao: cabecaDoGit(), arvore_hash: hashDaArvoreAtual(),
       evidencia_url: null, motivo: null, ressalva: null, vermelho_em: null,
     }
   } else if (flags['validacao-dispensada']) {
+    const mot = (flags.motivo ?? 'dispensada na finalizacao').trim()
+    const ehSensivel = /schema|migration|persist|banco|db_|calcul|algoritmo|formula/i.test(
+      `${tarefa.titulo} ${tarefa.plano.muda.join(' ')} ${tarefa.plano.impacto ?? ''}`,
+    ) || tarefa.tipo === 'RN' || tarefa.tipo === 'RNF' || tarefa.tipo === 'SPIKE'
+    if (ehSensivel && mot.length < 30) {
+      throw new Error(
+        'Dispensar validacao em tarefa de calculo/persistencia/spike exige --motivo detalhado (minimo 30 caracteres).',
+      )
+    }
     tarefa.validacao = 'dispensado'
     tarefa.validado_em = agora().log
-    tarefa.validacao_motivo = flags.motivo ?? 'dispensada na finalizacao'
+    tarefa.validacao_motivo = mot
     tarefa.gates['validacao_manual'] = {
       rotulo: 'não se aplica', comando: null, codigo_saida: null,
       saida: null, executado_em: tarefa.validado_em,
-      evidencia_url: null, motivo: tarefa.validacao_motivo, ressalva: null, vermelho_em: null,
+      commit_execucao: cabecaDoGit(), arvore_hash: hashDaArvoreAtual(),
+      evidencia_url: null, motivo: mot, ressalva: null, vermelho_em: null,
     }
   }
 
@@ -742,11 +791,7 @@ export function finalizar(id: string, flags: Flags = {}): void {
       rUntracked.stdout.split('\n').forEach((f) => arquivosSet.add(f.trim().replace(/\\/g, '/')))
     }
     const arquivosModificados = [...arquivosSet].filter(Boolean)
-    const declarados = new Set<string>()
-    for (const linha of tarefa.plano.muda) {
-      const arq = linha.split(/[\s:—-]/)[0]?.trim().replace(/\\/g, '/')
-      if (arq && !arq.startsWith(MARCADOR)) declarados.add(arq)
-    }
+    const declarados = extrairCaminhosDeclarados(tarefa.plano.muda)
     const ignorados = [
       `${NOME_DOS_DOCUMENTOS}/`,
       'docs/',
@@ -755,12 +800,52 @@ export function finalizar(id: string, flags: Flags = {}): void {
     ]
     const naoDeclarados = arquivosModificados.filter((arq) => {
       if (ignorados.some((ig) => arq.startsWith(ig) || arq === ig)) return false
-      return ![...declarados].some((d) => arq === d || arq.endsWith(d) || d.endsWith(arq))
+      return !caminhoCorrespondeDeclaracao(arq, declarados)
     })
     if (naoDeclarados.length > 0) {
       impedimentos.push(
         `${naoDeclarados.length} arquivo(s) de codigo modificado(s) no Git fora do plano.muda: ${naoDeclarados.slice(0, 5).join(', ')}. Declare-os no plano antes de fechar a tarefa para manter o escopo rastreado (AUD-001-B05).`,
       )
+    }
+
+    // Detecção de tarefa retroativa (AUD-002-B02): diff ativo vazio mas commit_base já continha as mudanças
+    if (tarefa.commit_base && !flags['retroativa']) {
+      if (declarados.length > 0) {
+        const rDiffAtivo = spawnSync('git', ['diff', '--name-only', `${tarefa.commit_base}..HEAD`], {
+          cwd: caminhos().raiz,
+          encoding: 'utf8',
+        })
+        const arqsNoDiff = rDiffAtivo.status === 0 && rDiffAtivo.stdout
+          ? rDiffAtivo.stdout.split('\n').map((x) => x.trim().replace(/\\/g, '/')).filter(Boolean)
+          : []
+        const tocouDeclarados = arqsNoDiff.some((a) => caminhoCorrespondeDeclaracao(a, declarados))
+        if (!tocouDeclarados) {
+          const rPrev = spawnSync('git', ['diff', '--name-only', `${tarefa.commit_base}~1..${tarefa.commit_base}`], {
+            cwd: caminhos().raiz,
+            encoding: 'utf8',
+          })
+          const arqsNoPrev = rPrev.status === 0 && rPrev.stdout
+            ? rPrev.stdout.split('\n').map((x) => x.trim().replace(/\\/g, '/')).filter(Boolean)
+            : []
+          if (arqsNoPrev.some((a) => caminhoCorrespondeDeclaracao(a, declarados))) {
+            impedimentos.push(
+              `Tarefa retroativa detectada: os arquivos declarados em plano.muda ja foram commitados antes de commit_base (${tarefa.commit_base}) e o diff da tarefa esta vazio. Para registrar como retroativa intencional, finalize com: mentor task finalizar ${id} --retroativa`,
+            )
+          }
+        }
+      }
+    }
+
+    const headAtual = cabecaDoGit()
+    for (const [nomeGate, g] of Object.entries(tarefa.gates)) {
+      if (!g || g.rotulo !== 'APROVADO') continue
+      if (nomeGate === 'testes' || nomeGate === 'build') {
+        if (g.commit_execucao && headAtual && g.commit_execucao !== headAtual && !g.evidencia_url) {
+          console.warn(
+            `! Alerta: gate "${nomeGate}" rodou no commit ${g.commit_execucao}, diferente do HEAD atual (${headAtual}). Recomenda-se reexecutar o gate ou anexar o link do CI via "mentor task anexar ${id} --url ...".`,
+          )
+        }
+      }
     }
   }
 
@@ -839,24 +924,39 @@ export function fila(id: string, posicao: number, liberar: boolean): void {
 export function validar(id: string, flags: Flags): void {
   const { caminho, tarefa } = localizar(id)
   if (flags.aprovado) {
+    const ev = (flags.evidencia ?? flags.motivo ?? '').trim()
+    if (!ev || ev.length < 10) {
+      throw new Error('Validacao manual aprovada exige --evidencia substantiva (passos executados e resultado observado).')
+    }
     tarefa.validacao = 'aprovado'
-    tarefa.validacao_motivo = flags.evidencia ?? flags.motivo ?? null
+    tarefa.validacao_motivo = ev
     tarefa.validado_em = agora().log
     tarefa.gates['validacao_manual'] = {
       rotulo: 'APROVADO',
       comando: null,
-      codigo_saida: 0,
-      saida: tarefa.validacao_motivo ?? 'Validado e aprovado pelo humano.',
+      codigo_saida: null,
+      saida: ev,
       executado_em: tarefa.validado_em,
+      commit_execucao: cabecaDoGit(),
+      arvore_hash: hashDaArvoreAtual(),
       evidencia_url: flags.url ?? null,
       motivo: null,
       ressalva: null,
       vermelho_em: null,
     }
   } else if (flags.dispensado) {
-    if (!flags.motivo) throw new Error('Dispensar validacao exige --motivo.')
+    const mot = (flags.motivo ?? '').trim()
+    if (!mot) throw new Error('Dispensar validacao exige --motivo.')
+    const ehSensivel = /schema|migration|persist|banco|db_|calcul|algoritmo|formula/i.test(
+      `${tarefa.titulo} ${tarefa.plano.muda.join(' ')} ${tarefa.plano.impacto ?? ''}`,
+    ) || tarefa.tipo === 'RN' || tarefa.tipo === 'RNF' || tarefa.tipo === 'SPIKE'
+    if (ehSensivel && mot.length < 30) {
+      throw new Error(
+        'Dispensar validacao em tarefa de calculo/persistencia/spike exige --motivo detalhado (minimo 30 caracteres) justificando a dispensa.',
+      )
+    }
     tarefa.validacao = 'dispensado'
-    tarefa.validacao_motivo = flags.motivo
+    tarefa.validacao_motivo = mot
     tarefa.validado_em = agora().log
     tarefa.gates['validacao_manual'] = {
       rotulo: 'não se aplica',
@@ -864,15 +964,90 @@ export function validar(id: string, flags: Flags): void {
       codigo_saida: null,
       saida: null,
       executado_em: tarefa.validado_em,
+      commit_execucao: cabecaDoGit(),
+      arvore_hash: hashDaArvoreAtual(),
       evidencia_url: null,
-      motivo: flags.motivo,
+      motivo: mot,
       ressalva: null,
       vermelho_em: null,
     }
   } else {
-    throw new Error('Use --aprovado [--evidencia "..."] ou --dispensado --motivo "...".')
+    throw new Error('Use --aprovado --evidencia "..." ou --dispensado --motivo "...".')
   }
   escreverJson(caminho, tarefa)
   regenerarTudo()
   console.log(`${id} · validacao ${tarefa.validacao}.`)
+}
+
+// ---------------------------------------------------------------- anexar evidencia externa
+
+/**
+ * Anexa link de execucao (ex: run do CI, PR de entrega) a um gate de uma tarefa,
+ * mesmo que a tarefa ja esteja concluida (atendendo ao fluxo de entrega do entrega.md).
+ */
+export function anexar(id: string, flags: Flags): void {
+  const url = exigir(flags, 'url')
+  const gateNome = (flags.gate as string) || 'build'
+  const { caminho, tarefa } = localizar(id)
+  if (!tarefa.gates[gateNome]) {
+    tarefa.gates[gateNome] = {
+      rotulo: 'APROVADO',
+      comando: null,
+      codigo_saida: 0,
+      saida: 'Evidencia anexada externamente.',
+      executado_em: agora().log,
+      commit_execucao: cabecaDoGit(),
+      arvore_hash: hashDaArvoreAtual(),
+      evidencia_url: url,
+      motivo: null,
+      ressalva: null,
+      vermelho_em: null,
+    }
+  } else {
+    tarefa.gates[gateNome]!.evidencia_url = url
+    if (flags.rotulo && ROTULOS.includes(flags.rotulo as Rotulo)) {
+      tarefa.gates[gateNome]!.rotulo = flags.rotulo as Rotulo
+    }
+  }
+  escreverJson(caminho, tarefa)
+  regenerarTudo()
+  console.log(`${id} · evidencia anexada ao gate "${gateNome}": ${url}`)
+}
+
+// ---------------------------------------------------------------- criterio com comando
+
+/**
+ * Registra a evidencia de execucao de comando para um criterio de aceite do plano (AUD-002-B02).
+ */
+export function criterio(id: string, indiceStr: string, flags: Flags): void {
+  const { caminho, tarefa } = localizar(id)
+  const idx = parseInt(indiceStr, 10)
+  if (isNaN(idx) || idx < 0 || idx >= tarefa.plano.criterios_aceite.length) {
+    throw new Error(
+      `Indice de criterio invalido: "${indiceStr}". A tarefa possui ${tarefa.plano.criterios_aceite.length} criterios (0 a ${tarefa.plano.criterios_aceite.length - 1}).`,
+    )
+  }
+  let comando: string | null = null
+  let saida: string | null = null
+  let codigoSaida: number | null = null
+  if (flags.comando) {
+    comando = flags.comando
+    const r = spawnSync(comando, { shell: true, encoding: 'utf8', cwd: caminhos().raiz, timeout: 60_000 })
+    codigoSaida = r.status
+    saida = recortar(`${r.stdout ?? ''}${r.stderr ?? ''}`.trim())
+  } else if (flags.saida) {
+    saida = flags.saida.trim()
+    codigoSaida = 0
+  } else {
+    throw new Error('mentor task criterio exige --comando "<cmd>" ou --saida "<texto>".')
+  }
+  tarefa.plano.criterios_aceite[idx]!.evidencia = {
+    comando,
+    codigo_saida: codigoSaida,
+    saida,
+    executado_em: agora().log,
+  }
+  escreverJson(caminho, tarefa)
+  regenerarTudo()
+  console.log(`${id} · criterio [${idx}] evidenciado com sucesso (codigo ${codigoSaida}).`)
 }

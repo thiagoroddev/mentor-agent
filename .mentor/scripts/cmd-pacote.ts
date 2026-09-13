@@ -88,6 +88,29 @@ export function instalar(flags: Record<string, string | undefined>): void {
     return
   }
 
+  if (flags.forcar && existe(pastaDestino)) {
+    const processosPasta = join(pastaDestino, 'processos')
+    const procs = existe(processosPasta) ? listar(processosPasta, '.md').map((p) => relative(pastaDestino, p)) : []
+    const arquivosNormativos = ['nucleo.md', ...procs]
+    const modificados: string[] = []
+    for (const rel of arquivosNormativos) {
+      const arqDest = join(pastaDestino, rel)
+      const arqOrig = join(origem, '.mentor', rel)
+      if (existe(arqDest) && existe(arqOrig)) {
+        if (lerTexto(arqDest) !== lerTexto(arqOrig)) {
+          modificados.push(rel.replace(/\\/g, '/'))
+        }
+      }
+    }
+    if (modificados.length > 0) {
+      console.log(`\n⚠️ ATENCAO: A atualizacao (--forcar) altera arquivos normativos/leis do framework:`)
+      for (const m of modificados) {
+        console.log(`  - .mentor/${m}`)
+      }
+      console.log('Revise as mudancas nas leis do projeto apos a conclusao.\n')
+    }
+  }
+
   const copia = copiarPacote(origem, destino, true, Boolean(flags['migrar-docs']))
   if (!copia.ok) {
     console.error(copia.erro)

@@ -48,9 +48,17 @@ export const METODOS_COM_VERMELHO: readonly MetodoDeTeste[] = ['tdd', 'bdd']
  * Um criterio de aceite sem teste nomeado nao e' criterio, e' intencao.
  * `teste` aceita a saida honesta `nao se aplica: <motivo>`, como os gates.
  */
+export interface EvidenciaCriterio {
+  comando?: string | null
+  codigo_saida?: number | null
+  saida?: string | null
+  executado_em?: string | null
+}
+
 export interface CriterioDeAceite {
   texto: string
   teste: string
+  evidencia?: EvidenciaCriterio | null
 }
 
 /** Destinos possiveis de um achado. Nao existe um quinto: achado nao fica pendente. */
@@ -106,6 +114,8 @@ export interface RegistroGate {
   saida: string | null
   executado_em: string | null
   evidencia_url: string | null
+  commit_execucao?: string | null
+  arvore_hash?: string | null
   motivo: string | null
   ressalva: string | null
   vermelho_dispensado?: VermelhoDispensado | null
@@ -341,8 +351,20 @@ export interface Contexto {
     proxima_em_tarefa: number | null
     /** IDs das pendencias 🔴 ainda em aberto. GERADO pelo `auditar`, nunca digitado. */
     pendencias_reportadas: string[]
+    /** Padroes adicionais a ignorar no diff da auditoria e medicao de cadencia (ex: fixtures geradas). */
+    ignorar_diff?: string[]
   }
   [bloco: string]: unknown
+}
+
+export interface QuebraDiff {
+  codigo_e_testes: number
+  configuracoes: number
+  documentacao: number
+  outros: number
+  ignorado_pacote: number
+  ignorado_gerados: number
+  total_auditavel: number
 }
 
 /** As oito caracteristicas da ISO/IEC 25010, que sao a tabela QS-24 do guia. */

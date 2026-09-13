@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { inicializar } from './cmd-init.ts'
-import { fila, finalizar, iniciar, nova, pausar, registrarGate, retomar, validar } from './cmd-tarefa.ts'
+import { anexar, criterio, fila, finalizar, iniciar, nova, pausar, registrarGate, retomar, validar } from './cmd-tarefa.ts'
 import { absorver, cancelar, fatiar, guardar, listarReserva, puxar } from './cmd-fila.ts'
 import { adicionarFerramenta } from './cmd-stack.ts'
 import { verificar } from './cmd-verificar.ts'
@@ -52,6 +52,8 @@ mentor <comando>
        [--rotulo "..." --motivo "..."] so para os rotulos que nao nascem de execucao
        [--ressalva "..." --url "..."]
   task fila <ID> <n> | --soltar         fixa no topo da fila, ou devolve a ordem calculada
+  task anexar <ID> --url "..." [--gate] anexa evidencia externa (CI/PR) mesmo se concluida
+  task criterio <ID> <n> [--cmd|--saida] registra evidencia executavel em criterio do plano
   task finalizar <ID>                  fecha, vincula requisito, regenera as vistas
   stack <ferramenta> [--versao --papel] cria a convencao e registra no contexto
   regras [--sincronizar]               inventario das regras do pacote: quais viraram comando
@@ -187,6 +189,12 @@ function principal(argv: string[]): number {
       if (sub === 'cancelar') { cancelar(id, flags.motivo); return 0 }
       if (sub === 'absorver') { absorver(id, flags.por); return 0 }
       if (sub === 'validar') { validar(id, flags); return 0 }
+      if (sub === 'anexar') { anexar(id, flags); return 0 }
+      if (sub === 'criterio') {
+        const indice = posicionais[2]
+        if (!indice) throw new Error('Falta o indice do criterio. Use: mentor task criterio <ID> <indice> [--comando "..."] [--saida "..."]')
+        criterio(id, indice, flags); return 0
+      }
       if (sub === 'fila') {
         const posicao = Number(posicionais[2])
         const liberar = flags.soltar === 'true'

@@ -1,7 +1,7 @@
 {
   "_meta": {
     "schema": "contexto-projeto/1",
-    "versao_do_pacote": "0.6.0",
+    "versao_do_pacote": "0.7.0",
     "versao_nota": "Gravada no init a partir de .mentor/manifesto.json. Sem ela, o relatorio de campo nao consegue atribuir nada a uma versao.",
     "leia_antes": "Campo null = decisao que o guia exige e ninguem tomou ainda. Nao e' erro: e' a pauta do mentor. Nunca preencher por deducao; perguntar ao humano ou marcar dispensado com motivo.",
     "gerado_em": "2026-08-29T17:00:00.000Z",
@@ -419,7 +419,9 @@
     "ultima_na_tarefa": null,
     "ultimo_commit": null,
     "proxima_em_tarefa": 10,
-    "pendencias_reportadas": []
+    "pendencias_reportadas": [],
+    "ignorar_diff": [],
+    "ignorar_diff_nota": "Padroes de arquivos gerados por script (ex: fixtures grandes de teste) para excluir do diff da auditoria e da cadencia."
   },
   "versionamento": {
     "ramo_principal": null,

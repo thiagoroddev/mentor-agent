@@ -37,6 +37,8 @@
       "codigo_saida": 0,
       "saida": null,
       "executado_em": "29/08/26 14:00",
+      "commit_execucao": "217494187d3a92c8620dece26b09ddeeb4aa727f",
+      "arvore_hash": "91c5ed32d5ccd699d302b6ac442e1aff36510f9a",
       "evidencia_url": null,
       "motivo": "Saída vazia: o comando não produziu evidência verificável",
       "ressalva": null,

@@ -4,6 +4,34 @@ Todas as mudanças notáveis no **mentor-agent** são documentadas neste arquivo
 
 O formato baseia-se em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [0.7.0] - 2026-09-13
+
+### Adicionado
+- **Hash da Árvore de Trabalho (`arvore_hash`) nos Gates**:
+  - Todo registro de gate grava o hash gerado via `git stash create`, fixando criptograficamente o estado exato dos arquivos testados na árvore de trabalho no momento da execução do gate, sem alterar o índice ou o working tree.
+- **Anexação de Evidências Externas (`mentor task anexar`)**:
+  - Novo comando `mentor task anexar <ID> --url "<url>" [--gate <nome>]` para vincular URLs de runs de CI e PRs de entrega a gates de tarefas, funcionando para tarefas abertas ou já concluídas (atendendo ao processo de entrega contínua).
+- **Evidenciação de Critérios de Aceite (`mentor task criterio`)**:
+  - Novo comando `mentor task criterio <ID> <indice> [--comando "<cmd>"] [--saida "<texto>"]` para registrar comandos executados e suas saídas verificáveis diretamente nos critérios de aceite do plano da tarefa (`evidencia: { comando, codigo_saida, saida, executado_em }`).
+- **Validação Manual Concreta e Travas de Evidência**:
+  - A validação manual aprovada registra `codigo_saida: null` para distinguir julgamento humano de código de saída de processo.
+  - Exige `--evidencia` substantiva (mínimo de 10 caracteres) descrevendo passos executados e resultado observado tanto em `task validar --aprovado` quanto no atalho `task finalizar --validado-por-humano`.
+  - Em tarefas sensíveis (cálculo, algoritmos, persistência, banco ou spikes), dispensar validação (`--dispensado`) exige justificativa substantiva de no mínimo 30 caracteres.
+- **Detecção Mecânica de Tarefas Retroativas**:
+  - `mentor task finalizar` verifica se os arquivos declarados em `plano.muda` já haviam sido commitados antes do `commit_base` e o diff ativo da tarefa está vazio, bloqueando o fechamento silencioso e exigindo a flag explícita `--retroativa`.
+- **Extração Robusta e Agnóstica de Caminhos em `plano.muda`**:
+  - Suporte completo a caminhos com kebab-case (sem quebrar no hífen do nome do arquivo), múltiplos caminhos por linha e padrões glob (`*`, `**`), eliminando falsos positivos de arquivos fora de escopo.
+- **Exclusão Seletiva de Diff do Pacote e Cadência Justa**:
+  - Arquivos de `.mentor/` cujo hash SHA-256 for idêntico ao registrado em `manifesto.json` são excluídos da contagem de cadência (`medirDiffAcumulado`) e do dossiê de auditoria (`dossie`), enquanto arquivos modificados (patches locais) permanecem no diff.
+  - O `mentor doctor` apresenta a quebra do diff acumulado por categoria (`código/testes`, `config`, `docs`) nas mensagens de cadência de auditoria.
+  - O dossiê de auditoria prioriza arquivos de código e testes antes de configurações e documentações, truncando apenas na fronteira de arquivos com relatório explícito de omissão.
+- **Fusão Semântica 3-Way em `resolver-gerados`**:
+  - Resolução de conflitos de merge de três vias com base (`:1:`), ours (`:2:`) e theirs (`:3:`) para `contexto.json`, `dividas.json` e `riscos-aceitos.json`, preservando histórico mais recente e resetando lembretes transitórios.
+- **Cenário de Teste 25 (`25-auditoria-inteligente-e-validacao-concreta.ts`)**:
+  - Cobertura ponta a ponta das 9 regras e comandos introduzidos na v0.7.0.
+
+---
+
 ## [0.6.0] - 2026-09-12
 
 ### Adicionado

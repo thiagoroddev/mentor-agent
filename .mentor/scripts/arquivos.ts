@@ -180,7 +180,7 @@ export function existe(caminho: string): boolean {
 }
 
 /** Lista arquivos com a extensao dada, recursivamente. Devolve caminhos absolutos. */
-export function listar(pasta: string, extensao: string): string[] {
+export function listar(pasta: string, extensao: string = ''): string[] {
   if (!existsSync(pasta)) return []
   const achados: string[] = []
   for (const entrada of readdirSync(pasta, { withFileTypes: true })) {
@@ -254,4 +254,67 @@ export function diasDesde(log: string | null): number | null {
 /** Mesma fonte de tempo do `agora()`, para o carimbo tecnico dos JSON. */
 export function agoraIso(): string {
   return relogio().toISOString()
+}
+
+/**
+ * Extrai caminhos declarados em plano.muda de forma robusta e agnostica (AUD-002-R09).
+ * Suporta kebab-case (sem quebrar no hifen do nome), delimitadores de comentario,
+ * multiplos caminhos por linha (separados por virgula ou ' / ') e globs (*, **).
+ */
+export function extrairCaminhosDeclarados(linhas: string[]): string[] {
+  const caminhosEncontrados: string[] = []
+  for (const raw of linhas) {
+    if (!raw || typeof raw !== 'string') continue
+    const trimmed = raw.trim()
+    if (!trimmed || trimmed.startsWith('PREENCHER:')) continue
+    let parteCaminhos = trimmed
+    const matchDelim = trimmed.match(/^(.*?)(?:\s+[-—:]\s+|\s*:\s+)(.*)$/)
+    if (matchDelim && matchDelim[1] && matchDelim[1].trim()) {
+      parteCaminhos = matchDelim[1].trim()
+    } else {
+      const primeira = trimmed.split(/\s+/)[0]
+      if (primeira) parteCaminhos = primeira
+    }
+    const itens = parteCaminhos
+      .split(/,\s*|\s+\/\s+/)
+      .map((s) => s.trim().replace(/^[`'"]|[`'"]$/g, '').replace(/\\/g, '/'))
+      .filter(Boolean)
+    for (const item of itens) {
+      caminhosEncontrados.push(item)
+    }
+  }
+  return caminhosEncontrados
+}
+
+/**
+ * Compara se um caminho de arquivo modificado no git corresponde a alguma das declaracoes.
+ * Suporta casamento exato, prefixo/sufixo relativo e glob simples (* e **).
+ */
+export function caminhoCorrespondeDeclaracao(arquivo: string, declarados: string[]): boolean {
+  const normArquivo = arquivo.replace(/\\/g, '/').replace(/^\.\//, '')
+  for (const dec of declarados) {
+    const normDec = dec.replace(/\\/g, '/').replace(/^\.\//, '')
+    if (!normDec) continue
+    if (normArquivo === normDec) return true
+    if (normArquivo.endsWith('/' + normDec)) return true
+    if (normDec.endsWith('/' + normArquivo)) return true
+    if (normDec.endsWith('/*') || normDec.endsWith('/**') || normDec.endsWith('/')) {
+      const prefixo = normDec.replace(/\*+$/, '')
+      if (normArquivo.startsWith(prefixo)) return true
+    }
+    if (normDec.includes('*')) {
+      const regexStr = '^' + normDec
+        .replace(/\./g, '\\.')
+        .replace(/\*\*/g, '§§DOUBLESTAR§§')
+        .replace(/\*/g, '[^/]*')
+        .replace(/§§DOUBLESTAR§§/g, '.*') + '$'
+      try {
+        const regex = new RegExp(regexStr)
+        if (regex.test(normArquivo)) return true
+      } catch {
+        // fallback silencioso
+      }
+    }
+  }
+  return false
 }

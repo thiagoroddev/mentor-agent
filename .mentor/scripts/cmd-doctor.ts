@@ -11,7 +11,7 @@ import {
 } from './vistas.ts'
 import { CARACTERISTICAS } from './tipos.ts'
 import type { Caracteristica, Contexto, EstadoDaCaracteristica, Fase, MetaDeQualidade, Tarefa } from './tipos.ts'
-import { baseDoLote, loteNaoAuditado, medirDiffAcumulado } from './cmd-auditar.ts'
+import { baseDoLote, calcularQuebraDiff, loteNaoAuditado, medirDiffAcumulado } from './cmd-auditar.ts'
 
 /**
  * Folha de saude do projeto. Tres propriedades a sustentam, e as tres foram medidas em campo:
@@ -383,14 +383,16 @@ function processo(ctx: Contexto, tarefas: Tarefa[]): Linha[] {
   const diffChars = medirDiffAcumulado(base)
 
   if (semAuditar >= au.cadencia_em_tarefas * 2 || (cadenciaChars > 0 && diffChars >= cadenciaChars * 1.5)) {
+    const q = calcularQuebraDiff(base)
     linhas.push({
       estado: 'bloqueio',
-      texto: `${semAuditar} tarefa(s) / ${diffChars} caracteres de diff sem auditoria (cadencias: ${au.cadencia_em_tarefas} tarefas, ${cadenciaChars} chars). Risco critico de truncamento no dossie. Rode: mentor auditar preparar`,
+      texto: `${semAuditar} tarefa(s) / ${diffChars} caracteres de diff sem auditoria (cadencias: ${au.cadencia_em_tarefas} tarefas, ${cadenciaChars} chars | codigo/testes: ${q.codigo_e_testes}, config: ${q.configuracoes}, docs: ${q.documentacao}). Risco critico de truncamento no dossie. Rode: mentor auditar preparar`,
     })
   } else if (semAuditar >= au.cadencia_em_tarefas || (cadenciaChars > 0 && diffChars >= cadenciaChars)) {
+    const q = calcularQuebraDiff(base)
     linhas.push({
       estado: 'atencao',
-      texto: `${semAuditar} tarefa(s) / ${diffChars} caracteres de diff sem auditoria (cadencias: ${au.cadencia_em_tarefas} tarefas, ${cadenciaChars} chars). Rode: mentor auditar preparar`,
+      texto: `${semAuditar} tarefa(s) / ${diffChars} caracteres de diff sem auditoria (cadencias: ${au.cadencia_em_tarefas} tarefas, ${cadenciaChars} chars | codigo/testes: ${q.codigo_e_testes}, config: ${q.configuracoes}, docs: ${q.documentacao}). Rode: mentor auditar preparar`,
     })
   } else if (au.ultima_em) {
     linhas.push({

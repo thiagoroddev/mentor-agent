@@ -432,7 +432,9 @@
     "ultima_na_tarefa": null,
     "ultimo_commit": null,
     "proxima_em_tarefa": null,
-    "pendencias_reportadas": []
+    "pendencias_reportadas": [],
+    "ignorar_diff": [],
+    "ignorar_diff_nota": "Padroes de arquivos gerados por script (ex: fixtures grandes de teste) para excluir do diff da auditoria e da cadencia."
   },
   "versionamento": {
     "ramo_principal": null,

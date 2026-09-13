@@ -8,7 +8,7 @@ perguntar, e registra tudo de forma rastreavel.
 Na raiz do projeto que vai usar o pacote:
 
 ```bash
-npm i -D github:thiagoroddev/mentor-agent#v0.6.0
+npm i -D github:thiagoroddev/mentor-agent#v0.7.0
 npx mentor instalar        # copia .mentor/ e mentor.mjs para a raiz
 node mentor.mjs init       # cria docs-mentor/, sem tocar na docs/ do aplicativo
 ```
@@ -24,14 +24,14 @@ a IA le' `.mentor/` como arquivo, e o projeto versiona as convencoes dele ao lad
 isso em vez de estourar.
 
 A versao instalada fica gravada em `docs-mentor/contexto.json`, senao o relatorio de campo nao consegue
-dizer *"isto aconteceu com a 0.6.0"*.
+dizer *"isto aconteceu com a 0.7.0"*.
 
 ### Atualizar uma instalacao existente
 
 Para atualizar o pacote mantendo seus documentos preservados:
 
 ```bash
-npm i -D github:thiagoroddev/mentor-agent#v0.6.0
+npm i -D github:thiagoroddev/mentor-agent#v0.7.0
 npx mentor instalar --forcar
 node mentor.mjs resolver-gerados # regenera markdowns derivados e alinha contexto
 node mentor.mjs verificar
@@ -72,21 +72,35 @@ node mentor.mjs task pausar TASK-RF-001 --motivo "aguarda ajuste de UI" --bloque
 # Retomar apos conclusao das tarefas bloqueadoras
 node mentor.mjs task retomar TASK-RF-001
 
-# Gates automatizados (Tipos, Lint, Testes, Build)
+# Gates automatizados (Tipos, Lint, Testes, Build) - grava hash da árvore e commit
 node mentor.mjs task gate TASK-RF-001 testes
 # (suporta --vermelho-dispensado --motivo "<mutacao>" no TDD com prova por mutacao)
 
-# Validacao Manual Ativa (obrigatoria para UI, persistencia, esquemas e calculos)
-node mentor.mjs task validar TASK-RF-001 --evidencia "Teste manual no navegador confirmou renderizacao dos 50 itens"
+# Evidenciar criterio de aceite com execucao de comando ou saida
+node mentor.mjs task criterio TASK-RF-001 0 --comando "node teste.js"
 
-# Conclusao com verificacao de merito tecnico e escopo (git diff contra plano.muda)
-node mentor.mjs task finalizar TASK-RF-001 --validado-por-humano
-# (ou --validacao-dispensada --motivo "ajuste de tipos puros sem impacto em runtime")
+# Validacao Manual Ativa (obrigatoria para UI, persistencia, esquemas, calculos e spikes)
+node mentor.mjs task validar TASK-RF-001 --aprovado --evidencia "Teste manual no navegador confirmou renderizacao dos 50 itens"
+
+# Conclusao com verificacao de merito tecnico e escopo (suporta globs e kebab-case em plano.muda)
+node mentor.mjs task finalizar TASK-RF-001 --validado-por-humano "Evidencia do teste"
+# (tarefas retroativas detectadas automaticamente exigem: --retroativa)
+
+# Anexar evidencia externa (run de CI, link de PR) mesmo apos fechamento
+node mentor.mjs task anexar TASK-RF-001 --url "https://github.com/org/repo/actions/runs/12345" --gate build
 ```
 
-### Mérito Técnico e o Dever de Contrariar (v0.6.0)
+### Auditoria Inteligente, Validação Concreta e Rastreabilidade (v0.7.0)
 
-O mentor não é um despachante burocrático: ele audita o mérito técnico antes de qualquer código ser escrito.
+A versão 0.7.0 aprofunda o rigor técnico com rastreabilidade criptográfica no Git e elimina atalhos burocráticos:
+
+- **Hash da Árvore de Trabalho (`arvore_hash`)**: Todo gate grava o hash gerado via `git stash create` antes de qualquer commit, provando exatamente o estado testado dos arquivos.
+- **Anexação Externa de Evidências (`task anexar`)**: Permite vincular URLs de runs de CI e PRs a gates de tarefas abertas ou já concluídas, atendendo ao fluxo de entrega contínua.
+- **Evidência de Critérios de Aceite (`task criterio`)**: Permite executar comandos e gravar saídas verificáveis diretamente nos critérios de aceite do plano.
+- **Validação Manual Concreta (`codigo_saida: null`)**: A validação manual não pode ser forjada como processo 0: grava `codigo_saida: null`, exige evidência substantiva (>= 10 caracteres) e dispensa em tarefas sensíveis exige justificativa detalhada (>= 30 caracteres).
+- **Detecção de Tarefas Retroativas**: O `finalizar` detecta se o trabalho declarado já estava commitado antes do `commit_base`, exigindo a flag explícita `--retroativa`.
+- **Exclusão Seletiva de Diff e Cadência Justa**: O cálculo de cadência e o dossiê de auditoria excluem arquivos de `.mentor/` idênticos ao `manifesto.json`, mas mantêm patches locais no diff, categorizando a quebra do diff (`código/testes`, `config`, `docs`).
+- **Fusão Semântica 3-Way (`resolver-gerados`)**: Resolução de conflitos de merge usando base (`:1:`), ours (`:2:`) e theirs (`:3:`), mantendo integridade de dívidas, riscos e histórico.
 
 - **O Dever de Contrariar (Portão 1)**: A IA parceira tem a obrigação de apontar soluções existentes na indústria, evitar a invenção da roda e questionar restrições dogmáticas.
 - **Problema Canônico (`problema_canonico`)**: Todo plano deve identificar o nome formal do problema na ciência da computação/engenharia (ex.: TSP, CRDT, LR parsing), ou explicitar `"sem nome canonico"`.

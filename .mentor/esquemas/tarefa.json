@@ -91,7 +91,8 @@
     "criterios_aceite": [
       {
         "texto": null,
-        "teste": null
+        "teste": null,
+        "evidencia": null
       }
     ],
     "problema_canonico": null,
@@ -131,6 +132,8 @@
       "vermelho_dispensado": null,
       "vermelho_dispensado_nota": "Quando o vermelho foi dispensado com prova por mutacao ({ dispensado_em, motivo }). Gravado com: task gate <id> testes --vermelho-dispensado --motivo \"...\"",
       "evidencia_url": null,
+      "commit_execucao": null,
+      "arvore_hash": null,
       "motivo": null
     }
   },
