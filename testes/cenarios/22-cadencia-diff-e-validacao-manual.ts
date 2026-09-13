@@ -12,9 +12,11 @@ import type { Tarefa } from '../../.mentor/scripts/tipos.ts'
  * 2. Registro do gate validacao_manual como APROVADO com evidência humana.
  * 3. Atalho direto --validado-por-humano na finalização.
  * 4. Disciplina de escopo Git: recusa se arquivos de código modificados não constam em plano.muda (AUD-001-B05).
- * 5. Cadência de auditoria disparada por volume de diff (caracteres acumulados) antes do teto de truncamento.
- * 6. Doctor medindo e alertando sobre caracteres de diff acumulados.
+ * 5. Cadência de auditoria: desde a 0.8.0 conta tarefas com diff auditável; `cadencia_em_caracteres`
+ *    continua no contexto deste cenário para provar que não dispara mais nada.
+ * 6. Doctor medindo a cadência por tarefas e avisando do campo obsoleto.
  * 7. Dossiê de auditoria atestando conformidade com a Regra 4 quando há validação humana aprovada.
+ * 8. (0.8.0) Arquivo criado depois do gate recusa o fechamento até o gate rodar de novo.
  */
 export function rodar(): Cenario {
   const c = abrirCenarioTemporario('22-cadencia-diff-e-validacao-manual')
@@ -31,13 +33,13 @@ export function rodar(): Cenario {
   commit('inicio')
   mentor(c, 'init')
 
-  // Configura gates e auditoria com cadência curta de caracteres (150 chars)
+  // Cadencia curta de tarefas (2), e o campo antigo de caracteres num valor que a 0.7.0 estouraria na primeira
   const ctx = lerJson<Record<string, any>>(c, 'docs-mentor/contexto.json')
   ctx.gates.testes = { comando: 'node -e "console.log(\'1 passed\')"' }
   ctx.gates.validacao_manual = { existe: true, o_que: 'Validação visual no navegador' }
   ctx.qualidade.metodo_de_teste = 'teste-depois'
   ctx.qualidade.metodo_motivo = 'teste de integracao'
-  ctx.auditoria.cadencia_em_tarefas = 10
+  ctx.auditoria.cadencia_em_tarefas = 2
   ctx.auditoria.cadencia_em_caracteres = 150
   escrever(c, 'docs-mentor/contexto.json', JSON.stringify(ctx, null, 2))
   commit('configura gates e auditoria')
@@ -85,9 +87,17 @@ export function rodar(): Cenario {
   t1Atualizada.plano.muda.push('infra/worker.js - script auxiliar do worker')
   escrever(c, 'docs-mentor/tarefas/abertas/TASK-RF-001.json', JSON.stringify(t1Atualizada, null, 2))
 
-  // Agora finaliza com sucesso
+  // O worker.js nasceu depois do gate: a evidencia de testes e' de outra arvore (0.8.0)
+  const fimGateVelho = mentor(c, 'task', 'finalizar', 'TASK-RF-001')
+  dizQue(c, fimGateVelho, 'rodou antes de 1 arquivo(s) mudar(em): infra/worker.js',
+    'finalizar recusa quando arquivo declarado mudou depois do gate de testes')
+
+  // Roda o gate de novo e finaliza com sucesso
+  mentor(c, 'task', 'gate', 'TASK-RF-001', 'testes')
   const fimOk1 = mentor(c, 'task', 'finalizar', 'TASK-RF-001')
   dizQue(c, fimOk1, 'TASK-RF-001 concluida', 'tarefa finaliza com sucesso apos validacao e plano alinhado')
+  confere(c, !fimOk1.saida.includes('Cadencia de auditoria atingida'),
+    'uma tarefa nao bate a cadencia de 2, por maior que seja o diff: caracteres nao disparam mais')
   commit('TASK-RF-001')
 
   // Confere que o registro da tarefa concluída gravou validacao aprovada e o gate validacao_manual
@@ -103,7 +113,6 @@ export function rodar(): Cenario {
   mentor(c, 'task', 'puxar', 'TASK-RN-001')
   mentor(c, 'task', 'iniciar', 'TASK-RN-001')
 
-  // Gera um diff substancial (> 150 caracteres para estourar cadencia_em_caracteres)
   escrever(c, 'src/rota.ts',
     'export function calcularDistancia(lat1: number, lon1: number, lat2: number, lon2: number): number {\n' +
     '  const R = 6371\n' +
@@ -129,15 +138,16 @@ export function rodar(): Cenario {
 
   mentor(c, 'task', 'gate', 'TASK-RN-001', 'testes')
 
-  // Finaliza com atalho --validado-por-humano e observa o disparo da cadência de diff
+  // Finaliza com atalho --validado-por-humano: a segunda tarefa com codigo bate a cadencia de 2
   const fimOk2 = mentor(c, 'task', 'finalizar', 'TASK-RN-001', '--validado-por-humano', 'Calculo de Haversine conferido com tabela geodesica')
   dizQue(c, fimOk2, 'TASK-RN-001 concluida', 'finaliza com atalho --validado-por-humano')
-  dizQue(c, fimOk2, 'Cadencia de auditoria atingida', 'dispara alerta de cadencia ao estourar cadencia_em_caracteres')
+  dizQue(c, fimOk2, 'Cadencia de auditoria atingida: 2 tarefa(s) com codigo', 'dispara alerta ao bater a cadencia em tarefas')
   commit('TASK-RN-001')
 
-  // --- 4. Doctor reportando cadência por caracteres
+  // --- 4. Doctor reportando cadência por tarefas e o campo obsoleto
   const doc = mentor(c, 'doctor')
-  dizQue(c, doc, 'caracteres de diff sem auditoria', 'doctor reporta volume de diff na secao de auditoria')
+  dizQue(c, doc, '2 tarefa(s) com codigo sem auditoria (cadencia 2)', 'doctor reporta a cadencia por tarefas')
+  dizQue(c, doc, 'cadencia_em_caracteres nao e mais usado', 'doctor avisa que o campo de caracteres nao dispara mais nada')
 
   // --- 5. Dossiê de Auditoria & Satisfação da Regra 4
   mentor(c, 'auditar', 'preparar')

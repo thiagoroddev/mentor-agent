@@ -1,9 +1,10 @@
 import { spawnSync } from 'node:child_process'
-import { renameSync, rmSync } from 'node:fs'
-import { join } from 'node:path'
+import { copyFileSync, renameSync, rmSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { isAbsolute, join } from 'node:path'
 import {
   agora, caminhos, caminhoCorrespondeDeclaracao, extrairCaminhosDeclarados, escreverJson,
-  escreverTexto, existe, lerJson, lerTexto, listar, NOME_DOS_DOCUMENTOS,
+  escreverTexto, existe, lerJson, lerTexto, listar, NOME_DOS_DOCUMENTOS, relativo,
 } from './arquivos.ts'
 import { proximoIdDeTarefa } from './ids.ts'
 import { carregarContexto, carregarRequisitos, carregarTarefas, fixar, regenerarTudo, registrarRecusa, soltar } from './vistas.ts'
@@ -14,7 +15,9 @@ import {
 import type {
   Cerimonia, Escala, MetodoDeTeste, Requisito, Rotulo, Tarefa, TipoTarefa, Urgencia, ValorTarefa,
 } from './tipos.ts'
-import { baseDoLote, loteNaoAuditado, medirDiffAcumulado } from './cmd-auditar.ts'
+import { estadoDaCadencia } from './cmd-auditar.ts'
+import { arquivoIntactoDoPacote } from './cmd-pacote.ts'
+import { categoriasSensiveis, MOTIVO_MINIMO_DE_DISPENSA } from './sensivel.ts'
 
 type Flags = Record<string, string | undefined>
 
@@ -49,26 +52,49 @@ function cabecaDoGit(): string | null {
 }
 
 /**
- * O hash da arvore de trabalho atual. Se o working tree estiver com alteracoes locais (staged ou unstaged),
- * usa `git stash create` para obter o hash exato da arvore testada sem alterar o estado do indice ou do disco.
- * Se a arvore estiver limpa, usa HEAD^{tree}.
+ * A arvore do codigo como esta' agora: os rastreados com as mudancas locais e os nao rastreados que o
+ * `.gitignore` nao esconde, **sem a pasta de documentos do mentor**.
+ *
+ * ⚠️ Ate' a 0.7.0 era `git stash create`, que tem dois furos medidos em campo: inclui `docs-mentor/`,
+ * e cada `task gate` grava o registro ali, entao dois gates seguidos nunca tinham o mesmo hash; e deixa
+ * de fora o arquivo novo nao rastreado. O hash era gravado e nunca dava para conferir.
+ *
+ * Indice temporario copiado do real: o `git add` reaproveita o cache de stat em vez de reler o
+ * repositorio inteiro, e o indice de verdade nao e' tocado. `null` sem git.
  */
 export function hashDaArvoreAtual(): string | null {
   const c = caminhos()
-  const rStash = spawnSync('git', ['stash', 'create'], { cwd: c.raiz, encoding: 'utf8' })
-  if (rStash.status === 0 && rStash.stdout && rStash.stdout.trim()) {
-    const commitStash = rStash.stdout.trim()
-    const rTree = spawnSync('git', ['rev-parse', `${commitStash}^{tree}`], { cwd: c.raiz, encoding: 'utf8' })
-    if (rTree.status === 0 && rTree.stdout && rTree.stdout.trim()) {
-      return rTree.stdout.trim()
-    }
-    return commitStash
+  const git = (args: string[], env?: NodeJS.ProcessEnv) => spawnSync('git', args, { cwd: c.raiz, encoding: 'utf8', env })
+  const onde = git(['rev-parse', '--git-path', 'index'])
+  if (onde.status !== 0) return null
+  const relativoAoIndice = (onde.stdout ?? '').trim()
+  const indiceReal = isAbsolute(relativoAoIndice) ? relativoAoIndice : join(c.raiz, relativoAoIndice)
+  const temporario = join(tmpdir(), `mentor-indice-${process.pid}-${Date.now()}`)
+  try {
+    if (existe(indiceReal)) copyFileSync(indiceReal, temporario)
+    const env = { ...process.env, GIT_INDEX_FILE: temporario }
+    if (git(['add', '-A', '--', '.'], env).status !== 0) return null
+    git(['rm', '-r', '-q', '--cached', '--ignore-unmatch', '--', relativo(c.docs)], env)
+    const arvore = git(['write-tree'], env)
+    return arvore.status === 0 ? (arvore.stdout ?? '').trim() || null : null
+  } finally {
+    rmSync(temporario, { force: true })
   }
-  const rHeadTree = spawnSync('git', ['rev-parse', 'HEAD^{tree}'], { cwd: c.raiz, encoding: 'utf8' })
-  if (rHeadTree.status === 0 && rHeadTree.stdout && rHeadTree.stdout.trim()) {
-    return rHeadTree.stdout.trim()
-  }
-  return cabecaDoGit()
+}
+
+/** O que todo registro de execucao grava para provar em que codigo rodou. */
+function rastroDaExecucao() {
+  return { commit_execucao: cabecaDoGit(), arvore_hash: hashDaArvoreAtual(), arvore_sem_documentos: true }
+}
+
+/** Arquivos do projeto que diferem entre duas arvores. `null` se uma delas nao existe mais. */
+function arquivosEntreArvores(antes: string, depois: string): string[] | null {
+  const c = caminhos()
+  const r = spawnSync('git', ['-c', 'core.quotepath=false', 'diff-tree', '-r', '--name-only', '--no-renames', antes, depois], { cwd: c.raiz, encoding: 'utf8' })
+  if (r.status !== 0) return null
+  // As arvores sao do repositorio inteiro; o projeto pode ser uma subpasta dele.
+  const prefixo = (spawnSync('git', ['rev-parse', '--show-prefix'], { cwd: c.raiz, encoding: 'utf8' }).stdout ?? '').trim()
+  return (r.stdout ?? '').split('\n').map((s) => s.trim()).filter((s) => s && s.startsWith(prefixo)).map((s) => s.slice(prefixo.length))
 }
 
 export { caminhoCorrespondeDeclaracao, extrairCaminhosDeclarados } from './arquivos.ts'
@@ -497,7 +523,7 @@ export function registrarGate(id: string, gate: string, flags: Flags): void {
     const anterior = tarefa.gates[gate]
     tarefa.gates[gate] = {
       rotulo: 'FALHOU', vermelho_em: agora().log, comando: comandoExecutado, codigo_saida: codigoSaida, saida,
-      executado_em: agora().log, commit_execucao: cabecaDoGit(), arvore_hash: hashDaArvoreAtual(),
+      executado_em: agora().log, ...rastroDaExecucao(),
       evidencia_url: anterior?.evidencia_url ?? null,
       motivo: null, ressalva: null,
     }
@@ -526,7 +552,7 @@ export function registrarGate(id: string, gate: string, flags: Flags): void {
   tarefa.gates[gate] = {
     rotulo, vermelho_em: anterior?.vermelho_em ?? null,
     comando: comandoExecutado, codigo_saida: codigoSaida, saida: saida || null,
-    executado_em: agora().log, commit_execucao: cabecaDoGit(), arvore_hash: hashDaArvoreAtual(),
+    executado_em: agora().log, ...rastroDaExecucao(),
     evidencia_url: flags.url ?? null,
     motivo, ressalva: flags.ressalva ?? null,
     vermelho_dispensado: disp,
@@ -537,6 +563,16 @@ export function registrarGate(id: string, gate: string, flags: Flags): void {
 }
 
 // ---------------------------------------------------------------- finalizar
+
+/** Tarefa sensivel (`sensivel.ts`) so' dispensa validacao com motivo que se sustente sozinho. */
+function exigirMotivoDeDispensa(tarefa: Tarefa, motivo: string): void {
+  const categorias = categoriasSensiveis(tarefa)
+  if (categorias.length && motivo.length < MOTIVO_MINIMO_DE_DISPENSA) {
+    throw new Error(
+      `Dispensar validacao em tarefa sensivel (${categorias.join(', ')}) exige --motivo detalhado (minimo ${MOTIVO_MINIMO_DE_DISPENSA} caracteres) justificando a dispensa.`,
+    )
+  }
+}
 
 function marcadoresEm(valor: unknown, onde: string, achados: string[]): void {
   if (typeof valor === 'string') { if (valor.includes(MARCADOR)) achados.push(onde); return }
@@ -580,26 +616,19 @@ export function finalizar(id: string, flags: Flags = {}): void {
     tarefa.gates['validacao_manual'] = {
       rotulo: 'APROVADO', comando: null, codigo_saida: null,
       saida: ev, executado_em: tarefa.validado_em,
-      commit_execucao: cabecaDoGit(), arvore_hash: hashDaArvoreAtual(),
+      ...rastroDaExecucao(),
       evidencia_url: null, motivo: null, ressalva: null, vermelho_em: null,
     }
   } else if (flags['validacao-dispensada']) {
     const mot = (flags.motivo ?? 'dispensada na finalizacao').trim()
-    const ehSensivel = /schema|migration|persist|banco|db_|calcul|algoritmo|formula/i.test(
-      `${tarefa.titulo} ${tarefa.plano.muda.join(' ')} ${tarefa.plano.impacto ?? ''}`,
-    ) || tarefa.tipo === 'RN' || tarefa.tipo === 'RNF' || tarefa.tipo === 'SPIKE'
-    if (ehSensivel && mot.length < 30) {
-      throw new Error(
-        'Dispensar validacao em tarefa de calculo/persistencia/spike exige --motivo detalhado (minimo 30 caracteres).',
-      )
-    }
+    exigirMotivoDeDispensa(tarefa, mot)
     tarefa.validacao = 'dispensado'
     tarefa.validado_em = agora().log
     tarefa.validacao_motivo = mot
     tarefa.gates['validacao_manual'] = {
       rotulo: 'não se aplica', comando: null, codigo_saida: null,
       saida: null, executado_em: tarefa.validado_em,
-      commit_execucao: cabecaDoGit(), arvore_hash: hashDaArvoreAtual(),
+      ...rastroDaExecucao(),
       evidencia_url: null, motivo: mot, ressalva: null, vermelho_em: null,
     }
   }
@@ -800,6 +829,8 @@ export function finalizar(id: string, flags: Flags = {}): void {
     ]
     const naoDeclarados = arquivosModificados.filter((arq) => {
       if (ignorados.some((ig) => arq.startsWith(ig) || arq === ig)) return false
+      // Arquivo do pacote igual ao manifesto nao e' mudanca do projeto: a mesma regra do hook e da auditoria.
+      if (arquivoIntactoDoPacote(arq)) return false
       return !caminhoCorrespondeDeclaracao(arq, declarados)
     })
     if (naoDeclarados.length > 0) {
@@ -808,17 +839,13 @@ export function finalizar(id: string, flags: Flags = {}): void {
       )
     }
 
-    // Detecção de tarefa retroativa (AUD-002-B02): diff ativo vazio mas commit_base já continha as mudanças
+    // Deteccao de tarefa retroativa (AUD-002-B02): a tarefa nao tocou nada do que declarou, e o commit
+    // da base ja' tinha tocado. O diff ativo e' o mesmo da trava de escopo acima (arvore de trabalho,
+    // nao rastreados, intervalos de pausa). Ate' a 0.7.0 era `commit_base..HEAD`, so' o commitado: como
+    // o `finalizar` roda antes do commit, saia vazio em toda tarefa e acusava tarefa legitima.
     if (tarefa.commit_base && !flags['retroativa']) {
       if (declarados.length > 0) {
-        const rDiffAtivo = spawnSync('git', ['diff', '--name-only', `${tarefa.commit_base}..HEAD`], {
-          cwd: caminhos().raiz,
-          encoding: 'utf8',
-        })
-        const arqsNoDiff = rDiffAtivo.status === 0 && rDiffAtivo.stdout
-          ? rDiffAtivo.stdout.split('\n').map((x) => x.trim().replace(/\\/g, '/')).filter(Boolean)
-          : []
-        const tocouDeclarados = arqsNoDiff.some((a) => caminhoCorrespondeDeclaracao(a, declarados))
+        const tocouDeclarados = arquivosModificados.some((a) => caminhoCorrespondeDeclaracao(a, declarados))
         if (!tocouDeclarados) {
           const rPrev = spawnSync('git', ['diff', '--name-only', `${tarefa.commit_base}~1..${tarefa.commit_base}`], {
             cwd: caminhos().raiz,
@@ -845,6 +872,36 @@ export function finalizar(id: string, flags: Flags = {}): void {
             `! Alerta: gate "${nomeGate}" rodou no commit ${g.commit_execucao}, diferente do HEAD atual (${headAtual}). Recomenda-se reexecutar o gate ou anexar o link do CI via "mentor task anexar ${id} --url ...".`,
           )
         }
+      }
+    }
+  }
+
+  // A evidencia de testes e build precisa ser da arvore que fecha. Recusa quando mudou arquivo
+  // rastreado ou declarado depois do gate; artefato nao rastreado fora do plano so' avisa, porque
+  // recusar por ele criaria o laco de rodar o gate, regenerar o artefato e recusar de novo.
+  const gatesComArvore = (['testes', 'build'] as const)
+    .map((nome) => [nome, tarefa.gates[nome]] as const)
+    .filter(([, g]) => g?.arvore_sem_documentos && g.arvore_hash && !g.evidencia_url &&
+      (g.rotulo === 'APROVADO' || g.rotulo === 'APROVADO com ressalva'))
+  const arvoreAtual = gatesComArvore.length ? hashDaArvoreAtual() : null
+  if (arvoreAtual) {
+    const declarados = extrairCaminhosDeclarados(tarefa.plano.muda)
+    const lsFiles = spawnSync('git', ['-c', 'core.quotepath=false', 'ls-files'], { cwd: caminhos().raiz, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 })
+    const rastreados = new Set((lsFiles.stdout ?? '').split('\n').map((s) => s.trim()).filter(Boolean))
+    for (const [nome, g] of gatesComArvore) {
+      if (!g?.arvore_hash || g.arvore_hash === arvoreAtual) continue
+      const mudaram = arquivosEntreArvores(g.arvore_hash, arvoreAtual)
+      if (mudaram === null) {
+        console.warn(`! Aviso: nao consegui comparar a arvore do gate "${nome}" com a atual. Se o codigo mudou depois dele, rode de novo: mentor task gate ${id} ${nome}`)
+        continue
+      }
+      const pesam = mudaram.filter((a) => rastreados.has(a) || caminhoCorrespondeDeclaracao(a, declarados))
+      if (pesam.length) {
+        impedimentos.push(
+          `gate "${nome}" rodou antes de ${pesam.length} arquivo(s) mudar(em): ${pesam.slice(0, 5).join(', ')}. A evidencia e' de outra arvore. Rode de novo: mentor task gate ${id} ${nome}`,
+        )
+      } else if (mudaram.length) {
+        console.warn(`! Aviso: depois do gate "${nome}" mudaram ${mudaram.length} arquivo(s) nao rastreado(s) e fora do plano: ${mudaram.slice(0, 3).join(', ')}. Se forem artefatos, ignore.`)
       }
     }
   }
@@ -883,17 +940,10 @@ export function finalizar(id: string, flags: Flags = {}): void {
   const ctxAtualizado = regenerarTudoEDevolverContexto()
   console.log(`${id} concluida.`)
 
-  // A cadencia da auditoria e' contada aqui porque e' aqui que o numero muda.
-  const feitas = Number(ctxAtualizado.contagens.tarefas_concluidas ?? 0)
-  const desde = feitas - (ctxAtualizado.auditoria.ultima_na_tarefa ?? 0)
-  const cadenciaTarefas = ctxAtualizado.auditoria.cadencia_em_tarefas ?? 10
-  const cadenciaChars = ctxAtualizado.auditoria.cadencia_em_caracteres ?? 80_000
-  const lote = loteNaoAuditado()
-  const baseLote = baseDoLote(ctxAtualizado, lote)
-  const diffChars = medirDiffAcumulado(baseLote)
-
-  if (desde >= cadenciaTarefas || (cadenciaChars > 0 && diffChars >= cadenciaChars)) {
-    console.log(`\n>>> Cadencia de auditoria atingida: ${desde} tarefas concluidas sem auditoria (${diffChars} caracteres de diff acumulados, limite ${cadenciaChars}). Rode: node mentor.mjs auditar preparar`)
+  // A cadencia da auditoria e' conferida aqui porque e' aqui que o numero muda.
+  const cadencia = estadoDaCadencia(ctxAtualizado)
+  if (cadencia.estado !== 'em-dia') {
+    console.log(`\n>>> Cadencia de auditoria atingida: ${cadencia.contam.length} tarefa(s) com codigo sem auditoria (cadencia ${cadencia.cadencia}). Rode: node mentor.mjs auditar preparar`)
     console.log('    O dossie vai para uma sessao NOVA de IA. Quem escreve nao aprova.')
   }
 }
@@ -937,8 +987,7 @@ export function validar(id: string, flags: Flags): void {
       codigo_saida: null,
       saida: ev,
       executado_em: tarefa.validado_em,
-      commit_execucao: cabecaDoGit(),
-      arvore_hash: hashDaArvoreAtual(),
+      ...rastroDaExecucao(),
       evidencia_url: flags.url ?? null,
       motivo: null,
       ressalva: null,
@@ -947,14 +996,7 @@ export function validar(id: string, flags: Flags): void {
   } else if (flags.dispensado) {
     const mot = (flags.motivo ?? '').trim()
     if (!mot) throw new Error('Dispensar validacao exige --motivo.')
-    const ehSensivel = /schema|migration|persist|banco|db_|calcul|algoritmo|formula/i.test(
-      `${tarefa.titulo} ${tarefa.plano.muda.join(' ')} ${tarefa.plano.impacto ?? ''}`,
-    ) || tarefa.tipo === 'RN' || tarefa.tipo === 'RNF' || tarefa.tipo === 'SPIKE'
-    if (ehSensivel && mot.length < 30) {
-      throw new Error(
-        'Dispensar validacao em tarefa de calculo/persistencia/spike exige --motivo detalhado (minimo 30 caracteres) justificando a dispensa.',
-      )
-    }
+    exigirMotivoDeDispensa(tarefa, mot)
     tarefa.validacao = 'dispensado'
     tarefa.validacao_motivo = mot
     tarefa.validado_em = agora().log
@@ -964,8 +1006,7 @@ export function validar(id: string, flags: Flags): void {
       codigo_saida: null,
       saida: null,
       executado_em: tarefa.validado_em,
-      commit_execucao: cabecaDoGit(),
-      arvore_hash: hashDaArvoreAtual(),
+      ...rastroDaExecucao(),
       evidencia_url: null,
       motivo: mot,
       ressalva: null,
@@ -996,8 +1037,7 @@ export function anexar(id: string, flags: Flags): void {
       codigo_saida: 0,
       saida: 'Evidencia anexada externamente.',
       executado_em: agora().log,
-      commit_execucao: cabecaDoGit(),
-      arvore_hash: hashDaArvoreAtual(),
+      ...rastroDaExecucao(),
       evidencia_url: url,
       motivo: null,
       ressalva: null,
@@ -1030,8 +1070,10 @@ export function criterio(id: string, indiceStr: string, flags: Flags): void {
   let comando: string | null = null
   let saida: string | null = null
   let codigoSaida: number | null = null
-  if (flags.comando) {
-    comando = flags.comando
+  // `--cmd` e' o nome que a ajuda anunciou ate' a 0.7.0; os dois valem para nao quebrar quem seguiu a ajuda.
+  const comandoPedido = flags.comando ?? flags.cmd
+  if (comandoPedido) {
+    comando = comandoPedido
     const r = spawnSync(comando, { shell: true, encoding: 'utf8', cwd: caminhos().raiz, timeout: 60_000 })
     codigoSaida = r.status
     saida = recortar(`${r.stdout ?? ''}${r.stderr ?? ''}`.trim())

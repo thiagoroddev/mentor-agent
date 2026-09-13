@@ -40,9 +40,20 @@ duas existem porque as duas foram medidas em uso. Não troque uma pela outra.
 exatamente o mesmo modelo mental na hora de revisar aquele `useEffect`. Por isso a auditoria roda em
 **sessão nova**, por um agente com um único poder: **reprovar**.
 
-**Cadência, não toda tarefa.** A cada N tarefas concluídas (`contexto.auditoria.cadencia_em_tarefas`,
-10 por padrão) o `finalizar` avisa. Auditar toda tarefa dobraria o custo de cada uma, e processo caro
-é processo abandonado.
+**Cadência, não toda tarefa.** A cada N tarefas concluídas com diff auditável
+(`contexto.auditoria.cadencia_em_tarefas`, 10 por padrão) o `finalizar` e o `doctor` avisam. Auditar
+toda tarefa dobraria o custo de cada uma, e processo caro é processo abandonado. Com N = 1, vira
+revisão por PR.
+
+**A unidade é a tarefa.** Cada tarefa leva o próprio diff: os commits com o ID dela no título, ou,
+antes do commit, os arquivos do `plano.muda` que mudaram desde o `commit_base`. Registro do mentor,
+vista gerada, nota, pacote intacto e arquivo marcado `linguist-generated` no `.gitattributes` ficam
+fora. Tarefa sem nada auditável, ou que só atualiza o pacote, entra no lote listada e não conta.
+
+⚠️ **Tamanho não é cadência.** Até a 0.7.0 a cadência também contava caracteres de diff. Medido em
+campo: 115 mil caracteres com 3 tarefas, 87% de fixture gerada e de registro do próprio mentor. Hoje o
+tamanho só decide como o dossiê se divide: o `preparar` leva as tarefas que cabem no teto, e as outras
+esperam o próximo.
 
 ```
 mentor auditar preparar          monta o dossiê do lote
@@ -50,8 +61,9 @@ mentor auditar registrar AUD-001 valida e grava o veredito
 mentor auditar resolver AUD-001-B01 --destino ... --ref "..."
 ```
 
-**O `preparar` é o que fecha o escopo.** O dossiê traz o diff do lote, o registro de cada tarefa e os
-requisitos citados — **e nada mais**. Não é promessa de comportamento: é o único material que a sessão
+**O `preparar` é o que fecha o escopo.** O dossiê traz o registro e o diff de cada tarefa e os
+requisitos citados — **e nada mais**. Commit sem tarefa e trabalho não commitado de outra tarefa
+aparecem como fato, só pelo nome. Não é promessa de comportamento: é o único material que a sessão
 nova recebe. As cinco regras do auditor e os três níveis vêm escritos dentro do próprio dossiê, para
 não existirem em duas versões que divergem.
 

@@ -426,15 +426,14 @@
   },
   "auditoria": {
     "cadencia_em_tarefas": 10,
-    "cadencia_em_caracteres": 80000,
-    "cadencia_nota": "A cada N tarefas concluidas ou X caracteres de diff acumulados, 'mentor auditar preparar' monta o dossie do lote. O auditor le so o diff do lote, os registros e os requisitos citados: nunca o repositorio.",
+    "cadencia_nota": "A cada N tarefas concluidas com diff auditavel, 'mentor auditar preparar' monta o dossie do lote. Cada tarefa leva o proprio diff (os commits com o ID dela no titulo); registros, notas e atualizacao do pacote nao contam. O tamanho so decide como o dossie se divide. O auditor le o dossie: nunca o repositorio.",
     "ultima_em": null,
     "ultima_na_tarefa": null,
     "ultimo_commit": null,
     "proxima_em_tarefa": null,
     "pendencias_reportadas": [],
     "ignorar_diff": [],
-    "ignorar_diff_nota": "Padroes de arquivos gerados por script (ex: fixtures grandes de teste) para excluir do diff da auditoria e da cadencia."
+    "ignorar_diff_nota": "Padroes de arquivos gerados por script (ex: fixtures grandes de teste) para tirar do diff da auditoria. Prefira marcar no .gitattributes com linguist-generated: o GitHub tambem recolhe esses arquivos no PR."
   },
   "versionamento": {
     "ramo_principal": null,

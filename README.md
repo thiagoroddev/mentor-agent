@@ -8,7 +8,7 @@ perguntar, e registra tudo de forma rastreavel.
 Na raiz do projeto que vai usar o pacote:
 
 ```bash
-npm i -D github:thiagoroddev/mentor-agent#v0.7.0
+npm i -D github:thiagoroddev/mentor-agent#v0.8.0
 npx mentor instalar        # copia .mentor/ e mentor.mjs para a raiz
 node mentor.mjs init       # cria docs-mentor/, sem tocar na docs/ do aplicativo
 ```
@@ -24,14 +24,14 @@ a IA le' `.mentor/` como arquivo, e o projeto versiona as convencoes dele ao lad
 isso em vez de estourar.
 
 A versao instalada fica gravada em `docs-mentor/contexto.json`, senao o relatorio de campo nao consegue
-dizer *"isto aconteceu com a 0.7.0"*.
+dizer *"isto aconteceu com a 0.8.0"*.
 
 ### Atualizar uma instalacao existente
 
 Para atualizar o pacote mantendo seus documentos preservados:
 
 ```bash
-npm i -D github:thiagoroddev/mentor-agent#v0.7.0
+npm i -D github:thiagoroddev/mentor-agent#v0.8.0
 npx mentor instalar --forcar
 node mentor.mjs resolver-gerados # regenera markdowns derivados e alinha contexto
 node mentor.mjs verificar
@@ -90,11 +90,26 @@ node mentor.mjs task finalizar TASK-RF-001 --validado-por-humano "Evidencia do t
 node mentor.mjs task anexar TASK-RF-001 --url "https://github.com/org/repo/actions/runs/12345" --gate build
 ```
 
+### Auditoria por Tarefa e Travas que Não Atrapalham (v0.8.0)
+
+A versão 0.8.0 corrige o que a 0.7.0 mediu errado em campo. O plano completo, com a medição, está em [`PLANO-v0.8.0.md`](./PLANO-v0.8.0.md).
+
+- **Cadência por tarefas**: a auditoria vence a cada N tarefas concluídas **com diff auditável**. Caracteres deixam de disparar: no piloto, 87% dos 115 mil caracteres que venciam a auditoria eram fixture gerada e registro do próprio mentor. `cadencia_em_caracteres` passa a ser ignorado, e o `doctor` avisa.
+- **Diff por tarefa**: cada tarefa leva os commits com o ID dela no título (pega o squash do PR). Antes do commit, os arquivos do `plano.muda`. Trabalho não commitado de outra tarefa e commit sem tarefa aparecem como fato, só pelo nome.
+- **Uma regra de exclusão**: registro do mentor, vista gerada, nota, pacote intacto e arquivo marcado `linguist-generated` no `.gitattributes` ficam fora, igual para arquivo rastreado e novo.
+- **Dossiê que divide em vez de truncar**: o `preparar` leva as tarefas que cabem no teto; as outras esperam o próximo.
+- **Atualização do pacote fora da revisão de código**: listada no lote, sem contar.
+- **Evidência da árvore certa**: `arvore_hash` agora é a árvore do código (sem `docs-mentor/`, com não rastreados), e o `finalizar` recusa gate de testes ou build que rodou antes de um arquivo rastreado ou declarado mudar.
+- **Retroativa sem falso positivo**: a trava olha a árvore de trabalho, não só o que já foi commitado.
+- **Dispensa de validação reconhece UI**: tarefa com `.tsx`, `.css`, tela ou componente exige motivo de 30 caracteres para dispensar.
+- **Pre-push**: roda os gates uma vez só (rodavam duas), mostra o `verificar` sem barrar, e trata `.mentor/` pelo manifesto.
+- **`instalar --forcar` avisa quais leis troca**, com linhas por arquivo, também pelo `npx`.
+
 ### Auditoria Inteligente, Validação Concreta e Rastreabilidade (v0.7.0)
 
 A versão 0.7.0 aprofunda o rigor técnico com rastreabilidade criptográfica no Git e elimina atalhos burocráticos:
 
-- **Hash da Árvore de Trabalho (`arvore_hash`)**: Todo gate grava o hash gerado via `git stash create` antes de qualquer commit, provando exatamente o estado testado dos arquivos.
+- **Hash da Árvore de Trabalho (`arvore_hash`)**: Todo gate grava o hash da árvore testada. Na 0.8.0 o hash deixa de incluir `docs-mentor/` e passa a incluir os não rastreados, e o `finalizar` o confere.
 - **Anexação Externa de Evidências (`task anexar`)**: Permite vincular URLs de runs de CI e PRs a gates de tarefas abertas ou já concluídas, atendendo ao fluxo de entrega contínua.
 - **Evidência de Critérios de Aceite (`task criterio`)**: Permite executar comandos e gravar saídas verificáveis diretamente nos critérios de aceite do plano.
 - **Validação Manual Concreta (`codigo_saida: null`)**: A validação manual não pode ser forjada como processo 0: grava `codigo_saida: null`, exige evidência substantiva (>= 10 caracteres) e dispensa em tarefas sensíveis exige justificativa detalhada (>= 30 caracteres).
@@ -125,19 +140,19 @@ node mentor.mjs resolver-gerados              # fusao semantica pos-merge de bra
 ### Auditoria de Lote (Contexto Isolado)
 
 ```bash
-node mentor.mjs auditar preparar              # cadencia por tarefas ou diff em caracteres (evita truncamento)
+node mentor.mjs auditar preparar              # dossie com o diff de cada tarefa do lote, dividido pelo teto
 node mentor.mjs auditar registrar AUD-001     # veredito independente produzido por uma sessao NOVA de IA
 node mentor.mjs auditar resolver AUD-001      # transforma recomendacoes em plano de acao
 ```
 
 **Sobre o `auditar`.** Quem escreve nao aprova: contexto compartilhado propaga vies. O `preparar`
-monta um dossie com o diff do lote, os registros, as justificativas e os requisitos citados — **e nada mais** — e voce
+monta um dossie com o registro e o diff de cada tarefa do lote e os requisitos citados — **e nada mais** — e voce
 o entrega a uma sessao de IA zerada. O escopo fechado nao e' promessa: e' o unico material que ela
 recebe. Ela reporta achados; **quem decide o que vira trabalho e voce**, no `auditar resolver`.
 
-A cadencia de auditoria e' hibrida: alerta por quantidade de tarefas concluidas ou pelo volume acumulado
-de diff (`cadencia_em_caracteres`, padrao 80.000), garantindo que grandes refatoracoes nao excedam a
-janela de contexto nem gerem truncamento de codigo.
+A cadencia conta tarefas concluidas com diff auditavel (`cadencia_em_tarefas`, padrao 10). O tamanho
+nao dispara nada: so' decide quantas tarefas cabem num dossie sem estourar a janela de contexto do
+auditor. Arquivo gerado por script sai do diff com `linguist-generated` no `.gitattributes`.
 
 ### Dicas de Linha de Comando
 

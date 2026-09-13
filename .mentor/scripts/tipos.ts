@@ -116,6 +116,12 @@ export interface RegistroGate {
   evidencia_url: string | null
   commit_execucao?: string | null
   arvore_hash?: string | null
+  /**
+   * `true` quando `arvore_hash` e' a arvore do codigo (sem a pasta de documentos, com nao rastreados),
+   * que o `finalizar` confere. Registro da 0.7.0 nao tem o campo: o hash incluia os documentos, que
+   * mudam a cada gate, e por isso nunca era comparavel.
+   */
+  arvore_sem_documentos?: boolean
   motivo: string | null
   ressalva: string | null
   vermelho_dispensado?: VermelhoDispensado | null
@@ -341,30 +347,23 @@ export interface Contexto {
   /** GERADO pelo doctor a cada execucao. Campo livre aqui acumularia prosa como qualquer outro. */
   lembretes: string[]
   auditoria: {
+    /** Quantas tarefas concluidas **com diff auditavel** vencem a auditoria. */
     cadencia_em_tarefas: number
+    /** @deprecated Desde a 0.8.0 nao dispara nada: a cadencia conta tarefas. O `doctor` avisa. */
     cadencia_em_caracteres?: number
     ultima_em: string | null
-    /** Quantas tarefas estavam concluidas quando a ultima auditoria foi registrada. */
+    /** Quantas concluidas ja' estavam em algum lote quando a ultima auditoria foi registrada. */
     ultima_na_tarefa: number | null
-    /** HEAD quando ela foi registrada: e' a base do diff da proxima. */
+    /** HEAD quando ela foi registrada: e' onde comeca a busca por commits sem tarefa da proxima. */
     ultimo_commit: string | null
+    /** Estimativa: `ultima_na_tarefa + cadencia`. Tarefa sem diff auditavel empurra a proxima. */
     proxima_em_tarefa: number | null
     /** IDs das pendencias 🔴 ainda em aberto. GERADO pelo `auditar`, nunca digitado. */
     pendencias_reportadas: string[]
-    /** Padroes adicionais a ignorar no diff da auditoria e medicao de cadencia (ex: fixtures geradas). */
+    /** Padroes a tirar do diff da auditoria (ex: fixtures geradas). `linguist-generated` no `.gitattributes` tambem tira. */
     ignorar_diff?: string[]
   }
   [bloco: string]: unknown
-}
-
-export interface QuebraDiff {
-  codigo_e_testes: number
-  configuracoes: number
-  documentacao: number
-  outros: number
-  ignorado_pacote: number
-  ignorado_gerados: number
-  total_auditavel: number
 }
 
 /** As oito caracteristicas da ISO/IEC 25010, que sao a tabela QS-24 do guia. */
@@ -455,4 +454,8 @@ export interface Auditoria {
    */
   nao_verificado: string[]
   pendencias: PendenciaDeAuditoria[]
+  /** Tarefas do lote sem codigo para revisar: so' registros, notas, ou atualizacao do pacote. */
+  sem_diff_auditavel?: string[]
+  /** Concluidas que nao couberam no teto do dossie e esperam o proximo `preparar`. */
+  ficaram_para_depois?: string[]
 }

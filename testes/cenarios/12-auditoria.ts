@@ -62,8 +62,9 @@ export function rodar(): Cenario {
   const fim = fechar('TASK-RF-002', 'b.ts', 'export const sub = (a: number, b: number) => a - b\n')
   dizQue(c, fim, 'sem auditoria', 'ao bater a cadencia, o finalizar avisa sozinho')
   commit('TASK-RF-002')
-  // Depois do commit de proposito: arquivo que o git nunca viu nao sai em `git diff`, e e' onde o
-  // erro novo costuma morar. Se ele entrar no dossie por ser rastreado, o teste nao prova nada.
+  // Depois do commit de proposito: arquivo nunca commitado que nenhuma tarefa do lote declarou e'
+  // trabalho de outra tarefa. Desde a 0.8.0 ele aparece como fato, sem conteudo (o arquivo nunca
+  // commitado que uma tarefa do lote declarou entra inteiro: cenario 26).
   escrever(c, 'login.ts', 'const SENHA = "hunter2"\nexport const login = (u: string, p: string) => p === SENHA\n')
 
   // --- o dossie
@@ -73,8 +74,8 @@ export function rodar(): Cenario {
   confere(c, dossie.includes('+export const sub'), 'o dossie traz o diff de verdade, nao a promessa de que houve um')
   confere(c, dossie.includes('Nao leia o resto do repositorio'), 'o escopo fechado vai escrito no dossie')
   confere(c, dossie.includes('a.ts') && dossie.includes('b.ts'), 'os arquivos do lote aparecem')
-  confere(c, dossie.includes('+const SENHA = "hunter2"'),
-    'arquivo nunca commitado entra inteiro: e onde o erro novo mora, e o git diff nao o mostra')
+  confere(c, dossie.includes('`login.ts`') && !dossie.includes('+const SENHA = "hunter2"'),
+    'trabalho nao commitado fora das tarefas do lote aparece pelo nome, sem conteudo: nao e material desta auditoria')
   confere(c, !dossie.includes('"tarefas_concluidas"'),
     'as vistas geradas ficam fora do diff: contabilidade do proprio pacote afogaria o codigo')
 

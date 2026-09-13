@@ -53,7 +53,8 @@ mentor <comando>
        [--ressalva "..." --url "..."]
   task fila <ID> <n> | --soltar         fixa no topo da fila, ou devolve a ordem calculada
   task anexar <ID> --url "..." [--gate] anexa evidencia externa (CI/PR) mesmo se concluida
-  task criterio <ID> <n> [--cmd|--saida] registra evidencia executavel em criterio do plano
+  task criterio <ID> <n> --comando "..." | --saida "..."
+                                       registra evidencia em criterio do plano (n comeca em 0)
   task finalizar <ID>                  fecha, vincula requisito, regenera as vistas
   stack <ferramenta> [--versao --papel] cria a convencao e registra no contexto
   regras [--sincronizar]               inventario das regras do pacote: quais viraram comando
@@ -62,7 +63,8 @@ mentor <comando>
   anotar --sobre pacote|projeto "..."  onde a melhoria vai nao e decisao de memoria
   reserva                              lista a reserva (nao entra no contexto)
   gates                                roda todos os gates declarados pelo projeto
-  hooks [--instalar|--pre-push]        barreira de pre-push: gates, branch principal e commits sem ID
+  hooks [--instalar|--pre-push]        barreira de pre-push: o hook roda os gates; --pre-push barra
+                                       ramo principal e commit sem ID, e mostra o verificar
   ra [nova|encerrar <ID>]              registro de riscos aceitos
        nova --titulo --justificativa --evidencia --aceito-por
             --revisar-em --tarefa-de-saida [--severidade --pacote --advisory]

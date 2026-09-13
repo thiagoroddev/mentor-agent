@@ -27,6 +27,11 @@ foram entregues juntas.
 
 **Protegida:** não aceita envio direto. Toda mudança entra por revisão com a esteira verde. Quando `contexto.json` declara `revisao_antes_do_merge`, o hook de pre-push barra envios diretos para a `main`. A `main` local é espelho estrito de `origin/main` e não recebe trabalho em andamento.
 
+**O que o hook de pre-push faz:** roda os gates do projeto (uma vez); barra envio direto na linha
+principal protegida e commit sem ID de tarefa que toque código (arquivo de `.mentor/` igual ao
+manifesto não é código; patch local é); e **mostra** os achados do `verificar`, sem barrar. Tarefa em
+execução tem marcador legítimo, e travar o envio por ele vira laço: quem barra o `verificar` é a esteira.
+
 **Prova por Árvore em Squash Merge:**
 Quando o projeto adota merge por *squash* (gerando um commit único com novo SHA na linha principal), o Git local perde o vínculo de ancestrais e comandos como `git branch --merged` não reconhecem o ramo como entregue, fazendo o `git branch -d` recusar a exclusão.
 A evidência determinística de que o trabalho está entregue é a **prova por árvore vazia**:

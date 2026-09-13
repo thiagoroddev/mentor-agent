@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
 import { join, relative } from 'node:path'
-import { analisadoresSemIgnorar, copiarPacote } from './instalar.mjs'
+import { analisadoresSemIgnorar, avisoDeNormas, copiarPacote, normasQueMudam } from './instalar.mjs'
 import { criarPontosDeEntrada } from './entrada.ts'
 import {
   agoraIso, caminhos, escreverJson, escreverTexto, existe, lerJson, lerTexto, listar, raizPacote,
@@ -52,6 +52,36 @@ export interface Divergencia {
   acrescentados: string[]
 }
 
+let manifestoLido: { pacote: string; arquivos: Record<string, string> | null } | null = null
+
+/**
+ * Arquivo de `.mentor/` igual ao que o manifesto registra: e' o pacote, nao mudanca do projeto.
+ * Patch local (hash diferente) e arquivo acrescentado sao mudanca do projeto.
+ *
+ * ⚠️ **Uma regra so' para tres travas.** O hook tratava `.mentor/` inteiro como nao-codigo, o
+ * `finalizar` exigia declarar todo arquivo do pacote no `plano.muda`, e a auditoria comparava com o
+ * manifesto. Medido em campo: a atualizacao para a 0.7.0 precisou declarar `.mentor/**` para fechar.
+ *
+ * Sem manifesto nao ha como separar patch de pacote, entao tudo em `.mentor/` conta como pacote.
+ * Compara com o manifesto **atual**: patch antigo sobrescrito por atualizacao ja' nao existe.
+ */
+export function arquivoIntactoDoPacote(caminhoRel: string): boolean {
+  const norm = caminhoRel.replace(/\\/g, '/').replace(/^\.\//, '')
+  if (!norm.startsWith('.mentor/')) return false
+  const rel = norm.slice('.mentor/'.length)
+  if (rel === NOME || rel === 'LEIA-ME-MANIFESTO.txt') return true
+  const c = caminhos()
+  if (manifestoLido?.pacote !== c.pacote) {
+    const caminho = join(c.pacote, NOME)
+    manifestoLido = { pacote: c.pacote, arquivos: existe(caminho) ? lerJson<Manifesto>(caminho).arquivos : null }
+  }
+  if (!manifestoLido.arquivos) return true
+  const esperado = manifestoLido.arquivos[rel]
+  if (!esperado) return false
+  const abs = join(c.pacote, rel)
+  return existe(abs) && hashDe(lerTexto(abs)) === esperado
+}
+
 /** `null` quando nao ha manifesto: o pacote foi copiado a mao, e ai' nao da' para comparar nada. */
 export function conferirManifesto(): Divergencia | null {
   const c = caminhos()
@@ -88,29 +118,8 @@ export function instalar(flags: Record<string, string | undefined>): void {
     return
   }
 
-  if (flags.forcar && existe(pastaDestino)) {
-    const processosPasta = join(pastaDestino, 'processos')
-    const procs = existe(processosPasta) ? listar(processosPasta, '.md').map((p) => relative(pastaDestino, p)) : []
-    const arquivosNormativos = ['nucleo.md', ...procs]
-    const modificados: string[] = []
-    for (const rel of arquivosNormativos) {
-      const arqDest = join(pastaDestino, rel)
-      const arqOrig = join(origem, '.mentor', rel)
-      if (existe(arqDest) && existe(arqOrig)) {
-        if (lerTexto(arqDest) !== lerTexto(arqOrig)) {
-          modificados.push(rel.replace(/\\/g, '/'))
-        }
-      }
-    }
-    if (modificados.length > 0) {
-      console.log(`\n⚠️ ATENCAO: A atualizacao (--forcar) altera arquivos normativos/leis do framework:`)
-      for (const m of modificados) {
-        console.log(`  - .mentor/${m}`)
-      }
-      console.log('Revise as mudancas nas leis do projeto apos a conclusao.\n')
-    }
-  }
-
+  // Medido antes de copiar, pela mesma funcao que o caminho de `node_modules` usa.
+  const normas = flags.forcar ? normasQueMudam(origem, destino) : []
   const copia = copiarPacote(origem, destino, true, Boolean(flags['migrar-docs']))
   if (!copia.ok) {
     console.error(copia.erro)
@@ -127,6 +136,7 @@ export function instalar(flags: Record<string, string | undefined>): void {
     ? lerJson<{ versao?: string }>(doManifesto).versao ?? '0.0.0'
     : lerJson<{ version?: string }>(join(origem, 'package.json')).version ?? '0.0.0'
   console.log(`mentor-agent ${versao} instalado em ${destino}.`)
+  for (const linha of avisoDeNormas(normas)) console.log(linha)
 
   // Sem ponto de entrada, nenhuma ferramenta le' o nucleo, e o pacote inteiro nao existe.
   const e = criarPontosDeEntrada(destino)

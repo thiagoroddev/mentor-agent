@@ -11,7 +11,7 @@ import {
 } from './vistas.ts'
 import { CARACTERISTICAS } from './tipos.ts'
 import type { Caracteristica, Contexto, EstadoDaCaracteristica, Fase, MetaDeQualidade, Tarefa } from './tipos.ts'
-import { baseDoLote, calcularQuebraDiff, loteNaoAuditado, medirDiffAcumulado } from './cmd-auditar.ts'
+import { estadoDaCadencia, maioresArquivos } from './cmd-auditar.ts'
 
 /**
  * Folha de saude do projeto. Tres propriedades a sustentam, e as tres foram medidas em campo:
@@ -373,31 +373,30 @@ function processo(ctx: Contexto, tarefas: Tarefa[]): Linha[] {
     }
   }
 
-  // Auditoria: o doctor mede a cadencia (tarefas e diff acumulado) e conta os bloqueios que ela reportou.
-  const concluidasParaAuditoria = tarefas.filter((t) => t.estado === 'concluida').length
+  // Auditoria: o doctor mede a cadencia (tarefas com diff auditavel) e conta os bloqueios que ela reportou.
   const au = ctx.auditoria
-  const semAuditar = concluidasParaAuditoria - (au.ultima_na_tarefa ?? 0)
-  const cadenciaChars = au.cadencia_em_caracteres ?? 80_000
-  const lote = loteNaoAuditado()
-  const base = baseDoLote(ctx, lote)
-  const diffChars = medirDiffAcumulado(base)
-
-  if (semAuditar >= au.cadencia_em_tarefas * 2 || (cadenciaChars > 0 && diffChars >= cadenciaChars * 1.5)) {
-    const q = calcularQuebraDiff(base)
-    linhas.push({
-      estado: 'bloqueio',
-      texto: `${semAuditar} tarefa(s) / ${diffChars} caracteres de diff sem auditoria (cadencias: ${au.cadencia_em_tarefas} tarefas, ${cadenciaChars} chars | codigo/testes: ${q.codigo_e_testes}, config: ${q.configuracoes}, docs: ${q.documentacao}). Risco critico de truncamento no dossie. Rode: mentor auditar preparar`,
-    })
-  } else if (semAuditar >= au.cadencia_em_tarefas || (cadenciaChars > 0 && diffChars >= cadenciaChars)) {
-    const q = calcularQuebraDiff(base)
-    linhas.push({
-      estado: 'atencao',
-      texto: `${semAuditar} tarefa(s) / ${diffChars} caracteres de diff sem auditoria (cadencias: ${au.cadencia_em_tarefas} tarefas, ${cadenciaChars} chars | codigo/testes: ${q.codigo_e_testes}, config: ${q.configuracoes}, docs: ${q.documentacao}). Rode: mentor auditar preparar`,
-    })
+  const cad = estadoDaCadencia(ctx)
+  const naoContam = cad.pendentes.length - cad.contam.length
+  const resumo = `${cad.contam.length} tarefa(s) com codigo sem auditoria (cadencia ${cad.cadencia}` +
+    `${naoContam ? `; ${naoContam} sem diff auditavel nao conta(m)` : ''})`
+  const maiores = maioresArquivos(cad.contam)
+  const deOndeVem = maiores.length
+    ? ` Maiores arquivos: ${maiores.map((m) => `${m.caminho} (${m.linhas} linhas)`).join(', ')}.`
+    : ''
+  if (cad.estado === 'atrasada') {
+    linhas.push({ estado: 'bloqueio', texto: `${resumo}: o dobro da cadencia.${deOndeVem} Rode: mentor auditar preparar` })
+  } else if (cad.estado === 'vencida') {
+    linhas.push({ estado: 'atencao', texto: `${resumo}.${deOndeVem} Rode: mentor auditar preparar` })
   } else if (au.ultima_em) {
     linhas.push({
       estado: 'ok',
-      texto: `auditoria em dia: ultima em ${au.ultima_em}, ${semAuditar} tarefa(s) e ${diffChars} chars de diff desde entao`,
+      texto: `auditoria em dia: ultima em ${au.ultima_em}, ${cad.contam.length} de ${cad.cadencia} tarefa(s) com codigo desde entao`,
+    })
+  }
+  if (cad.campo_obsoleto) {
+    linhas.push({
+      estado: 'neutro',
+      texto: 'auditoria.cadencia_em_caracteres nao e mais usado desde a 0.8.0: a cadencia conta tarefas, e o tamanho so decide como o dossie se divide. Pode apagar o campo',
     })
   }
   const bloqueiosDeAuditoria = au.pendencias_reportadas

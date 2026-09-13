@@ -468,8 +468,9 @@ export function atualizarContagens(): Contexto {
     // Preenchidos pelo doctor (fase 4), que e' quem classifica achado por severidade.
     divida_tecnica_com_gatilho_vencido: ctx.contagens['divida_tecnica_com_gatilho_vencido'] ?? null,
   }
-  ctx.auditoria.proxima_em_tarefa =
-    Math.floor(concluidas / ctx.auditoria.cadencia_em_tarefas + 1) * ctx.auditoria.cadencia_em_tarefas
+  // Conta a partir da ultima auditoria, nao do proximo multiplo: com a ultima na tarefa 25 e cadencia
+  // 10, a proxima e' a 35. Era 30. E' estimativa: tarefa sem diff auditavel nao conta e empurra a proxima.
+  ctx.auditoria.proxima_em_tarefa = (ctx.auditoria.ultima_na_tarefa ?? 0) + ctx.auditoria.cadencia_em_tarefas
   // A versao vem do manifesto do pacote INSTALADO, a cada geracao. Era gravada so' pelo `init`, e o
   // `init` recusa rodar em projeto que ja' existe: atualizar o pacote nunca atualizava o numero.
   // Achado em campo com a 0.1.3 instalada e o contexto ainda dizendo 0.1.2, o que faz o relatorio

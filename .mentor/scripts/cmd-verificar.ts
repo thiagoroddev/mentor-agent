@@ -22,17 +22,23 @@ function casa(padrao: string, caminho: string): boolean {
  *   parte B sao para quem escreve o relatorio, e nao devem barrar o trabalho do projeto.
  * - `atrito-de-campo.md` e' a fonte escrita da mesma parte B. As tres categorias sao opcionais;
  *   seus marcadores orientam a medicao, mas nao significam trabalho incompleto do projeto.
+ * - `melhorias-do-pacote.md` fala **do pacote**, e por natureza cita os tokens dele. Medido em campo:
+ *   uma tabela que listava os tipos de recusa deixou o `verificar` reprovado no main por dias.
  */
-const MARCADOR_E_CONTEUDO = ['recusas.json', 'recusas.jsonl', 'relatorio-de-campo.md', 'atrito-de-campo.md']
+const MARCADOR_E_CONTEUDO = ['recusas.json', 'recusas.jsonl', 'relatorio-de-campo.md', 'atrito-de-campo.md', 'melhorias-do-pacote.md']
 
-/** Familia 1: nenhum marcador sobrevivente. O script escreve o esqueleto; ninguem entrega o esqueleto. */
+/**
+ * Familia 1: nenhum marcador sobrevivente. O script escreve o esqueleto; ninguem entrega o esqueleto.
+ * Em markdown, marcador entre crases e' citacao, nao esqueleto: o script nunca escreve crase em volta.
+ */
 function marcadores(): Achado[] {
   const c = caminhos()
   const achados: Achado[] = []
   const alvos = [...listar(c.docs, '.md'), ...listar(c.docs, '.json'), ...listar(c.docs, '.jsonl')]
     .filter((a) => !MARCADOR_E_CONTEUDO.some((nome) => a.endsWith(nome)))
   for (const a of alvos) {
-    if (lerTexto(a).includes(MARCADOR)) {
+    const texto = a.endsWith('.md') ? lerTexto(a).replace(CERCA, '') : lerTexto(a)
+    if (texto.includes(MARCADOR)) {
       achados.push({ familia: 'marcador', onde: relativo(a), problema: `contem ${MARCADOR} nao preenchido` })
     }
   }
@@ -236,11 +242,15 @@ function referencias(): Achado[] {
   return achados
 }
 
-export function verificar(): number {
-  const achados = [
+export function coletarAchados(): Achado[] {
+  return [
     ...marcadores(), ...tetos(), ...referencias(),
     ...links(), ...inventarioDeRegras(), ...divergenciaDoPacote(),
   ]
+}
+
+export function verificar(): number {
+  const achados = coletarAchados()
   if (achados.length === 0) {
     console.log('APROVADO. Tres familias: marcadores, tetos de texto, integridade referencial (ponteiros, links e inventario de regras).')
     return 0

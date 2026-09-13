@@ -3,7 +3,7 @@
 // (ERR_UNSUPPORTED_NODE_MODULES_TYPE_STRIPPING). Um `.ts` aqui quebraria a instalacao inteira.
 // Fonte unica da copia: `mentor.mjs` chama daqui quando esta em node_modules, e `cmd-pacote.ts`
 // chama daqui quando roda do repositorio. Duas copias da mesma logica divergiriam.
-import { cpSync, existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs'
+import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { spawnSync } from 'node:child_process'
 
@@ -62,6 +62,65 @@ function migrarReferenciasAdministrativas(pasta) {
     throw erro
   }
   return restaurar
+}
+
+/** Linhas que existem num texto e nao no outro, contando repeticao. Suficiente para dizer o tamanho da mudanca. */
+function linhasSoEm(a, b) {
+  const restantes = new Map()
+  for (const l of b) restantes.set(l, (restantes.get(l) ?? 0) + 1)
+  let so = 0
+  for (const l of a) {
+    const n = restantes.get(l) ?? 0
+    if (n > 0) restantes.set(l, n - 1)
+    else so++
+  }
+  return so
+}
+
+/**
+ * As leis que a copia vai trocar: `nucleo.md` e `processos/`. Chamada **antes** de copiar, pelos dois
+ * caminhos do `instalar`.
+ *
+ * ⚠️ Morava so' em `cmd-pacote.ts`, e o comando documentado (`npx mentor instalar --forcar`) roda de
+ * `node_modules`, onde `mentor.mjs` chama este arquivo direto. Medido em campo: a 0.7.0 mudou 19 linhas
+ * de `processos/tarefa.md` e a atualizacao nao disse nada. `.mentor/` e' versionado no projeto, entao o
+ * texto inteiro fica a um `git diff` de distancia depois da copia.
+ */
+export function normasQueMudam(origem, destino) {
+  const pastaOrigem = join(origem, '.mentor')
+  const pastaDestino = join(destino, '.mentor')
+  if (!existsSync(pastaDestino)) return []
+  const ler = (caminho) => readFileSync(caminho, 'utf8').replace(/\r\n/g, '\n')
+  const processos = (pasta) => existsSync(join(pasta, 'processos'))
+    ? readdirSync(join(pasta, 'processos')).filter((f) => f.endsWith('.md')).map((f) => `processos/${f}`)
+    : []
+  // So' o que o pacote traz: a copia nao apaga arquivo que so' existe no projeto.
+  const nomes = ['nucleo.md', ...processos(pastaOrigem).sort()]
+  const mudancas = []
+  for (const rel of nomes) {
+    const noPacote = join(pastaOrigem, rel)
+    const noProjeto = join(pastaDestino, rel)
+    if (!existsSync(noPacote)) continue
+    if (!existsSync(noProjeto)) { mudancas.push({ arquivo: rel, estado: 'novo', mais: ler(noPacote).split('\n').length, menos: 0 }); continue }
+    const novo = ler(noPacote).split('\n')
+    const antigo = ler(noProjeto).split('\n')
+    const mais = linhasSoEm(novo, antigo)
+    const menos = linhasSoEm(antigo, novo)
+    if (mais || menos) mudancas.push({ arquivo: rel, estado: 'mudado', mais, menos })
+  }
+  return mudancas
+}
+
+/** O texto do aviso, igual nos dois caminhos. */
+export function avisoDeNormas(mudancas) {
+  if (!mudancas.length) return []
+  return [
+    '',
+    'ATENCAO: esta atualizacao troca leis do projeto:',
+    ...mudancas.map((m) => `  .mentor/${m.arquivo}  ${m.estado === 'mudado' ? `+${m.mais} -${m.menos} linhas` : m.estado}`),
+    'Leia antes de seguir: git diff -- .mentor/nucleo.md .mentor/processos/',
+    '',
+  ]
 }
 
 /**

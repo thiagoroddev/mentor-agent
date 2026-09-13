@@ -4,6 +4,32 @@ Todas as mudanças notáveis no **mentor-agent** são documentadas neste arquivo
 
 O formato baseia-se em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [0.8.0] - 2026-09-13
+
+Plano e medicao de campo em `PLANO-v0.8.0.md`.
+
+### Mudado
+- **Cadencia de auditoria por tarefas**: `estadoDaCadencia()` e' a fonte unica para `doctor`, `finalizar` e `auditar preparar`. Conta as concluidas fora de lote com diff auditavel; atencao em N, bloqueio em 2N. `cadencia_em_caracteres` sai do esquema e passa a ser ignorado, com aviso no `doctor`.
+- **Diff por tarefa**: `diffDaTarefa()` usa os commits com o ID no titulo (squash de PR incluido) ou, sem commit, os arquivos do `plano.muda` alterados desde o `commit_base`. Classifica a tarefa como `codigo`, `sem-diff` ou `atualizacao-do-pacote`.
+- **Dossie por tarefa**: cada tarefa traz registro, tabela de arquivos (com o motivo de exclusao) e patch. O `preparar` empacota pelo teto de 120 mil caracteres e deixa o resto para o proximo (`ficaram_para_depois`); so' trunca tarefa que sozinha passa do teto. Commit sem ID de tarefa e trabalho nao commitado fora do lote viram fato, sem conteudo. Fato novo: tarefa que declara codigo e nao tem diff auditavel.
+- **Exclusao unica** (`motivosDeExclusao`): registro do mentor, vista gerada, nota, pacote intacto, `linguist-generated` do `.gitattributes` e `ignorar_diff`, igual para arquivo rastreado e nao rastreado.
+- **`registrar`** grava `ultima_na_tarefa` com as concluidas que ja' estao em lote; `proxima_em_tarefa` passa a ser `ultima_na_tarefa + cadencia` (era o proximo multiplo).
+- **`arvore_hash`**: arvore do codigo sem a pasta de documentos e com nao rastreados (indice temporario + `write-tree`), marcada com `arvore_sem_documentos`. O `finalizar` recusa gate `testes` ou `build` que rodou antes de mudar arquivo rastreado ou declarado.
+- **Pre-push**: deixa de rodar os gates (o arquivo do hook ja' roda; rodavam duas vezes), mostra os achados do `verificar` sem barrar, e trata `.mentor/` pelo manifesto.
+
+### Corrigido
+- Trava de retroativa acusava tarefa legitima fechada antes do commit: o diff ativo passa a ser o da trava de escopo (arvore de trabalho, nao rastreados, pausas).
+- Hook, `finalizar` e auditoria tratavam `.mentor/` de tres jeitos: `arquivoIntactoDoPacote()` e' a regra unica.
+- "Tarefa sensivel" definida em tres lugares e sem UI: `sensivel.ts` unifica e reconhece `.tsx`, `.jsx`, `.vue`, `.svelte`, `.css`, `.html`, tela, componente e layout.
+- `verificar` acusava `PREENCHER:` citado em `melhorias-do-pacote.md` e entre crases.
+- Aviso de normas alteradas nao aparecia pelo `npx mentor instalar --forcar`: `normasQueMudam()` em `instalar.mjs`, chamada pelos dois caminhos, com linhas por arquivo.
+- Ajuda de `task criterio` anunciava `--cmd`; os dois nomes valem, e a ajuda diz que o indice comeca em 0.
+
+### Adicionado
+- Cenarios `26-auditoria-por-tarefa.ts` e `27-travas-de-fechamento-e-entrega.ts`.
+
+---
+
 ## [0.7.0] - 2026-09-13
 
 ### Adicionado

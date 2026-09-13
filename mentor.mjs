@@ -12,7 +12,7 @@ const aqui = dirname(fileURLToPath(import.meta.url))
 // coisa que precisa fazer ali (copiar-se para dentro do projeto) e todos os outros comandos passam
 // a rodar da raiz, onde a remocao de tipos funciona. Medido: sem isto, `npx mentor instalar` morre.
 if (aqui.split(/[\\/]/).includes('node_modules')) {
-  const { copiarPacote, criarPontosDeEntrada, analisadoresSemIgnorar } = await import('./.mentor/scripts/instalar.mjs')
+  const { avisoDeNormas, copiarPacote, criarPontosDeEntrada, analisadoresSemIgnorar, normasQueMudam } = await import('./.mentor/scripts/instalar.mjs')
   const args = process.argv.slice(2)
   if (args[0] !== 'instalar') {
     console.error('Instalado como dependencia, so `instalar` roda daqui.')
@@ -22,6 +22,8 @@ if (aqui.split(/[\\/]/).includes('node_modules')) {
   } else {
     const i = args.indexOf('--destino')
     const destino = i >= 0 && args[i + 1] ? args[i + 1] : process.cwd()
+    // Medido antes de copiar: depois, o projeto ja' tem as leis novas e nao sobra com o que comparar.
+    const normas = args.includes('--forcar') ? normasQueMudam(aqui, destino) : []
     const r = copiarPacote(aqui, destino, args.includes('--forcar'), args.includes('--migrar-docs'))
     if (!r.ok) {
       console.error(r.erro)
@@ -29,6 +31,7 @@ if (aqui.split(/[\\/]/).includes('node_modules')) {
       process.exitCode = 1
     } else {
       console.log(`mentor-agent instalado em ${destino}.`)
+      for (const linha of avisoDeNormas(normas)) console.log(linha)
       if (r.migrouDocs) console.log('Migracao concluida: docs/ foi renomeada para docs-mentor/.')
       const e = criarPontosDeEntrada(destino)
       if (e.criados.length) console.log(`Ponto de entrada criado: ${e.criados.join(', ')}.`)
