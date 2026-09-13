@@ -97,6 +97,8 @@ export function rodar(): Cenario {
   // --- 4a. commit sem tarefa tocando codigo, antes da proxima tarefa comecar
   escrever(c, 'src/solto.ts', 'export const solto = true\n')
   commit('ajuste solto')
+  escrever(c, 'src/a.ts', 'export const a = (x: number) => x + 1 // soma\n')
+  commit('style(light): comentar a soma')
 
   // --- 3. a segunda tarefa com codigo bate a cadencia de 2. Fica sem commit: o diff vira aproximacao
   const f4 = fechar('RF', 'TASK-RF-002', 'Subtrair parcelas', {
@@ -127,6 +129,9 @@ export function rodar(): Cenario {
   confere(c, dossie.includes('TASK-DOC-001: sem diff auditavel'), 'a tarefa so de documentacao aparece como sem diff auditavel')
   confere(c, dossie.includes('Commits sem ID de tarefa') && dossie.includes('ajuste solto') && dossie.includes('src/solto.ts'),
     'commit sem tarefa tocando codigo vira fato')
+  const blocoLight = dossie.slice(dossie.indexOf('Commits marcados Light'), dossie.indexOf('Commits sem ID de tarefa'))
+  confere(c, blocoLight.includes('style(light): comentar a soma') && blocoLight.includes('linha(s) em src/a.ts') && !blocoLight.includes('ajuste solto'),
+    'commit Light fica num grupo proprio, com as linhas que tocou, para o auditor conferir se cabia na lista')
   confere(c, dossie.includes('`src/outra.ts`') && !dossie.includes('SEGREDO_DE_OUTRA_TAREFA'),
     'trabalho nao commitado de outra tarefa aparece pelo nome, sem conteudo')
   confere(c, !dossie.includes('export const solto'), 'o diff do commit sem tarefa nao entra')

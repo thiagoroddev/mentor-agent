@@ -41,7 +41,8 @@ explícita**. Nunca deduza intenção. **Termina, apresenta, aguarda.**
 - Depois do push, conferir o resultado da integração. Não é portão, e o poder dele é avisar.
 - Vale em qualquer modo de cerimônia, inclusive Light.
 
-**Commit.** Título `<tipo>(<ID da tarefa>): <descrição>`, sem ID quando não há tarefa. Unidade:
+**Commit.** Título `<tipo>(<ID da tarefa>): <descrição>`. Sem tarefa, só Light, e se tocar código
+leva a marca: `<tipo>(light): <descrição>`. O pre-push barra código sem uma das duas. Unidade:
 uma mudança lógica, revertível sozinha, que deixa o gate verde.
 
 ## 3 · Princípios

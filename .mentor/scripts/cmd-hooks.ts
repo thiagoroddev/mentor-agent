@@ -3,6 +3,7 @@ import { caminhos, escreverTexto, existe } from './arquivos.ts'
 import { carregarContexto } from './vistas.ts'
 import { arquivoIntactoDoPacote } from './cmd-pacote.ts'
 import { coletarAchados } from './cmd-verificar.ts'
+import { ID_DE_TAREFA_NO_TITULO, MARCA_LIGHT_NO_TITULO } from './tipos.ts'
 import { chmodSync } from 'node:fs'
 import { join } from 'node:path'
 
@@ -102,14 +103,17 @@ export function prePush(): number {
           const arquivos = rDiff.stdout.split('\n').map((s) => s.trim()).filter(Boolean)
           const arquivosCodigo = arquivos.filter(arquivoEhCodigo)
           if (arquivosCodigo.length > 0) {
-            const temId = /\bTASK-[A-Z]+-\d{3}\b/.test(titulo) || /^[a-z]+(\([A-Z0-9_-]+\)):\s*.+/i.test(titulo)
-            if (!temId) {
+            if (!ID_DE_TAREFA_NO_TITULO.test(titulo) && !MARCA_LIGHT_NO_TITULO.test(titulo)) {
               console.error(
                 `\nEnvio barrado: commit sem ID de tarefa tocando codigo de producao.\n` +
                 `Commit: ${hash.slice(0, 7)} - "${titulo}"\n` +
                 `Arquivos afetados: ${arquivosCodigo.slice(0, 3).join(', ')}${arquivosCodigo.length > 3 ? '...' : ''}\n` +
-                `O Nucleo §2 exige que todo commit em codigo esteja vinculado a uma tarefa rastreada:\n` +
-                `Padrao: <tipo>(<ID da tarefa>): <descricao> (ex: feat(TASK-RF-001): adicionar validacao)\n`,
+                `O Nucleo §2 pede, para commit que toca codigo, uma das duas marcas no titulo:\n` +
+                `  com tarefa:  <tipo>(<ID da tarefa>): <descricao>   ex: feat(TASK-RF-001): adicionar validacao\n` +
+                `  Light:       <tipo>(light): <descricao>            ex: fix(light): corrigir typo no botao\n` +
+                `Light e' lista fechada (nucleo §5): typo, formatacao, renomear arquivo, dependencia de desenvolvimento.\n` +
+                `A auditoria lista todo commit Light para conferir se cabia na lista.\n` +
+                `Para corrigir o titulo sem perder o trabalho: git rebase -i e "reword" no commit.\n`,
               )
               return 1
             }

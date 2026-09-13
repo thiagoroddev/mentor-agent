@@ -7,7 +7,9 @@ import {
 import { arquivoIntactoDoPacote } from './cmd-pacote.ts'
 import { categoriasSensiveis, tocaRegra4 } from './sensivel.ts'
 import { carregarContexto, carregarRequisitos, regenerarTudo, registrarRecusa } from './vistas.ts'
-import { DESTINOS_DE_ACHADO, MARCADOR, NIVEIS_DE_AUDITORIA, VEREDITOS_DE_REVISAO } from './tipos.ts'
+import {
+  DESTINOS_DE_ACHADO, ID_DE_TAREFA_NO_TITULO, MARCA_LIGHT_NO_TITULO, MARCADOR, NIVEIS_DE_AUDITORIA, VEREDITOS_DE_REVISAO,
+} from './tipos.ts'
 import type {
   Auditoria, Contexto, DestinoDeAchado, NivelDeAuditoria, Requisito, Tarefa,
 } from './tipos.ts'
@@ -144,8 +146,6 @@ export interface DiffDaTarefa {
   classe: ClasseDoDiff
   linhas_auditaveis: number
 }
-
-const ID_DE_TAREFA = /\bTASK-[A-Z]+-\d{3,}\b/
 
 /** Fora das exclusoes, e' isto o que uma atualizacao do pacote toca. Qualquer outra coisa e' codigo. */
 const SO_PACOTE_OU_DEPENDENCIA = /^(package\.json|package-lock\.json|npm-shrinkwrap\.json|yarn\.lock|pnpm-lock\.yaml|mentor\.mjs|AGENTS\.md|CLAUDE\.md|GEMINI\.md|\.gitattributes|\.gitignore)$/
@@ -491,16 +491,26 @@ function foraDasTarefas(pacote: Array<{ d: DiffDaTarefa }>, base: string | null,
     if (!r.ok) {
       l.push(`- Nao consegui ler o historico desde \`${base.slice(0, 7)}\`: commits sem tarefa nao foram conferidos.`)
     } else {
-      const semTarefa = r.commits.filter((c) => !ID_DE_TAREFA.test(c.titulo))
+      const semTarefa = r.commits.filter((c) => !ID_DE_TAREFA_NO_TITULO.test(c.titulo))
       const motivos = motivosDeExclusao(semTarefa.flatMap((c) => c.arquivos.map((a) => a.caminho)), ctx)
       const comCodigo = semTarefa.filter((c) => c.arquivos.some((a) => !motivos.get(a.caminho)))
-      if (comCodigo.length) {
-        l.push(`**Commits sem ID de tarefa desde a ultima auditoria (${comCodigo.length}):**`)
+      const descrever = (c: CommitDaTarefa) => {
+        const arquivos = c.arquivos.filter((a) => !motivos.get(a.caminho))
+        const linhas = arquivos.reduce((soma, a) => soma + a.linhas, 0)
+        return `- \`${c.hash.slice(0, 7)}\` ${c.titulo} — ${linhas} linha(s) em ${arquivos.slice(0, 5).map((a) => a.caminho).join(', ')}${arquivos.length > 5 ? '...' : ''}`
+      }
+      const light = comCodigo.filter((c) => MARCA_LIGHT_NO_TITULO.test(c.titulo))
+      const semMarca = comCodigo.filter((c) => !MARCA_LIGHT_NO_TITULO.test(c.titulo))
+      if (light.length) {
+        l.push(`**Commits marcados Light desde a ultima auditoria (${light.length}).** Light e\' lista fechada (nucleo §5: typo, formatacao, renomear arquivo, dependencia de desenvolvimento). O que nao cabe nela e\' codigo sem tarefa, e isso e\' achado:`)
         l.push('')
-        for (const c of comCodigo.slice(0, 15)) {
-          const arquivos = c.arquivos.filter((a) => !motivos.get(a.caminho)).map((a) => a.caminho)
-          l.push(`- \`${c.hash.slice(0, 7)}\` ${c.titulo} — ${arquivos.slice(0, 5).join(', ')}${arquivos.length > 5 ? '...' : ''}`)
-        }
+        for (const c of light.slice(0, 15)) l.push(descrever(c))
+        l.push('')
+      }
+      if (semMarca.length) {
+        l.push(`**Commits sem ID de tarefa e sem marca Light desde a ultima auditoria (${semMarca.length}):**`)
+        l.push('')
+        for (const c of semMarca.slice(0, 15)) l.push(descrever(c))
         l.push('')
       }
     }

@@ -28,8 +28,10 @@ foram entregues juntas.
 **Protegida:** não aceita envio direto. Toda mudança entra por revisão com a esteira verde. Quando `contexto.json` declara `revisao_antes_do_merge`, o hook de pre-push barra envios diretos para a `main`. A `main` local é espelho estrito de `origin/main` e não recebe trabalho em andamento.
 
 **O que o hook de pre-push faz:** roda os gates do projeto (uma vez); barra envio direto na linha
-principal protegida e commit sem ID de tarefa que toque código (arquivo de `.mentor/` igual ao
-manifesto não é código; patch local é); e **mostra** os achados do `verificar`, sem barrar. Tarefa em
+principal protegida e commit que toque código sem `(TASK-X-NNN)` nem `(light)` no título (arquivo de
+`.mentor/` igual ao manifesto não é código; patch local é); e **mostra** os achados do `verificar`, sem barrar.
+A marca `light` não tem registro, mas não some: o dossiê da auditoria lista cada commit Light com as
+linhas que tocou, para conferir se cabia na lista fechada. Tarefa em
 execução tem marcador legítimo, e travar o envio por ele vira laço: quem barra o `verificar` é a esteira.
 
 **Prova por Árvore em Squash Merge:**

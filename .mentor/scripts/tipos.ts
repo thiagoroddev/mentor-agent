@@ -97,6 +97,18 @@ export type NomeGate = (typeof NOMES_DE_GATE)[number]
 /** Marcador que o script escreve e a IA substitui. Nenhum pode sobreviver ao fechamento. */
 export const MARCADOR = 'PREENCHER:'
 
+/** Commit que toca codigo carrega a tarefa no titulo: `feat(TASK-RF-001): ...`. */
+export const ID_DE_TAREFA_NO_TITULO = /\bTASK-[A-Z]+-\d{3,}\b/
+
+/**
+ * Light (nucleo §5) nao tem tarefa, e o commit dele que toca codigo diz isso: `fix(light): ...`.
+ *
+ * ⚠️ Ate' a 0.8.0 o hook aceitava **qualquer** escopo no lugar do ID, entao `feat(ui): tela nova`
+ * subia sem tarefa e `fix: typo` sem escopo era barrado. A marca troca o atalho acidental por um
+ * explicito, que o dossie da auditoria lista para conferir se era mesmo Light.
+ */
+export const MARCA_LIGHT_NO_TITULO = /^[a-z]+\(light\)!?:\s*\S/i
+
 export interface VermelhoDispensado {
   dispensado_em: string
   motivo: string

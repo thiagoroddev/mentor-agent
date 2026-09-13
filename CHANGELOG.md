@@ -4,6 +4,17 @@ Todas as mudanças notáveis no **mentor-agent** são documentadas neste arquivo
 
 O formato baseia-se em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [0.8.1] - 2026-09-13
+
+### Corrigido
+- ⚠️ **Checagem de ID do pre-push aceitava qualquer escopo**: `feat(ui): tela nova` subia sem tarefa, enquanto `fix: typo` sem escopo era barrado. Commit que toca codigo agora precisa de `TASK-X-NNN` no titulo ou da marca Light `<tipo>(light): <descricao>`. **Muda comportamento:** escopo livre (`feat(ui):`, `chore(deps):`) em commit de codigo passa a ser barrado; a mensagem de recusa mostra as duas marcas e como reescrever o titulo.
+
+### Adicionado
+- **Marca Light** (`ID_DE_TAREFA_NO_TITULO` e `MARCA_LIGHT_NO_TITULO` em `tipos.ts`, usadas pelo hook e pela auditoria). O nucleo §2 passa a nomear a marca, e `processos/entrega.md` descreve o hook.
+- O dossie separa **commits marcados Light**, com as linhas que tocaram, dos commits sem ID e sem marca, para o auditor conferir se cabiam na lista fechada do nucleo §5.
+
+---
+
 ## [0.8.0] - 2026-09-13
 
 Plano e medicao de campo em `PLANO-v0.8.0.md`.

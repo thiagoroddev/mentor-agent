@@ -152,7 +152,8 @@ em linhas. A quebra por categoria sai: o tamanho agora e' informativo, por arqui
 **Achado sem correcao nesta versao (nucleo §6, classe 5, gate que nao checa o que diz):** a checagem
 de ID do hook aceita qualquer escopo convencional, entao `feat(ui): tela` passa sem tarefa, enquanto
 `fix: typo` sem escopo e' barrado. Apertar para exigir `TASK-X-NNN` barraria o Light em codigo (typo,
-formatacao), que o nucleo permite sem registro. E' decisao de processo: vai para a v0.9.0 (C7).
+formatacao), que o nucleo permite sem registro. E' decisao de processo: foi para C7, e o humano
+escolheu a marca explicita, entregue na 0.8.1.
 
 ## 5. Ordem de execucao
 
@@ -183,4 +184,4 @@ formatacao), que o nucleo permite sem registro. E' decisao de processo: vai para
 | C4 | Composicao de epico fatiado | ao puxar a 3a fatia do mesmo epico, o plano exige `composicao_do_epico` | nota 12/09 |
 | C5 | Portao 2 sem mecanismo | `finalizar --autorizacao "<frase do humano>"`, mostrada no dossie. Fraco: a IA pode digitar; so' torna a violacao visivel | CHORE-019 fechada sem portao 2 |
 | C6 | Tarefa pausada so' no disco | hook aceita push de `wip/<ID>` (nunca PR, nunca main); `pausar --commit` imprime o comando | SPIKE-003 so' em ramo local |
-| C7 | Light em codigo e a checagem de ID do hook | decidir: marca explicita (`<tipo>(light): ...`) aceita pelo hook e listada no dossie, ou manter o escopo livre e tirar a promessa "todo commit em codigo tem tarefa" da mensagem | achado da v0.8.0, secao 4 |
+| C7 | Light em codigo e a checagem de ID do hook | **decidido e feito na 0.8.1:** marca explicita `<tipo>(light): ...`, aceita pelo hook e listada no dossie com as linhas tocadas | achado da v0.8.0, secao 4 |

@@ -8,7 +8,7 @@ perguntar, e registra tudo de forma rastreavel.
 Na raiz do projeto que vai usar o pacote:
 
 ```bash
-npm i -D github:thiagoroddev/mentor-agent#v0.8.0
+npm i -D github:thiagoroddev/mentor-agent#v0.8.1
 npx mentor instalar        # copia .mentor/ e mentor.mjs para a raiz
 node mentor.mjs init       # cria docs-mentor/, sem tocar na docs/ do aplicativo
 ```
@@ -24,14 +24,14 @@ a IA le' `.mentor/` como arquivo, e o projeto versiona as convencoes dele ao lad
 isso em vez de estourar.
 
 A versao instalada fica gravada em `docs-mentor/contexto.json`, senao o relatorio de campo nao consegue
-dizer *"isto aconteceu com a 0.8.0"*.
+dizer *"isto aconteceu com a 0.8.1"*.
 
 ### Atualizar uma instalacao existente
 
 Para atualizar o pacote mantendo seus documentos preservados:
 
 ```bash
-npm i -D github:thiagoroddev/mentor-agent#v0.8.0
+npm i -D github:thiagoroddev/mentor-agent#v0.8.1
 npx mentor instalar --forcar
 node mentor.mjs resolver-gerados # regenera markdowns derivados e alinha contexto
 node mentor.mjs verificar
@@ -102,7 +102,7 @@ A versão 0.8.0 corrige o que a 0.7.0 mediu errado em campo. O plano completo, c
 - **Evidência da árvore certa**: `arvore_hash` agora é a árvore do código (sem `docs-mentor/`, com não rastreados), e o `finalizar` recusa gate de testes ou build que rodou antes de um arquivo rastreado ou declarado mudar.
 - **Retroativa sem falso positivo**: a trava olha a árvore de trabalho, não só o que já foi commitado.
 - **Dispensa de validação reconhece UI**: tarefa com `.tsx`, `.css`, tela ou componente exige motivo de 30 caracteres para dispensar.
-- **Pre-push**: roda os gates uma vez só (rodavam duas), mostra o `verificar` sem barrar, e trata `.mentor/` pelo manifesto.
+- **Pre-push**: roda os gates uma vez só (rodavam duas), mostra o `verificar` sem barrar, e trata `.mentor/` pelo manifesto. Desde a 0.8.1, commit que toca código precisa de `(TASK-X-NNN)` ou da marca Light `(light)` no título: escopo qualquer não basta mais.
 - **`instalar --forcar` avisa quais leis troca**, com linhas por arquivo, também pelo `npx`.
 
 ### Auditoria Inteligente, Validação Concreta e Rastreabilidade (v0.7.0)

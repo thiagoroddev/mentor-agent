@@ -16,6 +16,7 @@ import type { Cenario } from '../apoio.ts'
  * B6. `instalar --forcar` diz quais leis troca, inclusive pelo caminho de `node_modules`;
  * B7. `task criterio` aceita `--cmd`, o nome que a ajuda anunciava;
  * B8. o pre-push nao roda os gates de novo (o arquivo do hook ja' roda).
+ * 0.8.1. commit em codigo precisa de ID de tarefa ou da marca `(light)`; escopo qualquer nao basta.
  */
 export function rodar(): Cenario {
   const c = abrirCenarioTemporario('27-travas-de-fechamento-e-entrega')
@@ -106,6 +107,17 @@ export function rodar(): Cenario {
   confere(c, push.codigo === 0, 'B4: achado do verificar nao barra o envio')
   dizQue(c, push, 'Aviso: o verificar tem', 'B4: o pre-push mostra os achados do verificar')
   confere(c, !push.saida.includes('GATE_RODOU'), 'B8: o pre-push nao roda os gates, que o arquivo do hook ja roda')
+
+  // --- 0.8.1. escopo qualquer nao substitui a tarefa; a marca light, sim
+  escrever(c, 'src/Tela.tsx', 'export const Tela = () => null\n')
+  commit('feat(ui): tela nova')
+  const escopoLivre = mentor(c, 'hooks', '--pre-push', 'origin')
+  confere(c, escopoLivre.codigo === 1 && escopoLivre.saida.includes('fix(light): corrigir typo no botao'),
+    'Light: escopo qualquer nao passa por ID de tarefa, e a recusa ensina as duas marcas')
+  sh('git', 'reset', '-q', '--hard', 'HEAD~1')
+  escrever(c, 'src/nota.ts', 'export const nota = 2 // corrigido\n')
+  commit('fix(light): corrigir comentario da nota')
+  confere(c, mentor(c, 'hooks', '--pre-push', 'origin').codigo === 0, 'Light: commit com a marca light sobe sem tarefa')
 
   // --- B6. instalar --forcar diz quais leis troca, pelo repositorio e por node_modules
   escrever(c, '.mentor/processos/entrega.md', `${ler(c, '.mentor/processos/entrega.md')}Linha local um.\nLinha local dois.\n`)
