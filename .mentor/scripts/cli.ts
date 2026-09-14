@@ -58,6 +58,7 @@ mentor <comando>
   task criterio <ID> <n> --comando "..." | --saida "..."
                                        registra evidencia em criterio do plano (n comeca em 0)
   task finalizar <ID>                  fecha, vincula requisito, regenera as vistas
+       [--produto-tocado "..."]        spike que mudou arquivo fora do laboratorio, e por que
   stack <ferramenta> [--versao --papel] cria a convencao e registra no contexto
   regras [--sincronizar]               inventario das regras do pacote: quais viraram comando
   verificar                            marcadores, tetos de texto, integridade referencial

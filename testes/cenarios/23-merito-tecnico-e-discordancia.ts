@@ -66,6 +66,10 @@ export function rodar(): Cenario {
   t1.plano.riscos = ['nenhum identificado']
   t1.plano.proporcionalidade = 'direto'
   t1.plano.problema_canonico = '   '
+  t1.plano.pedido_original = 'pedido do cenario'
+  t1.plano.solucao_sugerida = null
+  t1.plano.alternativas_profissionais = []
+  if (t1.plano.saida_do_laboratorio !== undefined) t1.plano.saida_do_laboratorio = { tipo: 'relatorio', artefato: null, teste_de_contrato: null }
   t1.plano.discordancia = {
     o_que_faria_diferente: 'Nada a objetar',
     o_que_preocupa: 'Nada a objetar',
@@ -77,6 +81,10 @@ export function rodar(): Cenario {
 
   // Tentar finalizar com discordancia incompleta: recusa
   t1.plano.problema_canonico = 'Hashing criptografico / digest'
+  t1.plano.pedido_original = 'pedido do cenario'
+  t1.plano.solucao_sugerida = null
+  t1.plano.alternativas_profissionais = []
+  if (t1.plano.saida_do_laboratorio !== undefined) t1.plano.saida_do_laboratorio = { tipo: 'relatorio', artefato: null, teste_de_contrato: null }
   t1.plano.discordancia.o_que_preocupa = ''
   escrever(c, 'docs-mentor/tarefas/abertas/TASK-RF-001.json', JSON.stringify(t1, null, 2))
   const rSemDisc = mentor(c, 'task', 'finalizar', 'TASK-RF-001')
@@ -111,6 +119,10 @@ export function rodar(): Cenario {
   s1.plano.riscos = ['nenhum']
   s1.plano.proporcionalidade = 'spike'
   s1.plano.problema_canonico = 'Busca binaria vs linear'
+  s1.plano.pedido_original = 'pedido do cenario'
+  s1.plano.solucao_sugerida = null
+  s1.plano.alternativas_profissionais = []
+  if (s1.plano.saida_do_laboratorio !== undefined) s1.plano.saida_do_laboratorio = { tipo: 'relatorio', artefato: null, teste_de_contrato: null }
   s1.plano.discordancia = {
     o_que_faria_diferente: 'Nada a objetar',
     o_que_preocupa: 'Overhead para colecoes pequenas',
@@ -172,6 +184,10 @@ export function rodar(): Cenario {
   tG.plano.riscos = ['nenhum']
   tG.plano.proporcionalidade = 'direto'
   tG.plano.problema_canonico = 'Parsing sintatico LR/GLR'
+  tG.plano.pedido_original = 'pedido do cenario'
+  tG.plano.solucao_sugerida = null
+  tG.plano.alternativas_profissionais = []
+  if (tG.plano.saida_do_laboratorio !== undefined) tG.plano.saida_do_laboratorio = { tipo: 'relatorio', artefato: null, teste_de_contrato: null }
   tG.plano.discordancia = {
     o_que_faria_diferente: 'Usaria gerador de parser pronto em vez de escrever a mao',
     o_que_preocupa: 'Complexidade de manutencao gramatical',
@@ -225,6 +241,10 @@ export function rodar(): Cenario {
   s2.plano.riscos = ['nenhum']
   s2.plano.proporcionalidade = 'spike'
   s2.plano.problema_canonico = 'sem nome canonico'
+  s2.plano.pedido_original = 'pedido do cenario'
+  s2.plano.solucao_sugerida = null
+  s2.plano.alternativas_profissionais = []
+  if (s2.plano.saida_do_laboratorio !== undefined) s2.plano.saida_do_laboratorio = { tipo: 'relatorio', artefato: null, teste_de_contrato: null }
   s2.plano.discordancia = { o_que_faria_diferente: 'Nada a objetar', o_que_preocupa: 'Nada a objetar', o_que_existe_pronto_80_porcento: 'Nenhuma conhecida' }
   s2.achados = [{ classe: 3, descricao: 'resultado inconclusivo sobre ganho de performance', destino: 'descartado', ref: 'inconclusivo' }]
   escrever(c, 'docs-mentor/tarefas/abertas/TASK-SPIKE-002.json', JSON.stringify(s2, null, 2))

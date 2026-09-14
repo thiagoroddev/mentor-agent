@@ -35,7 +35,7 @@ explícita**. Nunca deduza intenção. **Termina, apresenta, aguarda.**
 - A tarefa termina aberta e espera ali. Escrever o registro de conclusão antes do portão 2
   transforma a pergunta em aviso: o humano recebe fato consumado com aparência de consulta.
 - **Autorização vale por ato, nunca por sessão.** Aprovar o plano não autoriza fechar.
-- **Mérito técnico obrigatório no Portão 1:** O plano não avalia apenas a forma: exige nome canônico (`problema_canonico`), exercício explícito de discordância (`discordancia`), estado da arte e custo de oportunidade para motores ou esforço G/XG, e três réguas (piso, teto, padrão) para spikes. O silêncio sobre alternativas de mercado invalida a aprovação.
+- **Mérito técnico obrigatório no Portão 1:** O plano não avalia apenas a forma: exige nome canônico (`problema_canonico`), exercício explícito de discordância (`discordancia`), estado da arte e custo de oportunidade para motores ou esforço G/XG, e três réguas (piso, teto, padrão) para spikes. O silêncio sobre alternativas de mercado invalida a aprovação. **Solução sugerida pelo humano é hipótese, não especificação:** o plano guarda o pedido original e compara ao menos duas práticas profissionais (`alternativas_profissionais`).
 - **Validação manual ativa antes do fechamento:** Em tarefas que alteram UI/Telas, Persistência/Esquema, Cálculos/Algoritmos ou Spikes, a IA é **proibida de pedir fechamento (Portão 2) ou push (Portão 3) sem antes apresentar o roteiro de testes manuais e aguardar a confirmação explícita do humano**. Finalizar sem registrar evidência no gate `validacao_manual` quebra a auditoria (Regra 4 e Bloqueios AUD-001-B01/B02/B04).
 - O `push` é sempre pedido à parte: é o único ato que sai da máquina e alcança outras pessoas.
 - Depois do push, conferir o resultado da integração. Não é portão, e o poder dele é avisar.
@@ -148,6 +148,7 @@ prós e contras, recomende uma, e espere.
 | Tocar ferramenta específica | `docs-mentor/padroes-de-stack/<ferramenta>.md`. Não existe? Criá-lo é parte da tarefa: `processos/padroes-de-stack.md` |
 | Decisão arquitetural relevante | `processos/analise-de-impacto.md` |
 | Ideia nova, planejamento inicial, anotar melhoria | `processos/rascunho.md` |
+| SPIKE, experimento ou saída de laboratório | `processos/laboratorio.md` |
 | Escrever ou ajustar teste | `processos/teste.md` |
 | Publicar, mexer em ramo, esteira ou reversão | `processos/entrega.md` |
 | Revisar código | `processos/revisao.md` |

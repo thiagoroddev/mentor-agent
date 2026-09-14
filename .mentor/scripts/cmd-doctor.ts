@@ -10,6 +10,7 @@ import {
   estadoDoPrazo, riscoVencido,
 } from './vistas.ts'
 import { CARACTERISTICAS } from './tipos.ts'
+import { chavesVencidas, laboratorioDe, saidasVersionadas } from './laboratorio.ts'
 import type { Caracteristica, Contexto, EstadoDaCaracteristica, Fase, MetaDeQualidade, Tarefa } from './tipos.ts'
 import { estadoDaCadencia, maioresArquivos } from './cmd-auditar.ts'
 
@@ -352,6 +353,23 @@ function processo(ctx: Contexto, tarefas: Tarefa[]): Linha[] {
     linhas.push(rascunhos === 0
       ? { estado: 'atencao', texto: `fase "${fase}" sem nenhum rascunho. Fluxo atual, atores, estados, entidades e telas moram em docs-mentor/rascunhos/ (processos/rascunho.md)` }
       : { estado: 'ok', texto: `${rascunhos} rascunho(s) na fase "${fase}"` })
+  }
+
+  // Laboratorio (0.10.0). A declaracao so' e' cobrada com spike viva: projeto sem experimento nao recebe ruido.
+  const lab = laboratorioDe(ctx)
+  const spikesVivas = tarefas.filter((t) => t.tipo === 'SPIKE' && viva(t))
+  if (lab.caminhos === null && spikesVivas.length) {
+    linhas.push({ estado: 'atencao', texto: `${spikesVivas.map((t) => t.id).join(', ')} viva(s) e contexto.laboratorio.caminhos nao declarado: o finalizar nao sabe o que do spike e produto (processos/laboratorio.md)` })
+  } else if (lab.caminhos?.length) {
+    linhas.push({ estado: 'neutro', texto: `laboratorio em ${lab.caminhos.join(', ')}: ${lab.chaves.length} chave(s), ${lab.artefatos_importaveis.length} artefato(s) importavel(is)` })
+  }
+  const vencidas = chavesVencidas(ctx)
+  if (vencidas.length) {
+    linhas.push({ estado: 'atencao', texto: `${vencidas.length} chave(s) de experimento vencida(s): ${vencidas.join(', ')}. Remova a chave, ou renove a data dizendo por que` })
+  }
+  const versionadas = saidasVersionadas(ctx, raiz)
+  if (versionadas.length) {
+    linhas.push({ estado: 'atencao', texto: `saida do laboratorio exposta ao git: ${versionadas.join('; ')}. Saida de experimento costuma levar dado real` })
   }
 
   const semPadrao = ctx.ferramentas.filter((f) => !f.padrao && !f.dispensa_motivo)

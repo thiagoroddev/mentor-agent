@@ -21,7 +21,7 @@
   "sem_requisito_motivo": null,
   "criada_em": "29/08/26 14:00",
   "iniciada_em": "29/08/26 14:00",
-  "commit_base": "9db11d67a5089b816cadcb50a468d962da918d29",
+  "commit_base": "95ede8e169f72661e23f09da56330df3ced8df2b",
   "concluida_em": "29/08/26 14:00",
   "plano": {
     "muda": [
@@ -48,8 +48,8 @@
       "codigo_saida": 0,
       "saida": "\"42 passed, 0 failed\"",
       "executado_em": "29/08/26 14:00",
-      "commit_execucao": "9db11d67a5089b816cadcb50a468d962da918d29",
-      "arvore_hash": "5ddc800f461541e4a10c71a1cf172c64dafd2f98",
+      "commit_execucao": "95ede8e169f72661e23f09da56330df3ced8df2b",
+      "arvore_hash": "a1f8260597926510dbbd6b125e0cbf31b8699b82",
       "arvore_sem_documentos": true,
       "evidencia_url": null,
       "motivo": null,

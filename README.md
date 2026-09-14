@@ -8,7 +8,7 @@ perguntar, e registra tudo de forma rastreavel.
 Na raiz do projeto que vai usar o pacote:
 
 ```bash
-npm i -D github:thiagoroddev/mentor-agent#v0.9.0
+npm i -D github:thiagoroddev/mentor-agent#v0.10.0
 npx mentor instalar        # copia .mentor/ e mentor.mjs para a raiz
 node mentor.mjs init       # cria docs-mentor/, sem tocar na docs/ do aplicativo
 ```
@@ -24,14 +24,14 @@ a IA le' `.mentor/` como arquivo, e o projeto versiona as convencoes dele ao lad
 isso em vez de estourar.
 
 A versao instalada fica gravada em `docs-mentor/contexto.json`, senao o relatorio de campo nao consegue
-dizer *"isto aconteceu com a 0.9.0"*.
+dizer *"isto aconteceu com a 0.10.0"*.
 
 ### Atualizar uma instalacao existente
 
 Para atualizar o pacote mantendo seus documentos preservados:
 
 ```bash
-npm i -D github:thiagoroddev/mentor-agent#v0.9.0
+npm i -D github:thiagoroddev/mentor-agent#v0.10.0
 npx mentor instalar --forcar
 node mentor.mjs resolver-gerados # regenera markdowns derivados e alinha contexto
 node mentor.mjs verificar
@@ -89,6 +89,16 @@ node mentor.mjs task finalizar TASK-RF-001 --validado-por-humano "Evidencia do t
 # Anexar evidencia externa (run de CI, link de PR) mesmo apos fechamento
 node mentor.mjs task anexar TASK-RF-001 --url "https://github.com/org/repo/actions/runs/12345" --gate build
 ```
+
+### Laboratório Isolado e Sugestão como Hipótese (v0.10.0)
+
+Dois incidentes do piloto: um experimento exportou dado que o app leu como escolha do usuário, e uma sugestão leiga virou especificação sem comparação com a prática profissional. Plano em [`PLANO-v0.10.0.md`](./PLANO-v0.10.0.md).
+
+- **Sugestão do humano é hipótese**: o plano guarda `pedido_original` e `solucao_sugerida`; com sugestão, o `finalizar` exige duas `alternativas_profissionais` (prática, se pegaria o caso, custo). O dossiê mostra a comparação ao auditor.
+- **`contexto.laboratorio`**: caminhos do experimento, saídas, inventário de chaves (desligadas, com dono e prazo) e artefatos importáveis com teste de contrato. Processo novo: [`processos/laboratorio.md`](./.mentor/processos/laboratorio.md).
+- **Spike descartável de verdade**: com laboratório declarado, o `finalizar` de SPIKE recusa código fora dele; `--produto-tocado "<motivo>"` é a saída explícita, gravada e auditada.
+- **Saída do spike tem tipo**: `importavel` exige teste de contrato que existe e está registrado no contexto.
+- **`verificar`** reprova chave ligada por padrão e teste que não existe; **`doctor`** avisa chave vencida, saída do laboratório exposta ao git e spike viva sem laboratório declarado.
 
 ### WIP no Remoto, Merge Barrado no Principal (v0.9.0)
 

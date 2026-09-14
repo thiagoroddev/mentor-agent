@@ -19,7 +19,7 @@
   "sem_requisito_motivo": null,
   "criada_em": "29/08/26 14:00",
   "iniciada_em": "29/08/26 14:00",
-  "commit_base": "9db11d67a5089b816cadcb50a468d962da918d29",
+  "commit_base": "95ede8e169f72661e23f09da56330df3ced8df2b",
   "concluida_em": null,
   "plano": {
     "muda": [
@@ -31,6 +31,25 @@
         "teste": "nao se aplica: spike"
       }
     ],
+    "pedido_original": "PREENCHER: as palavras do humano, antes de qualquer reformulacao",
+    "solucao_sugerida": "PREENCHER: a solucao que o humano sugeriu, ou null se ele so descreveu o problema",
+    "alternativas_profissionais": [
+      {
+        "pratica": "PREENCHER: pratica profissional consolidada 1, comparada a sugestao (ou [] se solucao_sugerida for null)",
+        "pegaria_o_caso": "PREENCHER: resolveria o caso concreto do pedido? por que",
+        "custo": "PREENCHER: custo de adotar"
+      },
+      {
+        "pratica": "PREENCHER: pratica profissional consolidada 2, comparada a sugestao (ou [] se solucao_sugerida for null)",
+        "pegaria_o_caso": "PREENCHER: resolveria o caso concreto do pedido? por que",
+        "custo": "PREENCHER: custo de adotar"
+      }
+    ],
+    "saida_do_laboratorio": {
+      "tipo": "PREENCHER: \"relatorio\" (fica no laboratorio) ou \"importavel\" (o produto consegue ler)",
+      "artefato": "PREENCHER: o que o produto importa, ou null",
+      "teste_de_contrato": "PREENCHER: arquivo > nome do teste de contrato, ou null"
+    },
     "problema_canonico": "PREENCHER: nome canonico na literatura (ex: TSP, CRDT), ou \"sem nome canonico\"",
     "discordancia": {
       "o_que_faria_diferente": "PREENCHER: o que eu faria diferente, ou \"Nada a objetar\"",

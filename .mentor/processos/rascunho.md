@@ -14,6 +14,10 @@ Pode-se organizar livremente em arquivos ou subpastas por tema (ex: `comercial/`
 Se uma discussão de ideias ou levantamento comercial acontecer no chat, o mentor deve lembrar ativamente:
 *"Vou registrar essa análise em `docs-mentor/rascunhos/...` para mantermos o histórico preservado."*
 
+**Ideia que chega como solução** ("faz X") é hipótese: o rascunho escreve primeiro o problema que X
+resolveria, e compara X com ao menos duas práticas profissionais antes de virar tarefa
+(`processos/tarefa.md`, Entender).
+
 Projeto novo tem muito rascunho, e isso é o estado saudável. Requisito que nasce direto como tarefa
 é requisito que ninguém pensou.
 

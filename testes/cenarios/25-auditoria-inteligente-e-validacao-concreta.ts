@@ -60,6 +60,10 @@ export function rodar(): Cenario {
     { texto: 'calculo interno retorna 42', teste: 'mod.test.ts > calcula' },
   ]
   t1.plano.problema_canonico = 'sem nome canonico'
+  t1.plano.pedido_original = 'pedido do cenario'
+  t1.plano.solucao_sugerida = null
+  t1.plano.alternativas_profissionais = []
+  if (t1.plano.saida_do_laboratorio !== undefined) t1.plano.saida_do_laboratorio = { tipo: 'relatorio', artefato: null, teste_de_contrato: null }
   t1.plano.discordancia = {
     o_que_faria_diferente: 'Nada a objetar',
     o_que_preocupa: 'Nada a objetar',
@@ -162,6 +166,10 @@ export function rodar(): Cenario {
   tRetro.plano.muda = ['src/contrato/calculo.ts - calculo ja existente']
   tRetro.plano.criterios_aceite = [{ texto: 'calculo conferido', teste: 'nao se aplica: retroativa' }]
   tRetro.plano.problema_canonico = 'sem nome canonico'
+  tRetro.plano.pedido_original = 'pedido do cenario'
+  tRetro.plano.solucao_sugerida = null
+  tRetro.plano.alternativas_profissionais = []
+  if (tRetro.plano.saida_do_laboratorio !== undefined) tRetro.plano.saida_do_laboratorio = { tipo: 'relatorio', artefato: null, teste_de_contrato: null }
   tRetro.plano.discordancia = {
     o_que_faria_diferente: 'Nada a objetar',
     o_que_preocupa: 'Nada a objetar',

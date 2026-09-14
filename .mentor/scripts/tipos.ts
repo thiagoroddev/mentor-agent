@@ -175,9 +175,40 @@ export interface RestricaoReavaliada {
   reconfirmada?: boolean
 }
 
+/**
+ * Uma pratica profissional comparada a solucao que o humano sugeriu (0.10.0). A sugestao e' hipotese:
+ * sem pelo menos duas destas, o `finalizar` recusa o plano que registrou uma.
+ */
+export interface AlternativaProfissional {
+  pratica: string | null
+  /** Se ela resolveria o caso concreto que motivou o pedido, e por que. */
+  pegaria_o_caso: string | null
+  custo: string | null
+}
+
+export const TIPOS_DE_SAIDA_DO_LABORATORIO = ['relatorio', 'importavel'] as const
+export type TipoDeSaidaDoLaboratorio = (typeof TIPOS_DE_SAIDA_DO_LABORATORIO)[number]
+
+/**
+ * O que o SPIKE produz (0.10.0). `relatorio` fica no laboratorio. `importavel` e' dado que o produto
+ * consegue ler, e por isso exige teste de contrato registrado em `contexto.laboratorio`.
+ */
+export interface SaidaDoLaboratorio {
+  tipo: TipoDeSaidaDoLaboratorio | string | null
+  artefato: string | null
+  /** `arquivo > nome do teste`, igual aos criterios de aceite. */
+  teste_de_contrato: string | null
+}
+
 export interface Plano {
   muda: string[]
   criterios_aceite: CriterioDeAceite[]
+  /** As palavras do humano, antes de qualquer reformulacao (0.10.0). */
+  pedido_original?: string | null
+  /** A solucao que o humano sugeriu, ou `null` quando ele so' descreveu o problema. */
+  solucao_sugerida?: string | null
+  alternativas_profissionais?: AlternativaProfissional[]
+  saida_do_laboratorio?: SaidaDoLaboratorio | null
   problema_canonico?: string | null
   discordancia?: DiscordanciaPlano | null
   estado_da_arte?: EstadoDaArtePlano | null
@@ -225,6 +256,8 @@ export interface Tarefa {
   pausa_motivo?: string | null
   bloqueada_por?: string[]
   pausas?: PausaTarefa[]
+  /** SPIKE que fechou mudando arquivo fora de `contexto.laboratorio.caminhos`, e por que (0.10.0). */
+  produto_tocado_motivo?: string | null
   plano: Plano
   gates: Partial<Record<string, RegistroGate>>
   achados: Achado[]
@@ -375,7 +408,38 @@ export interface Contexto {
     /** Padroes a tirar do diff da auditoria (ex: fixtures geradas). `linguist-generated` no `.gitattributes` tambem tira. */
     ignorar_diff?: string[]
   }
+  /** Onde o experimento vive e o que dele chega ao produto (0.10.0). Ausente em contexto antigo. */
+  laboratorio?: Laboratorio
   [bloco: string]: unknown
+}
+
+/** Chave de experimento: comportamento de teste atras de um interruptor desligado por padrao. */
+export interface ChaveDeExperimento {
+  nome: string | null
+  /** Onde se liga: variavel de ambiente, flag de linha de comando, arquivo. */
+  onde: string | null
+  /** So' `desligada` e' aceito: chave ligada por padrao e' o experimento dentro do produto. */
+  padrao: string | null
+  dono: string | null
+  /** `DD/MM/AA`, ou `null` para chave permanente de laboratorio. Vencida, o `doctor` avisa. */
+  remover_em: string | null
+  /** `arquivo > nome do teste` que prova o comportamento com a chave desligada. */
+  teste: string | null
+}
+
+export interface ArtefatoImportavel {
+  artefato: string | null
+  /** `arquivo > nome do teste` que prende o contrato na fronteira: o que o produto recebe por padrao. */
+  teste_de_contrato: string | null
+}
+
+export interface Laboratorio {
+  /** Globs de onde o experimento vive. `null` = nao declarado; `[]` = o projeto nao tem laboratorio. */
+  caminhos: string[] | null
+  /** Onde a saida do experimento cai. Tem de estar fora do git: pode conter dado real. */
+  saidas: string[] | null
+  chaves: ChaveDeExperimento[]
+  artefatos_importaveis: ArtefatoImportavel[]
 }
 
 /** As oito caracteristicas da ISO/IEC 25010, que sao a tabela QS-24 do guia. */

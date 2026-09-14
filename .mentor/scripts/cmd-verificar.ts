@@ -5,6 +5,7 @@ import { comparar } from './cmd-regras.ts'
 import { conferirManifesto } from './cmd-pacote.ts'
 import { carregarContexto, carregarInvariantes, carregarReferencias, carregarRequisitos, carregarTarefas } from './vistas.ts'
 import { MARCADOR } from './tipos.ts'
+import { problemasDoInventario } from './laboratorio.ts'
 import type { Tetos } from './tipos.ts'
 
 export interface Achado { familia: string; onde: string; problema: string }
@@ -239,6 +240,9 @@ function referencias(): Achado[] {
       achados.push({ familia: 'referencia', onde: r.id, problema: 'marcado implementado sem nenhuma tarefa vinculada' })
     }
   }
+
+  // 0.10.0: chave de experimento nasce desligada, e toda chave e artefato importavel aponta para teste que existe.
+  for (const p of problemasDoInventario(ctx, c.raiz)) achados.push({ familia: 'referencia', onde: p.onde, problema: p.problema })
   return achados
 }
 

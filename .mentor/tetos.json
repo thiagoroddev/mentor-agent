@@ -5,8 +5,8 @@
   "excecoes": [
     {
       "caminho": ".mentor/nucleo.md",
-      "teto": 8800,
-      "motivo": "Incorpora o principio 8: o dever de contrariar, persona ativa e exigencias de merito tecnico no Portao 1."
+      "teto": 9200,
+      "motivo": "Incorpora o principio 8: o dever de contrariar, persona ativa e exigencias de merito tecnico no Portao 1. Na 0.10.0: sugestao do humano como hipotese no Portao 1 e o carregamento do processo de laboratorio."
     },
     {
       "caminho": ".mentor/guia/06-persistencia.md",
@@ -20,8 +20,8 @@
     },
     {
       "caminho": ".mentor/processos/tarefa.md",
-      "teto": 14000,
-      "motivo": "Documenta merito tecnico do plano, discordancia obrigatoria, estado da arte, reguas de medicao de spikes, rastreabilidade de requisitos e fluxo de pausa/retomada com isolamento de diff."
+      "teto": 15500,
+      "motivo": "Documenta merito tecnico do plano, discordancia obrigatoria, estado da arte, reguas de medicao de spikes, rastreabilidade de requisitos e fluxo de pausa/retomada com isolamento de diff. Na 0.10.0: o passo Entender (problema XY, alternativas profissionais); as regras de laboratorio foram para processos/laboratorio.md para nao crescer mais."
     }
   ],
   "regras": [

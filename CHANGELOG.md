@@ -4,6 +4,25 @@ Todas as mudanças notáveis no **mentor-agent** são documentadas neste arquivo
 
 O formato baseia-se em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [0.10.0] - 2026-09-14
+
+Plano em `PLANO-v0.10.0.md`, a partir da TASK-RF-044 e da TASK-BG-022 do piloto.
+
+### Adicionado
+- **Sugestao do humano e' hipotese.** `task iniciar` escreve no plano `pedido_original`, `solucao_sugerida` e `alternativas_profissionais` (`{ pratica, pegaria_o_caso, custo }`). O `finalizar` recusa pedido vazio e sugestao com menos de duas alternativas completas. Plano iniciado antes da 0.10.0 nao e' cobrado. O dossie mostra pedido, sugestao e alternativas, e o "ja medido" aponta as tarefas com sugestao.
+- **`contexto.laboratorio`** (`laboratorio.ts`): `caminhos`, `saidas`, `chaves` e `artefatos_importaveis`. Contexto antigo sem o bloco vale como nao declarado.
+- **Escopo do SPIKE**: com `caminhos` declarados, o `finalizar` recusa codigo mudado fora deles; `--produto-tocado "<motivo>"` (30 caracteres) fecha e grava `produto_tocado_motivo` com os arquivos. Sem `caminhos`, `iniciar` e `finalizar` avisam.
+- **`plano.saida_do_laboratorio`** em SPIKE: `relatorio` ou `importavel`; importavel exige teste de contrato que resolve e registrado em `artefatos_importaveis`.
+- **`verificar`**: chave sem nome ou dono, com padrao diferente de `desligada`, com `remover_em` ilegivel ou teste que nao resolve; artefato importavel com teste que nao resolve.
+- **`doctor`**: chave com `remover_em` vencido, saida do laboratorio rastreada ou fora do `.gitignore`, SPIKE viva sem `caminhos` declarados.
+- `processos/laboratorio.md`, carregado pelo nucleo §9 em SPIKE e laboratorio. `processos/tarefa.md` ganha o passo "Entender: o problema, nao a solucao sugerida"; `processos/rascunho.md`, a mesma regra para ideia que chega como solucao. Nucleo §2: sugestao e' hipotese no Portao 1.
+- Cenario `29-laboratorio-e-hipotese.ts`. Os cenarios 23 a 25 preenchem os campos novos do plano.
+
+### Para atualizar
+- Declare `contexto.laboratorio` antes de retomar um SPIKE: `caminhos: []` se o projeto nao tem laboratorio. Com `caminhos` declarados, spike pausado que mexeu no produto vai precisar de `--produto-tocado` ou de uma tarefa propria para essa parte.
+
+---
+
 ## [0.9.0] - 2026-09-13
 
 Plano em `PLANO-v0.9.0.md`. Substitui o item C6 do `PLANO-v0.8.0.md`.

@@ -19,7 +19,7 @@
   "sem_requisito_motivo": null,
   "criada_em": "29/08/26 14:00",
   "iniciada_em": "29/08/26 14:00",
-  "commit_base": "9db11d67a5089b816cadcb50a468d962da918d29",
+  "commit_base": "95ede8e169f72661e23f09da56330df3ced8df2b",
   "concluida_em": null,
   "plano": {
     "muda": [
@@ -44,8 +44,8 @@
       "codigo_saida": 1,
       "saida": "\"falhou de proposito\"",
       "executado_em": "29/08/26 14:00",
-      "commit_execucao": "9db11d67a5089b816cadcb50a468d962da918d29",
-      "arvore_hash": "594c5a80ee3b28ba927939ddea50ca733590dd6b",
+      "commit_execucao": "95ede8e169f72661e23f09da56330df3ced8df2b",
+      "arvore_hash": "cc9b09879ed1d80d0086e96ca77efc0e10e09332",
       "arvore_sem_documentos": true,
       "evidencia_url": null,
       "motivo": null,

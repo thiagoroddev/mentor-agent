@@ -93,6 +93,10 @@ export function rodar(): Cenario {
   tRF.plano.riscos = ['nenhum']
   tRF.plano.proporcionalidade = 'direto'
   tRF.plano.problema_canonico = 'sem nome canonico'
+  tRF.plano.pedido_original = 'pedido do cenario'
+  tRF.plano.solucao_sugerida = null
+  tRF.plano.alternativas_profissionais = []
+  if (tRF.plano.saida_do_laboratorio !== undefined) tRF.plano.saida_do_laboratorio = { tipo: 'relatorio', artefato: null, teste_de_contrato: null }
   tRF.plano.discordancia = { o_que_faria_diferente: 'Nada a objetar', o_que_preocupa: 'Nada a objetar', o_que_existe_pronto_80_porcento: 'Nenhuma conhecida' }
   escrever(c, 'docs-mentor/tarefas/abertas/TASK-RF-001.json', JSON.stringify(tRF, null, 2))
   escrever(c, 'docs-mentor/tarefas/abertas/TASK-RF-001.md', '# TASK-RF-001\n\n## Decisoes tomadas\nOk.\n\n## O que nao foi feito, e por que\nNada.\n\n## Aprendizados\nNada.\n')
@@ -115,6 +119,10 @@ export function rodar(): Cenario {
   tBG.plano.riscos = ['nenhum']
   tBG.plano.proporcionalidade = 'direto'
   tBG.plano.problema_canonico = 'sem nome canonico'
+  tBG.plano.pedido_original = 'pedido do cenario'
+  tBG.plano.solucao_sugerida = null
+  tBG.plano.alternativas_profissionais = []
+  if (tBG.plano.saida_do_laboratorio !== undefined) tBG.plano.saida_do_laboratorio = { tipo: 'relatorio', artefato: null, teste_de_contrato: null }
   tBG.plano.discordancia = { o_que_faria_diferente: 'Nada a objetar', o_que_preocupa: 'Nada a objetar', o_que_existe_pronto_80_porcento: 'Nenhuma conhecida' }
   escrever(c, 'docs-mentor/tarefas/abertas/TASK-BG-001.json', JSON.stringify(tBG, null, 2))
   escrever(c, 'docs-mentor/tarefas/abertas/TASK-BG-001.md', '# TASK-BG-001\n\n## Decisoes tomadas\nOk.\n\n## O que nao foi feito, e por que\nNada.\n\n## Aprendizados\nNada.\n')
@@ -146,6 +154,10 @@ export function rodar(): Cenario {
   tRetomada.plano.riscos = ['nenhum']
   tRetomada.plano.proporcionalidade = 'spike'
   tRetomada.plano.problema_canonico = 'sem nome canonico'
+  tRetomada.plano.pedido_original = 'pedido do cenario'
+  tRetomada.plano.solucao_sugerida = null
+  tRetomada.plano.alternativas_profissionais = []
+  if (tRetomada.plano.saida_do_laboratorio !== undefined) tRetomada.plano.saida_do_laboratorio = { tipo: 'relatorio', artefato: null, teste_de_contrato: null }
   tRetomada.plano.discordancia = { o_que_faria_diferente: 'Nada a objetar', o_que_preocupa: 'Nada a objetar', o_que_existe_pronto_80_porcento: 'Nenhuma conhecida' }
   tRetomada.achados = [{ classe: 3, descricao: 'visualizacao validada apos desbloqueio por UI e bugfix', destino: 'descartado', ref: 'concluido' }]
 

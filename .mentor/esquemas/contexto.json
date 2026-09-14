@@ -435,6 +435,16 @@
     "ignorar_diff": [],
     "ignorar_diff_nota": "Padroes de arquivos gerados por script (ex: fixtures grandes de teste) para tirar do diff da auditoria. Prefira marcar no .gitattributes com linguist-generated: o GitHub tambem recolhe esses arquivos no PR."
   },
+  "laboratorio": {
+    "_leia": "Onde o experimento vive e o que dele chega ao produto (processos/laboratorio.md). caminhos null = nao declarado; [] = o projeto nao tem laboratorio. Com caminhos declarados, o finalizar de SPIKE recusa codigo mudado fora deles.",
+    "caminhos": null,
+    "saidas": null,
+    "saidas_nota": "Onde a saida do experimento cai. O doctor avisa se o git guardaria: saida de experimento costuma levar dado real.",
+    "chaves": [],
+    "chaves_forma": "{ nome, onde, padrao: 'desligada', dono, remover_em: 'DD/MM/AA' ou null, teste: 'arquivo > nome do teste com a chave desligada' }",
+    "artefatos_importaveis": [],
+    "artefatos_importaveis_forma": "{ artefato, teste_de_contrato: 'arquivo > nome do teste que prende o que o produto recebe por padrao' }"
+  },
   "versionamento": {
     "ramo_principal": null,
     "estrategia_de_ramos": null,

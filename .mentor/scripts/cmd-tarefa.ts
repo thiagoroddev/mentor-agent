@@ -18,6 +18,7 @@ import type {
 import { estadoDaCadencia } from './cmd-auditar.ts'
 import { arquivoIntactoDoPacote } from './cmd-pacote.ts'
 import { categoriasSensiveis, MOTIVO_MINIMO_DE_DISPENSA } from './sensivel.ts'
+import { foraDoLaboratorio, laboratorioDe, problemasDaSaidaDoSpike } from './laboratorio.ts'
 
 type Flags = Record<string, string | undefined>
 
@@ -228,6 +229,9 @@ export function iniciar(id: string, flags: Flags = {}): void {
   if (statusGit.status === 0 && statusGit.stdout && statusGit.stdout.trim()) {
     console.warn('! Aviso: a arvore de trabalho possui alteracoes locais nao commitadas. Certifique-se de que correspondem a esta tarefa.')
   }
+  if (tarefa.tipo === 'SPIKE' && laboratorioDe(carregarContexto()).caminhos === null) {
+    console.warn('! Aviso: contexto.laboratorio.caminhos nao declarado. Sem ele, o finalizar nao sabe o que deste spike e produto (processos/laboratorio.md).')
+  }
   tarefa.estado = 'em-execucao'
   tarefa.iniciada_em = agora().log
   // Marca o ponto de partida no historico. Sem ele a auditoria nao consegue recortar o diff da
@@ -250,6 +254,22 @@ export function iniciar(id: string, flags: Flags = {}): void {
             teste: `${MARCADOR} arquivo > nome do teste, ou "nao se aplica: <motivo>"`,
           },
     ],
+    pedido_original: `${MARCADOR} as palavras do humano, antes de qualquer reformulacao`,
+    solucao_sugerida: `${MARCADOR} a solucao que o humano sugeriu, ou null se ele so descreveu o problema`,
+    alternativas_profissionais: [1, 2].map((n) => ({
+      pratica: `${MARCADOR} pratica profissional consolidada ${n}, comparada a sugestao (ou [] se solucao_sugerida for null)`,
+      pegaria_o_caso: `${MARCADOR} resolveria o caso concreto do pedido? por que`,
+      custo: `${MARCADOR} custo de adotar`,
+    })),
+    ...(ehSpike
+      ? {
+          saida_do_laboratorio: {
+            tipo: `${MARCADOR} "relatorio" (fica no laboratorio) ou "importavel" (o produto consegue ler)`,
+            artefato: `${MARCADOR} o que o produto importa, ou null`,
+            teste_de_contrato: `${MARCADOR} arquivo > nome do teste de contrato, ou null`,
+          },
+        }
+      : {}),
     problema_canonico: `${MARCADOR} nome canonico na literatura (ex: TSP, CRDT), ou "sem nome canonico"`,
     discordancia: {
       o_que_faria_diferente: `${MARCADOR} o que eu faria diferente, ou "Nada a objetar"`,
@@ -713,6 +733,21 @@ export function finalizar(id: string, flags: Flags = {}): void {
     }
   }
 
+  // 0.10.0: a sugestao do humano e' hipotese. Plano iniciado antes da 0.10.0 nao tem os campos.
+  if (tarefa.plano.pedido_original !== undefined && !tarefa.plano.pedido_original?.trim()) {
+    impedimentos.push('plano sem "pedido_original": registre as palavras do humano antes da reformulacao')
+  }
+  if (tarefa.plano.solucao_sugerida?.trim()) {
+    const completas = (tarefa.plano.alternativas_profissionais ?? []).filter((a) =>
+      Boolean(a?.pratica?.trim() && a?.pegaria_o_caso?.trim() && a?.custo?.trim()))
+    if (completas.length < 2) {
+      impedimentos.push(
+        `o humano sugeriu uma solucao e o plano compara ${completas.length} alternativa(s) profissional(is): a sugestao e' hipotese, e exige pelo menos duas praticas consolidadas com pratica, pegaria_o_caso e custo`,
+      )
+    }
+  }
+  if (ehSpike) impedimentos.push(...problemasDaSaidaDoSpike(tarefa, ctx))
+
   // M4: Três réguas para spike de medição
   if (ehSpike && temCriterioDeMedicao) {
     const r = tarefa.plano.reguas_de_medicao
@@ -864,6 +899,32 @@ export function finalizar(id: string, flags: Flags = {}): void {
       if (arquivoIntactoDoPacote(arq)) return false
       return !caminhoCorrespondeDeclaracao(arq, declarados)
     })
+    // 0.10.0: spike e' descartavel. Codigo dele fora do laboratorio e' produto, e produto e' outra tarefa.
+    if (ehSpike) {
+      const lab = laboratorioDe(ctx)
+      const codigo = arquivosModificados.filter((arq) =>
+        !ignorados.some((ig) => arq.startsWith(ig) || arq === ig) && !arquivoIntactoDoPacote(arq))
+      if (lab.caminhos === null) {
+        if (codigo.length) {
+          console.warn(`! Aviso: spike com ${codigo.length} arquivo(s) de codigo e contexto.laboratorio.caminhos nao declarado: nao da para saber o que e produto (processos/laboratorio.md).`)
+        }
+      } else {
+        const fora = foraDoLaboratorio(codigo, lab.caminhos)
+        const motivo = flags['produto-tocado']?.trim()
+        if (fora.length && !motivo) {
+          impedimentos.push(
+            `spike mudou ${fora.length} arquivo(s) fora de contexto.laboratorio.caminhos: ${fora.slice(0, 5).join(', ')}. Mudanca no produto e' outra tarefa. Se precisa ficar aqui: mentor task finalizar ${id} --produto-tocado "<motivo>"`,
+          )
+        } else if (fora.length && motivo) {
+          if (motivo === 'true' || motivo.length < MOTIVO_MINIMO_DE_DISPENSA) {
+            impedimentos.push(`--produto-tocado exige motivo com pelo menos ${MOTIVO_MINIMO_DE_DISPENSA} caracteres: por que o produto mudou dentro do spike, e o que prende o comportamento padrao`)
+          } else {
+            tarefa.produto_tocado_motivo = `${motivo} [arquivos: ${fora.join(', ')}]`
+          }
+        }
+      }
+    }
+
     if (naoDeclarados.length > 0) {
       impedimentos.push(
         `${naoDeclarados.length} arquivo(s) de codigo modificado(s) no Git fora do plano.muda: ${naoDeclarados.slice(0, 5).join(', ')}. Declare-os no plano antes de fechar a tarefa para manter o escopo rastreado (AUD-001-B05).`,

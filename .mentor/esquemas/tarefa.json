@@ -95,6 +95,12 @@
         "evidencia": null
       }
     ],
+    "pedido_original": null,
+    "solucao_sugerida": null,
+    "alternativas_profissionais": [],
+    "sugestao_nota": "A solucao que o humano sugere e' hipotese, nao especificacao (problema XY). pedido_original guarda as palavras dele; solucao_sugerida, o que ele propos, ou null. Com sugestao, o finalizar exige pelo menos duas alternativas_profissionais completas: { pratica, pegaria_o_caso, custo }.",
+    "saida_do_laboratorio": null,
+    "saida_do_laboratorio_nota": "So' em SPIKE: { tipo: relatorio | importavel, artefato, teste_de_contrato }. Importavel exige teste de contrato que resolve e registrado em contexto.laboratorio.artefatos_importaveis.",
     "problema_canonico": null,
     "problema_canonico_nota": "Nome canonico na literatura (ex: TSP, VRP, CRDT) ou token 'sem nome canonico'. Obrigatorio.",
     "discordancia": {

@@ -438,6 +438,12 @@ function fatosMecanicos(pacote: Array<{ d: DiffDaTarefa; patch: Patch }>): strin
         fatos.push(`${t.id}: ${naoDeclarados.length} arquivo(s) nos commits da tarefa sem constar no plano.muda: ${naoDeclarados.slice(0, 20).join(', ')}`)
       }
     }
+    if (t.plano.solucao_sugerida?.trim()) {
+      fatos.push(`${t.id}: o humano sugeriu a solucao ("${t.plano.solucao_sugerida.trim()}") e o plano comparou ${(t.plano.alternativas_profissionais ?? []).length} alternativa(s). Confira se a escolhida resolve o caso do pedido original, e nao so' a sugestao`)
+    }
+    if (t.produto_tocado_motivo) {
+      fatos.push(`⚠️ ${t.id}: spike fechou mudando arquivo fora do laboratorio (--produto-tocado): ${t.produto_tocado_motivo}`)
+    }
     const semTeste = t.plano.criterios_aceite.filter((cr) => cr.teste.startsWith('nao se aplica'))
     if (semTeste.length) {
       fatos.push(`${t.id}: ${semTeste.length} criterio(s) de aceite sem teste nomeado ("nao se aplica"). Criterio sem verificacao reproduzivel e' criterio NAO VERIFICADO`)
@@ -597,6 +603,26 @@ function dossie(
     l.push('')
     for (const cr of t.plano.criterios_aceite) l.push(`- ${cr.texto}\n  → teste: \`${cr.teste}\``)
     l.push('')
+    if (t.plano.pedido_original !== undefined) {
+      l.push("**Pedido e alternativas (a solucao sugerida pelo humano e' hipotese):**")
+      l.push('')
+      l.push(`- pedido original: ${t.plano.pedido_original ?? '—'}`)
+      l.push(`- solucao sugerida: ${t.plano.solucao_sugerida ?? 'nenhuma: o humano descreveu o problema'}`)
+      for (const a of t.plano.alternativas_profissionais ?? []) {
+        l.push(`- alternativa: ${a.pratica ?? '—'} → pegaria o caso: ${a.pegaria_o_caso ?? '—'} · custo: ${a.custo ?? '—'}`)
+      }
+      l.push('')
+    }
+    const saida = t.plano.saida_do_laboratorio
+    if (saida) {
+      const contrato = saida.teste_de_contrato ? ` · contrato: \`${saida.teste_de_contrato}\`` : ''
+      l.push(`**Saida do laboratorio:** ${saida.tipo ?? '—'}${saida.artefato ? ` · ${saida.artefato}` : ''}${contrato}`)
+      l.push('')
+    }
+    if (t.produto_tocado_motivo) {
+      l.push(`**Spike que mudou o produto:** ${t.produto_tocado_motivo}`)
+      l.push('')
+    }
     l.push('**Declarou mudar:**')
     l.push('')
     for (const m of t.plano.muda) l.push(`- ${m}`)

@@ -51,6 +51,20 @@ Funcionalidade e regra de negócio não entram no código sem estarem catalogada
 > detalhamento em três tarefas não iniciadas, cerca de 90% duplicando documento que já existia. A
 > tarefa não tinha para onde apontar, então apontou para dentro de si mesma.
 
+## Entender: o problema, não a solução sugerida
+
+Quando o humano pede "faz X", X costuma ser **uma solução**, e o problema fica implícito (o problema XY).
+Reformule o **problema**, nunca a solução. A solução sugerida é **hipótese a comparar**, não especificação.
+
+O plano registra `pedido_original` (as palavras dele), `solucao_sugerida` (ou `null`) e, com sugestão,
+`alternativas_profissionais`: pelo menos duas práticas consolidadas, cada uma com `pratica`,
+`pegaria_o_caso` (resolveria o caso concreto? por quê) e `custo`. É a seção "alternativas
+consideradas" de design doc, RFC e MADR. O `finalizar` recusa sugestão sem as duas.
+
+> **Medido:** o humano sugeriu "deixar a chave do teste desligada". A IA formalizou isso num campo
+> declarativo e só comparou com o mercado quando ele perguntou. A comparação mostrou que o campo não
+> pegaria o caso. **Limite honesto:** o script garante que a comparação existe, não que é boa.
+
 ## Plano e Mérito Técnico (Portão 1)
 
 O plano não é apenas um formulário de procedimento: ele é a **defesa de mérito técnico** da tarefa.
@@ -73,6 +87,7 @@ O `mentor-agent` recusa planos que constroem do zero sem pesquisar o estado da a
      - **Teto**: o ótimo matemático calculado ou a melhor referência externa conhecida.
      - **Padrão**: o que uma solução padrão da indústria entrega na mesma instância.
    - Sem as três réguas, o spike é recusado. "Inconclusivo por falta de régua" é classificado como defeito de planejamento.
+   - Todo spike declara `saida_do_laboratorio` (relatório ou importável), e código fora de `contexto.laboratorio.caminhos` é recusado: **[`processos/laboratorio.md`](./laboratorio.md)**.
 5. **Restrições Fundadoras e Premissas Refutadas**:
    - Restrições herdadas de README ou arquivos antigos não são leis eternas. Se eliminam alternativas de mercado nesta tarefa, devem ser reavaliadas e reconfirmadas pelo mantenedor (reconfirmada 3 vezes vira ADR).
    - Se um achado de classe 3 ou 4 refuta a premissa de um spike ou tarefa anterior, as tarefas dependentes não podem ser puxadas para o ciclo sem reconfirmação explícita.

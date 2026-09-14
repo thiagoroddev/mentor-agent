@@ -1,7 +1,7 @@
 {
   "_meta": {
     "schema": "contexto-projeto/1",
-    "versao_do_pacote": "0.9.0",
+    "versao_do_pacote": "0.10.0",
     "versao_nota": "Gravada no init a partir de .mentor/manifesto.json. Sem ela, o relatorio de campo nao consegue atribuir nada a uma versao.",
     "leia_antes": "Campo null = decisao que o guia exige e ninguem tomou ainda. Nao e' erro: e' a pauta do mentor. Nunca preencher por deducao; perguntar ao humano ou marcar dispensado com motivo.",
     "gerado_em": "2026-08-29T17:00:00.000Z",
@@ -408,7 +408,7 @@
     "tarefas_desde_revisao_geral": 1,
     "adrs": 0,
     "ferramentas_sem_padrao": 0,
-    "campos_nulos_do_contexto": 165,
+    "campos_nulos_do_contexto": 169,
     "divida_tecnica_com_gatilho_vencido": null
   },
   "auditoria": {
@@ -421,6 +421,16 @@
     "pendencias_reportadas": [],
     "ignorar_diff": [],
     "ignorar_diff_nota": "Padroes de arquivos gerados por script (ex: fixtures grandes de teste) para tirar do diff da auditoria. Prefira marcar no .gitattributes com linguist-generated: o GitHub tambem recolhe esses arquivos no PR."
+  },
+  "laboratorio": {
+    "_leia": "Onde o experimento vive e o que dele chega ao produto (processos/laboratorio.md). caminhos null = nao declarado; [] = o projeto nao tem laboratorio. Com caminhos declarados, o finalizar de SPIKE recusa codigo mudado fora deles.",
+    "caminhos": null,
+    "saidas": null,
+    "saidas_nota": "Onde a saida do experimento cai. O doctor avisa se o git guardaria: saida de experimento costuma levar dado real.",
+    "chaves": [],
+    "chaves_forma": "{ nome, onde, padrao: 'desligada', dono, remover_em: 'DD/MM/AA' ou null, teste: 'arquivo > nome do teste com a chave desligada' }",
+    "artefatos_importaveis": [],
+    "artefatos_importaveis_forma": "{ artefato, teste_de_contrato: 'arquivo > nome do teste que prende o que o produto recebe por padrao' }"
   },
   "versionamento": {
     "ramo_principal": null,
