@@ -108,6 +108,7 @@ export const ID_DE_TAREFA_NO_TITULO = /\bTASK-[A-Z]+-\d{3,}\b/
  * explicito, que o dossie da auditoria lista para conferir se era mesmo Light.
  */
 export const MARCA_LIGHT_NO_TITULO = /^[a-z]+\(light\)!?:\s*\S/i
+export const MARCA_PLANO_NO_TITULO = /^[a-z]+\(plano\)!?:\s*\S/i
 
 export interface VermelhoDispensado {
   dispensado_em: string
@@ -173,6 +174,7 @@ export interface RestricaoReavaliada {
   onde_foi_escrita: string
   o_que_elimina_nesta_tarefa: string
   reconfirmada?: boolean
+  porque?: string | null
 }
 
 /**
@@ -200,6 +202,54 @@ export interface SaidaDoLaboratorio {
   teste_de_contrato: string | null
 }
 
+export interface MeioDeValidacao {
+  tipo?: string | null
+  meio?: 'tabela-de-casos' | 'fixture' | 'prototipo' | 'harness' | 'passos' | 'testes_automatizados' | string | null
+  o_teste_cobre?: string | null
+  por_que_nao_basta?: string | null
+  porque_nao_automatizado?: string | null
+  roteiro?: string | null
+  artefato?: string | null
+  casos?: string | null
+}
+
+export interface ComposicaoFatia {
+  o_que_esta_fatia_ensinou_sobre_o_epico?: string | null
+  o_que_esta_fatia_entrega?: string | null
+  a_direcao_se_mantem: boolean | null
+  porque: string | null
+}
+
+export interface ContratoEntreFatias {
+  forma: string | null
+  tipo: 'forma' | 'codigo' | null
+  onde_vive: string | null
+  fatia_que_cria: string | null
+  dados_compartilhados?: string | null
+}
+
+export interface RevisaoDeEstrategia {
+  quando?: string
+  data?: string
+  motivo?: string
+  nova_direcao?: string
+  apos_fatia?: string
+  versao_do_plano?: string | null
+  aprovado_por_humano?: boolean
+}
+
+export interface PlanoDoEpico {
+  objetivo: string | null
+  problema_canonico: string | null
+  estado_da_arte?: EstadoDaArtePlano | null
+  hipotese: string | null
+  sinal_de_desvio: string | null
+  contrato_entre_fatias?: ContratoEntreFatias | null
+  restricoes_reavaliadas?: RestricaoReavaliada[]
+  revisoes?: RevisaoDeEstrategia[]
+  revisoes_de_estrategia?: RevisaoDeEstrategia[]
+}
+
 export interface Plano {
   muda: string[]
   criterios_aceite: CriterioDeAceite[]
@@ -215,6 +265,8 @@ export interface Plano {
   custo_de_oportunidade?: CustoDeOportunidadePlano | null
   reguas_de_medicao?: ReguasDeMedicao | null
   restricoes_reavaliadas?: RestricaoReavaliada[]
+  meio_de_validacao?: MeioDeValidacao | null
+  composicao?: ComposicaoFatia | null
   impacto: string | null
   riscos: string[]
   dependencias_novas: string[]
@@ -270,6 +322,8 @@ export interface Tarefa {
   riscos_aceitos: string[]
   absorvida_por: string | null
   cancelamento_motivo: string | null
+  ordem_motivo?: string | null
+  plano_do_epico?: PlanoDoEpico | null
   narrativa: string | null
 }
 

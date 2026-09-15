@@ -114,11 +114,17 @@ O `mentor-agent` adota o fluxo de **Pausa com Rastreabilidade de Dependências**
 3. **Isolamento de Escopo no Git:**
    - Ao finalizar uma tarefa que passou por pausas, o `mentor task finalizar` calcula o diff ativo excluindo os períodos em que esteve pausada (`[commit_pausa .. commit_retomada]`). As alterações de código realizadas pelas tarefas intermediárias não geram falso positivo de arquivos fora do `plano.muda`.
 
-## Fatia
+## Fatia e Composição de Épico
 
-Sub-numeração decimal não existe. Fatia se declara no título: `[fatia de TASK-RF-005]`.
+Sub-numeração decimal não existe. Fatia se declara com o campo `fatia_de: TASK-...`.
 `depende_de` diz *"não posso começar antes daquela"*; a fatia diz *"sou pedaço daquela"*. São coisas
-diferentes, e uma fatia pode não depender de nada.
+diferentes: fatias nascem **independentes por padrão** (`depende_de: []`), permitindo trabalhar em paralelo (ex.: UI com fixtures e serviço com dados reais em paralelo com base no contrato compartilhado).
+Dependência entre fatias só existe quando há pré-requisito técnico real de código, declarada com `--ordem "1>2,1>3" --motivo-ordem "<motivo>"`.
+
+**Cerimônia de Épico:**
+1. O pai do épico contém `plano_do_epico` (objetivo, hipótese, sinal observável de desvio e `contrato_entre_fatias`) que deve ser preenchido antes de iniciar a primeira fatia.
+2. Cada fatia registra em `plano.composicao` o que entregou/ensinou sobre o épico, se a direção do épico se mantém (`a_direcao_se_mantem: true|false`) e o porquê.
+3. Se a direção cair (`a_direcao_se_mantem: false`), novas fatias são bloqueadas até revisão da estratégia aprovada (`mentor task iniciar <ID> --estrategia-revisada --motivo "<nova direcao>"`).
 
 ## Teste
 
@@ -201,10 +207,13 @@ O CLI recusa o `mentor task finalizar` se:
 4. Tarefa retroativa for detectada (o commit da base tocou os arquivos de `plano.muda` e a tarefa não mudou nenhum deles, nem na árvore de trabalho), a menos que finalizada com a flag explícita `--retroativa`.
 5. Em tarefas sensíveis (UI, cálculo, persistência/banco, algoritmos, RN, RNF ou spikes), a dispensa de validação (`--dispensado`) exige justificativa detalhada (`--motivo`) com no mínimo 30 caracteres. UI se reconhece por `.tsx`, `.jsx`, `.vue`, `.svelte`, `.css`, `.html` no plano, ou por tela, componente e layout no texto.
 6. Os gates `testes` e `build` tiverem rodado antes de um arquivo rastreado ou declarado mudar. A evidência é de outra árvore: rode o gate de novo. Mudança na pasta `docs-mentor/` não conta.
+7. Em fatias de épico, a seção `plano.composicao` estiver incompleta ou com marcadores não preenchidos.
+8. `meio_de_validacao`: quando não automatizado, exige justificativa sem marcadores e existência real dos artefatos/catálogos declarados no disco.
+9. Restrições fundadoras reavaliadas (M3): reconfirmações exigem justificativa; na 3ª reconfirmação de uma restrição, exige-se ADR vinculada em `docs-mentor/adrs/`.
 
 **Como registrar evidências e validação:**
-- Humano aprovou: `mentor task validar <ID> --aprovado --evidencia "<resumo dos testes>"` (exige evidência substantiva, grava `codigo_saida: null`).
-- Atalho na finalização: `mentor task finalizar <ID> --validado-por-humano "<evidencia>"`.
+- Humano aprovou: `mentor task validar <ID> --aprovado --evidencia "<passos executados e resultado observado, min 30 chars>"` (ou `--casos <arquivo>` apontando catálogo conferido).
+- Atalho na finalização: `mentor task finalizar <ID> --validado-por-humano "<passos executados e resultado observado, min 30 chars>"`.
 - Dispensa justificada: `mentor task validar <ID> --dispensado --motivo "<justificativa substantiva>"`.
 - Evidenciar critério de aceite com comando: `mentor task criterio <ID> <indice> --comando "<cmd>"` ou `--saida "<texto>"` (o índice começa em 0).
 - Anexar link externo (CI / PR) a gate de tarefa aberta ou já concluída: `mentor task anexar <ID> --url "<url>" [--gate <nome>]`.

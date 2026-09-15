@@ -1,6 +1,8 @@
+import { spawnSync } from 'node:child_process'
 import { join } from 'node:path'
 import { agora, caminhos, escreverTexto, existe, garantirPasta, lerTexto, listar } from './arquivos.ts'
 import { diasDesde } from './arquivos.ts'
+import { carregarTarefas } from './vistas.ts'
 
 /**
  * Onde a anotacao vai **nao e' decisao de memoria**. O comando exige `--sobre`, e a regra que
@@ -35,6 +37,22 @@ export function anotar(texto: string | undefined, sobre: string | undefined): vo
     console.log('Entra no relatorio de campo; o trabalho acontece no repositorio do pacote.')
     return
   }
+
+  try {
+    const rRamo = spawnSync('git', ['rev-parse', '--abbrev-ref', 'HEAD'], { cwd: c.raiz, encoding: 'utf8' })
+    const ramoAtual = rRamo.status === 0 && rRamo.stdout ? rRamo.stdout.trim() : ''
+    if (ramoAtual && ramoAtual !== 'main' && ramoAtual !== 'master' && !ramoAtual.startsWith('plan/')) {
+      const emExecucao = carregarTarefas().some((x) => x.estado === 'em-execucao')
+      if (emExecucao) {
+        console.warn(
+          '! Aviso de planejamento: ha tarefa em execucao neste ramo. Rascunhos independentes devem preferencialmente ser criados em ramo plan/<data>-<tema> (via worktree ou a partir da main) para integracao rapida sem esperar o termino da tarefa atual (processos/entrega.md).',
+        )
+      }
+    }
+  } catch {
+    // continua
+  }
+
   const pasta = join(c.docs, 'rascunhos')
   garantirPasta(pasta)
   const slug = texto.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')

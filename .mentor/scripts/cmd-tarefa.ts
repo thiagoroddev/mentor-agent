@@ -1,7 +1,7 @@
 import { spawnSync } from 'node:child_process'
 import { copyFileSync, renameSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { isAbsolute, join } from 'node:path'
+import { isAbsolute, join, resolve } from 'node:path'
 import {
   agora, caminhos, caminhoCorrespondeDeclaracao, extrairCaminhosDeclarados, escreverJson,
   escreverTexto, existe, lerJson, lerTexto, listar, NOME_DOS_DOCUMENTOS, relativo,
@@ -19,6 +19,8 @@ import { estadoDaCadencia } from './cmd-auditar.ts'
 import { arquivoIntactoDoPacote } from './cmd-pacote.ts'
 import { categoriasSensiveis, MOTIVO_MINIMO_DE_DISPENSA } from './sensivel.ts'
 import { foraDoLaboratorio, laboratorioDe, problemasDaSaidaDoSpike } from './laboratorio.ts'
+import { lerCasosDeValidacao } from './casos.ts'
+import { coletarRestricoesReconfirmadas, validarRestricoesNoFechamento } from './restricoes.ts'
 
 type Flags = Record<string, string | undefined>
 
@@ -137,6 +139,30 @@ export function nova(flags: Flags): void {
     }
   }
 
+  let ordemMotivo: string | null = null
+  if (flags['fatia-de'] && flags.depende && flags.depende.trim()) {
+    const mot = (flags['motivo-ordem'] ?? '').trim()
+    if (!mot) {
+      throw new Error('Dependencia entre fatias exige --motivo-ordem "<motivo>" explicitando a dependencia real de codigo.')
+    }
+    ordemMotivo = mot
+  }
+
+  try {
+    const rRamo = spawnSync('git', ['rev-parse', '--abbrev-ref', 'HEAD'], { cwd: c.raiz, encoding: 'utf8' })
+    const ramoAtual = rRamo.status === 0 && rRamo.stdout ? rRamo.stdout.trim() : ''
+    if (ramoAtual && ramoAtual !== 'main' && ramoAtual !== 'master' && !ramoAtual.startsWith('plan/')) {
+      const emExecucao = carregarTarefas().some((x) => x.estado === 'em-execucao')
+      if (emExecucao && !flags['fatia-de']) {
+        console.warn(
+          '! Aviso de planejamento: ha tarefa em execucao neste ramo. Planejamento independente deve ser criado a partir da main em ramo plan/<data>-<tema> (via worktree ou apos merge) para nao ficar preso neste ramo (processos/entrega.md).',
+        )
+      }
+    }
+  } catch {
+    // continua
+  }
+
   const t: Tarefa = {
     id: proximoIdDeTarefa(tipo),
     tipo,
@@ -152,6 +178,7 @@ export function nova(flags: Flags): void {
       ia: umDe<Escala>(ia ?? '', ESCALA, 'esforco IA'),
     },
     depende_de: (flags.depende ?? '').split(',').map((s) => s.trim()).filter(Boolean),
+    ordem_motivo: ordemMotivo,
     // Nasce sempre na reserva: registrar nunca e' bloqueado, inchar o ciclo sim.
     fila: 'reserva',
     ordem: null,
@@ -192,10 +219,48 @@ export function iniciar(id: string, flags: Flags = {}): void {
   if (tarefa.fila !== 'ciclo') {
     throw new Error(`${id} esta na reserva. Puxe primeiro: mentor task puxar ${id}`)
   }
+  const todasTarefas = carregarTarefas()
+
+  // Conferencia de dependencias declaradas
+  for (const depId of tarefa.depende_de) {
+    const dep = todasTarefas.find((x) => x.id === depId)
+    if (!dep) {
+      throw new Error(`Dependencia ${depId} nao encontrada no projeto.`)
+    }
+    if (dep.estado !== 'concluida' && dep.estado !== 'cancelada') {
+      throw new Error(
+        `Dependencia ${depId} ainda esta em estado "${dep.estado}". Ela deve ser concluida ou cancelada antes de iniciar ${id}.`,
+      )
+    }
+  }
+
+  // Aviso de ramo principal
+  try {
+    const rRamo = spawnSync('git', ['rev-parse', '--abbrev-ref', 'HEAD'], { cwd: caminhos().raiz, encoding: 'utf8' })
+    const ramoAtual = rRamo.status === 0 && rRamo.stdout ? rRamo.stdout.trim() : ''
+    if (ramoAtual === 'main' || ramoAtual === 'master') {
+      console.warn(
+        `! Aviso: iniciando tarefa diretamente no ramo principal (${ramoAtual}). Recomenda-se trabalhar em ramo proprio (ex: feat/... ou plan/...) para manter isolamento.`,
+      )
+    }
+  } catch {
+    // continua
+  }
+
+  // Aviso de SPIKE dependendo de SPIKE sem epico fatiado
+  if (tarefa.tipo === 'SPIKE' && !tarefa.fatia_de) {
+    const depSpike = tarefa.depende_de.some((dId) => todasTarefas.find((x) => x.id === dId)?.tipo === 'SPIKE')
+    if (depSpike) {
+      console.warn(
+        '! Aviso: SPIKE dependendo de outro SPIKE sem compor epico fatiado. Considere agrupar em epico fatiado ou validar se a investigacao nao deve ser unificada.',
+      )
+    }
+  }
+
   // M6: Bloqueio por reincidência de spikes inconclusivos consecutivos
   if (tarefa.tipo === 'SPIKE') {
     const c = caminhos()
-    const spikesConcluidos = carregarTarefas().filter((t) => t.tipo === 'SPIKE' && t.estado === 'concluida')
+    const spikesConcluidos = todasTarefas.filter((t) => t.tipo === 'SPIKE' && t.estado === 'concluida')
     if (spikesConcluidos.length >= 2) {
       const ultimos2 = spikesConcluidos.slice(-2)
       const inconclusivos = ultimos2.filter((s) => {
@@ -217,9 +282,60 @@ export function iniciar(id: string, flags: Flags = {}): void {
     }
   }
 
+  // Governanca de fatias de epico (Frente B)
+  if (tarefa.fatia_de) {
+    const pai = todasTarefas.find((x) => x.id === tarefa.fatia_de)
+    if (pai && pai.plano_do_epico) {
+      if (pai.plano_do_epico.contrato_entre_fatias) {
+        console.log(`[epico ${pai.id}] Contrato entre fatias definido: ${pai.plano_do_epico.contrato_entre_fatias.dados_compartilhados}`)
+      }
+      const irmas = todasTarefas.filter((x) => x.fatia_de === tarefa.fatia_de && x.id !== tarefa.id)
+      const nenhumaIrmaConcluida = !irmas.some((x) => x.estado === 'concluida')
+      if (nenhumaIrmaConcluida) {
+        const marcadoresEpico: string[] = []
+        marcadoresEm(pai.plano_do_epico, 'plano_do_epico', marcadoresEpico)
+        if (marcadoresEpico.length > 0) {
+          throw new Error(
+            `Plano do epico ${pai.id} contem marcador ${MARCADOR} nao preenchido em: ${marcadoresEpico.join(', ')}. Preencha o plano_do_epico antes de iniciar a primeira fatia.`,
+          )
+        }
+      }
+      const irmaDesvio = irmas.find((x) => x.plano?.composicao?.a_direcao_se_mantem === false)
+      if (irmaDesvio) {
+        const jaRevisado = (pai.plano_do_epico.revisoes_de_estrategia ?? []).some((r) => r.apos_fatia === irmaDesvio.id)
+        if (!jaRevisado) {
+          if (flags['estrategia-revisada']) {
+            const motivoRevisao = (flags.motivo ?? '').trim()
+            if (!motivoRevisao) {
+              throw new Error(
+                `--estrategia-revisada exige --motivo "<explicacao>" detalhando a nova direcao do epico apos o desvio na fatia ${irmaDesvio.id}.`,
+              )
+            }
+            if (!pai.plano_do_epico.revisoes_de_estrategia) {
+              pai.plano_do_epico.revisoes_de_estrategia = []
+            }
+            pai.plano_do_epico.revisoes_de_estrategia.push({
+              apos_fatia: irmaDesvio.id,
+              data: agora().log,
+              nova_direcao: motivoRevisao,
+              aprovado_por_humano: true,
+            })
+            const { caminho: camPai } = localizar(pai.id)
+            escreverJson(camPai, pai)
+            console.log(`Revisao de estrategia registrada no epico ${pai.id} apos ${irmaDesvio.id}.`)
+          } else {
+            throw new Error(
+              `A fatia anterior ${irmaDesvio.id} indicou que a direcao do epico nao se mantem (composicao.a_direcao_se_mantem = false). E obrigatorio revisar a estrategia do epico antes de iniciar novas fatias (use: mentor task iniciar ${id} --estrategia-revisada --motivo "<nova direcao>").`,
+            )
+          }
+        }
+      }
+    }
+  }
+
   // Trabalho parado pela metade e' o desperdicio mais invisivel, porque parece progresso (guia ES-50).
   const limite = carregarContexto().limites.em_execucao
-  const emExecucao = carregarTarefas().filter((t) => t.estado === 'em-execucao')
+  const emExecucao = todasTarefas.filter((t) => t.estado === 'em-execucao')
   if (emExecucao.length >= limite) {
     throw new Error(
       `Ja ha ${emExecucao.length} tarefa(s) em execucao (limite ${limite}): ${emExecucao.map((t) => t.id).join(', ')}. Feche antes de abrir outra.`,
@@ -244,6 +360,16 @@ export function iniciar(id: string, flags: Flags = {}): void {
   const ehSpike = tarefa.tipo === 'SPIKE'
   const ehGrande = tarefa.esforco.ia === 'G' || tarefa.esforco.ia === 'XG'
   const ehSpikeDeMedicao = ehSpike && /\b(melhor|ganh|otimiz|reduz|desempenho|latenci|taxa|bench|med)/i.test(tarefa.titulo)
+
+  const restricoesAnteriores = coletarRestricoesReconfirmadas(todasTarefas)
+  const restricoesIniciais = restricoesAnteriores.map((r) => ({
+    restricao: r.restricao,
+    onde_foi_escrita: r.onde_foi_escrita,
+    o_que_elimina_nesta_tarefa: r.o_que_elimina_nesta_tarefa ?? '',
+    reconfirmada: true,
+    porque: `${MARCADOR} confirmada novamente nesta tarefa? Se nao, explique e aponte ADR`,
+  }))
+
   tarefa.plano = {
     muda: [`${MARCADOR} caminho/arquivo.ext - o que muda nele, em uma linha`],
     criterios_aceite: [
@@ -304,6 +430,21 @@ export function iniciar(id: string, flags: Flags = {}): void {
     riscos: [`${MARCADOR} o que pode dar errado, ou "nenhum identificado"`],
     dependencias_novas: [],
     proporcionalidade: `${MARCADOR} pediram X, proponho Y, e Y e do tamanho de X porque...`,
+    restricoes_reavaliadas: restricoesIniciais,
+    meio_de_validacao: {
+      tipo: 'testes_automatizados',
+      porque_nao_automatizado: null,
+      roteiro: null,
+      artefato: null,
+      casos: null,
+    },
+    composicao: tarefa.fatia_de
+      ? {
+          o_que_esta_fatia_entrega: `${MARCADOR} o que esta fatia entrega e como se integra ao todo`,
+          a_direcao_se_mantem: true,
+          porque: `${MARCADOR} por que a direcao do epico se mantem ou mudou`,
+        }
+      : null,
   }
   escreverJson(caminho, tarefa)
 
@@ -658,8 +799,8 @@ export function finalizar(id: string, flags: Flags = {}): void {
   // Validação manual: atalho direto na finalização
   if (flags['validado-por-humano']) {
     const ev = flags['validado-por-humano'].trim()
-    if (!ev || ev.length < 10) {
-      throw new Error('--validado-por-humano exige evidencia conferivel detalhada (passos testados e resultado observado).')
+    if (!ev || ev.length < 30) {
+      throw new Error('--validado-por-humano exige evidencia conferivel detalhada (minimo 30 caracteres com passos testados e resultado observado).')
     }
     tarefa.validacao = 'aprovado'
     tarefa.validado_em = agora().log
@@ -701,6 +842,48 @@ export function finalizar(id: string, flags: Flags = {}): void {
   if (gManual && (gManual.rotulo === 'NÃO EXECUTADO' || gManual.rotulo === 'BLOQUEADO') && !gManual.motivo) {
     impedimentos.push('gate "validacao_manual" pendente sem aprovacao humana ou motivo de dispensa')
   }
+
+  // Meio de validacao alternativo (quando testes automatizados nao alcancam o comportamento)
+  if (tarefa.plano.meio_de_validacao && tarefa.plano.meio_de_validacao.tipo !== 'testes_automatizados') {
+    const mv = tarefa.plano.meio_de_validacao
+    if (!mv.porque_nao_automatizado || !mv.porque_nao_automatizado.trim() || mv.porque_nao_automatizado.includes(MARCADOR)) {
+      impedimentos.push('meio_de_validacao nao automatizado exige "porque_nao_automatizado" preenchido sem marcador')
+    }
+    if (mv.artefato) {
+      const camArtefato = isAbsolute(mv.artefato) ? mv.artefato : resolve(c.raiz, mv.artefato)
+      if (!existe(camArtefato)) {
+        impedimentos.push(`meio_de_validacao: artefato declarado nao encontrado no disco: ${mv.artefato}`)
+      }
+    }
+    if (mv.casos) {
+      const camCasos = isAbsolute(mv.casos) ? mv.casos : resolve(c.raiz, mv.casos)
+      if (!existe(camCasos)) {
+        impedimentos.push(`meio_de_validacao: catalogo de casos declarado nao encontrado no disco: ${mv.casos}`)
+      }
+    }
+  }
+
+  // Frente B: Composicao de fatia de epico
+  if (tarefa.fatia_de) {
+    const comp = tarefa.plano.composicao
+    if (!comp) {
+      impedimentos.push(`tarefa e' fatia do epico ${tarefa.fatia_de} mas plano nao contem secao "composicao"`)
+    } else {
+      if (typeof comp.a_direcao_se_mantem !== 'boolean') {
+        impedimentos.push('plano.composicao.a_direcao_se_mantem deve ser booleano (true ou false)')
+      }
+      if (!comp.o_que_esta_fatia_entrega || !comp.o_que_esta_fatia_entrega.trim() || comp.o_que_esta_fatia_entrega.includes(MARCADOR)) {
+        impedimentos.push('plano.composicao.o_que_esta_fatia_entrega deve ser preenchido sem marcador')
+      }
+      if (!comp.porque || !comp.porque.trim() || comp.porque.includes(MARCADOR)) {
+        impedimentos.push('plano.composicao.porque deve ser preenchido sem marcador')
+      }
+    }
+  }
+
+  // M3: Governanca de restricoes fundadoras
+  const probsRestricoes = validarRestricoesNoFechamento(tarefa, carregarTarefas(), c)
+  impedimentos.push(...probsRestricoes)
 
   // Todo criterio de aceite nomeia um teste. Vale em qualquer metodo, ate' em `teste-depois`.
   if (tarefa.tipo !== 'SPIKE') {
@@ -892,6 +1075,8 @@ export function finalizar(id: string, flags: Flags = {}): void {
       'docs/',
       'docs-mentor/',
       'package-lock.json',
+      '.gitattributes',
+      '.gitignore',
     ]
     const naoDeclarados = arquivosModificados.filter((arq) => {
       if (ignorados.some((ig) => arq.startsWith(ig) || arq === ig)) return false
@@ -947,8 +1132,12 @@ export function finalizar(id: string, flags: Flags = {}): void {
             ? rPrev.stdout.split('\n').map((x) => x.trim().replace(/\\/g, '/')).filter(Boolean)
             : []
           if (arqsNoPrev.some((a) => caminhoCorrespondeDeclaracao(a, declarados))) {
+            const eAtualizacaoDePacote = arqsNoPrev.some((f) => f.startsWith('.mentor/') || f === 'package.json' || f === 'package-lock.json')
+            const roteiroMsg = eAtualizacaoDePacote
+              ? ' Para atualizacao de versao do mentor, siga o roteiro canonico: crie a tarefa, inicie, atualize o pacote (npm i @mentor/agent e mentor instalar --forcar), rode verificar e testes, e entao finalize.'
+              : ''
             impedimentos.push(
-              `Tarefa retroativa detectada: os arquivos declarados em plano.muda ja foram commitados antes de commit_base (${tarefa.commit_base}) e o diff da tarefa esta vazio. Para registrar como retroativa intencional, finalize com: mentor task finalizar ${id} --retroativa`,
+              `Tarefa retroativa detectada: os arquivos declarados em plano.muda ja foram commitados antes de commit_base (${tarefa.commit_base}) e o diff da tarefa esta vazio. Para registrar como retroativa intencional, finalize com: mentor task finalizar ${id} --retroativa.${roteiroMsg}`,
             )
           }
         }
@@ -1066,24 +1255,48 @@ export function fila(id: string, posicao: number, liberar: boolean): void {
 export function validar(id: string, flags: Flags): void {
   const { caminho, tarefa } = localizar(id)
   if (flags.aprovado) {
-    const ev = (flags.evidencia ?? flags.motivo ?? '').trim()
-    if (!ev || ev.length < 10) {
-      throw new Error('Validacao manual aprovada exige --evidencia substantiva (passos executados e resultado observado).')
-    }
-    tarefa.validacao = 'aprovado'
-    tarefa.validacao_motivo = ev
-    tarefa.validado_em = agora().log
-    tarefa.gates['validacao_manual'] = {
-      rotulo: 'APROVADO',
-      comando: null,
-      codigo_saida: null,
-      saida: ev,
-      executado_em: tarefa.validado_em,
-      ...rastroDaExecucao(),
-      evidencia_url: flags.url ?? null,
-      motivo: null,
-      ressalva: null,
-      vermelho_em: null,
+    if (flags.casos) {
+      const caminhoCasos = isAbsolute(flags.casos) ? flags.casos : resolve(caminhos().raiz, flags.casos)
+      const resultadoCasos = lerCasosDeValidacao(caminhoCasos)
+      if (!resultadoCasos.valido) {
+        throw new Error(`Validacao por catalogo de casos falhou:\n${resultadoCasos.erros.map((e) => `  - ${e}`).join('\n')}`)
+      }
+      const ev = (flags.evidencia ?? flags.motivo ?? `Aprovado com base no catalogo de casos ${flags.casos} (${resultadoCasos.casos.length} caso(s) verificados)`).trim()
+      tarefa.validacao = 'aprovado'
+      tarefa.validacao_motivo = ev
+      tarefa.validado_em = agora().log
+      tarefa.gates['validacao_manual'] = {
+        rotulo: 'APROVADO',
+        comando: `casos:${flags.casos}`,
+        codigo_saida: 0,
+        saida: ev,
+        executado_em: tarefa.validado_em,
+        ...rastroDaExecucao(),
+        evidencia_url: flags.url ?? null,
+        motivo: null,
+        ressalva: null,
+        vermelho_em: null,
+      }
+    } else {
+      const ev = (flags.evidencia ?? flags.motivo ?? '').trim()
+      if (!ev || ev.length < 30) {
+        throw new Error('Validacao manual aprovada exige --evidencia substantiva (minimo 30 caracteres com passos executados e resultado observado) ou --casos <arquivo>.')
+      }
+      tarefa.validacao = 'aprovado'
+      tarefa.validacao_motivo = ev
+      tarefa.validado_em = agora().log
+      tarefa.gates['validacao_manual'] = {
+        rotulo: 'APROVADO',
+        comando: null,
+        codigo_saida: null,
+        saida: ev,
+        executado_em: tarefa.validado_em,
+        ...rastroDaExecucao(),
+        evidencia_url: flags.url ?? null,
+        motivo: null,
+        ressalva: null,
+        vermelho_em: null,
+      }
     }
   } else if (flags.dispensado) {
     const mot = (flags.motivo ?? '').trim()

@@ -11,9 +11,8 @@
     "humano": "M",
     "ia": "G"
   },
-  "depende_de": [
-    "TASK-RF-002"
-  ],
+  "depende_de": [],
+  "ordem_motivo": null,
   "fila": "ciclo",
   "ordem": null,
   "origem": "titulo-autossuficiente",
@@ -42,5 +41,6 @@
   "riscos_aceitos": [],
   "absorvida_por": null,
   "cancelamento_motivo": null,
-  "narrativa": null
+  "narrativa": null,
+  "plano_do_epico": null
 }

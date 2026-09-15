@@ -55,3 +55,16 @@ script, não julgamento da IA.
 
 ⚠️ **Nunca invente comando de gate para preencher a tabela.** Gate não declarado é lacuna honesta;
 gate com comando inventado é verde que não checou nada.
+
+## Atualização do mentor-agent no projeto
+
+A atualização de versão do pacote é uma mudança de infraestrutura do projeto e deve começar pelo ciclo de tarefas:
+1. **Preparar ambiente:** Crie uma branch/worktree da atualização a partir da `main` atualizada (ex.: `chore/atualizar-mentor-vX.Y.Z`).
+2. **Criar e iniciar a tarefa:** Crie uma tarefa do tipo `CHORE` (`mentor task nova --tipo CHORE --origem titulo-autossuficiente --titulo "Atualizar mentor-agent para vX.Y.Z" ...`), puxe para o ciclo (`mentor task puxar <ID>`), inicie (`mentor task iniciar <ID>`) e preencha o plano.
+3. **Instalar nova versão:** Instale a versão (`npm i -D github:thiagoroddev/mentor-agent#vX.Y.Z` ou versão desejada) e copie os arquivos do pacote com `node mentor.mjs instalar --forcar`.
+4. **Verificar integridade e validar:**
+   - Confira normas alteradas e leia o diff de `.mentor/nucleo.md` e `.mentor/processos/`.
+   - Se houver conflitos em arquivos gerados, rode `mentor resolver-gerados`.
+   - Rode `mentor verificar` e os gates de testes/build.
+   - Preencha a narrativa e finalize a tarefa (`mentor task finalizar <ID>`).
+

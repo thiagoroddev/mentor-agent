@@ -18,4 +18,4 @@
 | # | ID | Titulo | Fatia | Valor | Urgencia | Esforco H/IA | Bloqueada por | Origem |
 |--:|---|---|---|---|---|---|---|---|
 | 1 | `TASK-RF-002` | Modelo e persistencia, sem UI | 1/5 de TASK-RF-001 | critico | imediata | M/G | - | titulo-autossuficiente |
-| 2 | `TASK-RF-003` | Shell ?exec=1 e proximo destino | 2/5 de TASK-RF-001 | critico | imediata | M/G | TASK-RF-002 | titulo-autossuficiente |
+| 2 | `TASK-RF-003` | Shell ?exec=1 e proximo destino | 2/5 de TASK-RF-001 | critico | imediata | M/G | - | titulo-autossuficiente |

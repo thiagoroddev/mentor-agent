@@ -118,6 +118,8 @@ export function inicializar(): void {
   const regrasGitattributes = [
     '# Gerados pelo mentor-agent (merge=ours e regeneracao via mentor resolver-gerados)',
     `${NOME_DOS_DOCUMENTOS}/contexto.md merge=ours`,
+    `${NOME_DOS_DOCUMENTOS}/requisitos/pendentes.md merge=ours`,
+    `${NOME_DOS_DOCUMENTOS}/requisitos/implementados.md merge=ours`,
     `${NOME_DOS_DOCUMENTOS}/tarefas/backlog.md merge=ours`,
     `${NOME_DOS_DOCUMENTOS}/tarefas/reserva.md merge=ours`,
     `${NOME_DOS_DOCUMENTOS}/tarefas/concluidas/0-indice.md merge=ours`,
@@ -129,6 +131,12 @@ export function inicializar(): void {
     const conteudoAttr = lerTexto(gitattributes)
     if (!conteudoAttr.includes('recusas.jsonl')) {
       escreverTexto(gitattributes, `${conteudoAttr.trimEnd()}\n\n${regrasGitattributes}\n`)
+    } else if (!conteudoAttr.includes('requisitos/pendentes.md')) {
+      const adicionais = [
+        `${NOME_DOS_DOCUMENTOS}/requisitos/pendentes.md merge=ours`,
+        `${NOME_DOS_DOCUMENTOS}/requisitos/implementados.md merge=ours`,
+      ].join('\n')
+      escreverTexto(gitattributes, `${conteudoAttr.trimEnd()}\n${adicionais}\n`)
     }
   } else {
     escreverTexto(gitattributes, `${regrasGitattributes}\n`)

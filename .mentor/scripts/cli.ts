@@ -147,7 +147,7 @@ function principal(argv: string[]): number {
       if (!flags.instalar) throw new Error('Use: mentor hooks --instalar ou mentor hooks --pre-push')
       instalarHooks(); return 0
     case 'lancamento': return lancamento()
-    case 'pronto-para-merge': return prontoParaMerge(flags.titulo)
+    case 'pronto-para-merge': return prontoParaMerge(flags.titulo, flags)
     case 'relatorio-de-campo': return relatorioDeCampo(flags)
     case 'ra': {
       const sub = posicionais[0]

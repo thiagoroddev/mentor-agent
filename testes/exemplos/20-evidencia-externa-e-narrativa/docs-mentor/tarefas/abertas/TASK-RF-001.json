@@ -12,6 +12,7 @@
     "ia": "P"
   },
   "depende_de": [],
+  "ordem_motivo": null,
   "fila": "reserva",
   "ordem": null,
   "origem": "chat",
@@ -37,8 +38,8 @@
       "codigo_saida": 0,
       "saida": null,
       "executado_em": "29/08/26 14:00",
-      "commit_execucao": "95ede8e169f72661e23f09da56330df3ced8df2b",
-      "arvore_hash": "f6b2d2713615184beacb5b5e82af5070d39f66f3",
+      "commit_execucao": "dd27e8b8fb7b6e6079a23d66032bdff6f3f9bf2d",
+      "arvore_hash": "fb3a15d13874220c57ce960a3ff6631a9767c223",
       "arvore_sem_documentos": true,
       "evidencia_url": null,
       "motivo": "Saída vazia: o comando não produziu evidência verificável",

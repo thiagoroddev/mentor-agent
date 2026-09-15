@@ -11,7 +11,9 @@ export function carregarTarefas(): Tarefa[] {
 
 export function carregarRequisitos(): Requisito[] {
   const c = caminhos()
-  return existe(c.requisitos) ? lerJson<Requisito[]>(c.requisitos) : []
+  if (!existe(c.requisitos)) return []
+  const dados = lerJson<any>(c.requisitos)
+  return Array.isArray(dados) ? dados : (dados?.requisitos ?? [])
 }
 
 export function carregarReferencias(): ReferenciaExterna[] {
@@ -401,16 +403,18 @@ export function gerarContextoMd(): { cheios: number; vazios: number } {
   const padroes = cheios.filter((f) => valorDoEsquema(f.rotulo) === f.valor)
   const respondidos = cheios.filter((f) => valorDoEsquema(f.rotulo) !== f.valor)
 
-  const portoesAbertos = Object.entries(ctx.estado.portoes)
-    .filter(([, p]) => p.status === 'aberto')
-    .map(([nome]) => nome)
+  const portoesAbertos = ctx.estado?.portoes
+    ? Object.entries(ctx.estado.portoes)
+        .filter(([, p]) => p.status === 'aberto')
+        .map(([nome]) => nome)
+    : []
 
   const linhas = [
     '# Contexto do projeto',
     '',
     AVISO,
     '',
-    `**Fase:** ${ctx.estado.fase ?? 'nao definida'} · **Rigor:** ${ctx.rigor.nivel ?? 'nao definido'}`,
+    `**Fase:** ${ctx.estado?.fase ?? 'nao definida'} · **Rigor:** ${ctx.rigor?.nivel ?? 'nao definido'}`,
     `**Respondido por voce:** ${respondidos.length} · **Padrao do pacote:** ${padroes.length} · **Em aberto:** ${vazios.length}`,
     '',
     portoesAbertos.length
@@ -461,16 +465,18 @@ export function atualizarContagens(): Contexto {
     divida_tecnica_aberta: dividas.filter((d) => !d.paga_em).length,
     riscos_aceitos_ativos: riscos.filter((r) => !r.encerrado_em && !riscoVencido(r)).length,
     riscos_aceitos_vencidos: riscos.filter((r) => riscoVencido(r)).length,
-    tarefas_desde_revisao_geral: concluidas - (ctx.revisao_geral.ultima_na_tarefa ?? 0),
+    tarefas_desde_revisao_geral: concluidas - (ctx.revisao_geral?.ultima_na_tarefa ?? 0),
     adrs: listar(c.adr, '.md').length,
-    ferramentas_sem_padrao: ctx.ferramentas.filter((f) => !f.padrao && !f.dispensa_motivo).length,
+    ferramentas_sem_padrao: (ctx.ferramentas ?? []).filter((f) => !f.padrao && !f.dispensa_motivo).length,
     campos_nulos_do_contexto: vazios,
     // Preenchidos pelo doctor (fase 4), que e' quem classifica achado por severidade.
-    divida_tecnica_com_gatilho_vencido: ctx.contagens['divida_tecnica_com_gatilho_vencido'] ?? null,
+    divida_tecnica_com_gatilho_vencido: ctx.contagens?.['divida_tecnica_com_gatilho_vencido'] ?? null,
   }
   // Conta a partir da ultima auditoria, nao do proximo multiplo: com a ultima na tarefa 25 e cadencia
   // 10, a proxima e' a 35. Era 30. E' estimativa: tarefa sem diff auditavel nao conta e empurra a proxima.
-  ctx.auditoria.proxima_em_tarefa = (ctx.auditoria.ultima_na_tarefa ?? 0) + ctx.auditoria.cadencia_em_tarefas
+  if (ctx.auditoria) {
+    ctx.auditoria.proxima_em_tarefa = (ctx.auditoria.ultima_na_tarefa ?? 0) + (ctx.auditoria.cadencia_em_tarefas ?? 0)
+  }
   // A versao vem do manifesto do pacote INSTALADO, a cada geracao. Era gravada so' pelo `init`, e o
   // `init` recusa rodar em projeto que ja' existe: atualizar o pacote nunca atualizava o numero.
   // Achado em campo com a 0.1.3 instalada e o contexto ainda dizendo 0.1.2, o que faz o relatorio

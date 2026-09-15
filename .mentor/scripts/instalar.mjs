@@ -188,6 +188,37 @@ export function copiarPacote(origem, destino, forcar, migrarDocs = false) {
     return { ok: false, erro: `Ja existe .mentor/ em ${destino}.`, pastaDestino }
   }
 
+  if (existsSync(pastaDestino) && forcar) {
+    try {
+      const pastaAbertas = join(documentosAtuais, 'tarefas', 'abertas')
+      let temTarefaEmExecucao = false
+      if (existsSync(pastaAbertas)) {
+        const arqs = readdirSync(pastaAbertas)
+        for (const arq of arqs) {
+          if (arq.endsWith('.json')) {
+            const t = JSON.parse(readFileSync(join(pastaAbertas, arq), 'utf8'))
+            if (t.estado === 'em-execucao') {
+              temTarefaEmExecucao = true
+              break
+            }
+          }
+        }
+      }
+      if (!temTarefaEmExecucao) {
+        console.warn(
+          '! Aviso de atualizacao: executando "instalar --forcar" sem tarefa ativa em execucao.\n' +
+          '  Roteiro recomendado para atualizacao de versao (processos/inicializacao.md e README):\n' +
+          '  1. Crie a tarefa: mentor task nova --tipo CHORE --titulo "Atualizar mentor-agent para vX.Y.Z" ...\n' +
+          '  2. Inicie a tarefa: mentor task puxar <ID> && mentor task iniciar <ID>\n' +
+          '  3. Instale o pacote: npm i <pacote> && mentor instalar --forcar\n' +
+          '  4. Rode verificar e testes, preencha a narrativa e finalize: mentor task finalizar <ID>\n'
+        )
+      }
+    } catch {
+      // continua
+    }
+  }
+
   const deveMigrar = existsSync(contextoLegado)
   let desfazerReferencias = () => {}
   if (deveMigrar) {
@@ -219,6 +250,8 @@ export function copiarPacote(origem, destino, forcar, migrarDocs = false) {
     const regrasGitattributes = [
       '# Gerados pelo mentor-agent (merge=ours e regeneracao via mentor resolver-gerados)',
       'docs-mentor/contexto.md merge=ours',
+      'docs-mentor/requisitos/pendentes.md merge=ours',
+      'docs-mentor/requisitos/implementados.md merge=ours',
       'docs-mentor/tarefas/backlog.md merge=ours',
       'docs-mentor/tarefas/reserva.md merge=ours',
       'docs-mentor/tarefas/concluidas/0-indice.md merge=ours',
@@ -228,9 +261,16 @@ export function copiarPacote(origem, destino, forcar, migrarDocs = false) {
 
     if (existsSync(gitattributes)) {
       try {
-        const conteudoAttr = readFileSync(gitattributes, 'utf8')
+        let conteudoAttr = readFileSync(gitattributes, 'utf8')
         if (!conteudoAttr.includes('recusas.jsonl')) {
-          writeFileSync(gitattributes, `${conteudoAttr.trimEnd()}\n\n${regrasGitattributes}\n`, 'utf8')
+          conteudoAttr = `${conteudoAttr.trimEnd()}\n\n${regrasGitattributes}\n`
+          writeFileSync(gitattributes, conteudoAttr, 'utf8')
+        } else if (!conteudoAttr.includes('requisitos/pendentes.md')) {
+          const adicionais = [
+            'docs-mentor/requisitos/pendentes.md merge=ours',
+            'docs-mentor/requisitos/implementados.md merge=ours',
+          ].join('\n')
+          writeFileSync(gitattributes, `${conteudoAttr.trimEnd()}\n${adicionais}\n`, 'utf8')
         }
       } catch {
         // continua

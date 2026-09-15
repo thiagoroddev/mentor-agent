@@ -72,3 +72,8 @@ pacote. Sem essa separação, todo projeto vira aos poucos um projeto sobre o pa
 
 **Não interrompa o projeto por incômodo.** Só pare se o pacote estiver bloqueando de verdade: cada
 volta ao pacote custa uma sessão, e juntar dez anotações numa volta custa a mesma sessão.
+
+## Registro imediato
+
+Requisito e tarefa aprovados são registrados **imediatamente** via `mentor req nova` ou `mentor task nova`. O registro não espera o merge de uma tarefa em andamento. Falta de rede adia sincronização com remoto, nunca a anotação local durável. Planejamento independente deve ser criado a partir da `main` em ramo curto `plan/<data>-<tema>` (via worktree ou em pasta própria) com PR próprio marcado como `(plano)`.
+

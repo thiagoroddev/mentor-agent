@@ -13,6 +13,7 @@ import { CARACTERISTICAS } from './tipos.ts'
 import { chavesVencidas, laboratorioDe, saidasVersionadas } from './laboratorio.ts'
 import type { Caracteristica, Contexto, EstadoDaCaracteristica, Fase, MetaDeQualidade, Tarefa } from './tipos.ts'
 import { estadoDaCadencia, maioresArquivos } from './cmd-auditar.ts'
+import { coletarRestricoesReconfirmadas, chaveDaRestricao } from './restricoes.ts'
 
 /**
  * Folha de saude do projeto. Tres propriedades a sustentam, e as tres foram medidas em campo:
@@ -321,6 +322,29 @@ function processo(ctx: Contexto, tarefas: Tarefa[]): Linha[] {
         texto: `${wips.length} ramo(s) WIP no remoto: ${wips.join(', ')}. Entram no ramo principal so por PR, com a tarefa concluida`,
       })
     }
+
+    // Worktrees locais: informativo para visibilidade entre sessões isoladas
+    try {
+      const rWt = spawnSync('git', ['worktree', 'list', '--porcelain'], { cwd: raiz, encoding: 'utf8', timeout: 5_000 })
+      if (rWt.status === 0 && rWt.stdout) {
+        const blocos = rWt.stdout.trim().split('\n\n').filter(Boolean)
+        if (blocos.length > 1) {
+          const infoWts = blocos.map((b) => {
+            const mWorktree = b.match(/^worktree\s+(.+)$/m)
+            const mBranch = b.match(/^branch\s+refs\/heads\/(.+)$/m)
+            const pasta = mWorktree ? mWorktree[1]!.trim() : ''
+            const ramo = mBranch ? mBranch[1]!.trim() : 'detached'
+            return `${ramo} (${pasta})`
+          })
+          linhas.push({
+            estado: 'neutro',
+            texto: `${blocos.length} worktrees ativas: ${infoWts.join('; ')}`,
+          })
+        }
+      }
+    } catch {
+      // continua
+    }
   }
 
   // Versionamento se responde em CONSTRUCAO, nao em pre-lancamento: quando ha o que publicar,
@@ -444,6 +468,40 @@ function processo(ctx: Contexto, tarefas: Tarefa[]): Linha[] {
   } else if (desde >= r.aviso_em_tarefas) {
     linhas.push({ estado: 'atencao', texto: `revisao geral pendente ha ${desde} tarefas` })
   }
+
+  // Restrições fundadoras reavaliadas (M3 / Frente G)
+  const c = caminhos()
+  const restricoesReconf = coletarRestricoesReconfirmadas(tarefas)
+  const pastaAdrs = join(c.docs, 'adrs')
+  const adrsExistentes = existe(pastaAdrs) ? listar(pastaAdrs, '.md') : []
+  for (const r of restricoesReconf) {
+    if (r.contagem === 2) {
+      linhas.push({
+        estado: 'atencao',
+        texto: `restricao "${r.restricao}" reconfirmada em 2 tarefas (${r.tarefas.join(', ')}): a proxima reconfirmacao exigira ADR documentada em docs-mentor/adrs/`,
+      })
+    } else if (r.contagem >= 3) {
+      const idAdrMatch = r.restricao.match(/\b(ADR-\d+)\b/i)
+      const chaveNorm = chaveDaRestricao(r.restricao)
+      const adrValida = adrsExistentes.some((arq) => {
+        const conteudo = lerTexto(arq)
+        if (idAdrMatch && arq.toUpperCase().includes(idAdrMatch[1]!.toUpperCase())) return true
+        return chaveDaRestricao(conteudo).includes(chaveNorm) || conteudo.toLowerCase().includes(r.restricao.toLowerCase())
+      })
+      if (!adrValida) {
+        linhas.push({
+          estado: 'atencao',
+          texto: `restricao "${r.restricao}" reconfirmada em ${r.contagem} tarefas (${r.tarefas.join(', ')}) sem ADR vinculada encontrada em docs-mentor/adrs/: crie a ADR correspondente para consolidar a decisao arquitetural`,
+        })
+      } else {
+        linhas.push({
+          estado: 'ok',
+          texto: `restricao "${r.restricao}" com ${r.contagem} reconfirmacoes possui ADR vinculada`,
+        })
+      }
+    }
+  }
+
   return linhas
 }
 

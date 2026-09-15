@@ -8,7 +8,7 @@ import {
   carregarContexto, carregarDividas, carregarInvariantes, carregarReferencias, carregarRequisitos, carregarRiscos, carregarTarefas,
   regenerarTudo, registrarRecusa,
 } from './vistas.ts'
-import type { Tarefa } from './tipos.ts'
+import { MARCADOR, type Tarefa } from './tipos.ts'
 
 type Flags = Record<string, string | undefined>
 
@@ -206,20 +206,90 @@ export function fatiar(id: string, flags: Flags): void {
     throw new Error('Use --titulos "primeira|segunda|terceira". Fatia sem titulo proprio nao e fatia.')
   }
   const esforco = (flags.esforco ?? 'M/M').split('/')
-  const criadas: string[] = []
-  let anterior: string | null = null
 
-  for (const titulo of titulos) {
+  const ordemStr = (flags.ordem ?? '').trim()
+  const paresOrdem: Array<{ de: number; para: number }> = []
+  let motivoOrdem: string | null = null
+
+  if (ordemStr) {
+    motivoOrdem = (flags['motivo-ordem'] ?? '').trim()
+    if (!motivoOrdem) {
+      throw new Error('Uso de --ordem exige --motivo-ordem "<motivo>" explicitando a dependencia real de codigo.')
+    }
+    const pares = ordemStr.split(',').map((p) => p.trim()).filter(Boolean)
+    for (const p of pares) {
+      const partes = p.split('>')
+      if (partes.length !== 2) {
+        throw new Error(`Formato invalido em --ordem: "${p}". Use o formato "1>2,1>3".`)
+      }
+      const de = parseInt(partes[0]!.trim(), 10)
+      const para = parseInt(partes[1]!.trim(), 10)
+      if (isNaN(de) || isNaN(para) || de < 1 || de > titulos.length || para < 1 || para > titulos.length) {
+        throw new Error(`Indice invalido em --ordem: "${p}". Os indices devem estar entre 1 e ${titulos.length}.`)
+      }
+      if (de === para) {
+        throw new Error(`Autorreferencia invalida em --ordem: "${p}". Uma fatia nao pode depender de si mesma.`)
+      }
+      paresOrdem.push({ de, para })
+    }
+
+    // Validação de ciclos no grafo de dependências
+    const adj: Map<number, number[]> = new Map()
+    for (let i = 1; i <= titulos.length; i++) adj.set(i, [])
+    for (const { de, para } of paresOrdem) {
+      adj.get(de)!.push(para)
+    }
+    const visitado = new Set<number>()
+    const naPilha = new Set<number>()
+    function temCiclo(u: number): boolean {
+      visitado.add(u)
+      naPilha.add(u)
+      for (const v of adj.get(u) ?? []) {
+        if (!visitado.has(v)) {
+          if (temCiclo(v)) return true
+        } else if (naPilha.has(v)) {
+          return true
+        }
+      }
+      naPilha.delete(u)
+      return false
+    }
+    for (let i = 1; i <= titulos.length; i++) {
+      if (!visitado.has(i)) {
+        if (temCiclo(i)) {
+          throw new Error(`Ciclo detectado na definicao de --ordem: "${ordemStr}".`)
+        }
+      }
+    }
+  }
+
+  // Alocação atômica dos IDs
+  const idsFatias: string[] = []
+  for (let i = 0; i < titulos.length; i++) {
+    const idNova = proximoIdDeTarefa(pai.tipo)
+    escreverJson(`${c.abertas}/${idNova}.json`, { id: idNova })
+    idsFatias.push(idNova)
+  }
+
+  const criadas: string[] = []
+  for (let i = 0; i < titulos.length; i++) {
+    const titulo = titulos[i]!
+    const fatiaId = idsFatias[i]!
+    const depsIrmas = paresOrdem.filter((p) => p.para === i + 1).map((p) => idsFatias[p.de - 1]!)
+    const depsExternas = pai.depende_de ?? []
+
     const fatia: Tarefa = {
       ...pai,
-      id: proximoIdDeTarefa(pai.tipo),
+      id: fatiaId,
       titulo,
       fatia_de: pai.id,
       estado: 'aberta',
       fila: pai.fila,
       ordem: null,
+      ordem_motivo: motivoOrdem,
+      plano_do_epico: null,
       esforco: { humano: (esforco[0] ?? 'M') as Tarefa['esforco']['humano'], ia: (esforco[1] ?? 'M') as Tarefa['esforco']['ia'] },
-      depende_de: anterior ? [anterior] : [],
+      depende_de: [...depsExternas, ...depsIrmas],
       criada_em: agora().log,
       iniciada_em: null,
       concluida_em: null,
@@ -239,9 +309,32 @@ export function fatiar(id: string, flags: Flags): void {
     }
     escreverJson(`${c.abertas}/${fatia.id}.json`, fatia)
     criadas.push(fatia.id)
-    anterior = fatia.id
   }
+
+  if (!pai.plano_do_epico) {
+    pai.plano_do_epico = {
+      objetivo: null,
+      problema_canonico: null,
+      estado_da_arte: null,
+      hipotese: null,
+      sinal_de_desvio: null,
+      contrato_entre_fatias: {
+        forma: null,
+        tipo: 'codigo',
+        onde_vive: null,
+        fatia_que_cria: null,
+      },
+      restricoes_reavaliadas: [],
+      revisoes: [],
+    }
+    escreverJson(`${c.abertas}/${pai.id}.json`, pai)
+  }
+
   regenerarTudo()
-  console.log(`${id} fatiada em ${criadas.length}: ${criadas.join(' -> ')}`)
+  if (ordemStr) {
+    console.log(`${id} fatiada em ${criadas.length} com ordem declarada: ${criadas.join(' -> ')}`)
+  } else {
+    console.log(`${id} fatiada em ${criadas.length} independentes: ${criadas.join(', ')}`)
+  }
   console.log(`${id} vira epico: sai da fila e nao se executa. Executam-se as fatias.`)
 }

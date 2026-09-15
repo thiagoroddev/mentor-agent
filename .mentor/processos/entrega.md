@@ -53,6 +53,26 @@ Ele faz a fusão semântica de `contexto.json` preservando decisões de ambos os
 **Integrar cedo e com frequência** (OPS-15). Ramo aberto há semanas é a forma mais invisível de
 desperdício, porque parece progresso.
 
+## Planejamento independente e sessões isoladas (Worktrees)
+
+Para permitir que requisitos, ideias, tarefas na reserva e anotações sejam registrados imediatamente sem ficarem reféns do ciclo ou da entrega de uma tarefa de código em andamento:
+
+1. **Destino do planejamento:**
+   - O código, narrativa, achados e gates de uma tarefa pertencem exclusivamente ao ramo dela.
+   - Planejamento independente vai para um ramo curto `plan/<data>-<tema>` criado a partir da `main` atualizada.
+   - O PR de planejamento usa a marca explícita `(plano)` no título (ex.: `docs: novo fluxo de checkout (plano)`).
+
+2. **Worktrees do Git (uma pasta por sessão):**
+   - Para rodar sessões paralelas ou registrar planejamento com a `main` protegida, use `git worktree add ../<pasta-da-sessao> <branch>`.
+   - Cada pasta de worktree possui `HEAD` e índice próprios.
+   - **Cuidados na worktree:** execute `npm ci` para instalar dependências quando houver `package-lock.json`; arquivos não rastreados de laboratório ou `.env` locais não são compartilhados automaticamente pelo Git e devem ser configurados conforme o projeto.
+
+3. **Validação na Esteira de PRs `(plano)`:**
+   - O comando `node mentor.mjs pronto-para-merge --titulo "$TITULO"` reconhece PRs de planejamento.
+   - **Permitido:** novos requisitos, novas tarefas em reserva, atualizações de plano em tarefas abertas, rascunhos em `docs-mentor/` e regeneração de visões derivadas (`contexto.md`, `pendentes.md`, etc.).
+   - **Bloqueado:** arquivos de código de produção/testes, alterações de gates/evidências, transições de tarefa para `em-execucao` ou `concluida`, e promoção manual de requisitos para `implementado`.
+
+
 ## Trabalho pausado (WIP)
 
 Pausa só no disco se perde com o disco. `task pausar --commit` e `git push -u origin HEAD:wip/<id>`:

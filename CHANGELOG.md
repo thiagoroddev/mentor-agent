@@ -4,6 +4,22 @@ Todas as mudanças notáveis no **mentor-agent** são documentadas neste arquivo
 
 O formato baseia-se em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [0.12.0] - 2026-09-14
+
+Plano em `PLANO-MELHORIAS-PENDENTES.md`, a partir de 7 anotações de campo (12/09 a 14/09/2026). Consolida Frentes A a G (v0.11.0 e v0.12.0).
+
+### Adicionado
+- **Fatias Independentes e Ordem Explícita (Frente C)**: `task fatiar` gera fatias paralelas por padrão (`depende_de: []`); `--ordem "1>2,1>3"` com `--motivo-ordem "<justificativa>"` para dependências reais de código, com detecção e rejeição estrita de ciclos no grafo. Contratos entre fatias declarados em `contrato_esperado`, `contrato_entregue` e `contrato_entre_fatias`.
+- **Governança de Épicos e Revisão de Estratégia (Frente F)**: Épicos contêm `plano_do_epico` (visão, hipótese, sinal de desvio e contrato); a 1ª fatia bloqueia o início se o pai tiver marcadores pendentes. Se uma fatia registrar desvio (`composicao.a_direcao_se_mantem: false`), as fatias irmãs seguintes bloqueiam o início até que a estratégia seja revisada com `--estrategia-revisada --motivo "..."`.
+- **Meio de Validação e Evidência Estruturada (Frente D)**: Novo módulo `casos.ts` (`lerCasosDeValidacao`) com suporte a catálogos em JSON, CSV ou Markdown verificando resultados e observações; piso mínimo de 30 caracteres para `--evidencia` substantiva em `task validar`. O `finalizar` valida se artefatos e catálogos declarados existem no disco.
+- **Governança de Restrições Fundadoras e ADRs - M3 (Frente G)**: Rastreamento em `restricoes_reavaliadas` com `restricoes.ts`. `mentor doctor` avisa na 2ª reconfirmação; na 3ª reconfirmação (e ao descartar restrição com `reconfirmada: false`), o `finalizar` exige vinculação formal de ADR em `tarefa.adrs`.
+- **Fusão Semântica 3-Way de Requisitos (Frente B)**: `mesclarRequisitos3Way` em `cmd-resolver.ts` resolve conflitos concorrentes em `requisitos.json` preservando adições sem perda e combinando tarefas e status; `.gitattributes` protege vistas Markdown com `merge=ours`.
+- **Sessões Isoladas e PRs de Planejamento (Frente A)**: PRs marcados com `(plano)` verificam diff de planejamento sem código de produção; `doctor` lista git worktrees ativas.
+- **Roteiro de Atualização e Proteção de Forçar (Frente E)**: Proteção em `instalar.mjs --forcar` contra execução com tarefa ativa; roteiro detalhado em `processos/entrega.md` e `README.md`.
+- Cenário de testes automatizados `30-governanca-fatiamento-e-concorrencia.ts`.
+
+---
+
 ## [0.10.0] - 2026-09-14
 
 Plano em `PLANO-v0.10.0.md`, a partir da TASK-RF-044 e da TASK-BG-022 do piloto.

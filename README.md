@@ -8,7 +8,7 @@ perguntar, e registra tudo de forma rastreavel.
 Na raiz do projeto que vai usar o pacote:
 
 ```bash
-npm i -D github:thiagoroddev/mentor-agent#v0.10.0
+npm i -D github:thiagoroddev/mentor-agent#v0.12.0
 npx mentor instalar        # copia .mentor/ e mentor.mjs para a raiz
 node mentor.mjs init       # cria docs-mentor/, sem tocar na docs/ do aplicativo
 ```
@@ -24,17 +24,26 @@ a IA le' `.mentor/` como arquivo, e o projeto versiona as convencoes dele ao lad
 isso em vez de estourar.
 
 A versao instalada fica gravada em `docs-mentor/contexto.json`, senao o relatorio de campo nao consegue
-dizer *"isto aconteceu com a 0.10.0"*.
+dizer *"isto aconteceu com a 0.12.0"*.
 
 ### Atualizar uma instalacao existente
 
-Para atualizar o pacote mantendo seus documentos preservados:
+A atualizacao de versao comeca pela tarefa (captura o diff real e evita diagnostico falso de tarefa retroativa):
 
 ```bash
-npm i -D github:thiagoroddev/mentor-agent#v0.10.0
+# 1. Crie e inicie a tarefa da atualizacao:
+node mentor.mjs task nova --tipo CHORE --origem titulo-autossuficiente --titulo "Atualizar mentor-agent para v0.12.0" --esforco P/P
+node mentor.mjs task puxar <ID>
+node mentor.mjs task iniciar <ID>
+# Preencha o plano da tarefa
+
+# 2. Atualize o pacote e force a copia:
+npm i -D github:thiagoroddev/mentor-agent#v0.12.0
 npx mentor instalar --forcar
 node mentor.mjs resolver-gerados # regenera markdowns derivados e alinha contexto
 node mentor.mjs verificar
+node mentor.mjs task gate <ID> testes
+node mentor.mjs task finalizar <ID>
 ```
 
 *(Se estiver migrando de uma instalacao legada 0.1.x que usava a pasta `docs/`, use `--forcar --migrar-docs`)*.
@@ -89,6 +98,17 @@ node mentor.mjs task finalizar TASK-RF-001 --validado-por-humano "Evidencia do t
 # Anexar evidencia externa (run de CI, link de PR) mesmo apos fechamento
 node mentor.mjs task anexar TASK-RF-001 --url "https://github.com/org/repo/actions/runs/12345" --gate build
 ```
+
+### Governança de Épicos, Fatias Independentes e Restrições Fundadoras (v0.12.0)
+
+A partir das medições de campo de setembro/2026, consolida fatiamento concorrente, composição de épicos e integridade arquitetural duradoura. Plano em [`PLANO-MELHORIAS-PENDENTES.md`](./PLANO-MELHORIAS-PENDENTES.md).
+
+- **Fatias Independentes e Ordem Explícita**: `task fatiar` cria fatias paralelas por padrão (`depende_de: []`); use `--ordem "1>2,1>3"` com `--motivo-ordem "<justificativa>"` para dependências reais de código, com validação estrita de ciclos no grafo. Contratos entre fatias são declarados em `contrato_esperado` e `contrato_entregue`.
+- **Plano do Épico e Revisão de Estratégia**: Épicos contêm `plano_do_epico` com visão, hipótese, sinal de desvio e contrato compartilhado; a 1ª fatia bloqueia se o plano do pai contiver marcadores. Se uma fatia anterior registrar desvio (`composicao.a_direcao_se_mantem: false`), novas fatias exigem `--estrategia-revisada --motivo "..."`.
+- **Meio de Validação e Catálogo Estruturado**: `task validar <id>` aceita `--casos <arquivo>` em JSON, CSV ou Markdown verificando resultados e observações; piso mínimo de 30 caracteres para `--evidencia` substantiva. O `finalizar` checa se os artefatos e catálogos declarados existem no disco.
+- **Governança de Restrições Fundadoras (M3)**: Restrições mantidas são rastreadas em `restricoes_reavaliadas`. O `doctor` alerta na 2ª reconfirmação; a 3ª reconfirmação (e o descarte com `reconfirmada: false`) exige ADR formalizada em `tarefa.adrs`.
+- **Fusão Semântica 3-Way de Requisitos**: `mentor resolver-gerados` resolve conflitos concorrentes em `requisitos.json` preservando adições e combinando estados sem perda; `.gitattributes` protege vistas Markdown com `merge=ours`.
+- **Sessões Isoladas e PRs de Planejamento**: PRs marcados com `(plano)` verificam diff de planejamento sem código de produção; `doctor` lista git worktrees ativas.
 
 ### Laboratório Isolado e Sugestão como Hipótese (v0.10.0)
 

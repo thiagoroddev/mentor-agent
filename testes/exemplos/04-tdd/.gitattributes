@@ -5,3 +5,5 @@ docs-mentor/tarefas/reserva.md merge=ours
 docs-mentor/tarefas/concluidas/0-indice.md merge=ours
 # recusas.jsonl usa union: duplicatas de append entre branches sao toleradas no log
 docs-mentor/tarefas/recusas.jsonl merge=union
+docs-mentor/requisitos/pendentes.md merge=ours
+docs-mentor/requisitos/implementados.md merge=ours

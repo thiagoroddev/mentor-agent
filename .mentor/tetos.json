@@ -15,13 +15,13 @@
     },
     {
       "caminho": ".mentor/processos/entrega.md",
-      "teto": 8000,
-      "motivo": "Documenta protecao da main com PR, prova-por-arvore em squash merge e mentor resolver-gerados."
+      "teto": 10500,
+      "motivo": "Documenta protecao da main com PR, prova-por-arvore em squash merge, mentor resolver-gerados, worktrees e PRs de planejamento (plano)."
     },
     {
       "caminho": ".mentor/processos/tarefa.md",
-      "teto": 15500,
-      "motivo": "Documenta merito tecnico do plano, discordancia obrigatoria, estado da arte, reguas de medicao de spikes, rastreabilidade de requisitos e fluxo de pausa/retomada com isolamento de diff. Na 0.10.0: o passo Entender (problema XY, alternativas profissionais); as regras de laboratorio foram para processos/laboratorio.md para nao crescer mais."
+      "teto": 17500,
+      "motivo": "Documenta merito tecnico do plano, fatiamento independente com contrato, composicao do epico, validacao estruturada com catalogo de casos e governanca de restricoes fundadoras com ADRs (v0.11/v0.12)."
     }
   ],
   "regras": [

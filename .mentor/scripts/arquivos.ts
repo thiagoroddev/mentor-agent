@@ -68,6 +68,8 @@ export function pastaDeDocumentos(r: string): string {
   return atual
 }
 
+export type Caminhos = ReturnType<typeof caminhos>
+
 export function caminhos(r: string = raizProjeto()) {
   const pacote = pacoteDoProjeto(r)
   const docs = pastaDeDocumentos(r)

@@ -69,8 +69,10 @@
     "nota": "XG e' sinal de divisao obrigatoria: quebrar antes de executar."
   },
   "depende_de": [],
+  "ordem_motivo": null,
   "ordem": null,
   "ordem_nota": "null = a fila calcula. Numero = posicao fixada a mao por 'task fila'. A IA nunca renumera todas: pede a posicao de uma.",
+  "plano_do_epico": null,
   "fila": "reserva",
   "fila_possiveis": [
     "ciclo",
@@ -116,6 +118,9 @@
     "riscos": [],
     "dependencias_novas": [],
     "proporcionalidade": null,
+    "restricoes_reavaliadas": [],
+    "meio_de_validacao": null,
+    "composicao": null,
     "criterios_aceite_nota": "Todo criterio nomeia um teste. Saida honesta: 'nao se aplica: <motivo>'. Criterio que nao vira asercao nao era criterio, era intencao."
   },
   "gates": {

@@ -144,6 +144,130 @@ export function mesclarValores3Way(vBase: any, vOurs: any, vTheirs: any): any {
   return vOurs
 }
 
+export function mesclarRequisitos3Way(
+  baseInput: any,
+  oursInput: any,
+  theirsInput: any,
+): any {
+  const eWrapper = (oursInput && typeof oursInput === 'object' && !Array.isArray(oursInput) && 'requisitos' in oursInput) ||
+                  (theirsInput && typeof theirsInput === 'object' && !Array.isArray(theirsInput) && 'requisitos' in theirsInput)
+
+  const baseArr: Array<Record<string, any>> = Array.isArray(baseInput)
+    ? baseInput
+    : baseInput?.requisitos ?? []
+  const oursArr: Array<Record<string, any>> = Array.isArray(oursInput)
+    ? oursInput
+    : oursInput?.requisitos ?? []
+  const theirsArr: Array<Record<string, any>> = Array.isArray(theirsInput)
+    ? theirsInput
+    : theirsInput?.requisitos ?? []
+
+  const baseList = Array.isArray(baseArr) ? baseArr : []
+  const todosIds = new Set<string>([
+    ...baseList.map((r) => r.id),
+    ...oursArr.map((r) => r.id),
+    ...theirsArr.map((r) => r.id),
+  ].filter(Boolean))
+
+  const resultado: Array<Record<string, any>> = []
+
+  for (const id of todosIds) {
+    const inBase = baseList.find((r) => r.id === id)
+    const inOurs = oursArr.find((r) => r.id === id)
+    const inTheirs = theirsArr.find((r) => r.id === id)
+
+    // Caso 1: Não existia na base (Adição)
+    if (!inBase) {
+      if (inOurs && !inTheirs) {
+        resultado.push(inOurs)
+      } else if (!inOurs && inTheirs) {
+        resultado.push(inTheirs)
+      } else if (inOurs && inTheirs) {
+        // Criado em ambos: colisão add/add?
+        if (JSON.stringify(inOurs) === JSON.stringify(inTheirs)) {
+          resultado.push(inOurs)
+        } else {
+          if (inOurs.enunciado !== inTheirs.enunciado || inOurs.tipo !== inTheirs.tipo) {
+            throw new Error(
+              `Colisao add/add no requisito "${id}": foi criado em ambos os ramos com enunciados/conteudos diferentes. Renumere um dos requisitos antes de fundir.`,
+            )
+          }
+          resultado.push(mesclarValores3Way(null, inOurs, inTheirs))
+        }
+      }
+      continue
+    }
+
+    // Caso 2: Existia na base
+    if (!inOurs && !inTheirs) {
+      continue
+    }
+    if (!inOurs && inTheirs) {
+      if (JSON.stringify(inTheirs) === JSON.stringify(inBase)) {
+        continue
+      } else {
+        throw new Error(
+          `Conflito exclusao vs edicao no requisito "${id}": foi excluido no ramo atual e modificado no ramo recebido. Resolva manualmente.`,
+        )
+      }
+    }
+    if (inOurs && !inTheirs) {
+      if (JSON.stringify(inOurs) === JSON.stringify(inBase)) {
+        continue
+      } else {
+        throw new Error(
+          `Conflito exclusao vs edicao no requisito "${id}": foi modificado no ramo atual e excluido no ramo recebido. Resolva manualmente.`,
+        )
+      }
+    }
+
+    // Presente em todos: fusão 3-way por campo com regras semânticas
+    if (inOurs && inTheirs) {
+      if (JSON.stringify(inTheirs) === JSON.stringify(inBase)) {
+        resultado.push(inOurs)
+      } else if (JSON.stringify(inOurs) === JSON.stringify(inBase)) {
+        resultado.push(inTheirs)
+      } else {
+        const chaves = new Set([...Object.keys(inBase), ...Object.keys(inOurs), ...Object.keys(inTheirs)])
+        const reqMesclado: Record<string, any> = {}
+        for (const k of chaves) {
+          const vBase = inBase[k]
+          const vOurs = inOurs[k]
+          const vTheirs = inTheirs[k]
+          if (k === 'tarefas' && Array.isArray(vOurs) && Array.isArray(vTheirs)) {
+            reqMesclado[k] = Array.from(new Set([...vOurs, ...vTheirs]))
+          } else if (k === 'status') {
+            if (vOurs === 'implementado' || vTheirs === 'implementado') {
+              reqMesclado[k] = 'implementado'
+            } else if (vOurs === 'cancelado' || vTheirs === 'cancelado') {
+              reqMesclado[k] = 'cancelado'
+            } else {
+              reqMesclado[k] = vOurs ?? vTheirs
+            }
+          } else {
+            reqMesclado[k] = mesclarValores3Way(vBase, vOurs, vTheirs)
+          }
+        }
+        resultado.push(reqMesclado)
+      }
+    }
+  }
+
+  if (eWrapper) {
+    const objBase = baseInput && typeof baseInput === 'object' && !Array.isArray(baseInput) ? baseInput : {}
+    const objTheirs = theirsInput && typeof theirsInput === 'object' && !Array.isArray(theirsInput) ? theirsInput : {}
+    const objOurs = oursInput && typeof oursInput === 'object' && !Array.isArray(oursInput) ? oursInput : {}
+    return {
+      ...objBase,
+      ...objTheirs,
+      ...objOurs,
+      requisitos: resultado,
+    }
+  }
+
+  return resultado
+}
+
 export function resolverGerados(): number {
   const c = caminhos()
   console.log('Resolvendo conflitos em arquivos gerados e modelos hibridos...\n')
@@ -187,6 +311,25 @@ export function resolverGerados(): number {
     }
   } else {
     console.log('– docs-mentor/contexto.json: sem marcadores ou conflito pendente.')
+  }
+
+  // 1.5. Resolver requisitos.json com política semântica
+  const relRequisitos = c.requisitos.replace(c.raiz + '/', '').replace(c.raiz + '\\', '').replace(/\\/g, '/')
+  const { base: reqBaseStr, ours: reqOursStr, theirs: reqTheirsStr } = carregarVersoesDeArquivo(relRequisitos)
+  if (reqOursStr && reqTheirsStr) {
+    try {
+      const objBase = reqBaseStr ? JSON.parse(reqBaseStr) : null
+      const objOurs = JSON.parse(reqOursStr)
+      const objTheirs = JSON.parse(reqTheirsStr)
+      const mesclado = mesclarRequisitos3Way(objBase, objOurs, objTheirs)
+      escreverTexto(c.requisitos, JSON.stringify(mesclado, null, 2) + '\n')
+      console.log('✓ docs-mentor/requisitos/requisitos.json: fusao semantica 3-way concluida com sucesso.')
+    } catch (e: any) {
+      console.error(`! Falha ao realizar fusao semantica de requisitos.json: ${e.message}`)
+      return 1
+    }
+  } else {
+    console.log('– docs-mentor/requisitos/requisitos.json: sem marcadores ou conflito pendente.')
   }
 
   if (existe(c.contexto)) {
@@ -243,13 +386,29 @@ export function resolverGerados(): number {
   // 5. Regenerar todas as vistas Markdown diretamente dos modelos
   try {
     regenerarTudo()
-    console.log('✓ Vistas Markdown (contexto.md, backlog.md, reserva.md, 0-indice.md) regeneradas.')
+    console.log('✓ Vistas Markdown (contexto.md, backlog.md, reserva.md, 0-indice.md, pendentes.md, implementados.md) regeneradas.')
   } catch (e: any) {
     console.warn(`! Erro ao regenerar vistas markdown: ${e.message}`)
+    return 1
   }
 
   // 6. Git add nos arquivos resolvidos
-  const arquivosParaAdd = [c.contexto, c.dividas, c.riscos, c.recusas, c.contextoMd, c.backlog, c.reservaMd, c.indiceConcluidas].filter(existe)
+  const pendentesMd = `${c.docs}/requisitos/pendentes.md`
+  const implementadosMd = `${c.docs}/requisitos/implementados.md`
+  const arquivosParaAdd = [
+    c.contexto,
+    c.requisitos,
+    c.dividas,
+    c.riscos,
+    c.recusas,
+    c.contextoMd,
+    c.backlog,
+    c.reservaMd,
+    c.indiceConcluidas,
+    pendentesMd,
+    implementadosMd,
+  ].filter(existe)
+
   if (arquivosParaAdd.length && existe(`${c.raiz}/.git`)) {
     spawnSync('git', ['add', ...arquivosParaAdd], { cwd: c.raiz })
     console.log('✓ Arquivos gerados adicionados ao stage do Git (git add).')

@@ -12,6 +12,7 @@
     "ia": "P"
   },
   "depende_de": [],
+  "ordem_motivo": null,
   "fila": "reserva",
   "ordem": null,
   "origem": "RF-99, ADR-77",
