@@ -1,4 +1,4 @@
-import { agora, agoraIso, caminhos, escreverJson, escreverTexto, existe, lerData, lerJson, lerTexto, listar, relogioDoPacote } from './arquivos.ts'
+import { agora, caminhos, escreverJson, escreverTexto, existe, lerData, lerJson, lerTexto, listar, relogioDoPacote } from './arquivos.ts'
 import { join } from 'node:path'
 import type { Contexto, DividaTecnica, Invariante, Recusa, ReferenciaExterna, Requisito, RiscoAceito, Tarefa } from './tipos.ts'
 
@@ -475,7 +475,9 @@ export function atualizarContagens(): Contexto {
   // Conta a partir da ultima auditoria, nao do proximo multiplo: com a ultima na tarefa 25 e cadencia
   // 10, a proxima e' a 35. Era 30. E' estimativa: tarefa sem diff auditavel nao conta e empurra a proxima.
   if (ctx.auditoria) {
-    ctx.auditoria.proxima_em_tarefa = (ctx.auditoria.ultima_na_tarefa ?? 0) + (ctx.auditoria.cadencia_em_tarefas ?? 0)
+    ctx.auditoria.proxima_em_tarefa = ctx.auditoria.revisao_incremental_ativa
+      ? null
+      : (ctx.auditoria.ultima_na_tarefa ?? 0) + (ctx.auditoria.cadencia_em_tarefas ?? 0)
   }
   // A versao vem do manifesto do pacote INSTALADO, a cada geracao. Era gravada so' pelo `init`, e o
   // `init` recusa rodar em projeto que ja' existe: atualizar o pacote nunca atualizava o numero.
@@ -485,7 +487,11 @@ export function atualizarContagens(): Contexto {
   if (existe(manifesto)) {
     ctx._meta['versao_do_pacote'] = lerJson<{ versao?: string }>(manifesto).versao ?? 'desconhecida'
   }
-  ctx._meta.atualizado_em = agoraIso()
+  // Sem carimbo de hora: regravar a data a cada comando fazia dois ramos sem mudanca real em comum
+  // conflitarem nessa linha. Nenhum codigo le o campo, e a data da ultima mudanca sai do `git log`.
+  // `null` tambem limpa a data congelada de quem vem de versao anterior. Medido em campo, e corrigido
+  // primeiro como patch local no projeto que o encontrou.
+  ctx._meta.atualizado_em = null
   escreverJson(c.contexto, ctx)
   return ctx
 }

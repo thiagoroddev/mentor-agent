@@ -66,13 +66,13 @@ export function rodar(): Cenario {
   }
   escrever(c, 'docs-mentor/tarefas/abertas/TASK-RF-001.json', JSON.stringify(t1, null, 2))
   escrever(c, 'docs-mentor/tarefas/abertas/TASK-RF-001.md',
-    '# TASK-RF-001\n\n## Decisoes tomadas\nDecisao A.\n\n## O que nao foi feito, e por que\nNada.\n\n## Aprendizados\nNada.\n')
+    '# TASK-RF-001\n\n## Decisoes tomadas\nDecisao A.\n\n## O que nao foi feito, e por que\nNada.\n\n## Aprendizados\nNada.\n\n## Desfecho\nGates verdes; nada fora do previsto.\n')
 
   const fin = mentor(c, 'task', 'finalizar', 'TASK-RF-001')
   dizQue(c, fin, 'concluida', 'tarefa finaliza com vermelho dispensado em TDD')
   commit('TASK-RF-001 concluida')
 
-  mentor(c, 'auditar', 'preparar')
+  mentor(c, 'auditar', 'preparar', '--lote-legado')
   const dossie = ler(c, 'docs-mentor/auditorias/AUD-001-dossie.md')
   confere(c, dossie.includes('mutacao manual em src/index.ts fez o teste falhar'),
     'dossie exibe o motivo da dispensa na tabela de gates')
@@ -96,7 +96,7 @@ export function rodar(): Cenario {
   }
   escrever(c, 'docs-mentor/tarefas/abertas/TASK-RF-002.json', JSON.stringify(t2, null, 2))
   escrever(c, 'docs-mentor/tarefas/abertas/TASK-RF-002.md',
-    '# TASK-RF-002\n\n## Decisoes tomadas\nOk.\n\n## O que nao foi feito, e por que\nNada.\n\n## Aprendizados\nNada.\n')
+    '# TASK-RF-002\n\n## Decisoes tomadas\nOk.\n\n## O que nao foi feito, e por que\nNada.\n\n## Aprendizados\nNada.\n\n## Desfecho\nGates verdes; nada fora do previsto.\n')
   mentor(c, 'task', 'finalizar', 'TASK-RF-002')
   commit('TASK-RF-002 concluida na branch irma')
 

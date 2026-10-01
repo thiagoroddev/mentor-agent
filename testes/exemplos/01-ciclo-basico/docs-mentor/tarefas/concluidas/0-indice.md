@@ -4,4 +4,4 @@
 
 | Encerrada em | ID | Tipo | Titulo | Fatia | Desfecho | Validacao |
 |---|---|---|---|---|---|---|
-| 29/08/26 14:00 | [`TASK-RF-001`](./2026-08-29--14h00--TASK-RF-001.md) | RF | Exportar relatorio em CSV | - | concluida | nao_requer |
+| 29/08/26 14:00 | [`TASK-RF-001`](./2026-08-29--14h00--TASK-RF-001--estudo-humano.md) | RF | Exportar relatorio em CSV | - | concluida | nao_requer |

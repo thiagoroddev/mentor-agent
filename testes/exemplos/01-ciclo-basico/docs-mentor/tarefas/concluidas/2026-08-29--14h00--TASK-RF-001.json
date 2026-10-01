@@ -1,10 +1,12 @@
 {
   "id": "TASK-RF-001",
+  "revisao_incremental_requerida": false,
   "tipo": "RF",
   "titulo": "Exportar relatorio em CSV",
   "fatia_de": null,
   "estado": "concluida",
   "cerimonia": "Standard",
+  "perfil": null,
   "valor": "importante",
   "urgencia": "normal",
   "esforco": {
@@ -22,7 +24,7 @@
   "sem_requisito_motivo": null,
   "criada_em": "29/08/26 14:00",
   "iniciada_em": "29/08/26 14:00",
-  "commit_base": "dd27e8b8fb7b6e6079a23d66032bdff6f3f9bf2d",
+  "commit_base": "e9d3fcbc49ad9ef76986d634379b102c42262dc0",
   "concluida_em": "29/08/26 14:00",
   "plano": {
     "muda": [
@@ -49,12 +51,15 @@
       "codigo_saida": 0,
       "saida": "\"42 passed, 0 failed\"",
       "executado_em": "29/08/26 14:00",
-      "commit_execucao": "dd27e8b8fb7b6e6079a23d66032bdff6f3f9bf2d",
-      "arvore_hash": "89004e3596e28deecba2f2d077a58bb1259c0a45",
+      "commit_execucao": "e9d3fcbc49ad9ef76986d634379b102c42262dc0",
+      "arvore_hash": "08a5e72d83145822692958f0259c5d2123c2432e",
       "arvore_sem_documentos": true,
       "evidencia_url": null,
       "motivo": null,
       "ressalva": null,
+      "log_ref": "docs-mentor/.evidencias/logs/TASK-RF-001-testes-1790895874856.log",
+      "chave_cache": "5fbb83c7b4b4dcb3ea306280b5cc1db1d39caf0ce47ecbc55ed62fc6a3206423",
+      "digest_insumos": "08a5e72d83145822692958f0259c5d2123c2432e",
       "vermelho_dispensado": null
     }
   },
@@ -68,5 +73,5 @@
   "riscos_aceitos": [],
   "absorvida_por": null,
   "cancelamento_motivo": null,
-  "narrativa": "2026-08-29--14h00--TASK-RF-001.md"
+  "narrativa": "2026-08-29--14h00--TASK-RF-001--estudo-humano.md"
 }

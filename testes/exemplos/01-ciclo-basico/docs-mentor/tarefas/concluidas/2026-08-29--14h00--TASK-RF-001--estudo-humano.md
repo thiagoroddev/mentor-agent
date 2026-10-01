@@ -8,3 +8,6 @@ Nenhum outro formato: so pediram CSV.
 
 ## Aprendizados
 Nada.
+
+## Desfecho
+Gates verdes; nada fora do previsto.

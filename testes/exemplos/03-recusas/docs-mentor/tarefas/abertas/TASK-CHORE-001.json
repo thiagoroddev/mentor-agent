@@ -1,10 +1,12 @@
 {
   "id": "TASK-CHORE-001",
+  "revisao_incremental_requerida": false,
   "tipo": "CHORE",
   "titulo": "Primeira",
   "fatia_de": null,
   "estado": "em-execucao",
   "cerimonia": "Standard",
+  "perfil": null,
   "valor": "importante",
   "urgencia": "normal",
   "esforco": {
@@ -20,7 +22,7 @@
   "sem_requisito_motivo": null,
   "criada_em": "29/08/26 14:00",
   "iniciada_em": "29/08/26 14:00",
-  "commit_base": "dd27e8b8fb7b6e6079a23d66032bdff6f3f9bf2d",
+  "commit_base": "e9d3fcbc49ad9ef76986d634379b102c42262dc0",
   "concluida_em": null,
   "plano": {
     "muda": [
@@ -45,12 +47,15 @@
       "codigo_saida": 1,
       "saida": "\"falhou de proposito\"",
       "executado_em": "29/08/26 14:00",
-      "commit_execucao": "dd27e8b8fb7b6e6079a23d66032bdff6f3f9bf2d",
-      "arvore_hash": "3bb9c6865d9770b602ad8c27cb82e9711b2ede15",
+      "commit_execucao": "e9d3fcbc49ad9ef76986d634379b102c42262dc0",
+      "arvore_hash": "d17f83bd9a5b5986072f469c79d93b2b4525558a",
       "arvore_sem_documentos": true,
       "evidencia_url": null,
       "motivo": null,
       "ressalva": null,
+      "log_ref": "docs-mentor/.evidencias/logs/TASK-CHORE-001-testes-1790895886442.log",
+      "chave_cache": null,
+      "digest_insumos": "d17f83bd9a5b5986072f469c79d93b2b4525558a",
       "vermelho_dispensado": null
     }
   },

@@ -73,7 +73,7 @@ export function rodar(): Cenario {
   t1.plano.riscos = ['nenhum']
   t1.plano.proporcionalidade = 'widget e modulos proporcionais ao pedido'
   escrever(c, 'docs-mentor/tarefas/abertas/TASK-RF-001.json', JSON.stringify(t1, null, 2))
-  escrever(c, 'docs-mentor/tarefas/abertas/TASK-RF-001.md', '# TASK-RF-001\n\n## Decisoes tomadas\nOk\n\n## O que nao foi feito, e por que\nNada\n\n## Testes de descoberta\nNenhum\n\n## Aprendizados\nNada\n')
+  escrever(c, 'docs-mentor/tarefas/abertas/TASK-RF-001.md', '# TASK-RF-001\n\n## Decisoes tomadas\nOk\n\n## O que nao foi feito, e por que\nNada\n\n## Testes de descoberta\nNenhum\n\n## Aprendizados\nNada\n\n## Desfecho\nGates verdes; nada fora do previsto.\n')
 
   // Cria os arquivos declarados com kebab-case e match por glob
   escrever(c, 'src/components/user-profile-widget.ts', 'export const Widget = "profile"\n')
@@ -83,7 +83,7 @@ export function rodar(): Cenario {
   // 2. task gate grava arvore_hash e commit_execucao (R06)
   // -------------------------------------------------------------
   const rGate = mentor(c, 'task', 'gate', 'TASK-RF-001', 'testes')
-  dizQue(c, rGate, 'APROVADO (saida 0)', 'gate executa com sucesso')
+  dizQue(c, rGate, 'APROVADO: testes (saida 0', 'gate executa com sucesso')
 
   const t1Gate = lerJson<Record<string, any>>(c, 'docs-mentor/tarefas/abertas/TASK-RF-001.json')
   confere(c, Boolean(t1Gate.gates.testes.commit_execucao), 'gate gravou commit_execucao')
@@ -179,7 +179,7 @@ export function rodar(): Cenario {
   tRetro.plano.riscos = ['nenhum']
   tRetro.plano.proporcionalidade = 'documentacao de calculo existente'
   escrever(c, 'docs-mentor/tarefas/abertas/TASK-CHORE-001.json', JSON.stringify(tRetro, null, 2))
-  escrever(c, 'docs-mentor/tarefas/abertas/TASK-CHORE-001.md', '# TASK-CHORE-001\n\n## Decisoes tomadas\nOk\n\n## O que nao foi feito, e por que\nNada\n\n## Testes de descoberta\nNenhum\n\n## Aprendizados\nNada\n')
+  escrever(c, 'docs-mentor/tarefas/abertas/TASK-CHORE-001.md', '# TASK-CHORE-001\n\n## Decisoes tomadas\nOk\n\n## O que nao foi feito, e por que\nNada\n\n## Testes de descoberta\nNenhum\n\n## Aprendizados\nNada\n\n## Desfecho\nGates verdes; nada fora do previsto.\n')
   mentor(c, 'task', 'gate', 'TASK-CHORE-001', 'testes')
 
   // Tenta finalizar sem --retroativa: bloqueia

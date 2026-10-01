@@ -8,12 +8,24 @@ import type { Tarefa } from './tipos.ts'
  * finalizar) e uma no dossie, que esquecia SPIKE. Nenhuma reconhecia UI, e a taxonomia do processo
  * poe tela como a primeira linha da tabela: tarefa de tela dispensava a validacao com qualquer motivo.
  */
-export type CategoriaSensivel = 'persistencia' | 'calculo' | 'ui' | 'regra de negocio' | 'nao funcional' | 'spike'
+export type CategoriaSensivel =
+  | 'persistencia'
+  | 'calculo'
+  | 'ui'
+  | 'regra de negocio'
+  | 'nao funcional'
+  | 'spike'
+  | 'seguranca'
+  | 'autorizacao'
+  | 'gates_e_execucao'
 
 const PERSISTENCIA = /schema|migration|migra[cç][aã]o|persist|banco|db_|indexeddb|storage/i
 const CALCULO = /c[aá]lcul|algor[ií]tm|f[oó]rmula|heur[ií]stic/i
 const UI_PALAVRAS = /(^|[^\p{L}])(ui|tela|telas|interface|componente|componentes|layout|css|frontend)([^\p{L}]|$)/iu
 const UI_ARQUIVOS = /\.(tsx|jsx|vue|svelte|css|scss|sass|less|html)$/i
+const SEGURANCA = /seguran[cç]a|vulnerabilidade|criptografia|hash|sanitiz/i
+const AUTORIZACAO = /autentica[cç][aã]o|autoriza[cç][aã]o|permiss[aã]o|senha|token|credentials|auth|credencial/i
+const GATES_EXECUCAO = /gate|executor|cmd-gate|pre-push|hook/i
 
 export function categoriasSensiveis(t: Tarefa): CategoriaSensivel[] {
   const texto = `${t.titulo} ${t.plano.muda.join(' ')} ${t.plano.impacto ?? ''}`
@@ -22,6 +34,11 @@ export function categoriasSensiveis(t: Tarefa): CategoriaSensivel[] {
   if (CALCULO.test(texto)) categorias.push('calculo')
   if (UI_PALAVRAS.test(texto) || extrairCaminhosDeclarados(t.plano.muda).some((c) => UI_ARQUIVOS.test(c))) {
     categorias.push('ui')
+  }
+  if (SEGURANCA.test(texto)) categorias.push('seguranca')
+  if (AUTORIZACAO.test(texto)) categorias.push('autorizacao')
+  if (GATES_EXECUCAO.test(texto) || extrairCaminhosDeclarados(t.plano.muda).some((c) => /cmd-gate|executor-gates|cmd-hooks|\.githooks/i.test(c))) {
+    categorias.push('gates_e_execucao')
   }
   if (t.tipo === 'RN') categorias.push('regra de negocio')
   if (t.tipo === 'RNF') categorias.push('nao funcional')

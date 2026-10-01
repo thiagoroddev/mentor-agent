@@ -29,6 +29,7 @@ import { rodar as travas } from './cenarios/27-travas-de-fechamento-e-entrega.ts
 import { rodar as wipEMerge } from './cenarios/28-wip-e-merge.ts'
 import { rodar as laboratorio } from './cenarios/29-laboratorio-e-hipotese.ts'
 import { rodar as governancaFatiamento } from './cenarios/30-governanca-fatiamento-e-concorrencia.ts'
+import { rodar as testesDeUnidade } from './cenarios/31-testes-de-unidade.ts'
 import type { Cenario } from './apoio.ts'
 
 const CENARIOS: Array<() => Cenario> = [
@@ -36,7 +37,7 @@ const CENARIOS: Array<() => Cenario> = [
   rascunho, auditoria, referencias, offsets, invariantes, postura, requisitos,
   robustez, skills, evidencia, concorrencia, cadenciaEValidacao, meritoEDiscordancia,
   pausaERetomada, auditoriaInteligente, auditoriaPorTarefa, travas, wipEMerge, laboratorio,
-  governancaFatiamento,
+  governancaFatiamento, testesDeUnidade,
 ]
 
 let falharam = 0

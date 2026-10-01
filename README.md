@@ -8,7 +8,7 @@ perguntar, e registra tudo de forma rastreavel.
 Na raiz do projeto que vai usar o pacote:
 
 ```bash
-npm i -D github:thiagoroddev/mentor-agent#v0.12.0
+npm i -D github:thiagoroddev/mentor-agent#v0.13.0
 npx mentor instalar        # copia .mentor/ e mentor.mjs para a raiz
 node mentor.mjs init       # cria docs-mentor/, sem tocar na docs/ do aplicativo
 ```
@@ -24,7 +24,7 @@ a IA le' `.mentor/` como arquivo, e o projeto versiona as convencoes dele ao lad
 isso em vez de estourar.
 
 A versao instalada fica gravada em `docs-mentor/contexto.json`, senao o relatorio de campo nao consegue
-dizer *"isto aconteceu com a 0.12.0"*.
+dizer *"isto aconteceu com a 0.13.0"*.
 
 ### Atualizar uma instalacao existente
 
@@ -32,13 +32,13 @@ A atualizacao de versao comeca pela tarefa (captura o diff real e evita diagnost
 
 ```bash
 # 1. Crie e inicie a tarefa da atualizacao:
-node mentor.mjs task nova --tipo CHORE --origem titulo-autossuficiente --titulo "Atualizar mentor-agent para v0.12.0" --esforco P/P
+node mentor.mjs task nova --tipo CHORE --origem titulo-autossuficiente --titulo "Atualizar mentor-agent para v0.13.0" --esforco P/P
 node mentor.mjs task puxar <ID>
 node mentor.mjs task iniciar <ID>
 # Preencha o plano da tarefa
 
 # 2. Atualize o pacote e force a copia:
-npm i -D github:thiagoroddev/mentor-agent#v0.12.0
+npm i -D github:thiagoroddev/mentor-agent#v0.13.0
 npx mentor instalar --forcar
 node mentor.mjs resolver-gerados # regenera markdowns derivados e alinha contexto
 node mentor.mjs verificar
@@ -99,6 +99,17 @@ node mentor.mjs task finalizar TASK-RF-001 --validado-por-humano "Evidencia do t
 node mentor.mjs task anexar TASK-RF-001 --url "https://github.com/org/repo/actions/runs/12345" --gate build
 ```
 
+### Correções de Campo, Revisão por Tarefa e Rigor pelo Contexto (v0.13.0)
+
+As 20 correções que o piloto fez como patch local entre 15/09 e 30/09/2026 viram versão oficial. Plano em [`PLANO-v0.13.0.md`](./PLANO-v0.13.0.md); notas em [`NOTAS-DA-RELEASE-v0.13.0.md`](./NOTAS-DA-RELEASE-v0.13.0.md).
+
+- **Revisão incremental por tarefa**: `auditar preparar --tarefa TASK-...` gera a `REV-NNN`, conferida no `finalizar` e no pre-push quando a política exige. O lote antigo segue em `--lote-legado`.
+- **Rigor pelo contexto**: `projeto.classificacao` e `rigor.riscos` decidem o que bloqueia. Protótipo pessoal fica enxuto; risco concreto na mudança mantém os bloqueios.
+- **Executor único de gates**: `task gates <ID>` roda a bateria, grava log e reaproveita a execução quando os insumos não mudaram. Mudar o `contexto.json` (fora das contagens) pede o gate de novo.
+- **Patch local reconhecido**: `mentor patch registrar <arquivo> --tarefa <ID>`; o `verificar` aceita o patch e acusa o que mudou além dele.
+- **Narrativa de estudo humano**: `## Desfecho` obrigatório; a narrativa vira `<ID>--estudo-humano.md` com o plano técnico integral.
+- **`task nova` confere a origem** com a mesma regra do `puxar`; o dossiê mede o próprio tamanho; caminho no meio da linha do `plano.muda` conta como declarado.
+
 ### Governança de Épicos, Fatias Independentes e Restrições Fundadoras (v0.12.0)
 
 A partir das medições de campo de setembro/2026, consolida fatiamento concorrente, composição de épicos e integridade arquitetural duradoura. Plano em [`PLANO-MELHORIAS-PENDENTES.md`](./PLANO-MELHORIAS-PENDENTES.md).
@@ -106,7 +117,7 @@ A partir das medições de campo de setembro/2026, consolida fatiamento concorre
 - **Fatias Independentes e Ordem Explícita**: `task fatiar` cria fatias paralelas por padrão (`depende_de: []`); use `--ordem "1>2,1>3"` com `--motivo-ordem "<justificativa>"` para dependências reais de código, com validação estrita de ciclos no grafo. Contratos entre fatias são declarados em `contrato_esperado` e `contrato_entregue`.
 - **Plano do Épico e Revisão de Estratégia**: Épicos contêm `plano_do_epico` com visão, hipótese, sinal de desvio e contrato compartilhado; a 1ª fatia bloqueia se o plano do pai contiver marcadores. Se uma fatia anterior registrar desvio (`composicao.a_direcao_se_mantem: false`), novas fatias exigem `--estrategia-revisada --motivo "..."`.
 - **Meio de Validação e Catálogo Estruturado**: `task validar <id>` aceita `--casos <arquivo>` em JSON, CSV ou Markdown verificando resultados e observações; piso mínimo de 30 caracteres para `--evidencia` substantiva. O `finalizar` checa se os artefatos e catálogos declarados existem no disco.
-- **Governança de Restrições Fundadoras (M3)**: Restrições mantidas são rastreadas em `restricoes_reavaliadas`. O `doctor` alerta na 2ª reconfirmação; a 3ª reconfirmação (e o descarte com `reconfirmada: false`) exige ADR formalizada em `tarefa.adrs`.
+- **Governança de Restrições Fundadoras (M3)**: Restrições mantidas são rastreadas em `restricoes_reavaliadas`. O `doctor` alerta na 2ª reconfirmação; a 3ª reconfirmação exige ADR em `docs-mentor/arquitetura/ADR/`, citando a restrição e vinculada em `tarefa.adrs` (desde a 0.13.0, o ID sozinho não basta); o descarte com `reconfirmada: false` exige ADR em `tarefa.adrs`.
 - **Fusão Semântica 3-Way de Requisitos**: `mentor resolver-gerados` resolve conflitos concorrentes em `requisitos.json` preservando adições e combinando estados sem perda; `.gitattributes` protege vistas Markdown com `merge=ours`.
 - **Sessões Isoladas e PRs de Planejamento**: PRs marcados com `(plano)` verificam diff de planejamento sem código de produção; `doctor` lista git worktrees ativas.
 
@@ -181,7 +192,8 @@ node mentor.mjs resolver-gerados              # fusao semantica pos-merge de bra
 ### Auditoria de Lote (Contexto Isolado)
 
 ```bash
-node mentor.mjs auditar preparar              # dossie com o diff de cada tarefa do lote, dividido pelo teto
+node mentor.mjs auditar preparar --tarefa TASK-RF-001   # REV-NNN: revisao da mudanca de uma tarefa
+node mentor.mjs auditar preparar --lote-legado          # dossie do lote, dividido pelo teto
 node mentor.mjs auditar registrar AUD-001     # veredito independente produzido por uma sessao NOVA de IA
 node mentor.mjs auditar resolver AUD-001      # transforma recomendacoes em plano de acao
 ```

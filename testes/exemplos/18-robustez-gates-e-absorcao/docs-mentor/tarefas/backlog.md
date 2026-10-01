@@ -9,4 +9,4 @@
 
 | # | ID | Titulo | Fatia | Valor | Urgencia | Esforco H/IA | Bloqueada por | Origem |
 |--:|---|---|---|---|---|---|---|---|
-| | | Nenhuma tarefa na fila | | | | | | |
+| 1 | `TASK-RF-002` | Tarefa abrangente | - | importante | normal | M/M | - | titulo-autossuficiente |

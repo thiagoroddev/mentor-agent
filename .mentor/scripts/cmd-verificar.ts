@@ -1,8 +1,8 @@
 import { readdirSync } from 'node:fs'
-import { basename, dirname, join, resolve } from 'node:path'
-import { caminhos, existe, lerJson, lerTexto, listar, raizPacote, relativo } from './arquivos.ts'
+import { basename, dirname, join, resolve, sep } from 'node:path'
+import { caminhos, existe, lerJson, lerTexto, listar, relativo } from './arquivos.ts'
 import { comparar } from './cmd-regras.ts'
-import { conferirManifesto } from './cmd-pacote.ts'
+import { conferirIntegridadePatches } from './cmd-patches.ts'
 import { carregarContexto, carregarInvariantes, carregarReferencias, carregarRequisitos, carregarTarefas } from './vistas.ts'
 import { MARCADOR } from './tipos.ts'
 import { problemasDoInventario } from './laboratorio.ts'
@@ -95,13 +95,19 @@ export function tetos(): Achado[] {
  * Existe **com a grafia exata**. O Windows tem sistema de arquivos insensivel a maiusculas, entao um
  * link para `32-adr.md` apontando para o arquivo `32-ADR.md` funciona na maquina do autor e quebra
  * no GitHub e no Linux. Aqui a comparacao e' byte a byte, segmento por segmento.
+ *
+ * Confere so' as pastas **abaixo da raiz do projeto**. A raiz e o que fica acima dela vem de como o
+ * terminal foi aberto (`cd e:\Repositorios\...`), nao do repositorio: subir ate' o disco acusava
+ * todo link como quebrado quando o caminho digitado tinha outra caixa. Medido em campo, e corrigido
+ * primeiro como patch local no projeto que o encontrou.
  */
-function existeComGrafiaExata(caminho: string): boolean {
+function existeComGrafiaExata(caminho: string, raiz: string): boolean {
   if (!existe(caminho)) return false
+  const topo = resolve(raiz)
   let atual = resolve(caminho)
   for (;;) {
     const pai = dirname(atual)
-    if (pai === atual) return true
+    if (pai === atual || atual === topo || topo.startsWith(atual + sep)) return true
     if (!readdirSync(pai).includes(basename(atual))) return false
     atual = pai
   }
@@ -128,7 +134,7 @@ function links(): Achado[] {
       const semAncora = bruto.split('#')[0]
       if (!semAncora) continue
       const alvo = join(dirname(arquivo), decodeURI(semAncora))
-      if (!existeComGrafiaExata(alvo)) {
+      if (!existeComGrafiaExata(alvo, c.raiz)) {
         const existeIgnorandoCaixa = existe(alvo)
         achados.push({
           familia: 'referencia',
@@ -166,20 +172,34 @@ function inventarioDeRegras(): Achado[] {
  * incompleto num projeto e ninguem descobriu.
  */
 function divergenciaDoPacote(): Achado[] {
-  const d = conferirManifesto()
-  if (!d) return []
-  const total = d.mudados.length + d.faltando.length + d.acrescentados.length
-  if (total === 0) return []
-  const partes = [
-    d.mudados.length ? `${d.mudados.length} mudado(s): ${d.mudados.slice(0, 4).join(', ')}` : '',
-    d.faltando.length ? `${d.faltando.length} faltando: ${d.faltando.slice(0, 4).join(', ')}` : '',
-    d.acrescentados.length ? `${d.acrescentados.length} acrescentado(s): ${d.acrescentados.slice(0, 4).join(', ')}` : '',
-  ].filter(Boolean)
-  return [{
-    familia: 'referencia',
-    onde: `.mentor/ (versao ${d.versao})`,
-    problema: `${partes.join(' · ')}. Editar para destravar e legitimo; esquecer que editou vira divergencia silenciosa. Registre no relatorio de campo`,
-  }]
+  const s = conferirIntegridadePatches()
+  const achados: Achado[] = []
+
+  for (const d of s.divergentes) {
+    achados.push({
+      familia: 'pacote',
+      onde: `.mentor/${d.patch.arquivo}`,
+      problema: `alterado alem do patch registrado para ${d.patch.tarefa_ref} (digest atual difere do registrado)`,
+    })
+  }
+
+  for (const arq of s.nao_registrados) {
+    achados.push({
+      familia: 'pacote',
+      onde: `.mentor/${arq}`,
+      problema: 'arquivo diverge do pacote sem patch registrado em docs-mentor/patches-do-pacote.json. Registre com: mentor patch registrar <arquivo> --tarefa <ID>',
+    })
+  }
+
+  for (const arq of s.faltando) {
+    achados.push({
+      familia: 'pacote',
+      onde: `.mentor/${arq}`,
+      problema: 'arquivo do pacote original ausente no projeto',
+    })
+  }
+
+  return achados
 }
 
 /** Familia 3: integridade referencial. Todo ponteiro resolve para algo que existe. */
@@ -198,7 +218,7 @@ function referencias(): Achado[] {
       continue
     }
     const alvo = join(c.raiz, ref.onde)
-    if (!existeComGrafiaExata(alvo)) {
+    if (!existeComGrafiaExata(alvo, c.raiz)) {
       achados.push({
         familia: 'referencia',
         onde: 'docs-mentor/referencias.json',
@@ -255,6 +275,10 @@ export function coletarAchados(): Achado[] {
 
 export function verificar(): number {
   const achados = coletarAchados()
+  const patches = conferirIntegridadePatches()
+  if (patches.reconhecidos.length > 0) {
+    console.log(`· ${patches.reconhecidos.length} patch(es) local(is) reconhecido(s) e valido(s) em .mentor/.`)
+  }
   if (achados.length === 0) {
     console.log('APROVADO. Tres familias: marcadores, tetos de texto, integridade referencial (ponteiros, links e inventario de regras).')
     return 0

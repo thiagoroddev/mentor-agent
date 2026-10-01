@@ -8,3 +8,6 @@ PREENCHER: spike e descartavel: o que sai daqui, e o que sobrevive e por que
 
 ## A tarefa que isto destrava
 PREENCHER: o ID, ou "nenhuma: a resposta foi nao"
+
+## Desfecho e Validacao Real
+PREENCHER: resultado da exploracao/validacao, armadilhas tecnicas/ambiente e conclusao

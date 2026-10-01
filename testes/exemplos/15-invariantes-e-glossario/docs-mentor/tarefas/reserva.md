@@ -7,4 +7,4 @@
 
 | ID | Titulo | Fatia | Tipo | Valor | Esforco H/IA | Origem |
 |---|---|---|---|---|---|---|
-| `TASK-BG-001` | Bug sem invariante | - | BG | importante | P/P | INV-99 |
+| | Nada guardado | | | | | |

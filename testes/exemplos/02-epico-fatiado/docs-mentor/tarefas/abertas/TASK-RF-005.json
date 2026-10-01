@@ -1,10 +1,12 @@
 {
   "id": "TASK-RF-005",
+  "revisao_incremental_requerida": false,
   "tipo": "RF",
   "titulo": "Status visual no mapa",
   "fatia_de": "TASK-RF-001",
   "estado": "aberta",
   "cerimonia": "Strict",
+  "perfil": null,
   "valor": "critico",
   "urgencia": "imediata",
   "esforco": {

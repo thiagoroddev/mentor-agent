@@ -3,7 +3,7 @@
 <!-- Gerado por `node mentor.mjs gerar`. Nao edite a mao: a proxima geracao sobrescreve. -->
 
 **Fase:** construcao · **Rigor:** nao definido
-**Respondido por voce:** 2 · **Padrao do pacote:** 28 · **Em aberto:** 170
+**Respondido por voce:** 2 · **Padrao do pacote:** 28 · **Em aberto:** 178
 
 ⚠️ **Portoes ainda abertos:** V_negocio · C_obrigacoes · 0_rigor · P_problema · I_uso · A_arquitetura · N_persistencia · S_ameacas · O_automacao. Cada um tem arquivo em `.mentor/guia/00-indice.md`.
 

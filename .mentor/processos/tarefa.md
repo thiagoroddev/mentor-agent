@@ -17,6 +17,8 @@ Nada que o script escreve é digitado ou conferido pela IA.
 ## Campos
 
 `tipo` RF · RN · RNF · BG · REF · DOC · CHORE · TEST · SPIKE
+`cerimonia` Light · Standard · Strict
+`perfil` compacto · completo (Standard compacto dispensa campos de ensaio em correções pontuais)
 `valor` crítico · importante · desejável
 `urgencia` imediata · normal
 `esforco` duplo, humano/IA, cada um P · M · G · XG
@@ -69,6 +71,19 @@ consideradas" de design doc, RFC e MADR. O `finalizar` recusa sugestão sem as d
 
 O plano não é apenas um formulário de procedimento: ele é a **defesa de mérito técnico** da tarefa.
 O `mentor-agent` recusa planos que constroem do zero sem pesquisar o estado da arte ou sem exercer o dever de contrariar.
+
+**Mérito técnico proporcional ao risco (V5):** em correções localizadas com causa e solução demonstradas, utilize o perfil **Standard compacto** (`--cerimonia Standard --perfil compacto` ou `--compacto`). Este perfil preserva critérios verificáveis, regressões e rastreabilidade, mas dispensa ensaio teatral de alternativas ou preenchimento artificial de discordância. Decisões arquiteturais, novos motores ou mudanças estruturais continuam exigindo análise comparativa completa de alternativas e mérito.
+
+**Planejamento portátil:** quando houver plano prévio aprovado ou importado (`mentor plano registrar` / `mentor plano importar`), vincule com `mentor task vincular-plano <ID> <PLANO-ID>` para reutilizar critérios e referências sem duplicar a narrativa.
+
+### Preservação Integral do Plano Técnico (implementation_plan na Narrativa)
+
+Para evitar desperdício de tokens com reescrita ou perda de profundidade técnica por resumos artificiais, o plano de implementação técnico detalhado gerado na sessão de planejamento (`implementation_plan.md` ou artefato equivalente) deve ser transferido **integralmente** para a narrativa da tarefa (`docs-mentor/tarefas/abertas/<ID>.md`).
+
+1. **Cópia Sem Resumos:** Transfira todo o conteúdo de engenharia — detalhes por componente/arquivo (`[MODIFY]`, `[NEW]`), decisões de arquitetura, contratos e plano de verificação.
+2. **Normalização de Links:** Links markdown locais gerados por chat/IDE no formato `[nome](file:///...)` ou caminhos absolutos devem ser convertidos em código em linha (ex.: `` `caminho/arquivo.ext` ``) ou links relativos ao repositório. O linter `mentor verificar` valida links relativos e ignora código entre crases, garantindo zero falsos-positivos de link não resolvido.
+3. **Estrutura Complementar:** A narrativa retém as seções padrão do processo, mantendo o cabeçalho `# <ID> · <Título>` e exigindo a seção `## Desfecho e Validação Real` antes do Portão 2.
+4. **Promoção Automática:** Ao finalizar a tarefa (`mentor task finalizar`), o arquivo da narrativa é promovido diretamente para `docs-mentor/tarefas/concluidas/<ID>--estudo-humano.md`, preservando 100% da riqueza técnica para aprendizado e investigação de regressões sem trabalho manual do desenvolvedor.
 
 ### Campos Obrigatórios de Mérito no Plano
 
@@ -143,6 +158,12 @@ faz o teste falhar. Sem teste de mutação, a dispensa vira passe-livre e a audi
 
 ## Gates
 
+### Revisão incremental antes do fechamento
+
+Quando `contexto.auditoria.revisao_incremental_ativa` está ligado, `task nova` marca somente as tarefas novas como elegíveis. A política de rigor usa a classificação do projeto e o risco concreto da tarefa para decidir se REV, validação manual e gates bloqueiam ou apenas aconselham. Se REV for exigida, prepare `auditar preparar --tarefa <ID>` e entregue o dossiê a uma sessão revisora independente antes do Portão 2; `task finalizar` revalida a cobertura. Tarefa antiga sem a marca não ganha reprovação retroativa. Melhoria exclusiva do próprio Mentor dispensa REV, validação manual e gates do produto. Não existe migração do legado nem checkpoint automático por contagem.
+
+Revisão e gate têm evidências distintas: o parecer julga a mudança, e os gates comprovam seus comandos e insumos. Light sem conteúdo auditável segue somente checagens mecânicas; um rótulo Light não libera código funcional do produto. A exceção do Mentor depende do escopo dos arquivos, não do rótulo Light.
+
 Rodados por `task gate <ID> <gate>`, que executa o comando declarado no contexto e grava comando,
 saída e horário. **Declaração escrita à mão não vale como evidência.**
 
@@ -183,9 +204,10 @@ A validação manual é o portão humano que impede que alucinações ou suposi�
 | **Tipagem pura (`.d.ts`, `types.ts`)** | **NÃO (Dispensada)** | Verificada pelo gate de tipos (`tsc`). |
 | **Documentação pura (DOC)** | **NÃO (Dispensada)** | Sem impacto executável no produto. |
 | **Chores de Build/CI** | **NÃO (Dispensada)** | Sem impacto funcional direto no usuário. |
+| **Melhoria exclusiva do Mentor** | **NÃO (Dispensada)** | O próprio Mentor não exige ensaio humano, REV nem bateria de gates do produto para corrigir seu processo. |
 
 ### Postura Ativa da IA (Shift-Left)
-A IA é **proibida** de tentar fechar a tarefa ou pedir autorização para `push` sem antes apresentar o roteiro de testes:
+A IA é **proibida** de tentar fechar tarefa de produto sujeita à validação manual ou pedir autorização para `push` sem antes apresentar o roteiro de testes:
 ```markdown
 ### 🧪 Roteiro de Validação Manual (Obrigatório)
 Esta tarefa altera [UI / Persistência / Algoritmo]. A validação humana é obrigatória antes da finalização.
@@ -197,7 +219,7 @@ Esta tarefa altera [UI / Persistência / Algoritmo]. A validação humana é obr
 
 Por favor, valide e confirme com o resultado para registro do gate.
 ```
-A IA **nunca** finaliza nem faz push antes de receber essa confirmação escrita.
+A IA **nunca** finaliza nem faz push tarefa de produto sujeita a esse roteiro antes de receber a confirmação escrita.
 
 ### Travas no Fechamento
 O CLI recusa o `mentor task finalizar` se:
@@ -210,6 +232,7 @@ O CLI recusa o `mentor task finalizar` se:
 7. Em fatias de épico, a seção `plano.composicao` estiver incompleta ou com marcadores não preenchidos.
 8. `meio_de_validacao`: quando não automatizado, exige justificativa sem marcadores e existência real dos artefatos/catálogos declarados no disco.
 9. Restrições fundadoras reavaliadas (M3): reconfirmações exigem justificativa; na 3ª reconfirmação de uma restrição, exige-se ADR vinculada em `docs-mentor/adrs/`.
+10. A narrativa da tarefa (`.md`) não contiver a seção `## Desfecho` (ex.: `## Desfecho e Validação Real`) preenchida, documentando o comportamento real observado na validação, armadilhas técnicas/ambiente e desfecho dos gates.
 
 **Como registrar evidências e validação:**
 - Humano aprovou: `mentor task validar <ID> --aprovado --evidencia "<passos executados e resultado observado, min 30 chars>"` (ou `--casos <arquivo>` apontando catálogo conferido).
@@ -223,11 +246,12 @@ Gates locais do mentor devem ser rápidos para não desencorajar a execução co
 
 ## Fechamento
 
-A narrativa é o texto livre da tarefa, voltada para aprendizado humano, com teto expandido de 10.000
-caracteres (a IA consome o `.json` da tarefa concluída quando precisa apenas do resumo operacional):
-decisões tomadas · o que **não** foi feito e por quê · **armadilhas técnicas e aprendizados reais de
-testes manuais** (conflitos de porta/cache, persistência, peculiaridades de ambiente, falhas conceituais
-de UX). Resumo protocolar breve que omite armadilhas e histórico útil não é aceito. O resto o script grava.
+A narrativa é o texto livre da tarefa, voltada para estudo e aprendizado humano, com teto próprio em `.mentor/tetos.json`
+(o plano técnico integral não se trunca; a IA consome o `.json` da tarefa concluída quando precisa apenas do resumo operacional).
+Antes de solicitar o Portão 2, a IA **deve redigir ativamente a seção `## Desfecho e Validação Real`** na narrativa:
+decisões tomadas · o que **não** foi feito e por quê · armadilhas técnicas e aprendizados reais da execução,
+incluindo testes manuais quando aplicáveis (conflitos de porta/cache, concorrência, persistência, peculiaridades de ambiente,
+falhas conceituais de UX). Resumo protocolar breve que omite armadilhas e histórico útil não é aceito. A trava mecânica no CLI serve de garantia para impedir omissões. O resto o script grava.
 
 Duas listas separadas, e a separação é o que impede tarefa de gerar tarefa:
 

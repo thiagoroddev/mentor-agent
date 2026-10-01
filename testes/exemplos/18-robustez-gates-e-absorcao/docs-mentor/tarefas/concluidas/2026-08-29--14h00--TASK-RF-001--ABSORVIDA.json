@@ -1,10 +1,12 @@
 {
   "id": "TASK-RF-001",
+  "revisao_incremental_requerida": false,
   "tipo": "RF",
   "titulo": "Tarefa original",
   "fatia_de": null,
   "estado": "cancelada",
   "cerimonia": "Standard",
+  "perfil": null,
   "valor": "importante",
   "urgencia": "normal",
   "esforco": {
@@ -15,7 +17,7 @@
   "ordem_motivo": null,
   "fila": "reserva",
   "ordem": null,
-  "origem": "chat",
+  "origem": "titulo-autossuficiente",
   "requisitos": [],
   "sem_requisito_motivo": "teste de absorcao",
   "criada_em": "29/08/26 14:00",

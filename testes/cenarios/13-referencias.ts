@@ -15,8 +15,17 @@ export function rodar(): Cenario {
   confere(c, Array.isArray(refsIniciais) && refsIniciais.length === 0, 'init cria referencias.json vazio')
 
   // 2. Tarefa citando ID historico sem registro e recusada na origem e no verificar
+  dizQue(c, mentor(c, 'task', 'nova', '--tipo', 'RF', '--titulo', 'Tela de login',
+    '--esforco', 'P/P', '--origem', 'RF-012', '--requisitos', 'RF-012'),
+    'RF-012, que nao existe', 'nova recusa origem com ID externo nao registrado')
+  // Tarefa de versao anterior, criada antes da regra: o puxar e o verificar continuam pegando.
   mentor(c, 'task', 'nova', '--tipo', 'RF', '--titulo', 'Tela de login',
-    '--esforco', 'P/P', '--origem', 'RF-012', '--requisitos', 'RF-012')
+    '--esforco', 'P/P', '--origem', 'titulo-autossuficiente', '--sem-requisito', '--motivo', 'legado')
+  const legada = lerJson<Record<string, any>>(c, 'docs-mentor/tarefas/abertas/TASK-RF-001.json')
+  legada['origem'] = 'RF-012'
+  legada['requisitos'] = ['RF-012']
+  legada['sem_requisito_motivo'] = null
+  escrever(c, 'docs-mentor/tarefas/abertas/TASK-RF-001.json', JSON.stringify(legada, null, 2))
 
   const puxarSemRef = mentor(c, 'task', 'puxar', 'TASK-RF-001')
   dizQue(c, puxarSemRef, 'RF-012, que nao existe', 'puxar recusa origem com ID externo nao registrado')

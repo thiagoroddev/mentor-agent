@@ -4,11 +4,13 @@ carrega_quando: revisar código, ou o humano pedir revisão geral
 
 # Processo · Revisão
 
-Revisão julga **o código**, nunca quem escreveu. E revisão que só aprova não é revisão: é assinatura.
+Revisão julga **a mudança e seus critérios**, nunca quem escreveu. Um parecer sem achados é legítimo quando declara o escopo examinado.
 
 ## Quando é obrigatória
 
-Toda tarefa Standard e Strict, antes do portão 2. Light não tem revisão formal.
+Somente tarefa criada após a ativação e cuja política contextual classifique a mudança como exigindo REV, antes do portão 2. Protótipo pessoal dispensa REV rotineira; segurança, autorização, migração e persistência com dado pessoal atual continuam sensíveis. O rótulo Light não altera a avaliação de risco. Tarefas anteriores continuam no legado, sem transição ou revisão retroativa.
+
+Melhoria exclusiva do próprio Mentor, limitada a `.mentor/` e seus registros não normativos em `docs-mentor/`, não entra nessa exigência. O fluxo REV serve para avaliar mudanças do produto; aplicar o mesmo rito ao mecanismo de auditoria cria recursão de processo. Mudança mista com código ou requisito normativo do produto segue a regra normal.
 
 ## Dimensões
 
@@ -36,40 +38,18 @@ duas existem porque as duas foram medidas em uso. Não troque uma pela outra.
 
 ## O auditor: quem escreve não aprova
 
-**Contexto compartilhado propaga viés.** Quem decidiu usar um `useEffect` para derivar estado tem
-exatamente o mesmo modelo mental na hora de revisar aquele `useEffect`. Por isso a auditoria roda em
-**sessão nova**, por um agente com um único poder: **reprovar**.
-
-**Cadência, não toda tarefa.** A cada N tarefas concluídas com diff auditável
-(`contexto.auditoria.cadencia_em_tarefas`, 10 por padrão) o `finalizar` e o `doctor` avisam. Auditar
-toda tarefa dobraria o custo de cada uma, e processo caro é processo abandonado. Com N = 1, vira
-revisão por PR.
-
-**A unidade é a tarefa.** Cada tarefa leva o próprio diff: os commits com o ID dela no título, ou,
-antes do commit, os arquivos do `plano.muda` que mudaram desde o `commit_base`. Registro do mentor,
-vista gerada, nota, pacote intacto e arquivo marcado `linguist-generated` no `.gitattributes` ficam
-fora. Tarefa sem nada auditável, ou que só atualiza o pacote, entra no lote listada e não conta.
-
-⚠️ **Tamanho não é cadência.** Até a 0.7.0 a cadência também contava caracteres de diff. Medido em
-campo: 115 mil caracteres com 3 tarefas, 87% de fixture gerada e de registro do próprio mentor. Hoje o
-tamanho só decide como o dossiê se divide: o `preparar` leva as tarefas que cabem no teto, e as outras
-esperam o próximo.
+**Contexto compartilhado propaga viés.** A revisão ocorre em sessão nova. O revisor recebe o dossiê curto, examina critérios, delta final, contratos e evidências indicadas; pode pedir contexto adicional por caminho e pergunta. A sessão é declarada em `sessao_revisora`, sem tratar essa declaração como prova técnica de independência.
 
 ```
-mentor auditar preparar          monta o dossiê do lote
-mentor auditar registrar AUD-001 valida e grava o veredito
-mentor auditar resolver AUD-001-B01 --destino ... --ref "..."
+mentor auditar preparar --tarefa TASK-...   captura a mudança candidata e gera REV-NNN
+mentor auditar contexto REV-NNN --arquivo caminho --motivo "pergunta"
+mentor auditar registrar REV-NNN           valida parecer, partes e conteúdo ainda atual
+mentor auditar resolver REV-NNN-B01 --destino ... --ref "..."
 ```
 
-**O `preparar` é o que fecha o escopo.** O dossiê traz o registro e o diff de cada tarefa e os
-requisitos citados — **e nada mais**. Commit sem tarefa e trabalho não commitado de outra tarefa
-aparecem como fato, só pelo nome. Não é promessa de comportamento: é o único material que a sessão
-nova recebe. As cinco regras do auditor e os três níveis vêm escritos dentro do próprio dossiê, para
-não existirem em duas versões que divergem.
+O pacote inicial (índice e primeira parte) tem até 30 mil caracteres. Partes excedentes são nomeadas e examinadas sob demanda; aprovação exige que todas as partes necessárias estejam marcadas como lidas. O revisor informa `APROVADO`, `APROVADO COM RESSALVAS` ou `REPROVADO`, com limitações e achados concretos. `APROVADO COM RESSALVAS` mantém a cobertura parcial; mudança corrigida precisa de novo `REV` que referencia o anterior.
 
-⚠️ **Por que o escopo é fechado.** A calibração *"auditoria que aprova tudo está quebrada"* empurra a
-achar alguma coisa. Solta no repositório inteiro, ela vira máquina de gerar trabalho — foi assim que o
-pacote anterior morreu. Presa ao diff, ela acha o que importa.
+O parecer vale para conteúdo, critérios e contratos registrados. Alteração posterior relevante vence a cobertura; `task finalizar` e o pre-push verificam novamente quando REV é exigida. Os gates continuam prova separada, não são executados pelo revisor. `auditar preparar` sem flags só mostra os modos; `--lote-legado` permanece disponível apenas por escolha explícita. Não há checkpoint automático nem migração das tarefas legadas.
 
 **E o auditor não abre tarefa.** O `registrar` recusa achado que já venha com destino. Achado
 `bloqueia` sem destino conta como bloqueio no `doctor` até você decidir, no `resolver`, se vira tarefa,

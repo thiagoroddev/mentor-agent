@@ -13,7 +13,13 @@
     "uma_frase": null,
     "repositorio": null,
     "idioma_do_codigo": null,
-    "licenca": null
+    "licenca": null,
+    "classificacao": {
+      "finalidade": null,
+      "maturidade": null,
+      "visibilidade_codigo": null,
+      "uso_atual": null
+    }
   },
   "estado": {
     "fase": null,
@@ -95,6 +101,12 @@
       "N3"
     ],
     "promovido_por": {
+      "dado_pessoal": null,
+      "cobranca_ou_dinheiro": null,
+      "uso_por_terceiros": null,
+      "decisao_automatizada_sobre_pessoa": null
+    },
+    "riscos": {
       "dado_pessoal": null,
       "cobranca_ou_dinheiro": null,
       "uso_por_terceiros": null,
@@ -425,8 +437,9 @@
     }
   },
   "auditoria": {
+    "revisao_incremental_ativa": false,
     "cadencia_em_tarefas": 10,
-    "cadencia_nota": "A cada N tarefas concluidas com diff auditavel, 'mentor auditar preparar' monta o dossie do lote. Cada tarefa leva o proprio diff (os commits com o ID dela no titulo); registros, notas e atualizacao do pacote nao contam. O tamanho so decide como o dossie se divide. O auditor le o dossie: nunca o repositorio.",
+    "cadencia_nota": "Com revisao_incremental_ativa, task nova marca tarefas prospectivas e a revisão por conteúdo ocorre antes de finalizar e publicar. O lote AUD anterior permanece disponível apenas por auditar preparar --lote-legado; checkpoint e transição pertencem à Fatia 3.",
     "ultima_em": null,
     "ultima_na_tarefa": null,
     "ultimo_commit": null,

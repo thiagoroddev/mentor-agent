@@ -54,10 +54,9 @@ export function rodar(): Cenario {
   confere(c, puxarValido.codigo === 0, 'puxar aceita origem com INV-1 valido')
 
   // 6. Tarefa com origem INV-99 inexistente é recusada pelo puxar
-  mentor(c, 'task', 'nova', '--tipo', 'BG', '--titulo', 'Bug sem invariante',
+  const novaInvalida = mentor(c, 'task', 'nova', '--tipo', 'BG', '--titulo', 'Bug sem invariante',
     '--esforco', 'P/P', '--origem', 'INV-99')
-  const puxarInvalido = mentor(c, 'task', 'puxar', 'TASK-BG-001')
-  dizQue(c, puxarInvalido, 'INV-99, que nao existe', 'puxar recusa origem com INV-99 inexistente')
+  dizQue(c, novaInvalida, 'INV-99, que nao existe', 'nova recusa origem com INV-99 inexistente')
 
   // 7. verificar aprova projeto
   confere(c, mentor(c, 'verificar').codigo === 0, 'verificar aprova com invariantes e glossario')

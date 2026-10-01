@@ -56,7 +56,7 @@ export function rodar(): Cenario {
     }
     escrever(c, `docs-mentor/tarefas/abertas/${id}.json`, JSON.stringify(t, null, 2))
     escrever(c, `docs-mentor/tarefas/abertas/${id}.md`,
-      '# t\n\n## Decisoes tomadas\na\n\n## O que nao foi feito, e por que\nb\n\n## Testes de descoberta\nNenhuma.\n\n## Aprendizados\nNada.\n')
+      '# t\n\n## Decisoes tomadas\na\n\n## O que nao foi feito, e por que\nb\n\n## Testes de descoberta\nNenhuma.\n\n## Aprendizados\nNada.\n\n## Desfecho\nGates verdes; nada fora do previsto.\n')
     mentor(c, 'task', 'gate', id, 'testes')
     return mentor(c, 'task', 'finalizar', id)
   }
@@ -68,7 +68,7 @@ export function rodar(): Cenario {
     'fixtures/dados.json': fixture,
   }, ['src/a.ts - soma', 'fixtures/dados.json - fixture gerada por script'])
   dizQue(c, f1, 'TASK-RF-001 concluida', 'fecha a tarefa com fixture gerada')
-  confere(c, fixture.length > 80_000 && !f1.saida.includes('Cadencia de auditoria atingida'),
+  confere(c, fixture.length > 80_000 && !f1.saida.includes('Cadencia de auditoria legada atingida'),
     'fixture de mais de 80 mil caracteres nao dispara nada: a cadencia conta tarefas')
   commit('feat(TASK-RF-001): somar parcelas')
 
@@ -77,7 +77,7 @@ export function rodar(): Cenario {
     'docs-mentor/rascunhos/ideia.md': '# Ideia\n\nUma ideia.\n',
   }, ['docs-mentor/rascunhos/ideia.md - a ideia'])
   dizQue(c, f2, 'TASK-DOC-001 concluida', 'fecha a tarefa de documentacao')
-  confere(c, !f2.saida.includes('Cadencia de auditoria atingida'), 'tarefa sem diff auditavel nao conta para a cadencia')
+  confere(c, !f2.saida.includes('Cadencia de auditoria legada atingida'), 'tarefa sem diff auditavel nao conta para a cadencia')
   commit('docs(TASK-DOC-001): anotar ideia')
 
   // --- 2b. atualizacao do pacote: `.mentor/` intacto pelo manifesto novo, e so' o package.json fora dele
@@ -91,7 +91,7 @@ export function rodar(): Cenario {
   }, ['package.json - sobe a versao do mentor-agent'])
   dizQue(c, f3, 'TASK-CHORE-001 concluida',
     'o finalizar nao exige declarar arquivo do pacote igual ao manifesto (a mesma regra do hook e da auditoria)')
-  confere(c, !f3.saida.includes('Cadencia de auditoria atingida'), 'atualizacao do pacote nao conta para a cadencia')
+  confere(c, !f3.saida.includes('Cadencia de auditoria legada atingida'), 'atualizacao do pacote nao conta para a cadencia')
   commit('chore(TASK-CHORE-001): atualizar o mentor-agent')
 
   // --- 4a. commit sem tarefa tocando codigo, antes da proxima tarefa comecar
@@ -104,7 +104,7 @@ export function rodar(): Cenario {
   const f4 = fechar('RF', 'TASK-RF-002', 'Subtrair parcelas', {
     'src/b.ts': 'export const b = (x: number) => x - 1\n',
   }, ['src/b.ts - subtracao'])
-  dizQue(c, f4, 'Cadencia de auditoria atingida: 2 tarefa(s) com codigo', 'o finalizar avisa ao bater a cadencia')
+  dizQue(c, f4, 'Cadencia de auditoria legada atingida: 2 tarefa(s) com codigo', 'o finalizar avisa ao bater a cadencia')
   escrever(c, 'src/outra.ts', 'export const SEGREDO_DE_OUTRA_TAREFA = 1\n')
 
   const doc = mentor(c, 'doctor')
@@ -114,7 +114,7 @@ export function rodar(): Cenario {
   confere(c, !doc.saida.includes('fixtures/dados.json'), 'a fixture gerada nao aparece entre os maiores arquivos')
 
   // --- 4. o dossie
-  dizQue(c, mentor(c, 'auditar', 'preparar'), '4 tarefa(s) no lote', 'as quatro concluidas entram no lote')
+  dizQue(c, mentor(c, 'auditar', 'preparar', '--lote-legado'), '4 tarefa(s) no lote', 'as quatro concluidas entram no lote')
   const dossie = ler(c, 'docs-mentor/auditorias/AUD-001-dossie.md')
   confere(c, dossie.includes('+export const a') && dossie.includes('feat(TASK-RF-001): somar parcelas'),
     'o commit com o ID no titulo entra no diff da tarefa')
@@ -157,7 +157,7 @@ export function rodar(): Cenario {
   fechar('RF', 'TASK-RF-004', 'Segundo modulo grande', { 'src/grande2.ts': grande('dois') }, ['src/grande2.ts - modulo grande'])
   commit('feat(TASK-RF-004): segundo modulo grande')
 
-  const p2 = mentor(c, 'auditar', 'preparar')
+  const p2 = mentor(c, 'auditar', 'preparar', '--lote-legado')
   dizQue(c, p2, 'AUD-002 preparada: 1 tarefa(s) no lote', 'o primeiro preparar leva so o que cabe no teto')
   dizQue(c, p2, 'Ficaram 1 tarefa(s) para a proxima', 'e diz o que ficou')
   const aud2 = lerJson<Record<string, any>>(c, 'docs-mentor/auditorias/AUD-002.json')
@@ -169,9 +169,30 @@ export function rodar(): Cenario {
   aud2.nao_verificado = ['nao conferi a performance do modulo grande']
   escrever(c, 'docs-mentor/auditorias/AUD-002.json', JSON.stringify(aud2, null, 2))
   mentor(c, 'auditar', 'registrar', 'AUD-002')
-  dizQue(c, mentor(c, 'auditar', 'preparar'), 'AUD-003 preparada: 1 tarefa(s) no lote', 'o segundo preparar leva a sobra')
+  dizQue(c, mentor(c, 'auditar', 'preparar', '--lote-legado'), 'AUD-003 preparada: 1 tarefa(s) no lote', 'o segundo preparar leva a sobra')
   confere(c, ler(c, 'docs-mentor/auditorias/AUD-003-dossie.md').includes('+export const dois0 = 0'),
     'a sobra chega inteira no dossie seguinte')
+
+  // --- 6. o teto e' do dossie montado: tres diffs que somam menos que o teto, mas com regras,
+  // planos e fatos o dossie passaria dele. Ate' a 0.12.0 os tres entravam e o aviso mentia.
+  const aud3 = lerJson<Record<string, any>>(c, 'docs-mentor/auditorias/AUD-003.json')
+  aud3.veredito = 'APROVADO'
+  aud3.nao_verificado = ['nada a declarar']
+  escrever(c, 'docs-mentor/auditorias/AUD-003.json', JSON.stringify(aud3, null, 2))
+  mentor(c, 'auditar', 'registrar', 'AUD-003')
+  const medio = (nome: string) => Array.from({ length: 1350 }, (_, i) => `export const ${nome}${i} = ${i}`).join('\n') + '\n'
+  for (const [n, nome] of [[5, 'cinco'], [6, 'seis'], [7, 'sete']] as const) {
+    fechar('RF', `TASK-RF-00${n}`, `Modulo ${nome}`, { [`src/${nome}.ts`]: medio(nome) }, [`src/${nome}.ts - modulo medio`])
+    commit(`feat(TASK-RF-00${n}): modulo ${nome}`)
+  }
+  const somaDosDiffs = ['cinco', 'seis', 'sete'].reduce((s, nome) => s + medio(nome).length, 0)
+  const p4 = mentor(c, 'auditar', 'preparar', '--lote-legado')
+  const aud4 = lerJson<Record<string, any>>(c, 'docs-mentor/auditorias/AUD-004.json')
+  confere(c, somaDosDiffs < 120_000 && aud4.lote.length < 3,
+    `o teto conta o dossie inteiro: diffs somam ${somaDosDiffs}, e o lote nao leva as tres (levou ${aud4.lote.length})`)
+  confere(c, ler(c, 'docs-mentor/auditorias/AUD-004-dossie.md').length <= 120_000,
+    'o dossie de mais de uma tarefa nao passa do teto que o aviso anuncia')
+  dizQue(c, p4, 'o dossie montado tem', 'o aviso diz o tamanho do dossie, nao so o dos diffs')
 
   fecharTemporario(c)
   return c

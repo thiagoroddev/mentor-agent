@@ -63,7 +63,7 @@ export function rodar(): Cenario {
   }
   escrever(c, 'docs-mentor/tarefas/abertas/TASK-RF-001.json', JSON.stringify(t1, null, 2))
   escrever(c, 'docs-mentor/tarefas/abertas/TASK-RF-001.md',
-    '# TASK-RF-001\n\n## Decisoes tomadas\nLogin simples.\n\n## O que nao foi feito, e por que\nNada.\n\n## Testes de descoberta\nNenhum.\n\n## Aprendizados\nNada.\n')
+    '# TASK-RF-001\n\n## Decisoes tomadas\nLogin simples.\n\n## O que nao foi feito, e por que\nNada.\n\n## Testes de descoberta\nNenhum.\n\n## Aprendizados\nNada.\n\n## Desfecho\nGates verdes; nada fora do previsto.\n')
 
   mentor(c, 'task', 'gate', 'TASK-RF-001', 'testes')
 
@@ -96,7 +96,7 @@ export function rodar(): Cenario {
   mentor(c, 'task', 'gate', 'TASK-RF-001', 'testes')
   const fimOk1 = mentor(c, 'task', 'finalizar', 'TASK-RF-001')
   dizQue(c, fimOk1, 'TASK-RF-001 concluida', 'tarefa finaliza com sucesso apos validacao e plano alinhado')
-  confere(c, !fimOk1.saida.includes('Cadencia de auditoria atingida'),
+  confere(c, !fimOk1.saida.includes('Cadencia de auditoria legada atingida'),
     'uma tarefa nao bate a cadencia de 2, por maior que seja o diff: caracteres nao disparam mais')
   commit('TASK-RF-001')
 
@@ -134,14 +134,14 @@ export function rodar(): Cenario {
   }
   escrever(c, 'docs-mentor/tarefas/abertas/TASK-RN-001.json', JSON.stringify(t2, null, 2))
   escrever(c, 'docs-mentor/tarefas/abertas/TASK-RN-001.md',
-    '# TASK-RN-001\n\n## Decisoes tomadas\nHaversine padrao.\n\n## O que nao foi feito, e por que\nNada.\n\n## Testes de descoberta\nNenhum.\n\n## Aprendizados\nNada.\n')
+    '# TASK-RN-001\n\n## Decisoes tomadas\nHaversine padrao.\n\n## O que nao foi feito, e por que\nNada.\n\n## Testes de descoberta\nNenhum.\n\n## Aprendizados\nNada.\n\n## Desfecho\nGates verdes; nada fora do previsto.\n')
 
   mentor(c, 'task', 'gate', 'TASK-RN-001', 'testes')
 
   // Finaliza com atalho --validado-por-humano: a segunda tarefa com codigo bate a cadencia de 2
   const fimOk2 = mentor(c, 'task', 'finalizar', 'TASK-RN-001', '--validado-por-humano', 'Calculo de Haversine conferido com tabela geodesica')
   dizQue(c, fimOk2, 'TASK-RN-001 concluida', 'finaliza com atalho --validado-por-humano')
-  dizQue(c, fimOk2, 'Cadencia de auditoria atingida: 2 tarefa(s) com codigo', 'dispara alerta ao bater a cadencia em tarefas')
+  dizQue(c, fimOk2, 'Cadencia de auditoria legada atingida: 2 tarefa(s) com codigo', 'dispara alerta ao bater a cadencia em tarefas')
   commit('TASK-RN-001')
 
   // --- 4. Doctor reportando cadência por tarefas e o campo obsoleto
@@ -150,7 +150,7 @@ export function rodar(): Cenario {
   dizQue(c, doc, 'cadencia_em_caracteres nao e mais usado', 'doctor avisa que o campo de caracteres nao dispara mais nada')
 
   // --- 5. Dossiê de Auditoria & Satisfação da Regra 4
-  mentor(c, 'auditar', 'preparar')
+  mentor(c, 'auditar', 'preparar', '--lote-legado')
   const dossie = ler(c, 'docs-mentor/auditorias/AUD-001-dossie.md')
   confere(c, dossie.includes('TASK-RF-001') && dossie.includes('TASK-RN-001'), 'dossie inclui as duas tarefas')
   confere(c, dossie.includes('Interface conferida no navegador Chrome 120'), 'tabela de gates mostra a evidencia da validacao humana')

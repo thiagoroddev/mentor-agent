@@ -1,10 +1,12 @@
 {
   "id": "TASK-CHORE-001",
+  "revisao_incremental_requerida": false,
   "tipo": "CHORE",
   "titulo": "Trabalho que fecha",
   "fatia_de": null,
   "estado": "concluida",
   "cerimonia": "Standard",
+  "perfil": null,
   "valor": "importante",
   "urgencia": "normal",
   "esforco": {
@@ -20,7 +22,7 @@
   "sem_requisito_motivo": null,
   "criada_em": "29/08/26 14:00",
   "iniciada_em": "29/08/26 14:00",
-  "commit_base": "dd27e8b8fb7b6e6079a23d66032bdff6f3f9bf2d",
+  "commit_base": "e9d3fcbc49ad9ef76986d634379b102c42262dc0",
   "concluida_em": "29/08/26 14:00",
   "plano": {
     "muda": [
@@ -45,12 +47,15 @@
       "codigo_saida": 0,
       "saida": "\"5 passed\"",
       "executado_em": "29/08/26 14:00",
-      "commit_execucao": "dd27e8b8fb7b6e6079a23d66032bdff6f3f9bf2d",
-      "arvore_hash": "d27de314c1ee85ffd55ca46af77bf7c38d8f0eeb",
+      "commit_execucao": "e9d3fcbc49ad9ef76986d634379b102c42262dc0",
+      "arvore_hash": "2c5318595d5a7d7fdab69cc26dec3848369f7f18",
       "arvore_sem_documentos": true,
       "evidencia_url": null,
       "motivo": null,
       "ressalva": null,
+      "log_ref": "docs-mentor/.evidencias/logs/TASK-CHORE-001-testes-1790895940115.log",
+      "chave_cache": "6bc3c1f5aa3e630316c379abe7d9699331e37f260076a4cebfc1ee9751790c78",
+      "digest_insumos": "2c5318595d5a7d7fdab69cc26dec3848369f7f18",
       "vermelho_dispensado": null
     }
   },
@@ -71,5 +76,5 @@
   "riscos_aceitos": [],
   "absorvida_por": null,
   "cancelamento_motivo": null,
-  "narrativa": "2026-08-29--14h00--TASK-CHORE-001.md"
+  "narrativa": "2026-08-29--14h00--TASK-CHORE-001--estudo-humano.md"
 }

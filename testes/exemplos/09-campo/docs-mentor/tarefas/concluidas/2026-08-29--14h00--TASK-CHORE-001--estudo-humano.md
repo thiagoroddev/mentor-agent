@@ -11,3 +11,6 @@ Nenhuma.
 
 ## Aprendizados
 Nada.
+
+## Desfecho
+Gates verdes; nada fora do previsto.

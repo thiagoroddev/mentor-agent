@@ -21,7 +21,6 @@ export function rodar(): Cenario {
   // Duas recusas de propósito: e' delas que sai a medicao mais util do relatorio.
   mentor(c, 'task', 'nova', '--tipo', 'BG', '--titulo', 'Origem inventada',
     '--esforco', 'P/P', '--origem', 'RF-99')
-  mentor(c, 'task', 'puxar', 'TASK-BG-001')
   mentor(c, 'task', 'nova', '--tipo', 'RF', '--titulo', 'Epico grande',
     '--esforco', 'XG/XG', '--origem', 'titulo-autossuficiente',
     '--sem-requisito', '--motivo', 'epico para teste de recusas')
@@ -44,7 +43,7 @@ export function rodar(): Cenario {
   t['achados'] = [{ classe: 3, descricao: 'consulta sem indice', destino: 'divida_tecnica', ref: 'DT-1' }]
   escrever(c, 'docs-mentor/tarefas/abertas/TASK-CHORE-001.json', JSON.stringify(t, null, 2))
   escrever(c, 'docs-mentor/tarefas/abertas/TASK-CHORE-001.md',
-    '# t\n\n## Decisoes tomadas\na\n\n## O que nao foi feito, e por que\nb\n\n## Testes de descoberta\nNenhuma.\n\n## Aprendizados\nNada.\n')
+    '# t\n\n## Decisoes tomadas\na\n\n## O que nao foi feito, e por que\nb\n\n## Testes de descoberta\nNenhuma.\n\n## Aprendizados\nNada.\n\n## Desfecho\nGates verdes; nada fora do previsto.\n')
   ctx['qualidade'].metodo_de_teste = 'teste-depois'
   ctx['qualidade'].metodo_motivo = 'projeto de teste'
   escrever(c, 'docs-mentor/contexto.json', JSON.stringify(ctx, null, 2))
@@ -55,7 +54,7 @@ export function rodar(): Cenario {
   dizQue(c, saida, 'nao cria tarefa em lugar nenhum', 'o comando declara que nao cria tarefa')
 
   const r = ler(c, 'docs-mentor/relatorio-de-campo.md')
-  confere(c, r.includes('mentor-agent 0.12.0'), 'o relatorio atribui tudo a uma versao do pacote')
+  confere(c, r.includes('mentor-agent 0.13.0'), 'o relatorio atribui tudo a uma versao do pacote')
   // A versao saia de `join(raizPacote(), 'package.json')`, que instalado num projeto resolve para o
   // package.json DO PROJETO: o relatorio publicava a versao do app. Ancorar achado numa versao e a
   // unica coisa que este relatorio existe para fazer.

@@ -4,6 +4,56 @@ Todas as mudanças notáveis no **mentor-agent** são documentadas neste arquivo
 
 O formato baseia-se em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [0.13.0] - 2026-10-01
+
+Plano em `PLANO-v0.13.0.md`. Leva ao pacote as 20 correcoes feitas como patch local no piloto entre
+15/09 e 30/09/2026 (29 arquivos de `.mentor/`), sobe os tetos que o uso real estourou e fecha cinco
+anotacoes simples do relatorio de campo. O carregamento igual entre Codex, Claude Code e Antigravity
+fica para a 0.14.0 (`PLANO-v0.14.0.md`).
+
+### Adicionado
+- **Revisao incremental por tarefa** (`revisao-incremental.ts`, `cobertura-incremental.ts`): `auditar preparar --tarefa`, `auditar contexto` e `auditar registrar REV-NNN`, com parecer por conteudo, partes nomeadas e cobertura conferida no `finalizar` e no pre-push. O lote antigo segue em `auditar preparar --lote-legado`.
+- **Politica de rigor pelo contexto** (`politica-rigor.ts`): `projeto.classificacao` e `rigor.riscos` decidem se REV, validacao manual e gates bloqueiam ou so' avisam. Prototipo pessoal fica enxuto; risco concreto na mudanca mantem os bloqueios.
+- **Executor unico de gates** (`executor-gates.ts`): `task gate` e `task gates <ID>` gravam comando, codigo de saida, resumo e log; reutilizam a execucao quando os insumos nao mudaram (`fingerprint.ts`, hash semantico que ignora contagens e lembretes do `contexto.json`). `MENTOR_SEM_CACHE=1` forca a execucao.
+- **Patches locais reconhecidos** (`cmd-patches.ts`): `mentor patch registrar <arquivo> --tarefa <ID>` grava o digest da correcao local; o `verificar` aceita o patch registrado e acusa o que mudou alem dele.
+- **Planejamento portatil** (`cmd-plano.ts`): `plano registrar`, `plano importar` e `task vincular-plano`; perfil Standard compacto para correcao localizada.
+- **Coordenadora de epico fecha pelas fatias**: o `finalizar` reconhece a coordenadora (`plano_do_epico` e fatias diretas) e fecha quando todas estao encerradas, sem exigir gates nem diff proprios.
+- **Narrativa de estudo humano**: o `finalizar` exige `## Desfecho` preenchido; a narrativa vira `<ID>--estudo-humano.md` e preserva o plano tecnico integral.
+- Nucleo: merito tecnico proporcional ao risco, validacao manual proporcional, sugestoes de teste em prototipo, melhoria do proprio mentor sem REV nem gates do produto.
+- Testes: `testes/regressoes-de-campo.test.ts` (as regressoes do piloto, sem reescrita) e `testes/melhorias-0-13.test.ts`, rodados pelo adaptador `testes/vitest-local.ts` no cenario 31.
+
+### Corrigido
+- `task iniciar` apagava o plano aprovado de tarefa sem `plano_ref`.
+- O pre-push exigia REV quando so' o ref remoto ainda tinha a revisao ligada.
+- `pronto-para-merge` confundia tarefa criada com entregue; marca `(plano)` no PR de planejamento.
+- `verificar` subia ate' a raiz do disco ao conferir maiusculas; `resolverPlano` lancava `EISDIR` em diretorio.
+- `contexto.json` deixou de ser regravado sem mudanca real (`_meta.atualizado_em` e lembretes); o `doctor` e' so' leitura.
+- Pre-push tolera commit enviado diferente do HEAD e worktree secundaria; barra arvore suja em codigo.
+- **Achados no porte** (presentes no piloto, corrigidos aqui):
+  - `task gate --vermelho-dispensado` em gate nunca executado nao gravava nada e dizia que tinha gravado; agora executa, exige verde e grava a dispensa.
+  - Arquivo de evidencia vazio e gate de testes que roda sem imprimir nada passavam como `APROVADO`; voltam a ser `INVÁLIDO como gate`. Gate calado por convencao (`tsc --noEmit`, eslint) continua aprovado.
+  - O hash dos insumos falhava calado com o projeto numa subpasta do repositorio (monorepo): o `contexto.json` entrava com as contagens e toda contagem nova invalidava o gate.
+  - Com o `contexto.json` sempre no diff, toda tarefa (inclusive so' de documentacao) contava para a cadencia da auditoria; agora ele entra quando o `plano.muda` o declara.
+  - Os logs dos gates (`docs-mentor/.evidencias/logs/`) entravam no git de quem nao ignorava `logs` por acaso; a pasta ganha `.gitignore` proprio e a auditoria a trata como registro.
+  - Voltam a linha "vermelho registrado, agora implemente", o resumo "N gate(s) reprovado(s)" e o codigo de saida na linha de cada gate.
+- **Anotacoes simples do relatorio de campo:**
+  - `task nova` recusa (e grava a recusa de) origem que nao resolve, com a mesma regra do `puxar`.
+  - O teto do dossie da auditoria mede o dossie montado, e o aviso diz o tamanho real.
+  - Caminho citado no meio da linha do `plano.muda` conta como declarado.
+  - A 3a reconfirmacao de restricao fundadora exige ADR que exista em `docs-mentor/arquitetura/ADR/`, com o ID como palavra inteira e citando a restricao; o `doctor` usa a mesma regra.
+  - Documento de planejamento (`docs-mentor/`, `.md`) nao conta como risco de persistencia.
+
+### Mudado
+- Tetos (`tetos.json`), medidos no piloto x 1,3: `nucleo.md` 15.100, `processos/tarefa.md` 27.200, `contexto.md` 18.700, narrativas concluidas 56.300.
+
+### Para atualizar
+- Escreva `## Desfecho` na narrativa das tarefas abertas antes do `finalizar`.
+- Mudar o `contexto.json` (fora das contagens) invalida a evidencia dos gates: rode o gate de novo.
+- `auditar preparar` sem flags so' lista os modos; o lote antigo e' `--lote-legado`.
+- Excecoes de teto do projeto que o pacote agora cobre podem sair de `docs-mentor/tetos.json`: excecao do projeto vence a regra do pacote, inclusive quando e' menor.
+
+---
+
 ## [0.12.0] - 2026-09-14
 
 Plano em `PLANO-MELHORIAS-PENDENTES.md`, a partir de 7 anotações de campo (12/09 a 14/09/2026). Consolida Frentes A a G (v0.11.0 e v0.12.0).

@@ -35,9 +35,13 @@ explícita**. Nunca deduza intenção. **Termina, apresenta, aguarda.**
 - A tarefa termina aberta e espera ali. Escrever o registro de conclusão antes do portão 2
   transforma a pergunta em aviso: o humano recebe fato consumado com aparência de consulta.
 - **Autorização vale por ato, nunca por sessão.** Aprovar o plano não autoriza fechar.
-- **Mérito técnico obrigatório no Portão 1:** O plano não avalia apenas a forma: exige nome canônico (`problema_canonico`), exercício explícito de discordância (`discordancia`), estado da arte e custo de oportunidade para motores ou esforço G/XG, e três réguas (piso, teto, padrão) para spikes. O silêncio sobre alternativas de mercado invalida a aprovação. **Solução sugerida pelo humano é hipótese, não especificação:** o plano guarda o pedido original e compara ao menos duas práticas profissionais (`alternativas_profissionais`).
-- **Validação manual ativa antes do fechamento:** Em tarefas que alteram UI/Telas, Persistência/Esquema, Cálculos/Algoritmos ou Spikes, a IA é **proibida de pedir fechamento (Portão 2) ou push (Portão 3) sem antes apresentar o roteiro de testes manuais e aguardar a confirmação explícita do humano**. Finalizar sem registrar evidência no gate `validacao_manual` quebra a auditoria (Regra 4 e Bloqueios AUD-001-B01/B02/B04).
-- O `push` é sempre pedido à parte: é o único ato que sai da máquina e alcança outras pessoas.
+- **Mérito técnico proporcional ao risco no Portão 1:** O plano avalia forma e substância. Exige alternativas profissionais (`alternativas_profissionais`), nome canônico e impacto quando há decisão arquitetural real, novas dependências ou esforço G/XG; dispensa ensaios teatrais de mercado para correções localizadas com causa e solução demonstradas. Solução sugerida pelo humano é hipótese, não especificação; quando o humano pede implementação de plano aprovado/identificado, isso autoriza a execução do escopo indicado sem confirmação redundante.
+- **Validação manual proporcional antes do fechamento:** O contexto define quando a validação bloqueia. Em perfil estrito, tarefas de produto que alteram UI/Telas, Persistência/Esquema, Cálculos/Algoritmos ou Spikes exigem roteiro e confirmação humana. Em protótipo pessoal, trabalho rotineiro pode seguir com aviso; risco concreto mantém a exigência.
+- **Sugestões de Validação Manual em Protótipo (Sem Bloqueio):** Em projetos com maturidade de protótipo, onde recursos, telas e regras são novos e suscetíveis a ajustes e bugs de integração, o Mentor e a IA devem formular e orientar ativamente sugestões práticas de testes manuais ("o que já está pronto para testar", passos recomendados e pontos de atenção). Essas orientações apoiam o operador a verificar visual e funcionalmente a entrega como usuário, com caráter estritamente consultivo e sem bloquear o fechamento da tarefa quando a validação humana formal não for exigida ou for dispensada.
+- **Melhoria do próprio mentor:** correção restrita a `.mentor/` e a seus registros em `docs-mentor/` (patch local e relatório de campo) não exige validação manual, REV nem execução ou registro dos gates do produto. Testes pontuais podem ser usados para investigar um defeito; a confirmação contínua vem do uso natural e das correções posteriores. Se a mudança tocar código do produto, aplicam-se as regras normais de validação.
+- **Narrativa de Estudo Humano e Desfecho:** Antes do Portão 2, a narrativa da tarefa deve conter a seção `## Desfecho` (ex.: `## Desfecho e Validação Real`), documentando o comportamento observado, armadilhas técnicas/de ambiente (concorrência, cache, persistência, UX) e o resultado dos gates quando aplicáveis. O encerramento no CLI é bloqueado se a seção estiver ausente.
+- **Preservação Integral do Plano Técnico:** Todo o plano detalhado de engenharia elaborado no Portão 1 (`implementation_plan`) deve ser transferido integralmente e sem resumos para a narrativa da tarefa (`.md`). Links para arquivos locais devem usar código em linha (ex.: `` `caminho/arquivo` ``) ou caminhos relativos para validação limpa no `mentor verificar`. Na conclusão, a narrativa torna-se automaticamente `<ID>--estudo-humano.md`, preservando a memória de engenharia sem consumo repetido de tokens nem reescrita manual.
+- O `push` é pedido à parte (ou em conjunto se autorizado explicitamente): é o ato que sai da máquina e alcança outras pessoas.
 - Depois do push, conferir o resultado da integração. Não é portão, e o poder dele é avisar.
 - Vale em qualquer modo de cerimônia, inclusive Light.
 
@@ -81,7 +85,7 @@ módulo, template, script, tarefa, dependência): *pediram X, proponho Y, e Y é
 porque…*. Declarar não proíbe crescer. Impede o crescimento **silencioso**, que é o único tipo que
 ninguém tem chance de recusar.
 
-Se descobrir algo que exija mudar o plano, volte a PLANEJAR. Nunca execute sem aprovação explícita.
+Se descobrir algo que exija mudar o plano, volte a PLANEJAR. Nunca execute sem aprovação explícita. Ao concluir a execução, a memória de engenharia é registrada na seção `## Desfecho` da narrativa antes da finalização.
 
 ## 5 · Cerimônia
 
@@ -116,7 +120,7 @@ encontrado é resposta legítima, e se escreve. Risco que o humano já recusou p
 
 ## 7 · Gates
 
-**O pacote diz o que precisa ser verdade; o projeto diz como se verifica.**
+**O pacote diz o que precisa ser verdade; o contexto classifica o projeto e decide o que bloqueia cada mudança.**
 
 | Gate | Precisa ser verdade |
 |---|---|
@@ -128,10 +132,13 @@ encontrado é resposta legítima, e se escreve. Risco que o humano já recusou p
 
 O comando de cada um vive em `contexto.json → gates`. Gate que o projeto não declarou **não existe**
 para ele, e declará-lo é a primeira coisa a resolver, não um detalhe a contornar.
+No perfil enxuto, gates de rotina são aconselhados, não uma condição automática de fechamento ou push. Risco concreto exige a evidência do gate aplicável; gate dispensado não é apresentado como aprovado.
+
+Os gates declarados para o produto não se aplicam à melhoria exclusiva do Mentor definida no §2.
 
 ⚠️ **Rode o comando declarado, nunca um montado de memória.** Comando digitado de cabeça sai com
-código 0 tendo lido zero arquivo: verde que não checou nada. Use `task gate <ID> <gate>`, que executa e
-grava comando, saída e horário. Declaração escrita à mão não vale como evidência.
+código 0 tendo lido zero arquivo: verde que não checou nada. Use `task gate <ID> <gate>` ou `task gates <ID>`, que executa e
+grava comando, saída, evidências e reutiliza execuções compatíveis quando os insumos estão intactos. Declaração escrita à mão não vale como evidência.
 
 ## 8 · Quando parar e perguntar
 

@@ -5,8 +5,8 @@
   "excecoes": [
     {
       "caminho": ".mentor/nucleo.md",
-      "teto": 9200,
-      "motivo": "Incorpora o principio 8: o dever de contrariar, persona ativa e exigencias de merito tecnico no Portao 1. Na 0.10.0: sugestao do humano como hipotese no Portao 1 e o carregamento do processo de laboratorio."
+      "teto": 15100,
+      "motivo": "Incorpora o principio 8: o dever de contrariar, persona ativa, merito tecnico no Portao 1, preservacao integral do plano tecnico de implementacao na narrativa para estudo humano e sugestoes de validacao manual em prototipo. Medido no piloto: 11.591 caracteres; teto = medido x 1,3."
     },
     {
       "caminho": ".mentor/guia/06-persistencia.md",
@@ -20,8 +20,8 @@
     },
     {
       "caminho": ".mentor/processos/tarefa.md",
-      "teto": 17500,
-      "motivo": "Documenta merito tecnico do plano, fatiamento independente com contrato, composicao do epico, validacao estruturada com catalogo de casos e governanca de restricoes fundadoras com ADRs (v0.11/v0.12)."
+      "teto": 27200,
+      "motivo": "Documenta merito tecnico do plano, fatiamento independente com contrato, composicao do epico, validacao estruturada com catalogo de casos, governanca de restricoes fundadoras com ADRs e preservacao integral do plano de implementacao tecnico com normalizacao de links. Medido no piloto: 20.910 caracteres; teto = medido x 1,3."
     }
   ],
   "regras": [
@@ -51,8 +51,8 @@
     },
     {
       "padrao": "docs-mentor/contexto.md",
-      "teto": 8000,
-      "_motivo": "Calibrado em projeto vazio o teto era 2400. Medido em projeto real com os oito portoes respondidos: 7.633 caracteres, 88 campos. O conteudo e GERADO por script, nao prosa que se possa enxugar, entao teto sobre esta vista e teto sobre o gerador. Sobe para 8000, e cresce com o projeto: se estourar de novo, o que precisa mudar e o que a vista lista, nunca o numero."
+      "teto": 18700,
+      "_motivo": "Calibrado em projeto vazio o teto era 2400. Medido em projeto real com os oito portoes respondidos: 7.633 caracteres, 88 campos. O conteudo e GERADO por script, nao prosa que se possa enxugar, entao teto sobre esta vista e teto sobre o gerador. Sobe para 8000, e cresce com o projeto: se estourar de novo, o que precisa mudar e o que a vista lista, nunca o numero. Medido no piloto com todos os portoes fechados: 14.348 caracteres; teto = medido x 1,3."
     },
     {
       "padrao": "docs-mentor/padroes-de-stack/*.md",
@@ -60,8 +60,8 @@
     },
     {
       "padrao": "docs-mentor/tarefas/concluidas/*.md",
-      "teto": 10000,
-      "_motivo": "Narrativa de fechamento voltada para aprendizado humano e documentacao tecnica aprofundada (armadilhas tecnicas, licoes aprendidas, testes manuais, persistencia, UX). A IA consome o .json estruturado para resumos operacionais."
+      "teto": 56300,
+      "_motivo": "Narrativa de fechamento voltada para aprendizado humano e documentacao tecnica aprofundada (armadilhas tecnicas, licoes aprendidas, testes manuais, persistencia, UX). A IA consome o .json estruturado para resumos operacionais. A narrativa preserva o plano tecnico integral, que nao se trunca: medido no piloto, a maior tinha 43.286 caracteres (39 de 96 passavam de 10.000); teto = medido x 1,3."
     },
     {
       "padrao": "docs-mentor/arquitetura/ADR/*.md",

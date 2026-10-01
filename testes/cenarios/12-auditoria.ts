@@ -44,7 +44,7 @@ export function rodar(): Cenario {
     escrever(c, `docs-mentor/tarefas/abertas/${id}.json`, JSON.stringify(t, null, 2))
     escrever(c, `docs-mentor/tarefas/abertas/${id}.md`,
       '# t\n\n## Decisoes tomadas\na\n\n## O que nao foi feito, e por que\nb\n\n' +
-      '## Testes de descoberta\nNenhuma.\n\n## Aprendizados\nNada.\n')
+      '## Testes de descoberta\nNenhuma.\n\n## Aprendizados\nNada.\n\n## Desfecho\nGates verdes; nada fora do previsto.\n')
     mentor(c, 'task', 'gate', id, 'testes')
     return mentor(c, 'task', 'finalizar', id)
   }
@@ -68,7 +68,7 @@ export function rodar(): Cenario {
   escrever(c, 'login.ts', 'const SENHA = "hunter2"\nexport const login = (u: string, p: string) => p === SENHA\n')
 
   // --- o dossie
-  dizQue(c, mentor(c, 'auditar', 'preparar'), '2 tarefa(s) no lote', 'o lote e o que foi concluido desde a ultima auditoria')
+  dizQue(c, mentor(c, 'auditar', 'preparar', '--lote-legado'), '2 tarefa(s) no lote', 'o lote e o que foi concluido desde a ultima auditoria')
   const dossie = ler(c, 'docs-mentor/auditorias/AUD-001-dossie.md')
   confere(c, dossie.includes('TASK-RF-001') && dossie.includes('TASK-RF-002'), 'o dossie traz as duas tarefas')
   confere(c, dossie.includes('+export const sub'), 'o dossie traz o diff de verdade, nao a promessa de que houve um')
@@ -79,7 +79,7 @@ export function rodar(): Cenario {
   confere(c, !dossie.includes('"tarefas_concluidas"'),
     'as vistas geradas ficam fora do diff: contabilidade do proprio pacote afogaria o codigo')
 
-  dizQue(c, mentor(c, 'auditar', 'preparar'), 'preparada e nunca registrada',
+  dizQue(c, mentor(c, 'auditar', 'preparar', '--lote-legado'), 'preparada e nunca registrada',
     'nao se abre auditoria nova com uma pendurada: seria assim que ela vira ritual')
 
   // --- as recusas
@@ -131,7 +131,7 @@ export function rodar(): Cenario {
   const ctxFinal = lerJson<Record<string, any>>(c, 'docs-mentor/contexto.json')
   confere(c, ctxFinal['auditoria'].pendencias_reportadas.length === 0, 'resolvido sai do contexto')
 
-  dizQue(c, mentor(c, 'auditar', 'preparar'), 'Nada a auditar', 'sem tarefa nova, nao ha lote')
+  dizQue(c, mentor(c, 'auditar', 'preparar', '--lote-legado'), 'Nada a auditar', 'sem tarefa nova, nao ha lote')
 
   fecharTemporario(c)
   return c

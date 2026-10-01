@@ -8,6 +8,8 @@ import { coletarAchados } from './cmd-verificar.ts'
 import { gates } from './cmd-gates.ts'
 import { HOOK_PRE_PUSH } from './instalar.mjs'
 import { ID_DE_TAREFA_NO_TITULO, MARCA_LIGHT_NO_TITULO } from './tipos.ts'
+import { escopoExclusivoDoMentor, verificarEnvioIncremental } from './cobertura-incremental.ts'
+import { perfilDeProcesso } from './politica-rigor.ts'
 
 function exigePr(texto: unknown): boolean {
   if (typeof texto !== 'string' || !texto.trim()) return false
@@ -16,15 +18,26 @@ function exigePr(texto: unknown): boolean {
   return t.includes('pr') || t.includes('pull request') || t.includes('revisao')
 }
 
-function arquivoEhCodigo(arquivo: string): boolean {
+export function arquivoEhCodigo(arquivo: string): boolean {
   const norm = arquivo.replace(/\\/g, '/')
+  // Testes sob qualquer pasta (inclusive docs-mentor/) sao codigo
+  if (
+    norm.endsWith('.test.ts') ||
+    norm.endsWith('.test.js') ||
+    norm.endsWith('.spec.ts') ||
+    norm.endsWith('.spec.js')
+  ) {
+    return true
+  }
+  // Scripts de esteira e hooks sao codigo/regras executaveis
+  if (norm.startsWith('.github/workflows/') || norm.startsWith('.githooks/')) {
+    return true
+  }
   // Pacote intacto nao e' codigo do projeto; patch local em `.mentor/` e'. A mesma regra do `finalizar` e da auditoria.
   if (norm.startsWith('.mentor/')) return !arquivoIntactoDoPacote(norm)
   if (
     norm.startsWith('docs-mentor/') ||
     norm.startsWith('docs/') ||
-    norm.startsWith('.githooks/') ||
-    norm.startsWith('.github/') ||
     norm.startsWith('.obsidian/')
   ) {
     return false
@@ -65,16 +78,59 @@ function hookAntigoJaRodouGates(raiz: string): boolean {
   return existe(arquivo) && lerTexto(arquivo).split('\n').some((l) => l.trim().startsWith('node mentor.mjs gates'))
 }
 
+function shaEstaEmWorktree(raiz: string, sha: string): boolean {
+  try {
+    const r = spawnSync('git', ['worktree', 'list', '--porcelain'], { cwd: raiz, encoding: 'utf8' })
+    if (r.status === 0 && r.stdout) {
+      return r.stdout.split('\n').some((linha) => linha.startsWith('HEAD ') && linha.slice(5).trim() === sha)
+    }
+  } catch {
+    // ignora se git worktree falhar
+  }
+  return false
+}
+
+function envioExclusivoDoMentor(raiz: string, refs: RefEnviada[] | null): boolean {
+  if (!refs?.length) return false
+  const destinos = refs.filter((r) => !SO_ZEROS.test(r.shaLocal) && !r.remoto.startsWith(PREFIXO_WIP))
+  if (!destinos.length) return false
+  return destinos.every((r) => {
+    let base = r.shaRemoto
+    if (SO_ZEROS.test(base)) {
+      const ancestral = spawnSync('git', ['merge-base', r.shaLocal, 'refs/remotes/origin/main'], { cwd: raiz, encoding: 'utf8' })
+      if (ancestral.status !== 0) return false
+      base = ancestral.stdout.trim()
+    }
+    const diff = spawnSync('git', ['-c', 'core.quotepath=false', 'diff', '--name-only', '-z', base, r.shaLocal], { cwd: raiz, encoding: 'utf8' })
+    return diff.status === 0 && escopoExclusivoDoMentor(diff.stdout.split('\0'))
+  })
+}
+
 /**
- * Tres barreiras, nesta ordem: gates, envio direto ao principal protegido, commit de codigo sem tarefa.
- * Envio so' para `wip/` passa direto: WIP guarda trabalho fora do disco, e o que barra e' o merge no
- * principal, conferido na esteira por `pronto-para-merge`.
+ * Ordem do pre-push (V5):
+ * 1. Exclusao de ramos remotos (sem gates)
+ * 2. Envio exclusivo para wip/ passa direto
+ * 3. Checagens baratas primeiro:
+ *    - Envio direto ao ramo principal protegido
+ *    - Commits tocando codigo sem marca de tarefa ou light
+ *    - Consistencia da arvore local e commit enviado
+ * 4. Execucao de gates (com cache conservador e parada na primeira falha)
+ * 5. Aviso de achados do verificar
  */
 export function prePush(): number {
   const c = caminhos()
   const refs = lerRefsEnviadas()
+
+  // 1. Exclusao de ramos remotos
+  if (refs && refs.length > 0 && refs.every((r) => SO_ZEROS.test(r.shaLocal))) {
+    console.log('Exclusao de ramo remoto: sem gates e sem checagens.')
+    return 0
+  }
+
   const enviando = refs ? refs.filter((r) => !SO_ZEROS.test(r.shaLocal)) : null
-  if (enviando && enviando.length === 0) return 0 // so' apagando ramo remoto
+  if (enviando && enviando.length === 0) return 0
+
+  // 2. Envio exclusivo de WIP
   if (enviando && enviando.every((r) => r.remoto.startsWith(PREFIXO_WIP))) {
     console.log(`\nEnvio de WIP (${enviando.map((r) => r.remoto.replace('refs/heads/', '')).join(', ')}): sem gates e sem checagem de ID.`)
     console.log('WIP guarda o trabalho fora do disco. O que barra e o merge no ramo principal: pronto-para-merge na esteira.')
@@ -84,37 +140,18 @@ export function prePush(): number {
     return 0
   }
 
-  // 1. Gates. Ficavam no arquivo do hook, que nao sabe para onde o push vai.
-  if (hookAntigoJaRodouGates(c.raiz)) {
-    console.log('Aviso: .githooks/pre-push e do modelo antigo e ja rodou os gates. Para o envio de WIP pular os gates: node mentor.mjs hooks --instalar')
-  } else if (gates() !== 0) {
-    console.error('\nEnvio barrado: gate reprovado. Conserte, ou, se for trabalho em andamento, envie para um ramo wip/<id>.')
-    return 1
-  }
-
   if (!existe(join(c.raiz, '.git'))) return 0
 
   let ctx: any = null
-  try { ctx = carregarContexto() } catch { return 0 }
-
-  // 2. Mostrar o `verificar`, sem barrar. Medido em campo: reprovado chegou ao main e ficou dias sem
-  // ninguem ver, porque nada o rodava. Barrar nao serve: tarefa em execucao e rascunho de stack tem
-  // marcador legitimo, e travar o envio por eles vira laco. Quem barra e' a esteira.
-  try {
-    const achados = coletarAchados()
-    if (achados.length) {
-      console.warn(`\nAviso: o verificar tem ${achados.length} achado(s). O envio segue; a esteira pode barrar.`)
-      for (const a of achados.slice(0, 10)) console.warn(`  [${a.familia}] ${a.onde}: ${a.problema}`)
-      if (achados.length > 10) console.warn(`  ... e mais ${achados.length - 10}. Rode: node mentor.mjs verificar`)
-    }
-  } catch {
-    // verificar quebrado nao pode travar o envio
+  try { ctx = carregarContexto() } catch (e: any) {
+    console.error(`Envio barrado: não foi possível carregar contexto.json para conferir a política de revisão: ${e.message}`)
+    return 1
   }
 
   const ramoPrincipal = ctx?.versionamento?.ramo_principal ?? 'main'
   const revisao = ctx?.versionamento?.revisao_antes_do_merge
 
-  // 3. Envio direto ao ramo principal com PR obrigatorio (GIT 5/5), venha de onde vier
+  // 3.1. Envio direto ao ramo principal com PR obrigatorio (GIT 5/5)
   const rRamo = spawnSync('git', ['branch', '--show-current'], { cwd: c.raiz, encoding: 'utf8' })
   const ramoAtual = (rRamo.stdout ?? '').trim()
   const vaiAoPrincipal = enviando
@@ -130,11 +167,10 @@ export function prePush(): number {
     return 1
   }
 
-  // 4. Commits tocando codigo sem ID de tarefa (GIT 3/5): os dos ramos enviados, menos os que vao para wip/
+  // 3.2. Commits tocando codigo sem ID de tarefa (GIT 3/5): ramos enviados menos os que vao para wip/
   const intervalos: string[][] = []
   if (enviando) {
     for (const r of enviando.filter((x) => !x.remoto.startsWith(PREFIXO_WIP))) {
-      // Ramo novo no remoto: os commits que nenhum ramo remoto conhecido tem ainda.
       intervalos.push(SO_ZEROS.test(r.shaRemoto) ? [r.shaLocal, '--not', '--remotes'] : [`${r.shaRemoto}..${r.shaLocal}`])
     }
   } else {
@@ -165,6 +201,79 @@ export function prePush(): number {
       return 1
     }
   }
+
+  // 3.3. Consistencia entre working tree e commit enviado
+  const rStatus = spawnSync('git', ['status', '--porcelain'], { cwd: c.raiz, encoding: 'utf8' })
+  const linhasStatus = (rStatus.stdout ?? '').split('\n').map((l) => l.trim()).filter(Boolean)
+  const arquivosSujos = linhasStatus
+    .map((l) => l.slice(3).trim())
+    .filter(arquivoEhCodigo)
+  if (arquivosSujos.length > 0) {
+    console.error('\nEnvio barrado: working tree possui alteracoes nao commitadas em arquivos de codigo:')
+    for (const a of arquivosSujos.slice(0, 5)) console.error(`  - ${a}`)
+    console.error('Comite ou descarte as alteracoes para que a verificacao reflita exatamente o commit enviado.')
+    return 1
+  }
+
+  if (enviando) {
+    const rHead = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: c.raiz, encoding: 'utf8' })
+    const headAtual = rHead.status === 0 ? (rHead.stdout ?? '').trim() : null
+    const naoCasam = enviando.filter((r) => !r.remoto.startsWith(PREFIXO_WIP) && r.shaLocal !== headAtual)
+    if (naoCasam.length > 0) {
+      const emWorktree = shaEstaEmWorktree(c.raiz, naoCasam[0]!.shaLocal)
+      if (emWorktree) {
+        console.log(`\nEnvio de ramo em worktree: commit ${naoCasam[0]!.shaLocal.slice(0, 7)} ativo em worktree secundario.`)
+      } else {
+        console.warn(
+          `\nAviso: o commit enviado para ${naoCasam[0]!.remoto} (${naoCasam[0]!.shaLocal.slice(0, 7)}) difere do HEAD local (${headAtual ? headAtual.slice(0, 7) : 'indefinido'}).\n` +
+          `Os gates locais avaliam o working tree atual. A esteira remota do GitHub validara o conteudo do PR.\n`,
+        )
+      }
+    }
+  }
+
+  // A revisão é conferida contra cada ref enviada, nunca contra o HEAD da janela atual.
+  const destinosDaRevisao = enviando
+    ? enviando.filter((r) => !r.remoto.startsWith(PREFIXO_WIP)).map((r) => ({ local: r.shaLocal, remoto: SO_ZEROS.test(r.shaRemoto) ? null : r.shaRemoto }))
+    : [{ local: (spawnSync('git', ['rev-parse', 'HEAD'], { cwd: c.raiz, encoding: 'utf8' }).stdout ?? '').trim(), remoto: null }]
+  for (const destino of destinosDaRevisao) {
+    try {
+      const problemas = verificarEnvioIncremental(c.raiz, destino.local, destino.remoto)
+      if (problemas.length) {
+        console.error(`\nEnvio barrado: revisão incremental não cobre o ref ${destino.local.slice(0, 12)}:`)
+        for (const problema of problemas) console.error(`  - ${problema}`)
+        return 1
+      }
+    } catch (e: any) {
+      console.error(`\nEnvio barrado: não foi possível conferir a revisão incremental: ${e.message}`)
+      return 1
+    }
+  }
+
+  // 4. Execucao de Gates (com cache e parada na primeira falha)
+  if (hookAntigoJaRodouGates(c.raiz)) {
+    console.log('Aviso: .githooks/pre-push e do modelo antigo e ja rodou os gates. Para o envio de WIP pular os gates: node mentor.mjs hooks --instalar')
+  } else if (envioExclusivoDoMentor(c.raiz, enviando)) {
+    console.log('Envio exclusivo de melhoria do Mentor: gates do produto não se aplicam.')
+  } else if (perfilDeProcesso(ctx) !== 'estrito') {
+    console.log('Perfil proporcional: pre-push não executa a suíte inteira; riscos concretos exigem evidência na tarefa enviada.')
+  } else if (gates() !== 0) {
+    console.error('\nEnvio barrado: gate reprovado. Conserte, ou, se for trabalho em andamento, envie para um ramo wip/<id>.')
+    return 1
+  }
+
+  // 5. Mostrar o `verificar`, sem barrar
+  try {
+    const achados = coletarAchados()
+    if (achados.length) {
+      console.warn(`\nAviso: o verificar tem ${achados.length} achado(s). O envio segue; a esteira pode barrar.`)
+      for (const a of achados.slice(0, 10)) console.warn(`  [${a.familia}] ${a.onde}: ${a.problema}`)
+      if (achados.length > 10) console.warn(`  ... e mais ${achados.length - 10}. Rode: node mentor.mjs verificar`)
+    }
+  } catch {
+    // verificar quebrado nao pode travar o envio
+  }
+
   return 0
 }
 

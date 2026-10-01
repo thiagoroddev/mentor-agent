@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { inicializar } from './cmd-init.ts'
-import { anexar, criterio, fila, finalizar, iniciar, nova, pausar, registrarGate, retomar, validar } from './cmd-tarefa.ts'
+import { anexar, criterio, fila, finalizar, iniciar, nova, pausar, retomar, validar } from './cmd-tarefa.ts'
 import { absorver, cancelar, fatiar, guardar, listarReserva, puxar } from './cmd-fila.ts'
 import { adicionarFerramenta } from './cmd-stack.ts'
 import { verificar } from './cmd-verificar.ts'
@@ -15,10 +15,13 @@ import { prontoParaMerge } from './cmd-merge.ts'
 import { relatorioDeCampo } from './cmd-campo.ts'
 import { gerarManifesto, instalar } from './cmd-pacote.ts'
 import { anotar } from './cmd-anotar.ts'
-import { preparar as prepararAuditoria, registrar as registrarAuditoria, relatar as relatarAuditorias, resolver as resolverPendencia } from './cmd-auditar.ts'
+import { contextoIncremental, preparar as prepararAuditoria, registrar as registrarAuditoria, relatar as relatarAuditorias, resolver as resolverPendencia } from './cmd-auditar.ts'
 import { novaReferencia, relatarReferencias } from './cmd-referencia.ts'
 import { novaInvariante, relatarInvariantes } from './cmd-invariante.ts'
 import { novoRequisito, relatarRequisitos } from './cmd-requisito.ts'
+import { importarPlano, listarPlanos, registrarPlano, vincularPlano } from './cmd-plano.ts'
+import { listarPatches, registrarPatch, registrarTodosPatches } from './cmd-patches.ts'
+import { executarGateDaTarefa, executarGatesDaTarefa } from './executor-gates.ts'
 import { regenerarTudo } from './vistas.ts'
 
 const AJUDA = `
@@ -53,12 +56,24 @@ mentor <comando>
        [--arquivo <caminho> [--codigo-saida <n>]] registra evidencia de saida capturada em arquivo
        [--rotulo "..." --motivo "..."] so para os rotulos que nao nascem de execucao
        [--ressalva "..." --url "..."]
+  task gates <ID>                      executa todos os gates automaticos da tarefa em sequencia
   task fila <ID> <n> | --soltar         fixa no topo da fila, ou devolve a ordem calculada
   task anexar <ID> --url "..." [--gate] anexa evidencia externa (CI/PR) mesmo se concluida
   task criterio <ID> <n> --comando "..." | --saida "..."
                                        registra evidencia em criterio do plano (n comeca em 0)
+  task vincular-plano <ID> --arquivo <path> [--secao <id>]
+                                       vincula plano a tarefa sem copiar narrativa
   task finalizar <ID>                  fecha, vincula requisito, regenera as vistas
+       [--artefatos-locais "a;b"]      dados nao rastreados no laboratorio, fora da tarefa e do commit
+       [--motivo-artefatos-locais "..."] justificativa obrigatoria da exclusao explicita
        [--produto-tocado "..."]        spike que mudou arquivo fora do laboratorio, e por que
+  plano [registrar|importar|listar]    plano portatil (versao, revisao SHA-256 e contrato)
+       registrar --arquivo <caminho> [--secao <id>] [--titulo <titulo>]
+       importar --arquivo <origem> --destino <destino> [--forcar]
+  planos                               lista planos registrados e tarefas vinculadas
+  patch [listar|registrar|registrar-todos] rastreia e valida modificacoes locais em .mentor/
+       registrar <arquivo> --tarefa <ID> [--teste <evidencia>]
+       registrar-todos --tarefa <ID>   registra todos os arquivos divergentes do manifesto base
   stack <ferramenta> [--versao --papel] cria a convencao e registra no contexto
   regras [--sincronizar]               inventario das regras do pacote: quais viraram comando
   verificar                            marcadores, tetos de texto, integridade referencial
@@ -66,8 +81,8 @@ mentor <comando>
   anotar --sobre pacote|projeto "..."  onde a melhoria vai nao e decisao de memoria
   reserva                              lista a reserva (nao entra no contexto)
   gates                                roda todos os gates declarados pelo projeto
-  hooks [--instalar|--pre-push]        barreira de pre-push: gates, envio ao ramo principal e commit
-                                       sem ID; mostra o verificar. Envio so para wip/ passa direto
+  hooks [--instalar|--pre-push]        barreira de pre-push: revisao do ref enviado, gates e marcas
+                                       de tarefa; mostra o verificar. Envio so para wip/ passa direto
   ra [nova|encerrar <ID>]              registro de riscos aceitos
        nova --titulo --justificativa --evidencia --aceito-por
             --revisar-em --tarefa-de-saida [--severidade --pacote --advisory]
@@ -75,9 +90,11 @@ mentor <comando>
   pronto-para-merge --titulo "..."     passo da esteira no PR: toda tarefa do titulo concluida no ramo
   relatorio-de-campo [--detalhado]     medicao do uso real, para levar ao repositorio do pacote
   doctor                               folha de saude com veredito binario. Nunca cria tarefa
-  auditar [preparar]                   monta o dossie do lote para uma sessao NOVA de IA auditar
-       registrar <AUD-ID>              valida e grava o veredito. Recusa aprovar com bloqueio
-       resolver <AUD-ID-Bxx>           voce decide o destino do achado; a auditoria nunca decide
+  auditar preparar --tarefa TASK-ID    monta revisao incremental de uma tarefa
+       preparar --lote-legado          monta explicitamente lote historico AUD
+       contexto REV-ID --arquivo <path> --motivo "pergunta" inclui contexto adicional seguro
+       registrar <REV-ID|AUD-ID>       valida parecer, partes e retrato atual
+       resolver <REV-ID-Bxx|AUD-ID-Bxx> decide o destino do achado
             --destino tarefa|divida_tecnica|risco_aceito|descartado --ref "..."
   gerar                                regenera as vistas em Markdown
 `
@@ -132,6 +149,30 @@ function principal(argv: string[]): number {
       if (sub === 'nova') { novaReferencia(flags); return 0 }
       throw new Error(`Subcomando de ref desconhecido: "${sub}". Use: mentor ref [listar|nova]`)
     }
+    case 'plano': {
+      const sub = posicionais[0]
+      if (!sub || sub === 'listar') { listarPlanos(); return 0 }
+      if (sub === 'registrar') { registrarPlano(flags); return 0 }
+      if (sub === 'importar') { importarPlano(flags); return 0 }
+      throw new Error(`Subcomando de plano desconhecido: "${sub}". Use: mentor plano [registrar|importar|listar]`)
+    }
+    case 'planos': {
+      listarPlanos(); return 0
+    }
+    case 'patch': {
+      const sub = posicionais[0]
+      if (!sub || sub === 'listar') return listarPatches()
+      if (sub === 'registrar') {
+        const arq = posicionais[1]
+        if (!arq) throw new Error('Falta o arquivo. Use: mentor patch registrar <arquivo> --tarefa <ID>')
+        return registrarPatch(arq, flags)
+      }
+      if (sub === 'registrar-todos') {
+        return registrarTodosPatches(flags)
+      }
+      if (sub === 'conferir') return listarPatches()
+      throw new Error(`Subcomando de patch desconhecido: "${sub}". Use: mentor patch [listar|registrar|registrar-todos|conferir]`)
+    }
     case 'gerar': regenerarTudo(); console.log('Vistas regeneradas.'); return 0
     case 'anotar': anotar(posicionais[0], flags.sobre); return 0
     case 'reserva': listarReserva(); return 0
@@ -141,7 +182,7 @@ function principal(argv: string[]): number {
       return 0
     case 'verificar': return verificar()
     case 'resolver-gerados': return resolverGerados()
-    case 'gates': return gates()
+    case 'gates': return gates(flags)
     case 'hooks':
       if (flags['pre-push']) return prePush()
       if (!flags.instalar) throw new Error('Use: mentor hooks --instalar ou mentor hooks --pre-push')
@@ -164,7 +205,12 @@ function principal(argv: string[]): number {
     case 'auditar': {
       const sub = posicionais[0]
       if (!sub) return relatarAuditorias()
-      if (sub === 'preparar') return prepararAuditoria()
+      if (sub === 'preparar') return prepararAuditoria(flags)
+      if (sub === 'contexto') {
+        const alvo = posicionais[1]
+        if (!alvo) throw new Error('Falta o ID. Use: mentor auditar contexto REV-001 --arquivo <path> --motivo "pergunta"')
+        return contextoIncremental(alvo, flags)
+      }
       if (sub === 'registrar') {
         const alvo = posicionais[1]
         if (!alvo) throw new Error('Falta o ID. Use: mentor auditar registrar AUD-001')
@@ -197,6 +243,7 @@ function principal(argv: string[]): number {
       if (sub === 'absorver') { absorver(id, flags.por); return 0 }
       if (sub === 'validar') { validar(id, flags); return 0 }
       if (sub === 'anexar') { anexar(id, flags); return 0 }
+      if (sub === 'vincular-plano') { vincularPlano(id, flags); return 0 }
       if (sub === 'criterio') {
         const indice = posicionais[2]
         if (!indice) throw new Error('Falta o indice do criterio. Use: mentor task criterio <ID> <indice> [--comando "..."] [--saida "..."]')
@@ -209,10 +256,13 @@ function principal(argv: string[]): number {
         fila(id, posicao, liberar); return 0
       }
       if (sub === 'finalizar') { finalizar(id, flags); return process.exitCode === 1 ? 1 : 0 }
+      if (sub === 'gates') {
+        return executarGatesDaTarefa(id, flags)
+      }
       if (sub === 'gate') {
         const gate = posicionais[2]
-        if (!gate) throw new Error('Falta o nome do gate.')
-        registrarGate(id, gate, flags); return 0
+        if (!gate) throw new Error('Falta o nome do gate. Use: mentor task gate <ID> <gate>')
+        return executarGateDaTarefa(id, gate, flags)
       }
       throw new Error(`Subcomando de task desconhecido: "${sub}".`)
     }

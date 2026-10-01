@@ -1,10 +1,12 @@
 {
   "id": "TASK-RF-001",
+  "revisao_incremental_requerida": false,
   "tipo": "RF",
   "titulo": "Teste de gate externo",
   "fatia_de": null,
-  "estado": "aberta",
+  "estado": "em-execucao",
   "cerimonia": "Standard",
+  "perfil": null,
   "valor": "importante",
   "urgencia": "normal",
   "esforco": {
@@ -13,22 +15,60 @@
   },
   "depende_de": [],
   "ordem_motivo": null,
-  "fila": "reserva",
+  "fila": "ciclo",
   "ordem": null,
-  "origem": "chat",
+  "origem": "titulo-autossuficiente",
   "requisitos": [],
   "sem_requisito_motivo": "teste de gate",
   "criada_em": "29/08/26 14:00",
-  "iniciada_em": null,
-  "commit_base": null,
+  "iniciada_em": "29/08/26 14:00",
+  "commit_base": "e9d3fcbc49ad9ef76986d634379b102c42262dc0",
   "concluida_em": null,
   "plano": {
-    "muda": [],
-    "criterios_aceite": [],
-    "impacto": null,
-    "riscos": [],
+    "muda": [
+      "PREENCHER: caminho/arquivo.ext - o que muda nele, em uma linha"
+    ],
+    "criterios_aceite": [
+      {
+        "texto": "PREENCHER: como saberemos que esta pronto",
+        "teste": "PREENCHER: arquivo > nome do teste, ou \"nao se aplica: <motivo>\""
+      }
+    ],
+    "pedido_original": "PREENCHER: as palavras do humano, antes de qualquer reformulacao",
+    "solucao_sugerida": "PREENCHER: a solucao que o humano sugeriu, ou null se ele so descreveu o problema",
+    "alternativas_profissionais": [
+      {
+        "pratica": "PREENCHER: pratica profissional consolidada 1, comparada a sugestao (ou [] se solucao_sugerida for null)",
+        "pegaria_o_caso": "PREENCHER: resolveria o caso concreto do pedido? por que",
+        "custo": "PREENCHER: custo de adotar"
+      },
+      {
+        "pratica": "PREENCHER: pratica profissional consolidada 2, comparada a sugestao (ou [] se solucao_sugerida for null)",
+        "pegaria_o_caso": "PREENCHER: resolveria o caso concreto do pedido? por que",
+        "custo": "PREENCHER: custo de adotar"
+      }
+    ],
+    "problema_canonico": "PREENCHER: nome canonico na literatura (ex: TSP, CRDT), ou \"sem nome canonico\"",
+    "discordancia": {
+      "o_que_faria_diferente": "PREENCHER: o que eu faria diferente, ou \"Nada a objetar\"",
+      "o_que_preocupa": "PREENCHER: o que me preocupa neste plano, ou \"Nada a objetar\"",
+      "o_que_existe_pronto_80_porcento": "PREENCHER: ferramenta/lib consolidada que resolve 80%, ou \"Nenhuma conhecida\""
+    },
+    "impacto": "PREENCHER: modulos afetados",
+    "riscos": [
+      "PREENCHER: o que pode dar errado, ou \"nenhum identificado\""
+    ],
     "dependencias_novas": [],
-    "proporcionalidade": null
+    "proporcionalidade": "PREENCHER: pediram X, proponho Y, e Y e do tamanho de X porque...",
+    "restricoes_reavaliadas": [],
+    "meio_de_validacao": {
+      "tipo": "testes_automatizados",
+      "porque_nao_automatizado": null,
+      "roteiro": null,
+      "artefato": null,
+      "casos": null
+    },
+    "composicao": null
   },
   "gates": {
     "build": {
@@ -36,14 +76,17 @@
       "vermelho_em": null,
       "comando": "arquivo:E:\\repositorios\\projetos-pessoais\\mentor-agent\\testes\\exemplos\\20-evidencia-externa-e-narrativa\\vazio.log",
       "codigo_saida": 0,
-      "saida": null,
+      "saida": "",
       "executado_em": "29/08/26 14:00",
-      "commit_execucao": "dd27e8b8fb7b6e6079a23d66032bdff6f3f9bf2d",
-      "arvore_hash": "fb3a15d13874220c57ce960a3ff6631a9767c223",
+      "commit_execucao": "e9d3fcbc49ad9ef76986d634379b102c42262dc0",
+      "arvore_hash": "c6f079b77ebfddf75acac21d4bb44843f35f14d5",
       "arvore_sem_documentos": true,
       "evidencia_url": null,
       "motivo": "Saída vazia: o comando não produziu evidência verificável",
       "ressalva": null,
+      "log_ref": "docs-mentor/.evidencias/logs/TASK-RF-001-build-1790896044530.log",
+      "chave_cache": null,
+      "digest_insumos": "c6f079b77ebfddf75acac21d4bb44843f35f14d5",
       "vermelho_dispensado": null
     }
   },

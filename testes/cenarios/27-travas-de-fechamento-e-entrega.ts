@@ -52,7 +52,7 @@ export function rodar(): Cenario {
     }
     escrever(c, `docs-mentor/tarefas/abertas/${id}.json`, JSON.stringify(t, null, 2))
     escrever(c, `docs-mentor/tarefas/abertas/${id}.md`,
-      '# t\n\n## Decisoes tomadas\na\n\n## O que nao foi feito, e por que\nb\n\n## Testes de descoberta\nNenhuma.\n\n## Aprendizados\nNada.\n')
+      '# t\n\n## Decisoes tomadas\na\n\n## O que nao foi feito, e por que\nb\n\n## Testes de descoberta\nNenhuma.\n\n## Aprendizados\nNada.\n\n## Desfecho\nGates verdes; nada fora do previsto.\n')
   }
 
   // --- B1. o commit da base tocou o arquivo; a tarefa o muda de novo, e fecha antes de commitar
@@ -107,13 +107,17 @@ export function rodar(): Cenario {
   confere(c, push.codigo === 0, 'B4: achado do verificar nao barra o envio')
   dizQue(c, push, 'Aviso: o verificar tem', 'B4: o pre-push mostra os achados do verificar')
   // Conta a linha que o gate imprime, nao o resumo "✓ testes: <comando>", que tambem cita a palavra
-  confere(c, (push.saida.match(/^GATE_RODOU/gm) ?? []).length === 1, 'B8 (0.9.0): o pre-push roda os gates uma vez')
+  // O executor guarda a saida do gate em log e imprime uma linha por execucao.
+  confere(c, (push.saida.match(/APROVADO: testes/g) ?? []).length === 1, 'B8 (0.9.0): o pre-push roda os gates uma vez')
   // Hook do modelo 0.8.x ja rodou os gates antes de chamar o pre-push: nao roda de novo, e avisa
+  // Commitado: o pre-push barra arvore suja, e o hook de verdade vive versionado.
   escrever(c, '.githooks/pre-push', '#!/bin/sh\nnode mentor.mjs gates || exit 1\nnode mentor.mjs hooks --pre-push "$@" || exit 1\n')
+  commit('chore(light): hook do modelo antigo')
   const hookAntigo = mentor(c, 'hooks', '--pre-push', 'origin')
-  confere(c, !hookAntigo.saida.includes('GATE_RODOU') && hookAntigo.saida.includes('modelo antigo'),
+  confere(c, !/APROVADO: testes/.test(hookAntigo.saida) && hookAntigo.saida.includes('modelo antigo'),
     'B8: com o hook antigo, o pre-push nao repete os gates e manda reinstalar o hook')
   apagar(c, '.githooks')
+  commit('chore(light): remove o hook antigo')
 
   // --- 0.8.1. escopo qualquer nao substitui a tarefa; a marca light, sim
   escrever(c, 'src/Tela.tsx', 'export const Tela = () => null\n')

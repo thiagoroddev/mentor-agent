@@ -7,4 +7,4 @@
 
 | ID | Titulo | Fatia | Tipo | Valor | Esforco H/IA | Origem |
 |---|---|---|---|---|---|---|
-| `TASK-BG-001` | Origem que nao resolve | - | BG | importante | P/P | RF-99, ADR-77 |
+| | Nada guardado | | | | | |

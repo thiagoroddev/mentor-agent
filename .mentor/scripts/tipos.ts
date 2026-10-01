@@ -83,6 +83,7 @@ export interface Achado {
   ref: string
 }
 export type Cerimonia = 'Light' | 'Standard' | 'Strict'
+export type PerfilTarefa = 'compacto' | 'completo'
 export type ValorTarefa = 'critico' | 'importante' | 'desejavel'
 export type Urgencia = 'imediata' | 'normal'
 
@@ -137,6 +138,10 @@ export interface RegistroGate {
   arvore_sem_documentos?: boolean
   motivo: string | null
   ressalva: string | null
+  log_ref?: string | null
+  chave_cache?: string | null
+  digest_insumos?: string | null
+  reutilizado?: boolean
   vermelho_dispensado?: VermelhoDispensado | null
   /** @deprecated Legado plano para retrocompatibilidade com TASK-RF-040/042 */
   vermelho_dispensado_em?: string | null
@@ -282,13 +287,23 @@ export interface PausaTarefa {
   commit_retomada: string | null
 }
 
+export interface PlanoRef {
+  arquivo: string
+  sha256: string
+  secao?: string | null
+  manifesto?: Record<string, string>
+}
+
 export interface Tarefa {
   id: string
+  /** Marcado em task nova quando a política incremental já está ativa; ausência preserva o legado. */
+  revisao_incremental_requerida?: boolean
   tipo: TipoTarefa
   titulo: string
   fatia_de: string | null
   estado: EstadoTarefa
   cerimonia: Cerimonia
+  perfil?: PerfilTarefa | null
   valor: ValorTarefa
   urgencia: Urgencia
   esforco: { humano: Escala; ia: Escala }
@@ -310,6 +325,7 @@ export interface Tarefa {
   pausas?: PausaTarefa[]
   /** SPIKE que fechou mudando arquivo fora de `contexto.laboratorio.caminhos`, e por que (0.10.0). */
   produto_tocado_motivo?: string | null
+  plano_ref?: PlanoRef | null
   plano: Plano
   gates: Partial<Record<string, RegistroGate>>
   achados: Achado[]
@@ -446,6 +462,8 @@ export interface Contexto {
   /** GERADO pelo doctor a cada execucao. Campo livre aqui acumularia prosa como qualquer outro. */
   lembretes: string[]
   auditoria: {
+    /** Marca novas tarefas como sujeitas à revisão por conteúdo; registros anteriores continuam legados. */
+    revisao_incremental_ativa?: boolean
     /** Quantas tarefas concluidas **com diff auditavel** vencem a auditoria. */
     cadencia_em_tarefas: number
     /** @deprecated Desde a 0.8.0 nao dispara nada: a cadencia conta tarefas. O `doctor` avisa. */
@@ -588,4 +606,56 @@ export interface Auditoria {
   sem_diff_auditavel?: string[]
   /** Concluidas que nao couberam no teto do dossie e esperam o proximo `preparar`. */
   ficaram_para_depois?: string[]
+}
+
+export type EstadoRevisaoIncremental = 'preparada' | 'em_revisao' | 'aprovada' | 'reprovada' | 'parcial' | 'desatualizada'
+
+export interface ArquivoDoRetrato {
+  caminho: string
+  caminho_anterior?: string | null
+  cobertura_herdada_de?: string | null
+  status: 'adicionado' | 'modificado' | 'removido' | 'renomeado'
+  modo: string | null
+  sha256: string | null
+  sha256_base: string | null
+  ambiguidade: string | null
+  motivo_omissao?: string | null
+  caracteres: number
+}
+
+export interface ParteDeRevisao {
+  id: string
+  arquivo: string
+  caracteres: number
+  arquivos: string[]
+  lida: boolean
+}
+
+export interface RevisaoIncremental {
+  schema: 'auditoria-incremental/1'
+  id: string
+  estado: EstadoRevisaoIncremental
+  tarefas: string[]
+  tarefa_solicitada: string
+  revisao_anterior: string | null
+  preparada_em: string
+  registrada_em: string | null
+  base: string
+  alvo: string
+  arvore_retrato: string
+  unidade: { id: string; commits: string[] }
+  /** Identidade dos campos de plano/critério de cada tarefa vinculada, sem metadados gerados. */
+  assinaturas_tarefas?: Record<string, string>
+  /** Arquivos de contrato e regra consultados, com hash dos bytes efetivamente apresentados. */
+  contratos?: Array<{ caminho: string; sha256: string }>
+  /** Sessão declarada pelo revisor; declaração não constitui prova técnica de independência. */
+  sessao_revisora?: string | null
+  pacote_inicial_caracteres?: number
+  arquivos: ArquivoDoRetrato[]
+  regras: Array<{ regra: string; pergunta: string }>
+  partes: ParteDeRevisao[]
+  veredito: VereditoDeRevisao | null
+  nao_verificado: string[]
+  pendencias: PendenciaDeAuditoria[]
+  contextos: Array<{ arquivo: string; motivo: string; sha256: string; caracteres: number; gerado_em: string }>
 }

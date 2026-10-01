@@ -1,4 +1,4 @@
-import { abrirCenario, confere, dizQue, escrever, lerJson, mentor } from '../apoio.ts'
+import { abrirCenario, confere, dizQue, escrever, ler, lerJson, mentor } from '../apoio.ts'
 import type { Cenario } from '../apoio.ts'
 
 /** A folha de saude: perfil ISO 25010, cadencia da revisao geral, e o veredito binario. */
@@ -73,9 +73,10 @@ export function rodar(): Cenario {
   for (let i = 22; i <= 41; i++) escalar(i)
   dizQue(c, mentor(c, 'doctor'), '41 tarefas desde a ultima revisao geral', 'em 40 tarefas vira bloqueio')
 
-  const depois = lerJson<Record<string, any>>(c, 'docs-mentor/contexto.json')
-  confere(c, Array.isArray(depois['lembretes']) && depois['lembretes'].length > 0,
-    'os lembretes sao gravados no contexto pelo doctor')
-  confere(c, depois['qualidade'].perfil.reprovadas === 1, 'o perfil fica registrado no contexto')
+  // O doctor so' le: os avisos vao para a tela. Gravar lembretes e perfil no contexto.json fazia todo
+  // ramo que rodasse o doctor mudar o arquivo, e dois PRs abertos conflitavam sem mudanca real.
+  const antes = ler(c, 'docs-mentor/contexto.json')
+  mentor(c, 'doctor')
+  confere(c, ler(c, 'docs-mentor/contexto.json') === antes, 'o doctor nao reescreve o contexto.json')
   return c
 }

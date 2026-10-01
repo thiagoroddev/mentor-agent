@@ -188,7 +188,7 @@ export function rodar(): Cenario {
     ],
   }
   escrever(c, 'docs-mentor/tarefas/abertas/TASK-RF-002.json', JSON.stringify(f2Ini, null, 2))
-  escrever(c, 'docs-mentor/tarefas/abertas/TASK-RF-002.md', '# F2\n\n## Decisoes tomadas\nOk.\n\n## O que nao foi feito, e por que\nNada.\n\n## Aprendizados\nNada.\n')
+  escrever(c, 'docs-mentor/tarefas/abertas/TASK-RF-002.md', '# F2\n\n## Decisoes tomadas\nOk.\n\n## O que nao foi feito, e por que\nNada.\n\n## Aprendizados\nNada.\n\n## Desfecho\nGates verdes; nada fora do previsto.\n')
   escrever(c, 'src/ast.ts', 'export interface AST { tipo: string }\n')
   mentor(c, 'task', 'gate', 'TASK-RF-002', 'testes')
   const rFinF2 = mentor(c, 'task', 'finalizar', 'TASK-RF-002')
@@ -232,7 +232,7 @@ export function rodar(): Cenario {
     ],
   }
   escrever(c, 'docs-mentor/tarefas/abertas/TASK-RF-003.json', JSON.stringify(f3Ini, null, 2))
-  escrever(c, 'docs-mentor/tarefas/abertas/TASK-RF-003.md', '# F3\n\n## Decisoes tomadas\nOk.\n\n## O que nao foi feito, e por que\nNada.\n\n## Aprendizados\nNada.\n')
+  escrever(c, 'docs-mentor/tarefas/abertas/TASK-RF-003.md', '# F3\n\n## Decisoes tomadas\nOk.\n\n## O que nao foi feito, e por que\nNada.\n\n## Aprendizados\nNada.\n\n## Desfecho\nGates verdes; nada fora do previsto.\n')
   escrever(c, 'src/grafo.ts', 'export const grafo = true\n')
   mentor(c, 'task', 'gate', 'TASK-RF-003', 'testes')
   const rFinF3 = mentor(c, 'task', 'finalizar', 'TASK-RF-003')
@@ -268,7 +268,7 @@ export function rodar(): Cenario {
     ],
   }
   escrever(c, 'docs-mentor/tarefas/abertas/TASK-RF-004.json', JSON.stringify(f4Ini, null, 2))
-  escrever(c, 'docs-mentor/tarefas/abertas/TASK-RF-004.md', '# F4\n\n## Decisoes tomadas\nOk.\n\n## O que nao foi feito, e por que\nNada.\n\n## Aprendizados\nNada.\n')
+  escrever(c, 'docs-mentor/tarefas/abertas/TASK-RF-004.md', '# F4\n\n## Decisoes tomadas\nOk.\n\n## O que nao foi feito, e por que\nNada.\n\n## Aprendizados\nNada.\n\n## Desfecho\nGates verdes; nada fora do previsto.\n')
   escrever(c, 'src/saida.ts', 'export const saida = true\n')
   mentor(c, 'task', 'gate', 'TASK-RF-004', 'testes')
 
@@ -276,13 +276,25 @@ export function rodar(): Cenario {
   const rFinF4SemAdr = mentor(c, 'task', 'finalizar', 'TASK-RF-004')
   dizQue(c, rFinF4SemAdr, 'A 3a reconfirmacao exige ADR', 'finalizar recusa na 3a reconfirmacao sem ADR (regra M3)')
 
-  // Com ADR vinculada, finaliza com sucesso!
+  // Vincular um ID sem ADR escrita nao basta: ate' a 0.12.0, qualquer valor em tarefa.adrs liberava.
   const f4ComAdr = lerJson<Record<string, any>>(c, 'docs-mentor/tarefas/abertas/TASK-RF-004.json')
   f4ComAdr.adrs = ['ADR-001']
   escrever(c, 'docs-mentor/tarefas/abertas/TASK-RF-004.json', JSON.stringify(f4ComAdr, null, 2))
+  dizQue(c, mentor(c, 'task', 'finalizar', 'TASK-RF-004'), 'A 3a reconfirmacao exige ADR',
+    'ID em tarefa.adrs sem o arquivo da ADR continua recusado')
+
+  // ADR com numero parecido nao conta: "ADR-0010" nao e' a ADR-001
+  escrever(c, 'docs-mentor/arquitetura/ADR/ADR-0010-outra-decisao.md', '# ADR-0010\n\nUsar somente TypeScript puro, em outro contexto.\n')
+  dizQue(c, mentor(c, 'task', 'finalizar', 'TASK-RF-004'), 'A 3a reconfirmacao exige ADR',
+    'o ID da ADR casa como palavra inteira, nao como prefixo')
+
+  // ADR no caminho oficial, citando a restricao: fecha
+  escrever(c, 'docs-mentor/arquitetura/ADR/ADR-001-typescript-puro.md',
+    '# ADR-001 · TypeScript puro\n\nDecisao: usar somente TypeScript puro no parser, sem dependencia externa.\n')
   const rFinF4ComAdr = mentor(c, 'task', 'finalizar', 'TASK-RF-004')
   dizQue(c, rFinF4ComAdr, 'concluida', 'finalizar sucede na 3a reconfirmacao com ADR vinculada')
   commit('fecha TASK-RF-004 com ADR')
+  dizQue(c, mentor(c, 'doctor'), 'possui ADR vinculada', 'doctor encontra a ADR no mesmo caminho que o finalizar')
 
   // =========================================================================
   // 5. Frente B: Resolucao Semantica 3-Way de Requisitos Conflitantes

@@ -1,4 +1,5 @@
-import { existe, lerTexto, listar, type Caminhos } from './arquivos.ts'
+import { basename } from 'node:path'
+import { lerTexto, listar, relativo, type Caminhos } from './arquivos.ts'
 import type { RestricaoReavaliada, Tarefa } from './tipos.ts'
 
 /**
@@ -16,6 +17,32 @@ export function chaveDaRestricao(restricao: string): string {
     .replace(/[^\w\s]/g, '')
     .replace(/\s+/g, ' ')
     .trim()
+}
+
+/**
+ * Arquivo da ADR em `caminhos().adr`, o mesmo lugar onde as ADRs sao contadas. O ID casa como palavra
+ * inteira: "ADR-1" nao e' "ADR-12".
+ * ⚠️ Ate' a 0.12.0 o finalizar e o doctor procuravam em `docs-mentor/adrs/`, pasta que o pacote nao
+ * usa, por substring do nome; e o finalizar ainda aceitava qualquer valor em `tarefa.adrs`.
+ */
+export function arquivoDaAdr(c: Caminhos, adrId: string): string | null {
+  const id = adrId.trim().toUpperCase()
+  if (!id) return null
+  const palavra = new RegExp(`(?:^|[^A-Z0-9])${id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![0-9])`, 'i')
+  return listar(c.adr, '.md').find((f) => palavra.test(basename(f))) ?? null
+}
+
+/** O texto cita a restricao: pelo ID canonico (INV-/ADR-) como palavra, ou pela frase normalizada. */
+export function textoCitaRestricao(texto: string, restricao: string): boolean {
+  const chave = chaveDaRestricao(restricao)
+  if (/^(INV|ADR)-\d+$/.test(chave)) return new RegExp(`\\b${chave}(?![0-9])`, 'i').test(texto)
+  return chaveDaRestricao(texto.replace(/\b(INV|ADR)-\d+\b/gi, ' ')).includes(chave)
+}
+
+/** A ADR existe em `caminhos().adr` e o texto dela cita a restricao. */
+export function adrCitaRestricao(c: Caminhos, adrId: string, restricao: string): boolean {
+  const arq = arquivoDaAdr(c, adrId)
+  return arq !== null && textoCitaRestricao(lerTexto(arq), restricao)
 }
 
 export interface RestricaoAgrupada {
@@ -112,21 +139,13 @@ export function validarRestricoesNoFechamento(
       const totalContagem = (passado?.contagem ?? 0) + 1
 
       if (totalContagem >= 3) {
-        // Exige ADR vinculada à restrição
-        const temAdrVinculada = (tarefa.adrs ?? []).some((adrId) => {
-          const arquivosAdr = listar(`${c.docs}/adrs`, '.md')
-          const arq = arquivosAdr.find((f) => f.includes(adrId))
-          if (arq && existe(arq)) {
-            const texto = lerTexto(arq).toLowerCase()
-            return texto.includes(chave) || texto.includes(r.restricao.toLowerCase())
-          }
-          return false
-        }) || (tarefa.adrs ?? []).length > 0
+        // Exige ADR vinculada que exista e cite a restricao: so' preencher tarefa.adrs nao basta.
+        const temAdrVinculada = (tarefa.adrs ?? []).some((adrId) => adrCitaRestricao(c, adrId, r.restricao))
 
         if (!temAdrVinculada) {
           const tarefasAnteriores = passado ? passado.tarefas.join(', ') : 'anteriores'
           impedimentos.push(
-            `Restricao fundadora "${r.restricao}" atinge sua ${totalContagem}a reconfirmacao (${tarefasAnteriores}). A 3a reconfirmacao exige ADR formalizada em docs-mentor/adrs/ e vinculada em tarefa.adrs (regra M3).`,
+            `Restricao fundadora "${r.restricao}" atinge sua ${totalContagem}a reconfirmacao (${tarefasAnteriores}). A 3a reconfirmacao exige ADR formalizada em ${relativo(c.adr)}/, citando a restricao, e vinculada em tarefa.adrs (regra M3).`,
           )
         }
       }

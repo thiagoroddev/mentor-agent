@@ -1,5 +1,5 @@
 import { spawnSync } from 'node:child_process'
-import { join } from 'node:path'
+import { basename, join } from 'node:path'
 import {
   agora, caminhos, caminhoCorrespondeDeclaracao, escreverJson, escreverTexto,
   extrairCaminhosDeclarados, lerJson, lerTexto, listar, relativo,
@@ -7,6 +7,9 @@ import {
 import { arquivoIntactoDoPacote } from './cmd-pacote.ts'
 import { categoriasSensiveis, tocaRegra4 } from './sensivel.ts'
 import { carregarContexto, carregarRequisitos, regenerarTudo, registrarRecusa } from './vistas.ts'
+import { carregarTarefas } from './vistas.ts'
+import { obterContextoAdicional, prepararRevisaoIncremental, registrarRevisaoIncremental } from './revisao-incremental.ts'
+import type { RevisaoIncremental } from './tipos.ts'
 import {
   DESTINOS_DE_ACHADO, ID_DE_TAREFA_NO_TITULO, MARCA_LIGHT_NO_TITULO, MARCADOR, NIVEIS_DE_AUDITORIA, VEREDITOS_DE_REVISAO,
 } from './tipos.ts'
@@ -35,7 +38,10 @@ import type {
 
 type Flags = Record<string, string | undefined>
 
-/** O teto do dossie. E' a janela de contexto do auditor, nao a medida de risco. */
+/**
+ * O teto do dossie montado: texto fixo, planos, fatos e diffs. E' a janela de contexto do auditor,
+ * nao a medida de risco. Tambem limita o diff de uma tarefa sozinha, que se corta por prioridade.
+ */
 const LIMITE_DIFF = 120_000
 const LIMITE_ARQUIVO_NOVO = 20_000
 
@@ -47,7 +53,7 @@ function git(args: string[], entrada?: string): { ok: boolean; saida: string } {
 }
 
 export function carregarAuditorias(): Auditoria[] {
-  return listar(caminhos().auditorias, '.json').map((a) => lerJson<Auditoria>(a))
+  return listar(caminhos().auditorias, '.json').filter((a) => /AUD-\d+\.json$/.test(a)).map((a) => lerJson<Auditoria>(a))
 }
 
 /** Ordem de conclusao: o nome do arquivo de concluida comeca pelo carimbo, entao a lista ja' vem em ordem. */
@@ -68,9 +74,14 @@ export type MotivoDeExclusao = 'registro' | 'vista gerada' | 'nota' | 'pacote' |
  * As vistas geradas ficam fora. Nao e' esconder: **o script as escreveu**, e o que elas dizem ja'
  * esta' no dossie em forma estruturada. Requisitos, ADRs, invariantes, dividas e riscos ficam no
  * diff de proposito: aquilo e' decisao, nao contabilidade.
+ *
+ * ⚠️ O `contexto.json` e' as duas coisas: contagens que todo comando reescreve e blocos escritos a
+ * mao (gates, laboratorio, versionamento). Tratado sempre como vista, escondia a decisao declarada no
+ * plano; tratado sempre como codigo, as contagens punham toda tarefa na cadencia, inclusive a so' de
+ * documentacao. Entra no diff quando a tarefa o declara no `plano.muda`.
  */
 const VISTAS_GERADAS = [
-  'contexto.json', 'contexto.md', 'referencias.md', 'requisitos/implementados.md', 'requisitos/pendentes.md',
+  'contexto.md', 'referencias.md', 'requisitos/implementados.md', 'requisitos/pendentes.md',
 ]
 
 function casaPadrao(arquivo: string, padroes: string[]): boolean {
@@ -95,7 +106,9 @@ function marcadosComoGerados(arquivos: string[]): Set<string> {
  * **Uma regra so', para arquivo rastreado e nao rastreado.** Ate' a 0.7.0 eram duas: pathspec do git
  * para o rastreado e prefixo de texto para o novo, e um padrao `**` valia num e nao no outro.
  */
-export function motivosDeExclusao(arquivos: string[], ctx: Contexto = carregarContexto()): Map<string, MotivoDeExclusao | null> {
+export function motivosDeExclusao(
+  arquivos: string[], ctx: Contexto = carregarContexto(), declarados: string[] = [],
+): Map<string, MotivoDeExclusao | null> {
   const docs = relativo(caminhos().docs)
   const extras = (Array.isArray(ctx.auditoria?.ignorar_diff) ? ctx.auditoria.ignorar_diff : [])
     .filter((p): p is string => typeof p === 'string' && Boolean(p.trim()))
@@ -106,8 +119,9 @@ export function motivosDeExclusao(arquivos: string[], ctx: Contexto = carregarCo
   for (const bruto of unicos) {
     const a = bruto.replace(/\\/g, '/').replace(/^\.\//, '')
     let motivo: MotivoDeExclusao | null = null
-    if (a.startsWith(`${docs}/tarefas/`)) motivo = 'registro'
+    if (a.startsWith(`${docs}/tarefas/`) || a.startsWith(`${docs}/.evidencias/`)) motivo = 'registro'
     else if (a.startsWith(`${docs}/auditorias/`) || VISTAS_GERADAS.some((v) => a === `${docs}/${v}`)) motivo = 'vista gerada'
+    else if (a === `${docs}/contexto.json` && !caminhoCorrespondeDeclaracao(a, declarados)) motivo = 'vista gerada'
     else if (a.startsWith(`${docs}/rascunhos/`) || a === 'melhorias-do-pacote.md' || a.endsWith('/melhorias-do-pacote.md')) motivo = 'nota'
     else if (a.startsWith('.mentor/') && arquivoIntactoDoPacote(a)) motivo = 'pacote'
     else if (gerados.has(bruto)) motivo = 'gerado'
@@ -231,7 +245,7 @@ export function diffDaTarefa(t: Tarefa, ctx: Contexto = carregarContexto()): Dif
     }
   }
 
-  const motivos = motivosDeExclusao([...brutos.keys()], ctx)
+  const motivos = motivosDeExclusao([...brutos.keys()], ctx, extrairCaminhosDeclarados(t.plano.muda))
   const arquivos: ArquivoDoDiff[] = [...brutos.entries()]
     .map(([caminho, v]) => ({ caminho, linhas: v.linhas, motivo: motivos.get(caminho) ?? null, nao_commitado: v.nao_commitado }))
     .sort((a, b) => a.caminho.localeCompare(b.caminho))
@@ -339,7 +353,7 @@ export function maioresArquivos(diffs: DiffDaTarefa[], quantos = 3): Array<{ cam
 
 // ---------------------------------------------------------------- preparar
 
-export function preparar(): number {
+function prepararLoteLegado(): number {
   const c = caminhos()
   const ctx = carregarContexto()
   const auditorias = carregarAuditorias()
@@ -356,23 +370,27 @@ export function preparar(): number {
     return 0
   }
 
-  // Empacota em ordem de conclusao enquanto cabe no teto. A primeira entra sempre, mesmo sozinha
-  // acima do teto: esperar nunca a faria caber, e cortar na fronteira de arquivo e' melhor que nao auditar.
-  const pacote: Array<{ d: DiffDaTarefa; patch: Patch }> = []
-  let ocupado = 0
-  for (const t of lote) {
-    const d = diffDaTarefa(t, ctx)
-    const patch = patchDaTarefa(d)
-    if (pacote.length && ocupado + patch.total > LIMITE_DIFF) break
-    pacote.push({ d, patch })
-    ocupado += patch.texto.length
-  }
-  const resto = lote.slice(pacote.length)
-
   const id = `AUD-${String(auditorias.length + 1).padStart(3, '0')}`
-  const base = ctx.auditoria.ultimo_commit ?? pacote[0]?.d.tarefa.commit_base ?? null
+  const base = ctx.auditoria.ultimo_commit ?? lote[0]?.commit_base ?? null
   const cabeca = git(['rev-parse', 'HEAD'])
   const final = cabeca.ok ? cabeca.saida : null
+
+  // Empacota em ordem de conclusao enquanto o dossie MONTADO cabe no teto. A primeira entra sempre,
+  // mesmo sozinha acima do teto: esperar nunca a faria caber, e cortar na fronteira de arquivo e'
+  // melhor que nao auditar.
+  // ⚠️ Ate' a 0.12.0 a conta somava so' os diffs e deixava de fora regras, planos e fatos: medido em
+  // campo, o aviso anunciava 120 mil e o dossie saia com 157 mil.
+  const pacote: Array<{ d: DiffDaTarefa; patch: Patch }> = []
+  let tamanhoDoDossie = 0
+  for (const [i, t] of lote.entries()) {
+    const d = diffDaTarefa(t, ctx)
+    const candidato = [...pacote, { d, patch: patchDaTarefa(d) }]
+    const tamanho = dossie(id, candidato, lote.slice(i + 1), base, final, ctx).length
+    if (pacote.length && tamanho > LIMITE_DIFF) break
+    pacote.push(candidato.at(-1)!)
+    tamanhoDoDossie = tamanho
+  }
+  const resto = lote.slice(pacote.length)
 
   const auditoria: Auditoria = {
     id,
@@ -392,12 +410,48 @@ export function preparar(): number {
 
   console.log(`${id} preparada: ${pacote.length} tarefa(s) no lote.`)
   if (resto.length) {
-    console.log(`Ficaram ${resto.length} tarefa(s) para a proxima: o dossie chegou ao teto de ${LIMITE_DIFF} caracteres.`)
+    console.log(`Ficaram ${resto.length} tarefa(s) para a proxima: o dossie montado tem ${tamanhoDoDossie} caracteres, e a proxima tarefa passaria do teto de ${LIMITE_DIFF}.`)
     console.log(`Registre ${id} e rode "auditar preparar" de novo.`)
   }
   console.log(`\nAbra uma sessao NOVA de IA — outra janela, contexto zerado — e diga a ela:`)
   console.log(`  "Leia ${relativo(`${c.auditorias}/${id}-dossie.md`)} e siga o que esta escrito la."`)
   console.log(`\nO dossie e' tudo o que o auditor pode ver. Nao de o repositorio a ela.`)
+  return 0
+}
+
+export function preparar(flags: Flags = {}): number {
+  if (flags['lote-legado'] === 'true') return prepararLoteLegado()
+  const id = flags.tarefa
+  if (!id) {
+    const ctx = carregarContexto()
+    console.log(`Revisão incremental por tarefa (${ctx.auditoria.revisao_incremental_ativa ? 'ativa para tarefas novas' : 'ainda não obrigatória'}): node mentor.mjs auditar preparar --tarefa TASK-...`)
+    console.log('Lote histórico explícito, sem preparo automático: node mentor.mjs auditar preparar --lote-legado')
+    console.log('Consulta: node mentor.mjs auditar contexto REV-NNN --arquivo <caminho> --motivo <pergunta>; depois auditar registrar REV-NNN.')
+    console.log('Checkpoint de dez tarefas e migração do legado ainda pertencem à Fatia 3.')
+    return 0
+  }
+  const tarefa = carregarTarefas().find((t) => t.id === id)
+  if (!tarefa) throw new Error(`Tarefa ${id} não encontrada em abertas ou concluídas.`)
+  const c = caminhos()
+  const registro = prepararRevisaoIncremental({
+    raiz: c.raiz, pastaAuditorias: c.auditorias, tarefa,
+    tarefasConhecidas: carregarTarefas(),
+    resolverArquivosGerados: (arquivos) => {
+      const motivos = motivosDeExclusao(arquivos, carregarContexto(), extrairCaminhosDeclarados(tarefa.plano.muda))
+      return new Map([...motivos.entries()].filter(([, motivo]) => motivo !== null).map(([arquivo, motivo]) => [arquivo, String(motivo)]))
+    },
+  })
+  console.log(`${registro.id} preparada: ${registro.tarefas.join(', ')} · ${registro.arquivos.length} arquivos · ${registro.partes.length} parte(s)`)
+  console.log(`Em sessão independente, revise ${relativo(join(c.auditorias, `${registro.id}-dossie.md`))}. No JSON, declare sessao_revisora e veredito, marque as partes lidas; depois rode auditar registrar ${registro.id}.`)
+  return 0
+}
+
+export function contextoIncremental(id: string, flags: Flags): number {
+  const arquivo = flags.arquivo
+  if (!arquivo) throw new Error('Use auditar contexto REV-NNN --arquivo <caminho> --motivo "pergunta".')
+  const c = caminhos()
+  const destino = obterContextoAdicional(c.raiz, c.auditorias, id, arquivo, flags.motivo ?? '')
+  console.log(`Contexto registrado: ${relativo(join(c.auditorias, destino))}`)
   return 0
 }
 
@@ -413,7 +467,7 @@ function fatosMecanicos(pacote: Array<{ d: DiffDaTarefa; patch: Patch }>): strin
     if (d.classe === 'sem-diff') {
       // Nao pula o resto: tarefa que declara codigo e nao entrega diff e' exatamente o que a regra 1 pede para conferir.
       const declarados = extrairCaminhosDeclarados(t.plano.muda)
-      const motivos = motivosDeExclusao(declarados)
+      const motivos = motivosDeExclusao(declarados, carregarContexto(), declarados)
       const deCodigo = declarados.filter((a) => !motivos.get(a))
       fatos.push(deCodigo.length
         ? `⚠️ ${t.id}: declarou mudar ${deCodigo.slice(0, 5).join(', ')}, e nenhum arquivo auditavel aparece no diff da tarefa`
@@ -737,6 +791,7 @@ function dossie(
 
 export function registrar(id: string): number {
   const c = caminhos()
+  if (/^REV-\d{3,}$/.test(id)) return registrarRevisaoIncremental(c.raiz, c.auditorias, id)
   const caminho = `${c.auditorias}/${id}.json`
   const a = lerJson<Auditoria>(caminho)
   const impedimentos: string[] = []
@@ -831,7 +886,7 @@ export function resolver(pendenciaId: string, flags: Flags): number {
     throw new Error('Falta --ref: o ID criado, ou o motivo do descarte. Achado sem ref fica em limbo, e limbo apodrece.')
   }
   const c = caminhos()
-  for (const arquivo of listar(c.auditorias, '.json')) {
+  for (const arquivo of listar(c.auditorias, '.json').filter((p) => /^(AUD|REV)-\d+\.json$/.test(basename(p)))) {
     const a = lerJson<Auditoria>(arquivo)
     const p = a.pendencias.find((x) => x.id === pendenciaId)
     if (!p) continue
@@ -853,11 +908,17 @@ export function resolver(pendenciaId: string, flags: Flags): number {
 
 export function relatar(): number {
   const auditorias = carregarAuditorias()
+  const c = caminhos()
+  const incrementais = listar(c.auditorias, '.json').filter((p) => /REV-\d+\.json$/.test(p)).map((p) => lerJson<RevisaoIncremental>(p))
   if (auditorias.length === 0) {
+    for (const r of incrementais) console.log(`${r.id}  ${r.registrada_em ? r.veredito : 'PREPARADA'}  ·  ${r.tarefas.join(', ')} · ${r.preparada_em}`)
+    if (incrementais.length) return 0
     const ctx = carregarContexto()
     const feitas = concluidasEmOrdem().length
-    console.log(`Nenhuma auditoria ainda. Cadencia: a cada ${ctx.auditoria.cadencia_em_tarefas} tarefas concluidas com codigo (${feitas} concluida(s) ate agora).`)
-    console.log('Para montar o dossie do lote: node mentor.mjs auditar preparar')
+    console.log(ctx.auditoria.revisao_incremental_ativa
+      ? `Nenhuma revisão incremental registrada; ${feitas} tarefa(s) concluída(s) no histórico.`
+      : `Nenhuma auditoria ainda. Cadência legada: ${ctx.auditoria.cadencia_em_tarefas} tarefas (${feitas} concluída(s)).`)
+    console.log('Para revisar uma tarefa nova: node mentor.mjs auditar preparar --tarefa TASK-...')
     return 0
   }
   for (const a of auditorias) {
@@ -867,6 +928,7 @@ export function relatar(): number {
       console.log(`   ${marca(p.nivel)} ${p.id}  ${p.descricao}  [${fim}]`)
     }
   }
+  for (const r of incrementais) console.log(`${r.id}  ${r.registrada_em ? r.veredito : 'PREPARADA, sem veredito'}  ·  ${r.tarefas.join(', ')}  ·  ${r.preparada_em}`)
   const abertas = auditorias.flatMap((a) => a.pendencias).filter((p) => !p.resolvida_em).length
   console.log(`\n${abertas} pendencia(s) sem destino. A auditoria reporta; o destino e decisao sua.`)
   return 0

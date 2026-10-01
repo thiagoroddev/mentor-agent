@@ -1,10 +1,12 @@
 {
   "id": "TASK-SPIKE-001",
+  "revisao_incremental_requerida": false,
   "tipo": "SPIKE",
   "titulo": "A biblioteca de PDF roda no navegador?",
   "fatia_de": null,
   "estado": "em-execucao",
   "cerimonia": "Standard",
+  "perfil": null,
   "valor": "importante",
   "urgencia": "normal",
   "esforco": {
@@ -20,7 +22,7 @@
   "sem_requisito_motivo": null,
   "criada_em": "29/08/26 14:00",
   "iniciada_em": "29/08/26 14:00",
-  "commit_base": "dd27e8b8fb7b6e6079a23d66032bdff6f3f9bf2d",
+  "commit_base": "e9d3fcbc49ad9ef76986d634379b102c42262dc0",
   "concluida_em": null,
   "plano": {
     "muda": [

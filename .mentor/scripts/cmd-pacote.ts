@@ -3,7 +3,7 @@ import { join, relative } from 'node:path'
 import { analisadoresSemIgnorar, atualizarHookDoMentor, avisoDeNormas, copiarPacote, normasQueMudam } from './instalar.mjs'
 import { criarPontosDeEntrada } from './entrada.ts'
 import {
-  agoraIso, caminhos, escreverJson, escreverTexto, existe, lerJson, lerTexto, listar, raizPacote,
+  agoraIso, caminhos, escreverJson, escreverTexto, existe, lerJson, lerTexto, listar, raizPacote, raizProjeto,
 } from './arquivos.ts'
 
 /**
@@ -21,7 +21,7 @@ export interface Manifesto {
 
 const NOME = 'manifesto.json'
 
-function hashDe(texto: string): string {
+export function hashDe(texto: string): string {
   return createHash('sha256').update(texto).digest('hex').slice(0, 16)
 }
 
@@ -34,14 +34,16 @@ function arquivosDoPacote(pasta: string): Array<[string, string]> {
 }
 
 export function gerarManifesto(): void {
-  const raiz = raizPacote()
-  const versao = lerJson<{ version?: string }>(join(raiz, 'package.json')).version ?? '0.0.0'
+  const c = caminhos()
+  const r = raizProjeto()
+  const caminhoPkg = existe(join(r, 'package.json')) ? join(r, 'package.json') : join(raizPacote(), 'package.json')
+  const versao = existe(caminhoPkg) ? (lerJson<{ version?: string }>(caminhoPkg).version ?? '0.0.0') : '0.0.0'
   const m: Manifesto = {
     versao,
     gerado_em: agoraIso(),
-    arquivos: Object.fromEntries(arquivosDoPacote(join(raiz, '.mentor'))),
+    arquivos: Object.fromEntries(arquivosDoPacote(c.pacote)),
   }
-  escreverJson(join(raiz, '.mentor', NOME), m)
+  escreverJson(join(c.pacote, NOME), m)
   console.log(`Manifesto gerado: ${Object.keys(m.arquivos).length} arquivos, versao ${versao}.`)
 }
 

@@ -24,7 +24,7 @@ export function rodar(): Cenario {
     'docs/ preexistente e alheio ao mentor fica intacto')
 
   const ctx = lerJson<Record<string, any>>(c, 'docs-mentor/contexto.json')
-  confere(c, ctx['_meta'].versao_do_pacote === '0.12.0',
+  confere(c, ctx['_meta'].versao_do_pacote === '0.13.0',
     'a versao do pacote fica gravada no contexto: sem ela o relatorio nao atribui nada')
 
   confere(c, mentor(c, 'verificar').codigo === 0, 'pacote recem-instalado nao diverge de nada')
@@ -73,10 +73,17 @@ export function rodar(): Cenario {
   escrever(c, '.mentor/processos/inventado.md', '# processo local\n')
   const divergente = mentor(c, 'verificar')
   confere(c, divergente.codigo === 1, 'pacote editado depois da instalacao reprova o verificar')
-  dizQue(c, divergente, '1 mudado(s): nucleo.md', 'a mensagem nomeia o arquivo alterado')
-  dizQue(c, divergente, '1 acrescentado(s): processos/inventado.md', 'e o arquivo acrescentado')
-  dizQue(c, divergente, 'esquecer que editou vira divergencia silenciosa',
-    'a mensagem diz por que isso importa, e nao proibe editar')
+  dizQue(c, divergente, '.mentor/nucleo.md: arquivo diverge do pacote sem patch registrado', 'a mensagem nomeia o arquivo alterado')
+  dizQue(c, divergente, '.mentor/processos/inventado.md: arquivo diverge do pacote', 'e o arquivo acrescentado')
+  dizQue(c, divergente, 'Registre com: mentor patch registrar',
+    'a mensagem diz como registrar, e nao proibe editar')
+
+  // --- patch registrado deixa de reprovar; o que nao foi registrado continua
+  dizQue(c, mentor(c, 'patch', 'registrar', 'nucleo.md', '--tarefa', 'TASK-CHORE-001'), 'nucleo.md',
+    'registrar o patch confirma o arquivo')
+  const comPatch = mentor(c, 'verificar')
+  confere(c, !comPatch.saida.includes('.mentor/nucleo.md: arquivo diverge'), 'patch registrado deixa de ser achado')
+  dizQue(c, comPatch, '.mentor/processos/inventado.md: arquivo diverge', 'arquivo sem patch continua achado')
 
   // --- reinstalar por cima avisa antes de descartar
   const recusa = mentor(c, 'instalar', '--destino', c.pasta)

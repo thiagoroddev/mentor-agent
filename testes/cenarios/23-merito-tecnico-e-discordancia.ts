@@ -55,7 +55,7 @@ export function rodar(): Cenario {
     'iniciar preenche discordancia.o_que_existe_pronto_80_porcento com marcador PREENCHER:')
 
   // Tentar finalizar com marcadores: recusa
-  escrever(c, 'docs-mentor/tarefas/abertas/TASK-RF-001.md', '# TASK-RF-001\n\n## Decisoes tomadas\nOk.\n\n## O que nao foi feito, e por que\nNada.\n\n## Aprendizados\nNada.\n')
+  escrever(c, 'docs-mentor/tarefas/abertas/TASK-RF-001.md', '# TASK-RF-001\n\n## Decisoes tomadas\nOk.\n\n## O que nao foi feito, e por que\nNada.\n\n## Aprendizados\nNada.\n\n## Desfecho\nGates verdes; nada fora do previsto.\n')
   const rMarcador = mentor(c, 'task', 'finalizar', 'TASK-RF-001')
   dizQue(c, rMarcador, 'marcador PREENCHER: nao preenchido', 'recusa finalizar com marcadores de merito nao preenchidos')
 
@@ -131,7 +131,7 @@ export function rodar(): Cenario {
   // Deixar reguas_de_medicao sem preencher: recusa
   s1.plano.reguas_de_medicao = { piso: '', teto: '', padrao: '' }
   escrever(c, 'docs-mentor/tarefas/abertas/TASK-SPIKE-001.json', JSON.stringify(s1, null, 2))
-  escrever(c, 'docs-mentor/tarefas/abertas/TASK-SPIKE-001.md', '# TASK-SPIKE-001\n\n## A resposta\nLinear e melhor para N < 50.\n\n## O que foi descartado\nBusca binaria para N pequeno.\n\n## A tarefa que isto destrava\nnenhuma: resposta foi nao\n')
+  escrever(c, 'docs-mentor/tarefas/abertas/TASK-SPIKE-001.md', '# TASK-SPIKE-001\n\n## A resposta\nLinear e melhor para N < 50.\n\n## O que foi descartado\nBusca binaria para N pequeno.\n\n## A tarefa que isto destrava\nnenhuma: resposta foi nao\n\n## Desfecho\nGates verdes; nada fora do previsto.\n')
   const rSpikeSemReguas = mentor(c, 'task', 'finalizar', 'TASK-SPIKE-001')
   dizQue(c, rSpikeSemReguas, 'spike de medicao sem as tres reguas obrigatorias',
     'recusa spike de medicao sem as tres reguas')
@@ -197,7 +197,7 @@ export function rodar(): Cenario {
   tG.plano.estado_da_arte = { implementacoes_consolidadas: [], motivo_descarte: '', o_que_resta_construir: '' }
   tG.plano.custo_de_oportunidade = { o_que_existe_pronto: 'Chevrotain', custo_estimado: 'gratis', dependencias_ou_infra: 'nenhuma', tempo_substituido: '3 semanas' }
   escrever(c, 'docs-mentor/tarefas/abertas/TASK-RF-003.json', JSON.stringify(tG, null, 2))
-  escrever(c, 'docs-mentor/tarefas/abertas/TASK-RF-003.md', '# TASK-RF-003\n\n## Decisoes tomadas\nOk.\n\n## O que nao foi feito, e por que\nNada.\n\n## Aprendizados\nNada.\n')
+  escrever(c, 'docs-mentor/tarefas/abertas/TASK-RF-003.md', '# TASK-RF-003\n\n## Decisoes tomadas\nOk.\n\n## O que nao foi feito, e por que\nNada.\n\n## Aprendizados\nNada.\n\n## Desfecho\nGates verdes; nada fora do previsto.\n')
   
   const rSemEstadoDaArte = mentor(c, 'task', 'finalizar', 'TASK-RF-003')
   dizQue(c, rSemEstadoDaArte, 'exige secao "estado_da_arte" preenchida', 'recusa tarefa G sem estado da arte')
@@ -248,7 +248,7 @@ export function rodar(): Cenario {
   s2.plano.discordancia = { o_que_faria_diferente: 'Nada a objetar', o_que_preocupa: 'Nada a objetar', o_que_existe_pronto_80_porcento: 'Nenhuma conhecida' }
   s2.achados = [{ classe: 3, descricao: 'resultado inconclusivo sobre ganho de performance', destino: 'descartado', ref: 'inconclusivo' }]
   escrever(c, 'docs-mentor/tarefas/abertas/TASK-SPIKE-002.json', JSON.stringify(s2, null, 2))
-  escrever(c, 'docs-mentor/tarefas/abertas/TASK-SPIKE-002.md', '# TASK-SPIKE-002\n\n## A resposta\ninconclusivo por variancia do hardware\n\n## O que foi descartado\nNada.\n\n## A tarefa que isto destrava\nnenhuma\n')
+  escrever(c, 'docs-mentor/tarefas/abertas/TASK-SPIKE-002.md', '# TASK-SPIKE-002\n\n## A resposta\ninconclusivo por variancia do hardware\n\n## O que foi descartado\nNada.\n\n## A tarefa que isto destrava\nnenhuma\n\n## Desfecho\nGates verdes; nada fora do previsto.\n')
   escrever(c, 'mem.ts', 'export const mem = () => 1\n')
   mentor(c, 'task', 'gate', 'TASK-SPIKE-002', 'testes')
   const rFinS2 = mentor(c, 'task', 'finalizar', 'TASK-SPIKE-002')

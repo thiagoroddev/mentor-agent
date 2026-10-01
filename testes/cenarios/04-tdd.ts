@@ -19,7 +19,7 @@ export function rodar(): Cenario {
     escrever(c, `docs-mentor/tarefas/abertas/${id}.json`, JSON.stringify(t, null, 2))
     escrever(c, `docs-mentor/tarefas/abertas/${id}.md`,
       '# t\n\n## Decisoes tomadas\na\n\n## O que nao foi feito, e por que\nb\n\n' +
-      '## Testes de descoberta\nNenhuma.\n\n## Aprendizados\nNada.\n')
+      '## Testes de descoberta\nNenhuma.\n\n## Aprendizados\nNada.\n\n## Desfecho\nGates verdes; nada fora do previsto.\n')
   }
 
   mentor(c, 'task', 'nova', '--tipo', 'RF', '--titulo', 'Somar as parcelas',
@@ -36,6 +36,8 @@ export function rodar(): Cenario {
   ctx['qualidade'].metodo_de_teste = 'teste-depois'
   ctx['qualidade'].metodo_motivo = 'projeto legado sem suite; os testes nascem cobrindo o que ja existe'
   escrever(c, 'docs-mentor/contexto.json', JSON.stringify(ctx, null, 2))
+  // O contexto e' insumo do gate (hash semantico): mudou o metodo, a evidencia anterior e' de outra arvore.
+  mentor(c, 'task', 'gate', 'TASK-RF-001', 'testes')
   dizQue(c, mentor(c, 'task', 'finalizar', 'TASK-RF-001'), 'concluida', 'com teste-depois, fecha sem vermelho')
 
   // Spike: exploracao declarada, sem criterio com teste, com narrativa propria.

@@ -7,4 +7,4 @@
 
 | ID | Titulo | Fatia | Tipo | Valor | Esforco H/IA | Origem |
 |---|---|---|---|---|---|---|
-| `TASK-RF-002` | Tarefa abrangente | - | RF | importante | M/M | chat |
+| | Nada guardado | | | | | |

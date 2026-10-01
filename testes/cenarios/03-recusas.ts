@@ -16,11 +16,10 @@ export function rodar(): Cenario {
     '--esforco', 'P/P', '--origem', 'titulo-autossuficiente')
   mentor(c, 'task', 'nova', '--tipo', 'CHORE', '--titulo', 'Segunda',
     '--esforco', 'P/P', '--origem', 'titulo-autossuficiente')
-  mentor(c, 'task', 'nova', '--tipo', 'BG', '--titulo', 'Origem que nao resolve',
-    '--esforco', 'P/P', '--origem', 'RF-99, ADR-77')
-
-  dizQue(c, mentor(c, 'task', 'puxar', 'TASK-BG-001'),
-    'RF-99, ADR-77, que nao existe', 'origem que nao resolve nao entra no ciclo')
+  // A origem e' conferida no `nova`: ponteiro que nao resolve nem chega a virar tarefa.
+  dizQue(c, mentor(c, 'task', 'nova', '--tipo', 'BG', '--titulo', 'Origem que nao resolve',
+    '--esforco', 'P/P', '--origem', 'RF-99, ADR-77'),
+    'RF-99, ADR-77, que nao existe', 'origem que nao resolve nao vira tarefa')
 
   dizQue(c, mentor(c, 'task', 'iniciar', 'TASK-CHORE-001'),
     'esta na reserva', 'nao se inicia tarefa que ainda esta na reserva')
@@ -47,7 +46,7 @@ export function rodar(): Cenario {
   t['achados'] = [{ classe: 1, descricao: 'token no log', destino: 'divida_tecnica', ref: '' }]
   escrever(c, 'docs-mentor/tarefas/abertas/TASK-CHORE-001.json', JSON.stringify(t, null, 2))
   escrever(c, 'docs-mentor/tarefas/abertas/TASK-CHORE-001.md',
-    '# t\n\n## Decisoes tomadas\na\n\n## O que nao foi feito, e por que\nb\n\n## Aprendizados\nNada.\n')
+    '# t\n\n## Decisoes tomadas\na\n\n## O que nao foi feito, e por que\nb\n\n## Aprendizados\nNada.\n\n## Desfecho\nGates verdes; nada fora do previsto.\n')
 
   const recusa = mentor(c, 'task', 'finalizar', 'TASK-CHORE-001')
   dizQue(c, recusa, 'achado[0] sem "ref"', 'nao fecha com achado sem destino resolvido')

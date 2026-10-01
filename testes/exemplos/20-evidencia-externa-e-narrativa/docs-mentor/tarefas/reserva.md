@@ -7,4 +7,4 @@
 
 | ID | Titulo | Fatia | Tipo | Valor | Esforco H/IA | Origem |
 |---|---|---|---|---|---|---|
-| `TASK-RF-001` | Teste de gate externo | - | RF | importante | P/P | chat |
+| | Nada guardado | | | | | |

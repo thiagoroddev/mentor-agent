@@ -1,10 +1,12 @@
 {
   "id": "TASK-BG-012",
+  "revisao_incremental_requerida": false,
   "tipo": "BG",
   "titulo": "Bug seguinte",
   "fatia_de": null,
   "estado": "aberta",
   "cerimonia": "Standard",
+  "perfil": null,
   "valor": "importante",
   "urgencia": "normal",
   "esforco": {

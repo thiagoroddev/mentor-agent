@@ -1,10 +1,12 @@
 {
   "id": "TASK-RF-001",
+  "revisao_incremental_requerida": false,
   "tipo": "RF",
   "titulo": "Somar as parcelas",
   "fatia_de": null,
   "estado": "concluida",
   "cerimonia": "Standard",
+  "perfil": null,
   "valor": "importante",
   "urgencia": "normal",
   "esforco": {
@@ -20,7 +22,7 @@
   "sem_requisito_motivo": "teste de tdd",
   "criada_em": "29/08/26 14:00",
   "iniciada_em": "29/08/26 14:00",
-  "commit_base": "dd27e8b8fb7b6e6079a23d66032bdff6f3f9bf2d",
+  "commit_base": "e9d3fcbc49ad9ef76986d634379b102c42262dc0",
   "concluida_em": "29/08/26 14:00",
   "plano": {
     "muda": [
@@ -45,12 +47,15 @@
       "codigo_saida": 0,
       "saida": "\"3 passed\"",
       "executado_em": "29/08/26 14:00",
-      "commit_execucao": "dd27e8b8fb7b6e6079a23d66032bdff6f3f9bf2d",
-      "arvore_hash": "cd6738637aee8e1fe25539b4ba7f18e4b3ffa0e0",
+      "commit_execucao": "e9d3fcbc49ad9ef76986d634379b102c42262dc0",
+      "arvore_hash": "0255644c7d64f5c24c15efc4bb093fa39baf0e3a",
       "arvore_sem_documentos": true,
       "evidencia_url": null,
       "motivo": null,
       "ressalva": null,
+      "log_ref": "docs-mentor/.evidencias/logs/TASK-RF-001-testes-1790895897371.log",
+      "chave_cache": "50d54fa6dbb02bc7f148e66490e562d59157d9d0441e13b6d6e0a6855f4f3ff7",
+      "digest_insumos": "0255644c7d64f5c24c15efc4bb093fa39baf0e3a",
       "vermelho_dispensado": null
     }
   },
@@ -64,5 +69,5 @@
   "riscos_aceitos": [],
   "absorvida_por": null,
   "cancelamento_motivo": null,
-  "narrativa": "2026-08-29--14h00--TASK-RF-001.md"
+  "narrativa": "2026-08-29--14h00--TASK-RF-001--estudo-humano.md"
 }

@@ -3,19 +3,14 @@
 <!-- Gerado por `node mentor.mjs gerar`. Nao edite a mao: a proxima geracao sobrescreve. -->
 
 **Fase:** nao definida · **Rigor:** nao definido
-**Respondido por voce:** 7 · **Padrao do pacote:** 28 · **Em aberto:** 165
+**Respondido por voce:** 0 · **Padrao do pacote:** 28 · **Em aberto:** 180
 
 ⚠️ **Portoes ainda abertos:** V_negocio · C_obrigacoes · 0_rigor · P_problema · I_uso · A_arquitetura · N_persistencia · S_ameacas · O_automacao. Cada um tem arquivo em `.mentor/guia/00-indice.md`.
 
 ## Respondido por voce
 
-- `qualidade.perfil.avaliadas`: 0
-- `qualidade.perfil.conformes`: 0
-- `qualidade.perfil.ressalvas`: 0
-- `qualidade.perfil.reprovadas`: 0
-- `qualidade.perfil.sem_meta`: 8
-- `qualidade.perfil.sem_afericao`: 0
-- `lembretes`: 4 item(s)
+Nenhum campo ainda. Tudo o que esta preenchido veio pronto do pacote.
+
 28 campo(s) vieram preenchidos pelo pacote e ainda nao foram olhados.
 Valem enquanto ninguem decidir outra coisa.
 

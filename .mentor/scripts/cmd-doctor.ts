@@ -1,6 +1,6 @@
 import { spawnSync } from 'node:child_process'
 import { join } from 'node:path'
-import { agora, caminhos, diasDesde, escreverJson, existe, lerTexto, listar } from './arquivos.ts'
+import { agora, caminhos, diasDesde, existe, lerTexto, listar, relativo } from './arquivos.ts'
 import { tetos } from './cmd-verificar.ts'
 import { rascunhosParados } from './cmd-anotar.ts'
 import { PONTOS_DE_ENTRADA, pontosDeEntradaSemNucleo } from './entrada.ts'
@@ -13,7 +13,8 @@ import { CARACTERISTICAS } from './tipos.ts'
 import { chavesVencidas, laboratorioDe, saidasVersionadas } from './laboratorio.ts'
 import type { Caracteristica, Contexto, EstadoDaCaracteristica, Fase, MetaDeQualidade, Tarefa } from './tipos.ts'
 import { estadoDaCadencia, maioresArquivos } from './cmd-auditar.ts'
-import { coletarRestricoesReconfirmadas, chaveDaRestricao } from './restricoes.ts'
+import { adrCitaRestricao, arquivoDaAdr, coletarRestricoesReconfirmadas } from './restricoes.ts'
+import { perfilDeProcesso, politicaDaTarefa } from './politica-rigor.ts'
 
 /**
  * Folha de saude do projeto. Tres propriedades a sustentam, e as tres foram medidas em campo:
@@ -69,7 +70,7 @@ function seguranca(ctx: Contexto): Linha[] {
   if (rigor === 'N2' || rigor === 'N3') {
     linhas.push(dep?.automatica === true
       ? { estado: 'ok', texto: 'analise de dependencias automatica' }
-      : { estado: 'bloqueio', texto: `analise de dependencias nao e automatica, e o rigor e ${rigor} (guia OPS-27)` })
+      : { estado: perfilDeProcesso(ctx) === 'enxuto' ? 'atencao' : 'bloqueio', texto: `analise de dependencias nao e automatica, e o rigor e ${rigor} (guia OPS-27)` })
   }
 
   const plataforma = ctx['configuracoes_de_plataforma'] as Record<string, unknown> | undefined
@@ -134,7 +135,7 @@ function qualidade(ctx: Contexto, tarefas: Tarefa[]): Linha[] {
   const concluidas = tarefas.filter((t) => t.estado === 'concluida' && t.tipo !== 'SPIKE')
   const semTeste = concluidas.filter((t) => t.plano.criterios_aceite.some((cr) => !cr.teste?.trim()))
   linhas.push(semTeste.length
-    ? { estado: 'bloqueio', texto: `${semTeste.length} tarefa(s) concluida(s) com criterio sem teste nomeado` }
+    ? { estado: perfilDeProcesso(ctx) === 'enxuto' ? 'atencao' : 'bloqueio', texto: `${semTeste.length} tarefa(s) concluida(s) com criterio sem teste nomeado` }
     : { estado: 'ok', texto: `metodo de teste "${metodo ?? 'nao declarado'}", todo criterio com teste nomeado` })
 
   // M6: Reincidência de spikes inconclusivos
@@ -220,7 +221,7 @@ function processo(ctx: Contexto, tarefas: Tarefa[]): Linha[] {
     }
   }
 
-  const pendentes = tarefas.filter((t) => t.validacao === 'pendente')
+  const pendentes = tarefas.filter((t) => t.validacao === 'pendente' && politicaDaTarefa(ctx, t).validacao_manual === 'bloqueia')
   if (pendentes.length) {
     linhas.push({ estado: 'atencao', texto: `${pendentes.length} validacao(oes) manual(is) pendente(s): ${pendentes.map((t) => t.id).join(', ')}` })
   }
@@ -428,40 +429,49 @@ function processo(ctx: Contexto, tarefas: Tarefa[]): Linha[] {
 
   // Auditoria: o doctor mede a cadencia (tarefas com diff auditavel) e conta os bloqueios que ela reportou.
   const au = ctx.auditoria
-  const cad = estadoDaCadencia(ctx)
-  const naoContam = cad.pendentes.length - cad.contam.length
-  const resumo = `${cad.contam.length} tarefa(s) com codigo sem auditoria (cadencia ${cad.cadencia}` +
-    `${naoContam ? `; ${naoContam} sem diff auditavel nao conta(m)` : ''})`
-  const maiores = maioresArquivos(cad.contam)
-  const deOndeVem = maiores.length
-    ? ` Maiores arquivos: ${maiores.map((m) => `${m.caminho} (${m.linhas} linhas)`).join(', ')}.`
-    : ''
-  if (cad.estado === 'atrasada') {
-    linhas.push({ estado: 'bloqueio', texto: `${resumo}: o dobro da cadencia.${deOndeVem} Rode: mentor auditar preparar` })
-  } else if (cad.estado === 'vencida') {
-    linhas.push({ estado: 'atencao', texto: `${resumo}.${deOndeVem} Rode: mentor auditar preparar` })
-  } else if (au.ultima_em) {
-    linhas.push({
-      estado: 'ok',
-      texto: `auditoria em dia: ultima em ${au.ultima_em}, ${cad.contam.length} de ${cad.cadencia} tarefa(s) com codigo desde entao`,
+  const perfil = perfilDeProcesso(ctx)
+  const classificacao = ctx.projeto.classificacao as Record<string, unknown> | undefined
+  linhas.push({ estado: classificacao ? 'neutro' : 'atencao', texto: classificacao
+    ? `perfil ${perfil}: ${classificacao.finalidade}/${classificacao.maturidade}, codigo ${classificacao.visibilidade_codigo}, uso atual ${classificacao.uso_atual ?? 'nao declarado'}`
+    : 'classificacao do projeto ausente; politica anterior permanece ate declarar finalidade, maturidade e visibilidade do codigo' })
+  if (au.revisao_incremental_ativa) {
+    const pasta = caminhos().auditorias
+    const revs = listar(pasta, '.json').filter((p) => /REV-\d+\.json$/.test(p)).flatMap((p) => {
+      try { return [JSON.parse(lerTexto(p)) as { estado: string; tarefas: string[] }] } catch { return [] }
     })
-  }
-  if (cad.campo_obsoleto) {
-    linhas.push({
-      estado: 'neutro',
-      texto: 'auditoria.cadencia_em_caracteres nao e mais usado desde a 0.8.0: a cadencia conta tarefas, e o tamanho so decide como o dossie se divide. Pode apagar o campo',
-    })
+    const concluidasNovas = tarefas.filter((t) => t.estado === 'concluida' && politicaDaTarefa(ctx, t).revisao === 'bloqueia')
+    const semParecer = concluidasNovas.filter((t) => !revs.some((r) => r.estado === 'aprovada' && r.tarefas.includes(t.id)))
+    linhas.push({ estado: semParecer.length ? 'atencao' : 'ok', texto: `revisão incremental ativa, política proporcional: ${revs.filter((r) => r.estado === 'aprovada').length} aprovada(s), ${revs.filter((r) => r.estado === 'desatualizada').length} desatualizada(s), ${semParecer.length} tarefa(s) com REV exigida e sem parecer; histórico AUD preservado` })
+  } else {
+    const cad = estadoDaCadencia(ctx)
+    const naoContam = cad.pendentes.length - cad.contam.length
+    const resumo = `${cad.contam.length} tarefa(s) com codigo sem auditoria (cadencia ${cad.cadencia}` +
+      `${naoContam ? `; ${naoContam} sem diff auditavel nao conta(m)` : ''})`
+    const maiores = maioresArquivos(cad.contam)
+    const deOndeVem = maiores.length
+      ? ` Maiores arquivos: ${maiores.map((m) => `${m.caminho} (${m.linhas} linhas)`).join(', ')}.`
+      : ''
+    if (cad.estado === 'atrasada') {
+      linhas.push({ estado: 'atencao', texto: `${resumo}: o dobro da cadencia.${deOndeVem} Recomendado rodar auditoria por risco: mentor auditar preparar --lote-legado` })
+    } else if (cad.estado === 'vencida') {
+      linhas.push({ estado: 'atencao', texto: `${resumo}.${deOndeVem} Rode: mentor auditar preparar --lote-legado` })
+    } else if (au.ultima_em) {
+      linhas.push({ estado: 'ok', texto: `auditoria legada em dia: ultima em ${au.ultima_em}, ${cad.contam.length} de ${cad.cadencia} tarefa(s) com codigo desde entao` })
+    }
+    if (cad.campo_obsoleto) linhas.push({ estado: 'neutro', texto: 'auditoria.cadencia_em_caracteres nao e mais usado desde a 0.8.0; pode apagar o campo' })
   }
   const bloqueiosDeAuditoria = au.pendencias_reportadas
   if (bloqueiosDeAuditoria.length) {
-    linhas.push({ estado: 'bloqueio', texto: `${bloqueiosDeAuditoria.length} achado(s) de auditoria nivel "bloqueia" sem destino: ${bloqueiosDeAuditoria.join(', ')}. Decida com: mentor auditar resolver <ID> --destino ... --ref "..."` })
+    linhas.push({ estado: perfil === 'enxuto' ? 'atencao' : 'bloqueio', texto: `${bloqueiosDeAuditoria.length} achado(s) de auditoria sem destino: ${bloqueiosDeAuditoria.join(', ')}. Examine o impacto atual antes de decidir o destino.` })
   }
 
   // A revisao geral e' a unica auditoria que custa uma sessao. Por isso e' a unica com lembrete.
   const concluidas = tarefas.filter((t) => t.estado === 'concluida').length
   const desde = concluidas - (ctx.revisao_geral.ultima_na_tarefa ?? 0)
   const r = ctx.revisao_geral
-  if (desde >= r.bloqueio_em_tarefas) {
+  if (perfil === 'enxuto') {
+    // Protótipo pessoal não acumula dívida de revisão por contagem de tarefas.
+  } else if (desde >= r.bloqueio_em_tarefas) {
     linhas.push({ estado: 'bloqueio', texto: `${desde} tarefas desde a ultima revisao geral (bloqueia em ${r.bloqueio_em_tarefas})` })
   } else if (desde >= r.atraso_em_tarefas) {
     linhas.push({ estado: 'atencao', texto: `revisao geral atrasada: ${desde} tarefas desde a ultima` })
@@ -472,26 +482,24 @@ function processo(ctx: Contexto, tarefas: Tarefa[]): Linha[] {
   // Restrições fundadoras reavaliadas (M3 / Frente G)
   const c = caminhos()
   const restricoesReconf = coletarRestricoesReconfirmadas(tarefas)
-  const pastaAdrs = join(c.docs, 'adrs')
-  const adrsExistentes = existe(pastaAdrs) ? listar(pastaAdrs, '.md') : []
+  const pastaAdrs = relativo(c.adr)
   for (const r of restricoesReconf) {
     if (r.contagem === 2) {
       linhas.push({
         estado: 'atencao',
-        texto: `restricao "${r.restricao}" reconfirmada em 2 tarefas (${r.tarefas.join(', ')}): a proxima reconfirmacao exigira ADR documentada em docs-mentor/adrs/`,
+        texto: `restricao "${r.restricao}" reconfirmada em 2 tarefas (${r.tarefas.join(', ')}): a proxima reconfirmacao exigira ADR documentada em ${pastaAdrs}/`,
       })
     } else if (r.contagem >= 3) {
-      const idAdrMatch = r.restricao.match(/\b(ADR-\d+)\b/i)
-      const chaveNorm = chaveDaRestricao(r.restricao)
-      const adrValida = adrsExistentes.some((arq) => {
-        const conteudo = lerTexto(arq)
-        if (idAdrMatch && arq.toUpperCase().includes(idAdrMatch[1]!.toUpperCase())) return true
-        return chaveDaRestricao(conteudo).includes(chaveNorm) || conteudo.toLowerCase().includes(r.restricao.toLowerCase())
-      })
+      // A mesma regra do finalizar (restricoes.ts): ADR que existe no caminho oficial e cita a
+      // restricao, vinculada por uma das tarefas, ou a propria ADR que a restricao nomeia.
+      const idNaRestricao = r.restricao.match(/\b(ADR-\d+)\b/i)?.[1]
+      const vinculadas = tarefas.filter((t) => r.tarefas.includes(t.id)).flatMap((t) => t.adrs ?? [])
+      const adrValida = (idNaRestricao !== undefined && arquivoDaAdr(c, idNaRestricao) !== null) ||
+        vinculadas.some((adrId) => adrCitaRestricao(c, adrId, r.restricao))
       if (!adrValida) {
         linhas.push({
           estado: 'atencao',
-          texto: `restricao "${r.restricao}" reconfirmada em ${r.contagem} tarefas (${r.tarefas.join(', ')}) sem ADR vinculada encontrada em docs-mentor/adrs/: crie a ADR correspondente para consolidar a decisao arquitetural`,
+          texto: `restricao "${r.restricao}" reconfirmada em ${r.contagem} tarefas (${r.tarefas.join(', ')}) sem ADR vinculada encontrada em ${pastaAdrs}/: crie a ADR correspondente, citando a restricao, para consolidar a decisao arquitetural`,
         })
       } else {
         linhas.push({
@@ -531,14 +539,15 @@ export function doctor(): number {
   }
 
   const bloqueios = secoes.flatMap(([, l]) => l).filter((l) => l.estado === 'bloqueio').length + p.reprovadas
+  if (perfilDeProcesso(ctx) === 'enxuto') {
+    console.log(bloqueios === 0
+      ? 'FLUXO DO PROTOTIPO?  LIVRE — nenhum bloqueio; publicação exige avaliação própria'
+      : `FLUXO DO PROTOTIPO?  BLOQUEADO — ${bloqueios} bloqueio(s)`)
+    return 0
+  }
   console.log(bloqueios === 0
     ? 'PRONTO PARA PUBLICO?  SIM — nenhum bloqueio'
     : `PRONTO PARA PUBLICO?  NAO — ${bloqueios} bloqueio(s)`)
 
-  // Os lembretes sao SAIDA: o doctor os calcula e sobrescreve. Campo livre acumularia prosa.
-  ctx.lembretes = secoes.flatMap(([, l]) => l).filter((l) => l.estado !== 'ok' && l.estado !== 'neutro').map((l) => l.texto)
-  const q = ctx['qualidade'] as Record<string, unknown>
-  q['perfil'] = { _gerado_por_doctor: true, de: 8, ...p.resumo }
-  escreverJson(caminhos().contexto, ctx)
   return 0
 }

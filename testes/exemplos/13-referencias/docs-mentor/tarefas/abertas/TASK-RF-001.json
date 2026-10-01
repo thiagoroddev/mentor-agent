@@ -1,10 +1,12 @@
 {
   "id": "TASK-RF-001",
+  "revisao_incremental_requerida": false,
   "tipo": "RF",
   "titulo": "Tela de login",
   "fatia_de": null,
   "estado": "aberta",
   "cerimonia": "Standard",
+  "perfil": null,
   "valor": "importante",
   "urgencia": "normal",
   "esforco": {

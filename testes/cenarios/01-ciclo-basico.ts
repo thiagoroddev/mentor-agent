@@ -37,7 +37,7 @@ export function rodar(): Cenario {
   escrever(c, 'docs-mentor/tarefas/abertas/TASK-RF-001.json', JSON.stringify(t, null, 2))
   escrever(c, 'docs-mentor/tarefas/abertas/TASK-RF-001.md',
     '# TASK-RF-001\n\n## Decisoes tomadas\nAspas duplas em todo campo de texto, sempre.\n\n' +
-    '## O que nao foi feito, e por que\nNenhum outro formato: so pediram CSV.\n\n## Aprendizados\nNada.\n')
+    '## O que nao foi feito, e por que\nNenhum outro formato: so pediram CSV.\n\n## Aprendizados\nNada.\n\n## Desfecho\nGates verdes; nada fora do previsto.\n')
 
   // Metodo padrao e' tdd: o vermelho vem antes, e o comando recusa se sair verde.
   const vermelho = mentor(c, 'task', 'gate', 'TASK-RF-001', 'testes', '--esperando-vermelho')
@@ -51,7 +51,7 @@ export function rodar(): Cenario {
   ctx['gates']['testes'].comando = 'echo "42 passed, 0 failed"'
   escrever(c, 'docs-mentor/contexto.json', JSON.stringify(ctx, null, 2))
   const gate = mentor(c, 'task', 'gate', 'TASK-RF-001', 'testes')
-  dizQue(c, gate, 'APROVADO (saida 0)', 'o rotulo sai do codigo de saida do processo')
+  dizQue(c, gate, 'APROVADO: testes (saida 0', 'o rotulo sai do codigo de saida do processo')
 
   dizQue(c, mentor(c, 'task', 'finalizar', 'TASK-RF-001'), 'concluida', 'fecha com plano e gate verdes')
 

@@ -53,8 +53,8 @@ export function rodar(): Cenario {
     escrever(c, registro(id), JSON.stringify(t, null, 2))
   }
   const narrar = (id: string, spike: boolean) => escrever(c, `docs-mentor/tarefas/abertas/${id}.md`, spike
-    ? '# s\n\n## A resposta\nAgrupar pela rua basta.\n\n## O que foi descartado\nO motor antigo.\n\n## A tarefa que isto destrava\nnenhuma: resposta registrada\n'
-    : '# t\n\n## Decisoes tomadas\na\n\n## O que nao foi feito, e por que\nb\n\n## Testes de descoberta\nNenhuma.\n\n## Aprendizados\nNada.\n')
+    ? '# s\n\n## A resposta\nAgrupar pela rua basta.\n\n## O que foi descartado\nO motor antigo.\n\n## A tarefa que isto destrava\nnenhuma: resposta registrada\n\n## Desfecho\nGates verdes; nada fora do previsto.\n'
+    : '# t\n\n## Decisoes tomadas\na\n\n## O que nao foi feito, e por que\nb\n\n## Testes de descoberta\nNenhuma.\n\n## Aprendizados\nNada.\n\n## Desfecho\nGates verdes; nada fora do previsto.\n')
   const abrir = (tipo: string, id: string, titulo: string) => {
     const extra = tipo === 'SPIKE' ? [] : ['--sem-requisito', '--motivo', 'cenario']
     mentor(c, 'task', 'nova', '--tipo', tipo, '--titulo', titulo, '--esforco', 'P/P', '--origem', 'titulo-autossuficiente', ...extra)
@@ -171,6 +171,8 @@ export function rodar(): Cenario {
   const ctxArt = contexto()
   ctxArt.laboratorio.artefatos_importaveis = [{ artefato: 'roteiro.json', teste_de_contrato: contrato }]
   gravarContexto(ctxArt)
+  // O contexto e' insumo do gate (hash semantico): registrar o artefato pede o gate de novo.
+  mentor(c, 'task', 'gate', 'TASK-SPIKE-004', 'testes')
   dizQue(c, mentor(c, 'task', 'finalizar', 'TASK-SPIKE-004'), 'TASK-SPIKE-004 concluida', 'L3: registrado e resolvido, fecha')
   commit('feat(TASK-SPIKE-004): exporta roteiro')
 
@@ -201,7 +203,7 @@ export function rodar(): Cenario {
 
   // --- L6. o dossie mostra o que o auditor precisa conferir
   commit('chore(light): chave e gitignore')
-  mentor(c, 'auditar', 'preparar')
+  mentor(c, 'auditar', 'preparar', '--lote-legado')
   const dossie = ler(c, 'docs-mentor/auditorias/AUD-001-dossie.md')
   confere(c, dossie.includes('pedido original: deixa a chave do algoritmo de teste desligada'), 'L6: dossie mostra o pedido original')
   confere(c, dossie.includes('alternativa: pratica consolidada 2'), 'L6: dossie mostra as alternativas')

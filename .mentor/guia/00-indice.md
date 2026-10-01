@@ -22,12 +22,14 @@ Regras que o agente aplica **por conta própria**, sem depender de o usuário sa
 
 | Nível | Contexto | Vale |
 | :-- | :-- | :-- |
-| **N1** protótipo | Descartável, sem usuário externo, sem dado real | `BLOQUEIA` |
-| **N2** produto | Usuários reais, dados reais, precisa evoluir | `BLOQUEIA` + `ACEITE` |
-| **N3** crítico | Dinheiro, saúde, dado pessoal em escala, obrigação legal | Tudo; `RECOMENDA` vira `ACEITE` |
+| **N1** exposição baixa | Sem usuário externo nem dado real | `BLOQUEIA` pertinente ao risco |
+| **N2** exposição relevante | Usuários ou dados reais | `BLOQUEIA` pertinente + `ACEITE` |
+| **N3** exposição crítica | Dinheiro, saúde, dado pessoal em escala ou obrigação legal crítica | Exigências do risco crítico |
 
-**Promoção automática:** dado pessoal, cobrança, uso por terceiros ou decisão automatizada sobre
-pessoa levam a **N2 no mínimo**, mesmo que o usuário chame o projeto de teste.
+**Risco e processo são eixos distintos.** Dado pessoal, cobrança, uso por terceiros ou decisão
+automatizada **atuais** justificam N2 no mínimo, mesmo num protótipo. `projeto.classificacao`
+define o perfil de processo; protótipo pessoal continua enxuto para mudanças rotineiras, e risco
+concreto na mudança aciona bloqueios específicos. Risco apenas planejado não é operação atual.
 
 **Segundo eixo, tamanho.** Criticidade define *o que* é obrigatório; o número de pessoas define
 *quanto precisa estar escrito*. Uma pessoa coordena por memória; a partir de um punhado, o que

@@ -25,12 +25,9 @@ foram entregues juntas.
 
 **Sempre publicável** (guia OPS-20). Quebrada, consertá-la vem antes de qualquer funcionalidade.
 
-**Protegida:** não aceita envio direto. Toda mudança entra por revisão com a esteira verde. Quando `contexto.json` declara `revisao_antes_do_merge`, o hook de pre-push barra envios diretos para a `main`. A `main` local é espelho estrito de `origin/main` e não recebe trabalho em andamento.
+Quando `contexto.json` exige PR em `revisao_antes_do_merge`, o hook barra envio direto à linha principal. Quando o projeto dispensa PR, o fluxo local declarado em `estrategia_de_ramos` vale. A classificação do projeto e o risco da mudança determinam REV e gates obrigatórios; autorização de fechamento/push continua exigida. Não reative PR como efeito colateral da auditoria.
 
-**O que o hook de pre-push faz,** olhando os ramos enviados e não o ramo atual: roda os gates; barra
-envio à linha principal protegida e commit que toque código sem `(TASK-X-NNN)` nem `(light)` no
-título (`.mentor/` igual ao manifesto não é código); e **mostra** o `verificar`, sem barrar. Envio
-só para `wip/` passa direto. O dossiê da auditoria lista cada commit Light com as linhas tocadas.
+**O que o hook de pre-push faz,** olhando os refs enviados: confere marca de tarefa, cobertura incremental contra os blobs do ref (inclusive outro ramo/worktree), evidência dos gates para a árvore enviada e os gates locais quando aplicáveis; depois **mostra** o `verificar`, sem barrar por achados não relacionados. Mudança auditável depois do parecer exige nova `REV`. Envio só para `wip/` passa direto. Light sem mudança auditável segue as checagens mecânicas; a marca `(light)` sozinha não libera conteúdo funcional.
 
 **Prova por Árvore em Squash Merge:**
 Quando o projeto adota merge por *squash* (gerando um commit único com novo SHA na linha principal), o Git local perde o vínculo de ancestrais e comandos como `git branch --merged` não reconhecem o ramo como entregue, fazendo o `git branch -d` recusar a exclusão.
@@ -60,7 +57,7 @@ Para permitir que requisitos, ideias, tarefas na reserva e anotações sejam reg
 1. **Destino do planejamento:**
    - O código, narrativa, achados e gates de uma tarefa pertencem exclusivamente ao ramo dela.
    - Planejamento independente vai para um ramo curto `plan/<data>-<tema>` criado a partir da `main` atualizada.
-   - O PR de planejamento usa a marca explícita `(plano)` no título (ex.: `docs: novo fluxo de checkout (plano)`).
+   - O PR de planejamento leva a marca `(plano)` na posição de escopo do título, como `(light)` (ex.: `docs(plano): novo fluxo de checkout`).
 
 2. **Worktrees do Git (uma pasta por sessão):**
    - Para rodar sessões paralelas ou registrar planejamento com a `main` protegida, use `git worktree add ../<pasta-da-sessao> <branch>`.
@@ -163,4 +160,3 @@ já estava publicada. O remoto não se moveu, porque git recusa sobrescrever tag
 Bastaria um `--force` para o estrago sair de local e virar público, sem erro na tela. E a instalação
 por gerenciador nunca funcionou enquanto só se rodava da pasta local, apesar de documentada como se
 funcionasse.
-

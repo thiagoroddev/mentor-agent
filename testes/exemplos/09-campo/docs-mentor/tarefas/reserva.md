@@ -7,5 +7,4 @@
 
 | ID | Titulo | Fatia | Tipo | Valor | Esforco H/IA | Origem |
 |---|---|---|---|---|---|---|
-| `TASK-BG-001` | Origem inventada | - | BG | importante | P/P | RF-99 |
 | `TASK-RF-001` | Epico grande | - | RF | importante | XG/XG | titulo-autossuficiente |

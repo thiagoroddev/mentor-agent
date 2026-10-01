@@ -99,6 +99,8 @@ export function caminhos(r: string = raizProjeto()) {
     auditorias: join(docs, 'auditorias'),
     riscos: join(docs, 'seguranca', 'riscos-aceitos.json'),
     referencias: join(docs, 'referencias.json'),
+    planos: join(docs, 'planos.json'),
+    patches: join(docs, 'patches-do-pacote.json'),
     invariantes: join(docs, 'invariantes.json'),
     glossario: join(docs, 'glossario.md'),
     stack: join(docs, 'padroes-de-stack'),
@@ -284,8 +286,17 @@ export function extrairCaminhosDeclarados(linhas: string[]): string[] {
     for (const item of itens) {
       caminhosEncontrados.push(item)
     }
+    // Caminho citado no meio da linha tambem declara. Medido em campo: "doctor.ts (arquivo
+    // .mentor/scripts/cmd-doctor.ts) reinstalado" virava so' "doctor.ts", e a trava do finalizar e o
+    // fato da auditoria acusavam um arquivo que o plano tinha declarado. So' conta o que parece
+    // arquivo (ultimo segmento com extensao ou glob): "e/ou" na prosa nao vira declaracao.
+    for (const m of trimmed.matchAll(/[\w.@~-]*(?:\/[\w.@~*-]+)+/g)) {
+      const token = m[0].replace(/^\.\//, '')
+      const ultimo = token.split('/').at(-1) ?? ''
+      if (/\.\w|\*/.test(ultimo)) caminhosEncontrados.push(token)
+    }
   }
-  return caminhosEncontrados
+  return [...new Set(caminhosEncontrados)]
 }
 
 /**

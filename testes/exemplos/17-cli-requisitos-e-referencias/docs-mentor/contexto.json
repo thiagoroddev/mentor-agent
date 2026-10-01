@@ -1,11 +1,11 @@
 {
   "_meta": {
     "schema": "contexto-projeto/1",
-    "versao_do_pacote": "0.12.0",
+    "versao_do_pacote": "0.13.0",
     "versao_nota": "Gravada no init a partir de .mentor/manifesto.json. Sem ela, o relatorio de campo nao consegue atribuir nada a uma versao.",
     "leia_antes": "Campo null = decisao que o guia exige e ninguem tomou ainda. Nao e' erro: e' a pauta do mentor. Nunca preencher por deducao; perguntar ao humano ou marcar dispensado com motivo.",
     "gerado_em": "2026-08-29T17:00:00.000Z",
-    "atualizado_em": "2026-08-29T17:00:00.000Z",
+    "atualizado_em": null,
     "gerado_por": "script"
   },
   "projeto": {
@@ -13,7 +13,13 @@
     "uma_frase": null,
     "repositorio": null,
     "idioma_do_codigo": null,
-    "licenca": null
+    "licenca": null,
+    "classificacao": {
+      "finalidade": null,
+      "maturidade": null,
+      "visibilidade_codigo": null,
+      "uso_atual": null
+    }
   },
   "estado": {
     "fase": null,
@@ -95,6 +101,12 @@
       "N3"
     ],
     "promovido_por": {
+      "dado_pessoal": null,
+      "cobranca_ou_dinheiro": null,
+      "uso_por_terceiros": null,
+      "decisao_automatizada_sobre_pessoa": null
+    },
+    "riscos": {
       "dado_pessoal": null,
       "cobranca_ou_dinheiro": null,
       "uso_por_terceiros": null,
@@ -408,12 +420,13 @@
     "tarefas_desde_revisao_geral": 0,
     "adrs": 0,
     "ferramentas_sem_padrao": 0,
-    "campos_nulos_do_contexto": 172,
+    "campos_nulos_do_contexto": 180,
     "divida_tecnica_com_gatilho_vencido": null
   },
   "auditoria": {
+    "revisao_incremental_ativa": false,
     "cadencia_em_tarefas": 10,
-    "cadencia_nota": "A cada N tarefas concluidas com diff auditavel, 'mentor auditar preparar' monta o dossie do lote. Cada tarefa leva o proprio diff (os commits com o ID dela no titulo); registros, notas e atualizacao do pacote nao contam. O tamanho so decide como o dossie se divide. O auditor le o dossie: nunca o repositorio.",
+    "cadencia_nota": "Com revisao_incremental_ativa, task nova marca tarefas prospectivas e a revisão por conteúdo ocorre antes de finalizar e publicar. O lote AUD anterior permanece disponível apenas por auditar preparar --lote-legado; checkpoint e transição pertencem à Fatia 3.",
     "ultima_em": null,
     "ultima_na_tarefa": null,
     "ultimo_commit": null,

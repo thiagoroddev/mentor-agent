@@ -4,6 +4,7 @@
     "leia_antes": "Esqueleto gerado por 'task nova'. Campos de _gerado nunca sao digitados nem conferidos pela IA. Campos null que o estado atual ja' exige sao o que 'task iniciar' e 'task finalizar' cobram.",
     "_gerado": [
       "id",
+      "revisao_incremental_requerida",
       "criada_em",
       "iniciada_em",
       "commit_base",
@@ -18,6 +19,7 @@
     ]
   },
   "id": null,
+  "revisao_incremental_requerida": false,
   "tipo": null,
   "tipos_possiveis": [
     "RF",
@@ -45,6 +47,11 @@
     "Light",
     "Standard",
     "Strict"
+  ],
+  "perfil": null,
+  "perfis_possiveis": [
+    "compacto",
+    "completo"
   ],
   "valor": null,
   "valores_possiveis": [
@@ -88,6 +95,7 @@
   "commit_base": null,
   "commit_base_nota": "HEAD do git no momento do 'task iniciar'. E a base do diff que a auditoria le. Nunca digitado.",
   "concluida_em": null,
+  "plano_ref": null,
   "plano": {
     "muda": [],
     "criterios_aceite": [

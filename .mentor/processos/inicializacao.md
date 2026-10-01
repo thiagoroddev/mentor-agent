@@ -49,9 +49,15 @@ vez para confirmar que funciona. Cada ferramenta ganha convenção por `processo
 Dispensar um portão exige `dispensa_motivo` escrito. Sem isso, *"não se aplica"* vira a saída fácil
 para tudo.
 
-⚠️ **Rigor se promove sozinho.** Dado pessoal, cobrança, uso por terceiros ou decisão automatizada
-sobre pessoa levam a N2 no mínimo, mesmo que o humano chame o projeto de teste. Isso é cálculo do
-script, não julgamento da IA.
+⚠️ **Risco real não desaparece com o rótulo protótipo.** Dado pessoal, cobrança, uso por terceiros
+ou decisão automatizada em operação justificam N2 no mínimo. Intenção futura fica marcada como
+`planejado` e não ativa sozinha os bloqueios da operação atual.
+
+Classifique também finalidade, maturidade, visibilidade do código e uso **atual** em `projeto.classificacao`.
+Registre cada risco como `atual`, `planejado`, `ausente` ou `indefinido` em `rigor.riscos`; plano de cobrança
+ou público futuro não equivale a cobrança ou uso atuais. Projeto antigo sem classificação conserva a
+política estrita até decisão explícita. Protótipo pessoal recebe fluxo enxuto, com bloqueio nas mudanças
+de risco concreto, e não por contagem de tarefas.
 
 ⚠️ **Nunca invente comando de gate para preencher a tabela.** Gate não declarado é lacuna honesta;
 gate com comando inventado é verde que não checou nada.
@@ -67,4 +73,3 @@ A atualização de versão do pacote é uma mudança de infraestrutura do projet
    - Se houver conflitos em arquivos gerados, rode `mentor resolver-gerados`.
    - Rode `mentor verificar` e os gates de testes/build.
    - Preencha a narrativa e finalize a tarefa (`mentor task finalizar <ID>`).
-

@@ -64,7 +64,7 @@ export function rodar(): Cenario {
   }
   escrever(c, 'docs-mentor/tarefas/abertas/TASK-RF-001.json', JSON.stringify(t, null, 2))
   escrever(c, 'docs-mentor/tarefas/abertas/TASK-RF-001.md',
-    '# t\n\n## Decisoes tomadas\na\n\n## O que nao foi feito, e por que\nb\n\n## Testes de descoberta\nNenhuma.\n\n## Aprendizados\nNada.\n')
+    '# t\n\n## Decisoes tomadas\na\n\n## O que nao foi feito, e por que\nb\n\n## Testes de descoberta\nNenhuma.\n\n## Aprendizados\nNada.\n\n## Desfecho\nGates verdes; nada fora do previsto.\n')
   mentor(c, 'task', 'gate', 'TASK-RF-001', 'testes')
   const pausa = mentor(c, 'task', 'pausar', 'TASK-RF-001', '--motivo', 'aguarda outra tarefa', '--commit')
   dizQue(c, pausa, 'git push -u origin HEAD:wip/task-rf-001', 'pausar sugere guardar a pausa fora do disco')
@@ -86,8 +86,9 @@ export function rodar(): Cenario {
   escrever(c, 'src/outro.ts', 'export const outro = 1\n')
   commit('mexe no outro')
   const semId = sh(['git', 'push', 'origin', 'outro'])
-  confere(c, semId.codigo !== 0 && semId.saida.includes('sem ID de tarefa') && (semId.saida.match(/^GATE_RODOU/gm) ?? []).length === 1,
-    'envio para ramo comum roda os gates uma vez e barra commit de codigo sem ID')
+  // A marca de tarefa e' conferida antes dos gates: commit sem ID barra sem gastar a bateria.
+  confere(c, semId.codigo !== 0 && semId.saida.includes('sem ID de tarefa') && !/APROVADO: /.test(semId.saida),
+    'envio para ramo comum barra commit de codigo sem ID antes de rodar os gates')
   const aoPrincipal = sh(['git', 'push', 'origin', 'outro:main'])
   confere(c, aoPrincipal.codigo !== 0 && aoPrincipal.saida.includes('push direto no ramo principal'),
     'envio ao principal e barrado mesmo estando em outro ramo')
@@ -109,7 +110,14 @@ export function rodar(): Cenario {
 
   // --- 4b. concluida, pronta; Light passa; sem ID nem marca, nao
   dizQue(c, mentor(c, 'pronto-para-merge', '--titulo', 'feat(TASK-RF-001): somar parcelas'), 'Pronto para merge: TASK-RF-001', 'concluida, esta pronta para merge')
+  // Light confere o conteudo do PR, nao so' o titulo: neste ramo ha registro de tarefa e hook.
+  confere(c, mentor(c, 'pronto-para-merge', '--titulo', 'fix(light): corrigir typo').codigo === 1,
+    'PR com titulo Light e conteudo de tarefa nao esta pronto')
+  sh(['git', 'checkout', '-q', '-b', 'typo', 'origin/main'])
+  escrever(c, 'LEIA.txt', 'texto corrigido\n')
+  commit('fix(light): corrigir typo')
   confere(c, mentor(c, 'pronto-para-merge', '--titulo', 'fix(light): corrigir typo').codigo === 0, 'PR Light esta pronto sem tarefa')
+  sh(['git', 'checkout', '-q', '-'])
   confere(c, mentor(c, 'pronto-para-merge', '--titulo', 'Bump lodash from 1 to 2').codigo === 1, 'PR sem ID nem marca nao esta pronto')
 
   // --- 6. doctor lista o WIP; apagar o ramo remoto passa direto

@@ -99,7 +99,7 @@ export function rodar(): Cenario {
   if (tRF.plano.saida_do_laboratorio !== undefined) tRF.plano.saida_do_laboratorio = { tipo: 'relatorio', artefato: null, teste_de_contrato: null }
   tRF.plano.discordancia = { o_que_faria_diferente: 'Nada a objetar', o_que_preocupa: 'Nada a objetar', o_que_existe_pronto_80_porcento: 'Nenhuma conhecida' }
   escrever(c, 'docs-mentor/tarefas/abertas/TASK-RF-001.json', JSON.stringify(tRF, null, 2))
-  escrever(c, 'docs-mentor/tarefas/abertas/TASK-RF-001.md', '# TASK-RF-001\n\n## Decisoes tomadas\nOk.\n\n## O que nao foi feito, e por que\nNada.\n\n## Aprendizados\nNada.\n')
+  escrever(c, 'docs-mentor/tarefas/abertas/TASK-RF-001.md', '# TASK-RF-001\n\n## Decisoes tomadas\nOk.\n\n## O que nao foi feito, e por que\nNada.\n\n## Aprendizados\nNada.\n\n## Desfecho\nGates verdes; nada fora do previsto.\n')
   escrever(c, 'ui.ts', 'export const ui = () => true\n')
   mentor(c, 'task', 'gate', 'TASK-RF-001', 'testes')
   const rFinRF = mentor(c, 'task', 'finalizar', 'TASK-RF-001')
@@ -125,7 +125,7 @@ export function rodar(): Cenario {
   if (tBG.plano.saida_do_laboratorio !== undefined) tBG.plano.saida_do_laboratorio = { tipo: 'relatorio', artefato: null, teste_de_contrato: null }
   tBG.plano.discordancia = { o_que_faria_diferente: 'Nada a objetar', o_que_preocupa: 'Nada a objetar', o_que_existe_pronto_80_porcento: 'Nenhuma conhecida' }
   escrever(c, 'docs-mentor/tarefas/abertas/TASK-BG-001.json', JSON.stringify(tBG, null, 2))
-  escrever(c, 'docs-mentor/tarefas/abertas/TASK-BG-001.md', '# TASK-BG-001\n\n## Decisoes tomadas\nOk.\n\n## O que nao foi feito, e por que\nNada.\n\n## Aprendizados\nNada.\n')
+  escrever(c, 'docs-mentor/tarefas/abertas/TASK-BG-001.md', '# TASK-BG-001\n\n## Decisoes tomadas\nOk.\n\n## O que nao foi feito, e por que\nNada.\n\n## Aprendizados\nNada.\n\n## Desfecho\nGates verdes; nada fora do previsto.\n')
   escrever(c, 'bugfix.ts', 'export const mock = true\n')
   mentor(c, 'task', 'gate', 'TASK-BG-001', 'testes')
   const rFinBG = mentor(c, 'task', 'finalizar', 'TASK-BG-001')
@@ -162,7 +162,7 @@ export function rodar(): Cenario {
   tRetomada.achados = [{ classe: 3, descricao: 'visualizacao validada apos desbloqueio por UI e bugfix', destino: 'descartado', ref: 'concluido' }]
 
   escrever(c, 'docs-mentor/tarefas/abertas/TASK-SPIKE-001.json', JSON.stringify(tRetomada, null, 2))
-  escrever(c, 'docs-mentor/tarefas/abertas/TASK-SPIKE-001.md', '# TASK-SPIKE-001\n\n## A resposta\nGrafico funcional.\n\n## O que foi descartado\nNada.\n\n## A tarefa que isto destrava\nnenhuma\n')
+  escrever(c, 'docs-mentor/tarefas/abertas/TASK-SPIKE-001.md', '# TASK-SPIKE-001\n\n## A resposta\nGrafico funcional.\n\n## O que foi descartado\nNada.\n\n## A tarefa que isto destrava\nnenhuma\n\n## Desfecho\nGates verdes; nada fora do previsto.\n')
   // Modifica spike.ts na etapa pós-retomada
   escrever(c, 'spike.ts', 'export const spike = () => "dados refinados com ui e mock"\n')
 
