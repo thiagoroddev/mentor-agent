@@ -18,7 +18,7 @@ export function rodar(): Cenario {
   const leiaGeral = ler(c, 'docs-mentor/LEIA.md')
   confere(c, leiaGeral.includes('skills/'), 'LEIA.md documenta a pasta skills/')
 
-  // 2. Catalogo de 7 skills nativas do pacote
+  // 2. Catalogo de 8 skills nativas do pacote (a revisao entrou na 0.14.0)
   const skillsEsperadas = [
     'github-ci',
     'contratos-de-api',
@@ -27,6 +27,7 @@ export function rodar(): Cenario {
     'test-design',
     'data-modeling',
     'spike-e-investigacao',
+    'revisao',
   ]
 
   for (const skill of skillsEsperadas) {

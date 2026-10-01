@@ -369,7 +369,7 @@ tudo esta' quebrada**, e a lista do que ficou de fora e' o que sustenta o veredi
 pelo projeto e ausente do registro · gate `FALHOU` ou `BLOQUEADO` · gate `NÃO EXECUTADO` ou
 `INVÁLIDO como gate` sem motivo escrito · narrativa ausente.
 
-Tres familias em `verificar`, todas exatas e sem julgamento:
+Quatro familias em `verificar`, todas exatas e sem julgamento (a quarta, carregamento, entrou na 0.14.0: nucleo dentro do `AGENTS.md` e copias das skills):
 1. nenhum marcador `PREENCHER:` sobrevivente
 2. nenhum teto de texto estourado, em caracteres, com as excecoes de `.mentor/tetos.json`
 3. integridade referencial: ferramenta com padrao que existe em disco, dependencia que aponta para

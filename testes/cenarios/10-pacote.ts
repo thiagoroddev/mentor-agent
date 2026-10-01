@@ -5,6 +5,7 @@ import {
   RAIZ_REPO, abrirCenarioTemporario, confere, dizQue, escrever, fecharTemporario, ler, lerJson, mentor,
 } from '../apoio.ts'
 import type { Cenario } from '../apoio.ts'
+import { MARCA_INICIO } from '../../.mentor/scripts/instalar.mjs'
 
 /**
  * Instalacao e divergencia. Fora do repositorio, porque instalar copia o pacote para uma raiz
@@ -24,7 +25,7 @@ export function rodar(): Cenario {
     'docs/ preexistente e alheio ao mentor fica intacto')
 
   const ctx = lerJson<Record<string, any>>(c, 'docs-mentor/contexto.json')
-  confere(c, ctx['_meta'].versao_do_pacote === '0.13.0',
+  confere(c, ctx['_meta'].versao_do_pacote === '0.14.0',
     'a versao do pacote fica gravada no contexto: sem ela o relatorio nao atribui nada')
 
   confere(c, mentor(c, 'verificar').codigo === 0, 'pacote recem-instalado nao diverge de nada')
@@ -47,24 +48,27 @@ export function rodar(): Cenario {
     'mencionar .mentor na config encerra o aviso: quem escreveu ali ja decidiu')
 
   // --- pontos de entrada. Sem eles nenhuma ferramenta le o nucleo, e o pacote inteiro nao existe.
-  //     No antecessor isto so foi notado quando um projeto real carregou nada.
-  for (const arquivo of ['CLAUDE.md', 'AGENTS.md', 'GEMINI.md']) {
-    confere(c, ler(c, arquivo).includes('.mentor/nucleo.md'), `${arquivo} aponta para o nucleo`)
-  }
-  confere(c, ler(c, 'CLAUDE.md').includes('@.mentor/nucleo.md'),
-    'no Claude o carregamento e mecanico: `@` traz o conteudo sem depender de o agente abrir nada')
-  const somados = ['CLAUDE.md', 'AGENTS.md', 'GEMINI.md'].reduce((n, f) => n + ler(c, f).length, 0)
-  confere(c, somados < 4000,
-    `ponteiro, nunca espelho: ${somados} chars nos tres (o AGENTS.md do antecessor sozinho tinha 22.616)`)
-  dizQue(c, mentor(c, 'doctor'), 'pontos de entrada apontam para o nucleo', 'o doctor confere que existe quem carregue')
+  //     No antecessor isto so foi notado quando um projeto real carregou nada. Desde a 0.14.0 o
+  //     nucleo vai dentro do AGENTS.md, gerado, e o CLAUDE.md o importa: as tres ferramentas carregam
+  //     o mesmo texto sem depender de o modelo decidir abrir um arquivo.
+  confere(c, ler(c, 'AGENTS.md').includes(MARCA_INICIO) && ler(c, 'AGENTS.md').includes('Postura ativa do mentor'),
+    'AGENTS.md traz o nucleo inteiro, entre marcadores')
+  confere(c, ler(c, 'CLAUDE.md').includes('@AGENTS.md') && !ler(c, 'CLAUDE.md').includes('@.mentor/nucleo.md'),
+    'no Claude o carregamento e mecanico: `@AGENTS.md` traz o nucleo uma vez so')
+  confere(c, ler(c, 'GEMINI.md').includes('AGENTS.md'), 'GEMINI.md aponta para o AGENTS.md')
+  const ponteiros = ['CLAUDE.md', 'GEMINI.md'].reduce((n, f) => n + ler(c, f).length, 0)
+  confere(c, ponteiros < 1500,
+    `ponteiro, nunca espelho: ${ponteiros} chars no CLAUDE.md e no GEMINI.md (o AGENTS.md do antecessor tinha 22.616 copiados a mao)`)
+  dizQue(c, mentor(c, 'doctor'), 'pontos de entrada carregam o nucleo pelo AGENTS.md', 'o doctor confere que existe quem carregue')
 
   // --- o arquivo da pessoa nunca e sobrescrito
   escrever(c, 'CLAUDE.md', '# Meu arquivo\n\nTexto que nao pode sumir.\n')
   const reinstala = mentor(c, 'instalar', '--destino', c.pasta, '--forcar')
   confere(c, ler(c, 'CLAUDE.md').includes('nao pode sumir'),
     'CLAUDE.md existente sobrevive a reinstalacao: apagar o texto da pessoa seria imperdoavel')
-  dizQue(c, reinstala, 'Ja existia, e nao foi tocado', 'e o comando diz o que colar a mao')
-  dizQue(c, mentor(c, 'doctor'), 'nao cita .mentor/nucleo.md',
+  dizQue(c, reinstala, 'Ja existia, e nao foi editado', 'e o comando diz o que falta e como migrar')
+  dizQue(c, reinstala, 'entrada migrar', 'a migracao e um comando explicito, nunca efeito colateral do instalar')
+  dizQue(c, mentor(c, 'doctor'), 'CLAUDE.md nao importa o AGENTS.md',
     'ponto de entrada que nao chega nas leis e bloqueio, nao aviso')
 
   // --- editar para destravar e legitimo; esquecer que editou nao
@@ -130,10 +134,13 @@ export function rodar(): Cenario {
   escrever({ ...c, pasta: alvo }, 'eslint.config.js', 'export default [{ files: ["**/*.ts"] }]\n')
   dizQue(c, deDentro('instalar', '--destino', alvo, '--forcar'), 'nao ignora .mentor/',
     'o aviso de lint tambem sai pelo caminho de node_modules, que e como o npm entrega')
-  for (const arquivo of ['CLAUDE.md', 'AGENTS.md', 'GEMINI.md']) {
-    confere(c, ler({ ...c, pasta: alvo }, arquivo).includes('.mentor/nucleo.md'),
-      `${arquivo} criado pelo caminho de node_modules aponta para o nucleo`)
-  }
+  // O mesmo fim de instalacao nos dois caminhos (concluirInstalacao): nucleo no AGENTS.md e skills copiadas.
+  const doAlvo = { ...c, pasta: alvo }
+  confere(c, ler(doAlvo, 'AGENTS.md').includes(MARCA_INICIO), 'pelo caminho de node_modules, o AGENTS.md traz o nucleo')
+  confere(c, ler(doAlvo, 'CLAUDE.md').includes('@AGENTS.md'), 'pelo caminho de node_modules, o CLAUDE.md importa o AGENTS.md')
+  confere(c, ler(doAlvo, 'GEMINI.md').includes('AGENTS.md'), 'pelo caminho de node_modules, o GEMINI.md aponta para o AGENTS.md')
+  confere(c, existsSync(join(alvo, '.agents', 'skills', 'revisao', 'SKILL.md')) && existsSync(join(alvo, '.claude', 'skills', 'revisao', 'SKILL.md')),
+    'pelo caminho de node_modules, as skills chegam as pastas das ferramentas')
   const semAviso = spawnSync(process.execPath, [join(alvo, 'mentor.mjs'), 'init'], { encoding: 'utf8', cwd: alvo })
   confere(c, !`${semAviso.stdout}${semAviso.stderr}`.includes('MODULE_TYPELESS'),
     'sem aviso de tipo de modulo: `.mentor/package.json` resolve sem mexer no package.json do projeto')

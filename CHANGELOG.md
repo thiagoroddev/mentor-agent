@@ -4,6 +4,33 @@ Todas as mudanças notáveis no **mentor-agent** são documentadas neste arquivo
 
 O formato baseia-se em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [0.14.0] - 2026-10-01
+
+Plano em `PLANO-v0.14.0.md`. Codex, Claude Code e Antigravity passam a carregar o mesmo: o nucleo
+vai dentro do `AGENTS.md`, as skills vao por copia para as pastas que cada ferramenta le, e toda
+revisao segue o processo do mentor.
+
+### Adicionado
+- **Nucleo dentro do `AGENTS.md`**: bloco gerado entre `<!-- mentor:nucleo:inicio -->` e `<!-- mentor:nucleo:fim -->`, no topo do arquivo; o texto fora dos marcadores e' do projeto e nunca e' tocado. O `instalar` insere, o `gerar` atualiza. Marcador duplicado, incompleto ou fora de ordem: recusa sem alterar.
+- **Skills por copia gerada** em `.agents/skills/` (Codex e Antigravity) e `.claude/skills/` (Claude Code), das fontes `.mentor/skills/` e `docs-mentor/skills/`. Cada destino guarda `.mentor-skills.json` com o hash de cada copia (caminho e conteudo de todos os arquivos, com fim de linha normalizado). Mesmo nome no pacote e no projeto, pasta que o mentor nao criou, copia editada e registro corrompido nunca sao sobrescritos nem removidos: o comando recusa ou avisa e diz o motivo.
+- **`node mentor.mjs entrada migrar`**: leva instalacao antiga ao modelo novo. `CLAUDE.md` ganha `@AGENTS.md` e perde `@.mentor/nucleo.md`; `GEMINI.md` ganha o ponteiro; `AGENTS.md` recebe o bloco; as skills sao copiadas. Linhas do projeto ficam; trechos do modelo antigo que o nucleo ja' cobre sao apontados, nunca apagados. Idempotente.
+- **`verificar`, familia carregamento**: bloco divergente do nucleo, marcadores invalidos, `AGENTS.md` acima de 24.000 bytes (limite do Antigravity; aviso a partir de 21.600) e copias de skills ausentes, editadas, divergentes, orfas ou em conflito.
+- **Revisao igual nas tres ferramentas**: `AREAS_DE_REVISAO` (`revisao-incremental.ts`) e' a fonte unica de areas, perguntas e guias; a tabela entra gerada em `processos/revisao.md` pelo `manifesto`. Nucleo §9: qualquer pedido de revisao segue o processo e carrega o guia de cada area. Skill `revisao` (catalogo do pacote: 8 skills).
+- Nucleo §9: narrativa `*--estudo-humano.md` nao se carrega por padrao. `processos/entrega.md`: com PR exigido, nada de merge local na principal.
+- Cenario `32-carregamento-nas-ferramentas.ts`, inclusive um clone sem `gerar` nem script de instalacao.
+
+### Mudado
+- `CLAUDE.md` novo = `@AGENTS.md`; `GEMINI.md` novo = ponteiro para o `AGENTS.md`, sem import.
+- O `doctor` confere o que cada ferramenta carrega: bloco no `AGENTS.md`, `@AGENTS.md` no `CLAUDE.md`, nucleo importado duas vezes, `GEMINI.md` sem ponteiro e skills fora das pastas das ferramentas.
+- Os dois caminhos de instalacao (`mentor.mjs` em `node_modules` e `cmd-pacote.ts`) chamam o mesmo `concluirInstalacao`.
+- Teto de `processos/revisao.md`: 8.600 (medido x 1,3).
+
+### Para atualizar
+- Depois do `instalar --forcar`, rode `node mentor.mjs entrada migrar` e confira o diff do `CLAUDE.md`, do `GEMINI.md` e do `AGENTS.md`.
+- Skill propria que hoje mora em `.agents/skills/` ou `.claude/skills/`: mova para `docs-mentor/skills/` (a fonte) e rode `gerar`. Enquanto estiver la', ela e' pasta alheia e o mentor nao a toca.
+
+---
+
 ## [0.13.0] - 2026-10-01
 
 Plano em `PLANO-v0.13.0.md`. Leva ao pacote as 20 correcoes feitas como patch local no piloto entre

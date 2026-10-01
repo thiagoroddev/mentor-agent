@@ -1,7 +1,8 @@
 # Plano · v0.14.0: o mesmo carregamento no Codex, no Claude Code e no Antigravity
 
-> Aprovado pelo mantenedor em 01/10/26 (Portão 1), junto com o `PLANO-v0.13.0.md`. Executa depois da
-> v0.13.0: depende do núcleo consolidado e dos scripts portados.
+> Aprovado pelo mantenedor em 01/10/26 (Portão 1), na versão revisada abaixo: skills por **cópia
+> gerada**, e não por junção, depois da pesquisa e de uma revisão independente do plano. Executa
+> depois da v0.13.0, sobre o núcleo consolidado e os scripts portados.
 
 ## 1. Problema
 
@@ -14,120 +15,139 @@ O mantenedor usa as três ferramentas, cada uma na própria IDE, e elas carregam
 | Skills de `.mentor/skills/` | não descobre | não descobre | não descobre |
 
 No piloto, o `CLAUDE.md` já existia antes do `instalar` e não importa o `AGENTS.md`, então o Claude
-não via cinco regras do projeto. O `processos/revisao.md` não cita o guia; só a revisão incremental
-do script carrega o guia por área, e nada manda carregar a revisão do mentor quando o pedido vem em
-conversa. Resultado observado: cada ferramenta revisa de um jeito.
+não via cinco regras do projeto. O `processos/revisao.md` não cita o guia, e nada manda carregar a
+revisão do mentor quando o pedido vem em conversa. Resultado observado: cada ferramenta revisa de um
+jeito.
 
 ## 2. Objetivo, dito com precisão
 
 **Mesmas regras e mesmos critérios de carregamento nas três ferramentas:**
 
 - **sempre, mecanicamente:** o núcleo, dentro do `AGENTS.md`, e as regras do projeto;
-- **sob demanda, pelas mesmas regras escritas no núcleo:** processos, guia e skills. As três
-  descobrem o mesmo catálogo de skills; cada uma carrega nome e descrição e lê o conteúdo quando o
-  pedido casa com a skill ou quando o núcleo manda.
+- **sob demanda, pelas regras escritas no núcleo:** processos, guia e skills. As três descobrem o
+  mesmo catálogo; cada uma carrega nome e descrição e lê o conteúdo quando o pedido casa com a skill
+  ou quando o núcleo manda.
 
-**Não é objetivo** carregar tudo sempre: só o guia tem ~127 mil caracteres, e os limites das
-ferramentas não comportam.
+**Não é objetivo** carregar tudo sempre: só o guia tem ~127 mil caracteres.
 
-**Limites medidos na documentação oficial:** Codex soma os arquivos de instrução descobertos até
-32 KiB; Antigravity trunca arquivo de regra acima de 24.000 bytes e dá 20 mil tokens às regras
-sempre ativas. O mais apertado é o do Antigravity.
+**Limites (documentação oficial):** o Codex soma os `AGENTS.md` até 32 KiB; o Antigravity trunca
+arquivo de regra acima de 24.000 bytes. O mais apertado é o do Antigravity. O Claude Code lê o
+`AGENTS.md` sozinho só quando não há `CLAUDE.md`; com `CLAUDE.md` = `@AGENTS.md`, carrega uma vez.
 
-## 3. Frente B
+## 3. Por que cópia gerada e não junção
 
-**B1 · Núcleo dentro do `AGENTS.md`.** O `gerar` escreve o núcleo entre marcadores:
+Link por pasta de skill é documentado no Codex, funciona sem documentação no Claude Code e não tem
+registro no Antigravity; junção do Windows não aparece em nenhuma das três. Além disso, junção não
+vai para o git: o clone em outra máquina dependeria de `postinstall`, que falha calado com
+`--ignore-scripts`. Cópia versionada funciona no clone na hora, em qualquer sistema, e o `verificar`
+confere que ela continua igual à fonte. Custo: ~43 KB de skills duas vezes.
+
+## 4. Frente B
+
+**B1 · Núcleo dentro do `AGENTS.md`.** `sincronizarAgentes(destino)`, em `instalar.mjs` (JS puro: roda
+também de dentro de `node_modules`), insere no topo do `AGENTS.md` ou atualiza:
 
 ```
 <!-- mentor:nucleo:inicio -->
-<!-- Gerado por `node mentor.mjs gerar`. Não edite este bloco: altere .mentor/nucleo.md. -->
+<!-- Gerado por `node mentor.mjs gerar` a partir de .mentor/nucleo.md. Não edite este bloco. -->
+Caminhos `processos/`, `guia/`, `skills/` e `esquemas/` citados abaixo são relativos a `.mentor/`.
 …
 <!-- mentor:nucleo:fim -->
 ```
 
-Fora dos marcadores é do projeto e nunca é tocado. O `instalar` insere o bloco num `AGENTS.md` que
-já exista. O `verificar` reprova bloco diferente do `nucleo.md` e mede o `AGENTS.md` em **bytes
-UTF-8**: aviso acima de 21.600 (90% de 24.000), reprovação acima de 24.000.
+Fora dos marcadores é do projeto e nunca é tocado. Marcador incompleto, duplicado ou fora de ordem:
+recusa sem alterar nada. O `verificar` reprova bloco diferente do que seria gerado e mede o
+`AGENTS.md` em bytes UTF-8: aviso acima de 21.600, reprovação acima de 24.000.
 
-**B2 · Pontos de entrada.** `CLAUDE.md` vira `@AGENTS.md` (sai o `@.mentor/nucleo.md`, que
-carregaria o núcleo duas vezes). `GEMINI.md` vira ponteiro curto para o `AGENTS.md`, sem import. O
-`doctor` (`entrada.ts`, `pontosDeEntradaSemNucleo`) deixa de exigir a menção a `.mentor/nucleo.md`
-em cada arquivo e passa a conferir: `AGENTS.md` com o bloco, `CLAUDE.md` com `@AGENTS.md`,
-`GEMINI.md` apontando para o `AGENTS.md`.
+**B2 · Pontos de entrada.** Projeto novo: `CLAUDE.md` = `@AGENTS.md`; `GEMINI.md` = ponteiro curto
+para o `AGENTS.md`. Instalação antiga: `node mentor.mjs entrada migrar`, explícito e idempotente:
+no `CLAUDE.md` garante `@AGENTS.md` e tira `@.mentor/nucleo.md`; no `GEMINI.md`, se não citar o
+`AGENTS.md`, acrescenta a linha no topo; no `AGENTS.md`, insere o bloco. Linhas próprias do projeto
+ficam; o comando mostra o que mudou e aponta o que repete o núcleo. O `instalar` não edita
+`CLAUDE.md` nem `GEMINI.md` existentes: cria os que faltam e indica o `entrada migrar`. O `doctor`
+(`entrada.ts`) confere o bloco no `AGENTS.md`, `@AGENTS.md` no `CLAUDE.md` e a menção no `GEMINI.md`.
+Os dois caminhos de instalação (`mentor.mjs` em `node_modules` e `cmd-pacote.ts`) chamam uma função
+só, `concluirInstalacao(destino)`.
 
-**B3 · Skills por junção.**
+**B3 · Skills por cópia gerada.** `sincronizarSkills(destino)`, em `instalar.mjs`:
 
-- Implementado em JS puro em `instalar.mjs`. O `mentor.mjs` da raiz atende `skills ligar` antes de
-  importar o `cli.ts`. Os dois caminhos de instalação chamam a mesma função: `mentor.mjs` →
-  `instalar.mjs` dentro de `node_modules`, e `cmd-pacote.ts` → `instalar` na raiz.
-- Fontes `.mentor/skills/*` e `docs-mentor/skills/*`; destinos `.agents/skills/<nome>` (Codex e
-  Antigravity) e `.claude/skills/<nome>` (Claude Code). Windows: `fs.symlinkSync(alvo, destino,
-  'junction')`, sem administrador; Linux e Mac: link de pasta.
-- Idempotente. Recusa substituir pasta real e avisa. Remove junção só com `unlinkSync`/`rmdirSync`,
-  nunca recursivo. Sem `.mentor/`, avisa e sai com 0: nunca quebra o `npm install`.
-- `.gitignore`: bloco gerado entre marcadores, uma linha por skill ligada. O git atravessa junção e
-  versionaria cópia (medido em 01/10/26, git 2.54 no Windows).
-- `postinstall`: o `instalar` acrescenta `node mentor.mjs skills ligar` se não houver `postinstall`;
-  se houver, mostra o que acrescentar. O `instalar` também liga, então a primeira instalação não
-  depende do `postinstall`.
-- `doctor` acusa junção ausente ou quebrada (cobre `npm install --ignore-scripts`).
-- **Plano B:** ferramenta que não seguir junção recebe cópia gerada pelo `gerar`, conferida pelo
-  `verificar`, e a decisão vai às notas da versão.
+- fontes: pastas com `SKILL.md` em `.mentor/skills/` e `docs-mentor/skills/`; destinos:
+  `.agents/skills/` (Codex e Antigravity) e `.claude/skills/` (Claude Code);
+- cada destino guarda `.mentor-skills.json` com as cópias do mentor; o hash de cada cópia cobre
+  caminho e conteúdo de todos os arquivos da pasta;
+- mesmo nome no pacote e no projeto: recusa e nomeia os dois caminhos;
+- pasta no destino fora do registro e com nome de fonte: conflito, recusa;
+- cópia do registro com hash diferente do gravado: editada; preserva, avisa, e o `verificar`
+  reprova pedindo para levar a mudança à fonte;
+- registro ausente ou corrompido: nenhuma pasta é do mentor; nada é sobrescrito nem removido;
+- fonte removida: remove a cópia intacta; preserva a editada, com aviso.
 
-**B4 · Revisão igual nas três.**
+Rodam no `instalar` e no `gerar`. O `verificar` reprova cópia ausente, editada ou divergente.
 
-- **Regra no núcleo (§9):** pedido de revisão em qualquer forma (revisar, review, `/review`,
-  `/code-review`) carrega `processos/revisao.md` e as seções do guia da área antes de responder; a
-  revisão nativa da ferramenta não substitui. Fica no núcleo porque o núcleo é o que está sempre
-  carregado; a skill só é lida quando o modelo a seleciona.
-- **Skill `revisao`** (`.mentor/skills/revisao/SKILL.md`) como complemento: descrição que dispara
-  pelos mesmos termos e corpo que repete a ordem do núcleo.
-- **Mapa área → guia:** sai de `revisao-incremental.ts` como exportação; o `gerar` escreve num bloco
-  com marcadores em `processos/revisao.md`, e o `verificar` confere. Uma fonte só.
-- Catálogo: 9 skills (7 do pacote, `revisao` e as do projeto).
+**B4 · Revisão igual nas três.** `AREAS_DE_REVISAO` em `revisao-incremental.ts` (área, sinais,
+pergunta, guias) substitui as perguntas espalhadas e o `GUIAS_DA_REGRA`. A tabela entra num bloco
+gerado em `processos/revisao.md` (arquivo do pacote: gerado no repositório do pacote, antes do
+manifesto). Núcleo §9: qualquer pedido de revisão (revisar, review, `/review`, `/code-review`)
+carrega `processos/revisao.md` e o guia da área; a revisão nativa da ferramenta não substitui. Skill
+`.mentor/skills/revisao/` como complemento. Catálogo do pacote: 8 skills.
 
-**B5 · Tetos.** O núcleo muda; é medido de novo. Passando de 15.100, aplica-se a mesma regra (+30%
-sobre o medido), desde que o `AGENTS.md` continue abaixo de 21.600 bytes.
+**B5 · Regras soltas do `AGENTS.md` do piloto.** Desfecho, plano integral e sugestões de validação já
+estão no núcleo. Entram: no §9, não carregar `*--estudo-humano.md` por padrão; em
+`processos/entrega.md`, sem merge local na principal quando o PR é exigido.
 
-## 4. Critérios de aceite
+**B6 · Testes.** Cenário 32 (projeto instalado de verdade): bloco gerado e regenerado sem duplicar;
+edição à mão reprova; marcador incompleto e duplicado recusam; limite de bytes; `entrada migrar`
+preserva linhas próprias e é idempotente; skills nos dois destinos; conflito de nome; pasta alheia;
+cópia editada preservada; registro corrompido; fonte removida; **clone sem `gerar` nem script**:
+skills, bloco e `verificar` certos. Ajustes nos cenários 06, 10, 16 e 19. Prova por mutação em cada
+checagem nova.
+
+**B7 · Validação com o mantenedor.** `sandbox-mentor` (git novo, 0.14.0 instalada e commitada),
+validada num **clone** dela. Roteiro `VALIDACAO.md`, uma tabela por ferramenta, em sessão nova:
+versão da IDE; fontes que a ferramenta mostra como carregadas; catálogo (as 8 do mentor presentes;
+globais extras anotadas); pergunta sobre trecho do bloco do núcleo, conferindo no histórico que
+nenhum arquivo foi lido; "revise esta mudança" sobre alteração preparada, seguindo
+`processos/revisao.md` e citando o guia da área.
+
+**B8 · Tetos.** O núcleo muda; é medido de novo. Passando de 15.100, a mesma regra (+30% sobre o
+medido), desde que o `AGENTS.md` fique abaixo de 21.600 bytes.
+
+## 5. Critérios de aceite
 
 1. `npm run verify` verde.
-2. Bloco do `AGENTS.md` igual ao `nucleo.md`; edição à mão no bloco reprova o `verificar`;
-   `AGENTS.md` abaixo de 21.600 bytes.
-3. Matriz de instalação, em clone temporário: (a) projeto novo com `npx mentor instalar` cria
-   junções, `postinstall` e bloco; (b) `--forcar` preserva o texto fora dos marcadores; (c) execução
-   repetida não duplica nada; (d) `npm ci` num clone liga as skills pelo `postinstall`; (e)
-   `postinstall` existente não é sobrescrito; (f) `npm install --ignore-scripts` faz o `doctor`
-   acusar; (g) `git clean -fdx` deixa a fonte intacta.
-4. `git status` não mostra nada das skills ligadas.
-5. Nas três ferramentas, numa sessão nova, as skills aparecem. Se alguma não aparecer, plano B para
-   ela, registrado.
-6. Nas três ferramentas, "revise esta mudança" segue o `processos/revisao.md` e cita a seção do guia
-   da área.
-7. O `doctor` aceita os novos `CLAUDE.md`/`GEMINI.md` e acusa `CLAUDE.md` sem `@AGENTS.md`.
+2. Bloco igual ao gerado; edição à mão reprova; marcador inválido recusa sem alterar; `AGENTS.md`
+   abaixo de 21.600 bytes.
+3. Instalação: projeto novo cria pontos de entrada, bloco e cópias; `--forcar` preserva o texto
+   fora dos marcadores e as linhas próprias; execução repetida não duplica nada.
+4. Clone sem `gerar` nem script: 8 skills nos dois destinos, bloco presente, `verificar` aprova.
+5. Conflitos e edições locais nunca sobrescritos nem removidos; sempre nomeados.
+6. Nas três ferramentas, em sessão nova sobre o clone do sandbox: as 8 skills aparecem; o núcleo
+   está carregado sem leitura de arquivo; "revise esta mudança" segue o processo e cita o guia.
+7. O `doctor` aceita os pontos de entrada novos e acusa `CLAUDE.md` sem `@AGENTS.md`.
 
-## 5. Riscos
+## 6. Riscos
 
 | Risco | Mitigação |
 | :-- | :-- |
-| Ferramenta não segue junção | plano B, decidido no critério 5 |
-| Pasta real com nome de skill | `ligar` recusa e avisa, nunca apaga |
-| `postinstall` quebra `npm install` ou CI | sai com 0 sem `.mentor/`; só cria junções |
-| Núcleo em dobro no Claude | B2 e aviso do `doctor` |
+| Editar a cópia em vez da fonte | cópia editada é preservada e o `verificar` reprova apontando a fonte |
+| Apagar pasta alheia | só cópia registrada e intacta é removida; registro inválido não autoriza nada |
+| Núcleo em dobro no Claude | `entrada migrar` tira `@.mentor/nucleo.md`; `doctor` acusa |
 | `AGENTS.md` acima do limite do Antigravity | medição em bytes, aviso a 21.600, reprovação a 24.000 |
+| Marcadores corrompidos | recusa sem alterar, com o que foi achado |
 
-## 6. Proporcionalidade
+## 7. Proporcionalidade
 
-Pediram que as três ferramentas carreguem o mesmo. Três artefatos novos: `skills ligar`, o bloco
-gerado no `AGENTS.md` e a skill `revisao`. Cada um é o mínimo para tirar do modelo a decisão de
-carregar; o resto continua sob demanda, como hoje.
+Pediram que as três ferramentas carreguem o mesmo. Três funções em `instalar.mjs`, o comando
+`entrada migrar`, uma skill, um cenário e checagens no `verificar`. A cópia gerada tirou do plano
+anterior o comando de junção, o `postinstall` e o bloco no `.gitignore`.
 
-## 7. Fechamento
+## 8. Fechamento
 
-1. `CHANGELOG`, notas, versão 0.14.0.
-2. Commit com autorização; tag e push com outra autorização.
-3. Tarefa Standard no piloto: `#v0.14.0` e `instalar --forcar`; novos `CLAUDE.md`/`GEMINI.md`;
-   `AGENTS.md` só com o que é do projeto (as cinco regras soltas conferidas contra núcleo e
-   processos: o que já está lá sai, o que falta vai ao pacote); `referencia-para-react` de
-   `.agents/skills/` para `docs-mentor/skills/`; `npm install`; critérios 5 e 6 conferidos com o
-   mantenedor nas três ferramentas.
+1. `CHANGELOG`, notas, versão 0.14.0, `npm run verify`.
+2. B7 com o mantenedor.
+3. Commit com autorização; tag e push com outra autorização.
+4. No piloto, depois da TASK-RF-084: tarefa única de 0.12.x para 0.14.0 — dependência e
+   `instalar --forcar`; `git mv .agents/skills/referencia-para-react docs-mentor/skills/` e `gerar`;
+   `entrada migrar`; `AGENTS.md` só com o que é do projeto; `docs-mentor/tetos.json` sem as exceções
+   que o pacote cobre; "Incorporadas" no `melhorias-do-pacote.md`; saída do arquivo de regressões;
+   B7 repetido no piloto (9 skills: as 8 do pacote e `referencia-para-react`).

@@ -22,7 +22,7 @@
   "sem_requisito_motivo": null,
   "criada_em": "29/08/26 14:00",
   "iniciada_em": "29/08/26 14:00",
-  "commit_base": "e9d3fcbc49ad9ef76986d634379b102c42262dc0",
+  "commit_base": "e1eecd9cac645754ec244f3a3f8e5114a6bda00e",
   "concluida_em": null,
   "plano": {
     "muda": [
@@ -47,15 +47,15 @@
       "codigo_saida": 1,
       "saida": "\"falhou de proposito\"",
       "executado_em": "29/08/26 14:00",
-      "commit_execucao": "e9d3fcbc49ad9ef76986d634379b102c42262dc0",
-      "arvore_hash": "d17f83bd9a5b5986072f469c79d93b2b4525558a",
+      "commit_execucao": "e1eecd9cac645754ec244f3a3f8e5114a6bda00e",
+      "arvore_hash": "4201249cbe1deb798d4bcd16617d3f9de96c7695",
       "arvore_sem_documentos": true,
       "evidencia_url": null,
       "motivo": null,
       "ressalva": null,
-      "log_ref": "docs-mentor/.evidencias/logs/TASK-CHORE-001-testes-1790895886442.log",
+      "log_ref": "docs-mentor/.evidencias/logs/TASK-CHORE-001-testes-1790890134520.log",
       "chave_cache": null,
-      "digest_insumos": "d17f83bd9a5b5986072f469c79d93b2b4525558a",
+      "digest_insumos": "4201249cbe1deb798d4bcd16617d3f9de96c7695",
       "vermelho_dispensado": null
     }
   },

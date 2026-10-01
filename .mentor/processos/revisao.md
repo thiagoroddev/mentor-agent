@@ -18,6 +18,27 @@ Corretude (faz o que o critério de aceite diz) · legibilidade (quem mantém da
 entende) · testes (existem, e no nível certo) · segurança e dado pessoal · desempenho com impacto de
 usuário · aderência às convenções do projeto, não às preferências do modelo.
 
+## Áreas e guia
+
+Vale para toda revisão: a pedida em conversa (revisar, review, `/review`, `/code-review`) e a `REV`
+do `auditar`. Antes do parecer, identifique as áreas que a mudança toca e carregue o guia de cada uma;
+a pergunta da área é o mínimo que o parecer responde. A revisão nativa da ferramenta não substitui
+este processo.
+
+<!-- mentor:areas-de-revisao:inicio -->
+<!-- Gerado de AREAS_DE_REVISAO (scripts/revisao-incremental.ts) por `node mentor.mjs manifesto`. Nao edite. -->
+
+| Área | Quando se aplica | Pergunta que a revisão responde | Guia a carregar |
+|---|---|---|---|
+| persistência e migração | IndexedDB, storage, banco, schema, migração, versão do banco | O que acontece com dados já persistidos, upgrade parcial e concorrência entre abas? | `.mentor/guia/06-persistencia.md` |
+| corretude e cálculos | código-fonte, algoritmo, cálculo, fórmula, heurística, roteamento | Há um caso de borda, contrato ou requisito cujo resultado o diff contradiz? | `.mentor/guia/07-codigo.md` |
+| interface e uso | componente, tela, página, estilo, interação, acessibilidade | O fluxo, estado de erro e interação do usuário continuam compreensíveis e cobertos? | `.mentor/guia/08-interacao.md` |
+| integridade das salvaguardas | `.mentor/`, hook, gate, executor, auditoria, revisão | A mudança mantém a regra e a evidência verificável ou abre um caminho de bypass? | `.mentor/guia/04-processo.md` · `.mentor/guia/10-qualidade.md` |
+| segurança e privacidade | autenticação, token, segredo, permissão, log, dado pessoal | Há segredo ou dado pessoal exposto, ou permissão além do necessário? | `.mentor/guia/09-seguranca.md` |
+| corretude do escopo | nenhuma das áreas acima | O diff atende aos critérios sem introduzir saída observável contraditória? | `.mentor/guia/07-codigo.md` |
+
+<!-- mentor:areas-de-revisao:fim -->
+
 ## Três níveis de achado
 
 | Nível | Significa | Efeito |

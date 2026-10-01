@@ -8,15 +8,23 @@ perguntar, e registra tudo de forma rastreavel.
 Na raiz do projeto que vai usar o pacote:
 
 ```bash
-npm i -D github:thiagoroddev/mentor-agent#v0.13.0
+npm i -D github:thiagoroddev/mentor-agent#v0.14.0
 npx mentor instalar        # copia .mentor/ e mentor.mjs para a raiz
 node mentor.mjs init       # cria docs-mentor/, sem tocar na docs/ do aplicativo
 ```
 
-O `instalar` cria tambem os pontos de entrada das ferramentas de IA (`CLAUDE.md`, `AGENTS.md`,
-`GEMINI.md`), **sem os quais nada carrega o nucleo e o pacote nao existe na pratica**. Sao ponteiros
-de menos de 2 KB somados: dizem onde as leis estao, nunca as repetem. Se o projeto ja' tiver um
-desses arquivos, ele **nao e' sobrescrito**: o comando imprime a linha para voce colar.
+O `instalar` cria tambem o que as ferramentas de IA carregam, **sem o que o pacote nao existe na
+pratica**:
+
+- `AGENTS.md` com o nucleo inteiro dentro, num bloco **gerado** entre marcadores (Codex e Antigravity
+  leem o arquivo sozinhos). O `verificar` reprova o bloco que diverge de `.mentor/nucleo.md`.
+- `CLAUDE.md` com `@AGENTS.md` (o Claude Code carrega o mesmo texto) e `GEMINI.md` apontando para o
+  `AGENTS.md`.
+- As skills do pacote e do projeto **copiadas** para `.agents/skills/` e `.claude/skills/`, as pastas
+  que as ferramentas procuram. Copia versionada: o clone em outra maquina ja' chega com elas.
+
+Arquivo que ja' existia **nao e' sobrescrito**. Para levar instalacao antiga ao modelo novo, sem
+perder as linhas do projeto: `node mentor.mjs entrada migrar`.
 
 ⚠️ **O pacote e' copiado PARA DENTRO do repositorio, e nao fica em `node_modules`.** E' deliberado:
 a IA le' `.mentor/` como arquivo, e o projeto versiona as convencoes dele ao lado. De dentro de
@@ -24,7 +32,7 @@ a IA le' `.mentor/` como arquivo, e o projeto versiona as convencoes dele ao lad
 isso em vez de estourar.
 
 A versao instalada fica gravada em `docs-mentor/contexto.json`, senao o relatorio de campo nao consegue
-dizer *"isto aconteceu com a 0.13.0"*.
+dizer *"isto aconteceu com a 0.14.0"*.
 
 ### Atualizar uma instalacao existente
 
@@ -32,14 +40,15 @@ A atualizacao de versao comeca pela tarefa (captura o diff real e evita diagnost
 
 ```bash
 # 1. Crie e inicie a tarefa da atualizacao:
-node mentor.mjs task nova --tipo CHORE --origem titulo-autossuficiente --titulo "Atualizar mentor-agent para v0.13.0" --esforco P/P
+node mentor.mjs task nova --tipo CHORE --origem titulo-autossuficiente --titulo "Atualizar mentor-agent para v0.14.0" --esforco P/P
 node mentor.mjs task puxar <ID>
 node mentor.mjs task iniciar <ID>
 # Preencha o plano da tarefa
 
 # 2. Atualize o pacote e force a copia:
-npm i -D github:thiagoroddev/mentor-agent#v0.13.0
+npm i -D github:thiagoroddev/mentor-agent#v0.14.0
 npx mentor instalar --forcar
+node mentor.mjs entrada migrar   # leva CLAUDE.md, AGENTS.md, GEMINI.md e skills ao modelo novo
 node mentor.mjs resolver-gerados # regenera markdowns derivados e alinha contexto
 node mentor.mjs verificar
 node mentor.mjs task gate <ID> testes
@@ -98,6 +107,15 @@ node mentor.mjs task finalizar TASK-RF-001 --validado-por-humano "Evidencia do t
 # Anexar evidencia externa (run de CI, link de PR) mesmo apos fechamento
 node mentor.mjs task anexar TASK-RF-001 --url "https://github.com/org/repo/actions/runs/12345" --gate build
 ```
+
+### O Mesmo Carregamento no Codex, no Claude Code e no Antigravity (v0.14.0)
+
+Cada ferramenta carregava uma coisa diferente, e cada uma revisava de um jeito. Plano em [`PLANO-v0.14.0.md`](./PLANO-v0.14.0.md).
+
+- **Núcleo dentro do `AGENTS.md`**, gerado entre marcadores; `CLAUDE.md` = `@AGENTS.md`. As três carregam o mesmo texto sem decidir abrir arquivo nenhum. O `verificar` reprova bloco editado à mão, marcador inválido e `AGENTS.md` acima de 24.000 bytes (limite do Antigravity).
+- **Skills por cópia gerada** em `.agents/skills/` e `.claude/skills/`, com registro de hash. Conflito de nome, pasta alheia, cópia editada e registro corrompido nunca são sobrescritos: o comando recusa e diz o motivo.
+- **`node mentor.mjs entrada migrar`** leva instalação antiga ao modelo novo, preservando as linhas do projeto.
+- **Revisão igual nas três**: qualquer pedido de revisão segue `processos/revisao.md` e carrega o guia de cada área tocada (tabela gerada do código); skill `revisao` como complemento.
 
 ### Correções de Campo, Revisão por Tarefa e Rigor pelo Contexto (v0.13.0)
 
@@ -229,8 +247,10 @@ Titulo com espaco vai entre aspas, no PowerShell e no cmd igual: `--titulo "text
 | `docs-mentor/requisitos/` | catalogo rastreavel de requisitos (`RF`, `RN`, `RNF`) |
 | `docs-mentor/auditorias/` | um dossie e um veredito por auditoria, no seu projeto |
 | `docs-mentor/rascunhos/` | gaveta livre para prototipos, pesquisas e anotacoes |
-| `.mentor/nucleo.md` | as leis do mentor. Sempre carregado pelas ferramentas de IA |
-| `.mentor/skills/` | catalogo de 7 habilidades nativas de apoio (`github-ci`, `ui-design`, etc.) |
+| `.mentor/nucleo.md` | as leis do mentor. Vai inteiro, gerado, dentro do `AGENTS.md` |
+| `AGENTS.md` · `CLAUDE.md` · `GEMINI.md` | o que as ferramentas de IA carregam sozinhas; o nucleo vem no `AGENTS.md` |
+| `.mentor/skills/` | catalogo de 8 habilidades nativas de apoio (`github-ci`, `ui-design`, `revisao`, etc.) |
+| `.agents/skills/` · `.claude/skills/` | copias geradas das skills do pacote e de `docs-mentor/skills/`. Edite a fonte |
 | `.mentor/processos/` | como conduzir o trabalho (`tarefa.md`, `entrega.md`). Carregados por gatilho |
 | `.mentor/guia/` | 13 areas de orientacao. Consultadas por lacuna, nunca inteiras |
 | `.mentor/esquemas/` | a forma dos JSON, com os valores possiveis de cada campo |

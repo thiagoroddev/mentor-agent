@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto'
 import { join, relative } from 'node:path'
-import { analisadoresSemIgnorar, atualizarHookDoMentor, avisoDeNormas, copiarPacote, normasQueMudam } from './instalar.mjs'
-import { criarPontosDeEntrada } from './entrada.ts'
+import { concluirInstalacao, copiarPacote, normasQueMudam } from './instalar.mjs'
+import { MARCA_AREAS_FIM, MARCA_AREAS_INICIO, tabelaDasAreasDeRevisao } from './revisao-incremental.ts'
 import {
   agoraIso, caminhos, escreverJson, escreverTexto, existe, lerJson, lerTexto, listar, raizPacote, raizProjeto,
 } from './arquivos.ts'
@@ -33,8 +33,24 @@ function arquivosDoPacote(pasta: string): Array<[string, string]> {
     .sort((a, b) => a[0].localeCompare(b[0]))
 }
 
+/**
+ * A tabela de areas de `processos/revisao.md` sai de `AREAS_DE_REVISAO`, antes do hash: o arquivo e'
+ * do pacote, entao e' gerado aqui, no repositorio dele, e chega pronto aos projetos.
+ */
+function atualizarTabelaDeRevisao(pacote: string): void {
+  const caminho = join(pacote, 'processos', 'revisao.md')
+  if (!existe(caminho)) return
+  const texto = lerTexto(caminho)
+  const inicio = texto.indexOf(MARCA_AREAS_INICIO)
+  const fim = texto.indexOf(MARCA_AREAS_FIM)
+  if (inicio < 0 || fim < inicio) throw new Error('processos/revisao.md sem os marcadores da tabela de areas: nada foi gerado')
+  const novo = texto.slice(0, inicio) + tabelaDasAreasDeRevisao() + texto.slice(fim + MARCA_AREAS_FIM.length)
+  if (novo !== texto) escreverTexto(caminho, novo)
+}
+
 export function gerarManifesto(): void {
   const c = caminhos()
+  atualizarTabelaDeRevisao(c.pacote)
   const r = raizProjeto()
   const caminhoPkg = existe(join(r, 'package.json')) ? join(r, 'package.json') : join(raizPacote(), 'package.json')
   const versao = existe(caminhoPkg) ? (lerJson<{ version?: string }>(caminhoPkg).version ?? '0.0.0') : '0.0.0'
@@ -128,7 +144,6 @@ export function instalar(flags: Record<string, string | undefined>): void {
     process.exitCode = 1
     return
   }
-  if (copia.migrouDocs) console.log('Migracao concluida: docs/ foi renomeada para docs-mentor/.')
   // Manifesto primeiro, `package.json` so' como reserva. Rodando de dentro de um projeto ja
   // instalado, `origem` e' a raiz DELE, e o `package.json` de la e' o do app: a mensagem sairia
   // anunciando a versao do projeto do usuario como se fosse a do pacote. Irmao do achado 10,
@@ -138,34 +153,8 @@ export function instalar(flags: Record<string, string | undefined>): void {
     ? lerJson<{ versao?: string }>(doManifesto).versao ?? '0.0.0'
     : lerJson<{ version?: string }>(join(origem, 'package.json')).version ?? '0.0.0'
   console.log(`mentor-agent ${versao} instalado em ${destino}.`)
-  for (const linha of avisoDeNormas(normas)) console.log(linha)
-  if (atualizarHookDoMentor(destino)) console.log('Hook .githooks/pre-push regravado no modelo novo: envio para wip/ pula os gates.')
-
-  // Sem ponto de entrada, nenhuma ferramenta le' o nucleo, e o pacote inteiro nao existe.
-  const e = criarPontosDeEntrada(destino)
-  if (e.criados.length) console.log(`Ponto de entrada criado: ${e.criados.join(', ')}.`)
-  if (e.preservados.length) {
-    console.log(`\nJa existia, e nao foi tocado: ${e.preservados.join(', ')}.`)
-    console.log('Cole nele, para a ferramenta carregar as leis:')
-    for (const arquivo of e.preservados) {
-      console.log(arquivo === 'CLAUDE.md'
-        ? '  CLAUDE.md:  @.mentor/nucleo.md'
-        : `  ${arquivo}:  Antes de qualquer outra coisa, leia \`.mentor/nucleo.md\`.`)
-    }
-  }
-
-  const lint = analisadoresSemIgnorar(destino)
-  if (lint.length) {
-    console.log(`\nAVISO: ${lint.map((l) => l.arquivo).join(', ')} nao ignora .mentor/.`)
-    console.log('O analisador vai varrer o pacote e reprovar o gate de lint por estilo que nao e do seu codigo.')
-    console.log('Acrescente:')
-    for (const l of lint) console.log(`  ${l.arquivo}:  ${l.linha}`)
-  }
-  // Reinstalar sobre projeto inicializado nao pede `init`: convidar a refazer os portoes ja
-  // respondidos e' o comando desaprendendo o estado do projeto a cada atualizacao.
-  console.log(existe(join(destino, 'docs-mentor', 'contexto.json'))
-    ? '\nProjeto ja inicializado. Proximo passo: `node mentor.mjs gerar`, para regenerar as vistas com a versao nova.'
-    : '\nProximo passo: `node mentor.mjs init`, e depois responder os portoes V, C e 0.')
+  // O resto e' igual ao caminho de `node_modules`, e mora num lugar so'.
+  concluirInstalacao(destino, { normas, migrouDocs: Boolean(copia.migrouDocs) })
 
   if (!existe(join(pastaDestino, NOME))) {
     escreverTexto(join(destino, '.mentor', 'LEIA-ME-MANIFESTO.txt'),

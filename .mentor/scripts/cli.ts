@@ -23,6 +23,7 @@ import { importarPlano, listarPlanos, registrarPlano, vincularPlano } from './cm
 import { listarPatches, registrarPatch, registrarTodosPatches } from './cmd-patches.ts'
 import { executarGateDaTarefa, executarGatesDaTarefa } from './executor-gates.ts'
 import { regenerarTudo } from './vistas.ts'
+import { gerarCarregamento, migrarEntrada } from './entrada.ts'
 
 const AJUDA = `
 mentor <comando>
@@ -96,7 +97,8 @@ mentor <comando>
        registrar <REV-ID|AUD-ID>       valida parecer, partes e retrato atual
        resolver <REV-ID-Bxx|AUD-ID-Bxx> decide o destino do achado
             --destino tarefa|divida_tecnica|risco_aceito|descartado --ref "..."
-  gerar                                regenera as vistas em Markdown
+  gerar                                regenera as vistas em Markdown, o nucleo no AGENTS.md e as copias das skills
+  entrada migrar                       leva CLAUDE.md, AGENTS.md, GEMINI.md e skills de instalacao antiga ao modelo novo
 `
 
 /**
@@ -173,7 +175,10 @@ function principal(argv: string[]): number {
       if (sub === 'conferir') return listarPatches()
       throw new Error(`Subcomando de patch desconhecido: "${sub}". Use: mentor patch [listar|registrar|registrar-todos|conferir]`)
     }
-    case 'gerar': regenerarTudo(); console.log('Vistas regeneradas.'); return 0
+    case 'gerar': regenerarTudo(); console.log('Vistas regeneradas.'); return gerarCarregamento()
+    case 'entrada':
+      if (posicionais[0] === 'migrar') return migrarEntrada()
+      throw new Error('Use: mentor entrada migrar')
     case 'anotar': anotar(posicionais[0], flags.sobre); return 0
     case 'reserva': listarReserva(); return 0
     case 'regras':

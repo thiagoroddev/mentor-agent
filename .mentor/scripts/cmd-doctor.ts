@@ -3,7 +3,7 @@ import { join } from 'node:path'
 import { agora, caminhos, diasDesde, existe, lerTexto, listar, relativo } from './arquivos.ts'
 import { tetos } from './cmd-verificar.ts'
 import { rascunhosParados } from './cmd-anotar.ts'
-import { PONTOS_DE_ENTRADA, pontosDeEntradaSemNucleo } from './entrada.ts'
+import { pontosDeEntrada } from './entrada.ts'
 import { analisadoresSemIgnorar } from './instalar.mjs'
 import {
   carregarContexto, carregarDividas, carregarInvariantes, carregarRequisitos, carregarRiscos, carregarTarefas,
@@ -411,20 +411,10 @@ function processo(ctx: Contexto, tarefas: Tarefa[]): Linha[] {
 
   // A checagem mais barata do pacote, e a que sustenta todas as outras: se nenhuma ferramenta
   // carrega o nucleo, as 494 regras nao existem. `carregamento: sempre` no cabecalho do nucleo nao
-  // e' lido por nada: quem faz o carregamento acontecer sao estes arquivos.
-  const entrada = pontosDeEntradaSemNucleo()
-  if (entrada.ausentes.length === PONTOS_DE_ENTRADA.length) {
-    linhas.push({ estado: 'bloqueio', texto: 'nenhum ponto de entrada de IA no projeto: nada carrega o nucleo, e sem o nucleo o pacote nao existe. Rode: mentor instalar' })
-  } else {
-    if (entrada.ausentes.length) {
-      linhas.push({ estado: 'atencao', texto: `sem ponto de entrada para ${entrada.ausentes.join(', ')}: nessas ferramentas o nucleo nao carrega` })
-    }
-    if (entrada.mudos.length) {
-      linhas.push({ estado: 'bloqueio', texto: `${entrada.mudos.join(', ')} existe mas nao cita .mentor/nucleo.md: a ferramenta carrega o arquivo e nao chega nas leis` })
-    }
-    if (!entrada.ausentes.length && !entrada.mudos.length) {
-      linhas.push({ estado: 'ok', texto: 'pontos de entrada apontam para o nucleo' })
-    }
+  // e' lido por nada: quem faz o carregamento acontecer sao estes arquivos. Desde a 0.14.0 o nucleo
+  // vai dentro do AGENTS.md, e as skills, nas pastas que cada ferramenta le.
+  for (const item of pontosDeEntrada()) {
+    linhas.push({ estado: item.estado as 'ok' | 'atencao' | 'bloqueio', texto: item.texto })
   }
 
   // Auditoria: o doctor mede a cadencia (tarefas com diff auditavel) e conta os bloqueios que ela reportou.

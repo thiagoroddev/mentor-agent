@@ -79,28 +79,103 @@ export function interpretarNameStatus(bytes: Buffer): Array<{ status: string; ca
   return arquivos
 }
 
+/**
+ * As areas de revisao, num lugar so'. Delas saem as perguntas do dossie da REV, os guias que entram
+ * nos contratos da revisao e a tabela de `processos/revisao.md` (gerada pelo `manifesto`), que e' o
+ * que a revisao pedida em conversa segue. Ate' a 0.13.0 as perguntas e o mapa de guias moravam em
+ * dois lugares, e a revisao em conversa nao via nenhum dos dois.
+ */
+export interface AreaDeRevisao {
+  area: string
+  /** Para quem le a tabela: quando a area se aplica. */
+  sinais: string
+  pergunta: string
+  guias: string[]
+  /** Casa com o caminho de algum arquivo da mudanca. */
+  caminho: (arquivo: string) => boolean
+  /** Casa com o diff, os riscos ou o tipo da tarefa. */
+  conteudo: RegExp
+}
+
+export const AREAS_DE_REVISAO: AreaDeRevisao[] = [
+  {
+    area: 'persistência e migração',
+    sinais: 'IndexedDB, storage, banco, schema, migração, versão do banco',
+    pergunta: 'O que acontece com dados já persistidos, upgrade parcial e concorrência entre abas?',
+    guias: ['.mentor/guia/06-persistencia.md'],
+    caminho: (p) => /indexeddb|storage|database|migration|schema|db_version/.test(p),
+    conteudo: /indexeddb|persist[êe]n|migra[çc]|schema|db_version/,
+  },
+  {
+    area: 'corretude e cálculos',
+    sinais: 'código-fonte, algoritmo, cálculo, fórmula, heurística, roteamento',
+    pergunta: 'Há um caso de borda, contrato ou requisito cujo resultado o diff contradiz?',
+    guias: ['.mentor/guia/07-codigo.md'],
+    caminho: (p) => /routing|route|algorithm|calcul|formula|heuristic|\.(ts|tsx|js)$/.test(p),
+    conteudo: /algorit|c[aá]lcul|f[oó]rmula|heur[ií]stic|roteamento/,
+  },
+  {
+    area: 'interface e uso',
+    sinais: 'componente, tela, página, estilo, interação, acessibilidade',
+    pergunta: 'O fluxo, estado de erro e interação do usuário continuam compreensíveis e cobertos?',
+    guias: ['.mentor/guia/08-interacao.md'],
+    caminho: (p) => /\.tsx$|\.jsx$|\.css$|\.html$|component|page/.test(p),
+    conteudo: /interface|componente|intera[çc][aã]o|acessib/,
+  },
+  {
+    area: 'integridade das salvaguardas',
+    sinais: '`.mentor/`, hook, gate, executor, auditoria, revisão',
+    pergunta: 'A mudança mantém a regra e a evidência verificável ou abre um caminho de bypass?',
+    guias: ['.mentor/guia/04-processo.md', '.mentor/guia/10-qualidade.md'],
+    caminho: (p) => p.startsWith('.mentor/') || /hook|gate|executor|auditar|revisao/.test(p),
+    conteudo: /hook|gate|auditor|revis[aã]o|salvaguarda/,
+  },
+  {
+    area: 'segurança e privacidade',
+    sinais: 'autenticação, token, segredo, permissão, log, dado pessoal',
+    pergunta: 'Há segredo ou dado pessoal exposto, ou permissão além do necessário?',
+    guias: ['.mentor/guia/09-seguranca.md'],
+    caminho: (p) => /auth|token|secret|permission|security|log/.test(p),
+    conteudo: /auth|token|seguran[çc]a|privacidade|permiss[aã]o|segredo/,
+  },
+]
+
+/** Quando nenhuma area casa: a revisao ainda confere o escopo contra os criterios. */
+export const AREA_PADRAO_DE_REVISAO = {
+  area: 'corretude do escopo',
+  sinais: 'nenhuma das áreas acima',
+  pergunta: 'O diff atende aos critérios sem introduzir saída observável contraditória?',
+  guias: ['.mentor/guia/07-codigo.md'],
+}
+
 export function perguntasPorRisco(arquivos: string[], diff = '', riscos: string[] = [], tipo = ''): Array<{ regra: string; pergunta: string }> {
   const paths = arquivos.map((a) => a.toLowerCase())
   const conteudo = `${diff}\n${riscos.join('\n')}\n${tipo}`.toLowerCase()
-  const regras: Array<{ regra: string; pergunta: string }> = []
-  const adicionar = (regra: string, pergunta: string) => { regras.push({ regra, pergunta }) }
-  if (paths.some((p) => /indexeddb|storage|database|migration|schema|db_version/.test(p)) || /indexeddb|persist[êe]n|migra[çc]|schema|db_version/.test(conteudo)) {
-    adicionar('persistência e migração', 'O que acontece com dados já persistidos, upgrade parcial e concorrência entre abas?')
-  }
-  if (paths.some((p) => /routing|route|algorithm|calcul|formula|heuristic|\.(ts|tsx|js)$/.test(p)) || /algorit|c[aá]lcul|f[oó]rmula|heur[ií]stic|roteamento/.test(conteudo)) {
-    adicionar('corretude e cálculos', 'Há um caso de borda, contrato ou requisito cujo resultado o diff contradiz?')
-  }
-  if (paths.some((p) => /\.tsx$|\.jsx$|\.css$|\.html$|component|page/.test(p)) || /interface|componente|intera[çc][aã]o|acessib/.test(conteudo)) {
-    adicionar('interface e uso', 'O fluxo, estado de erro e interação do usuário continuam compreensíveis e cobertos?')
-  }
-  if (paths.some((p) => p.startsWith('.mentor/') || /hook|gate|executor|auditar|revisao/.test(p)) || /hook|gate|auditor|revis[aã]o|salvaguarda/.test(conteudo)) {
-    adicionar('integridade das salvaguardas', 'A mudança mantém a regra e a evidência verificável ou abre um caminho de bypass?')
-  }
-  if (paths.some((p) => /auth|token|secret|permission|security|log/.test(p)) || /auth|token|seguran[çc]a|privacidade|permiss[aã]o|segredo/.test(conteudo)) {
-    adicionar('segurança e privacidade', 'Há segredo ou dado pessoal exposto, ou permissão além do necessário?')
-  }
-  if (regras.length === 0) adicionar('corretude do escopo', 'O diff atende aos critérios sem introduzir saída observável contraditória?')
+  const regras = AREAS_DE_REVISAO
+    .filter((a) => paths.some((p) => a.caminho(p)) || a.conteudo.test(conteudo))
+    .map((a) => ({ regra: a.area, pergunta: a.pergunta }))
+  if (regras.length === 0) regras.push({ regra: AREA_PADRAO_DE_REVISAO.area, pergunta: AREA_PADRAO_DE_REVISAO.pergunta })
   return regras
+}
+
+export const MARCA_AREAS_INICIO = '<!-- mentor:areas-de-revisao:inicio -->'
+export const MARCA_AREAS_FIM = '<!-- mentor:areas-de-revisao:fim -->'
+
+/** A tabela de `processos/revisao.md`, com os marcadores. Gerada; nunca escrita a mao. */
+export function tabelaDasAreasDeRevisao(): string {
+  const linha = (a: { area: string; sinais: string; pergunta: string; guias: string[] }) =>
+    `| ${a.area} | ${a.sinais} | ${a.pergunta} | ${a.guias.map((g) => `\`${g}\``).join(' · ')} |`
+  return [
+    MARCA_AREAS_INICIO,
+    '<!-- Gerado de AREAS_DE_REVISAO (scripts/revisao-incremental.ts) por `node mentor.mjs manifesto`. Nao edite. -->',
+    '',
+    '| Área | Quando se aplica | Pergunta que a revisão responde | Guia a carregar |',
+    '|---|---|---|---|',
+    ...AREAS_DE_REVISAO.map(linha),
+    linha(AREA_PADRAO_DE_REVISAO),
+    '',
+    MARCA_AREAS_FIM,
+  ].join('\n')
 }
 
 /** Somente o contrato que o auditor julgou; datas, gates e vistas geradas não fazem parte dele. */
@@ -113,14 +188,9 @@ export function assinaturaSemanticaDaTarefa(tarefa: Tarefa): string {
   }))
 }
 
-const GUIAS_DA_REGRA: Record<string, string[]> = {
-  'persistência e migração': ['.mentor/guia/06-persistencia.md'],
-  'corretude e cálculos': ['.mentor/guia/07-codigo.md'],
-  'interface e uso': ['.mentor/guia/08-interacao.md'],
-  'integridade das salvaguardas': ['.mentor/guia/04-processo.md', '.mentor/guia/10-qualidade.md'],
-  'segurança e privacidade': ['.mentor/guia/09-seguranca.md'],
-  'corretude do escopo': ['.mentor/guia/07-codigo.md'],
-}
+const GUIAS_DA_REGRA: Record<string, string[]> = Object.fromEntries(
+  [...AREAS_DE_REVISAO, AREA_PADRAO_DE_REVISAO].map((a) => [a.area, a.guias]),
+)
 
 export function contratosDaRevisao(raiz: string, tarefas: Tarefa[], regras: Array<{ regra: string }>): Array<{ caminho: string; sha256: string }> {
   const caminhos = new Set<string>(['.mentor/nucleo.md', '.mentor/processos/revisao.md'])

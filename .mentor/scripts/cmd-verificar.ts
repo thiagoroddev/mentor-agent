@@ -6,6 +6,7 @@ import { conferirIntegridadePatches } from './cmd-patches.ts'
 import { carregarContexto, carregarInvariantes, carregarReferencias, carregarRequisitos, carregarTarefas } from './vistas.ts'
 import { MARCADOR } from './tipos.ts'
 import { problemasDoInventario } from './laboratorio.ts'
+import { AVISO_AGENTES, LIMITE_AGENTES, estadoDasSkills, estadoDoBloco, problemasDasSkills } from './instalar.mjs'
 import type { Tetos } from './tipos.ts'
 
 export interface Achado { familia: string; onde: string; problema: string }
@@ -266,10 +267,43 @@ function referencias(): Achado[] {
   return achados
 }
 
+/**
+ * O que as ferramentas de IA carregam ao abrir o projeto: o nucleo dentro do `AGENTS.md` e as copias
+ * das skills. So' confere o que o projeto ja' adotou (bloco presente, skills ja' sincronizadas): a
+ * adocao e' do `instalar` e do `entrada migrar`, e o `doctor` aponta quando falta.
+ */
+export function carregamento(): Achado[] {
+  const c = caminhos()
+  const l = { raiz: c.raiz, pacote: c.pacote, docs: c.docs }
+  const achados: Achado[] = []
+  const bloco = estadoDoBloco(l)
+  if (bloco.estado === 'invalido') {
+    achados.push({ familia: 'carregamento', onde: 'AGENTS.md', problema: `marcadores do nucleo invalidos (${bloco.detalhe}): o gerar recusa ate' consertar a mao` })
+  } else if (bloco.estado === 'divergente') {
+    achados.push({ familia: 'carregamento', onde: 'AGENTS.md', problema: 'o nucleo dentro do bloco e diferente de .mentor/nucleo.md: bloco editado a mao, ou nucleo atualizado sem gerar. Rode: node mentor.mjs gerar' })
+  }
+  if (bloco.bytes > LIMITE_AGENTES) {
+    achados.push({ familia: 'carregamento', onde: 'AGENTS.md', problema: `${bloco.bytes} bytes: acima de ${LIMITE_AGENTES} o Antigravity trunca o arquivo, e o fim do nucleo ou das regras do projeto nao carrega` })
+  }
+  const skills = estadoDasSkills(l)
+  if (skills.sincronizadas || skills.destinos.some((d: { registro: { estado: string } }) => d.registro.estado === 'corrompido')) {
+    for (const p of problemasDasSkills(skills)) achados.push({ familia: 'carregamento', onde: p.onde, problema: p.problema })
+  }
+  return achados
+}
+
+function avisosDeCarregamento(): string[] {
+  const c = caminhos()
+  const bloco = estadoDoBloco({ raiz: c.raiz, pacote: c.pacote, docs: c.docs })
+  return bloco.bytes > AVISO_AGENTES && bloco.bytes <= LIMITE_AGENTES
+    ? [`AGENTS.md com ${bloco.bytes} bytes, perto do limite de ${LIMITE_AGENTES} do Antigravity: enxugue as regras do projeto.`]
+    : []
+}
+
 export function coletarAchados(): Achado[] {
   return [
     ...marcadores(), ...tetos(), ...referencias(),
-    ...links(), ...inventarioDeRegras(), ...divergenciaDoPacote(),
+    ...links(), ...inventarioDeRegras(), ...divergenciaDoPacote(), ...carregamento(),
   ]
 }
 
@@ -279,8 +313,9 @@ export function verificar(): number {
   if (patches.reconhecidos.length > 0) {
     console.log(`· ${patches.reconhecidos.length} patch(es) local(is) reconhecido(s) e valido(s) em .mentor/.`)
   }
+  for (const aviso of avisosDeCarregamento()) console.log(`· ${aviso}`)
   if (achados.length === 0) {
-    console.log('APROVADO. Tres familias: marcadores, tetos de texto, integridade referencial (ponteiros, links e inventario de regras).')
+    console.log('APROVADO. Quatro familias: marcadores, tetos de texto, integridade referencial (ponteiros, links e inventario de regras) e carregamento (nucleo no AGENTS.md e copias das skills).')
     return 0
   }
   console.error(`REPROVADO. ${achados.length} achado(s):\n`)

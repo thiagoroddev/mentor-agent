@@ -25,7 +25,7 @@ foram entregues juntas.
 
 **Sempre publicável** (guia OPS-20). Quebrada, consertá-la vem antes de qualquer funcionalidade.
 
-Quando `contexto.json` exige PR em `revisao_antes_do_merge`, o hook barra envio direto à linha principal. Quando o projeto dispensa PR, o fluxo local declarado em `estrategia_de_ramos` vale. A classificação do projeto e o risco da mudança determinam REV e gates obrigatórios; autorização de fechamento/push continua exigida. Não reative PR como efeito colateral da auditoria.
+Quando `contexto.json` exige PR em `revisao_antes_do_merge`, o hook barra envio direto à linha principal, e a IA não propõe nem faz merge local de ramo de trabalho na principal: ela só avança por `git pull`, depois do merge no remoto, e o caminho de uma tarefa pronta é subir o ramo e abrir o PR. Quando o projeto dispensa PR, o fluxo local declarado em `estrategia_de_ramos` vale. A classificação do projeto e o risco da mudança determinam REV e gates obrigatórios; autorização de fechamento/push continua exigida. Não reative PR como efeito colateral da auditoria.
 
 **O que o hook de pre-push faz,** olhando os refs enviados: confere marca de tarefa, cobertura incremental contra os blobs do ref (inclusive outro ramo/worktree), evidência dos gates para a árvore enviada e os gates locais quando aplicáveis; depois **mostra** o `verificar`, sem barrar por achados não relacionados. Mudança auditável depois do parecer exige nova `REV`. Envio só para `wip/` passa direto. Light sem mudança auditável segue as checagens mecânicas; a marca `(light)` sozinha não libera conteúdo funcional.
 

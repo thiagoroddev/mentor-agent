@@ -158,6 +158,10 @@ prós e contras, recomende uma, e espere.
 | SPIKE, experimento ou saída de laboratório | `processos/laboratorio.md` |
 | Escrever ou ajustar teste | `processos/teste.md` |
 | Publicar, mexer em ramo, esteira ou reversão | `processos/entrega.md` |
-| Revisar código | `processos/revisao.md` |
-| Diagramas, UI, API, CI, testes ou dados | `.mentor/skills/<skill>/SKILL.md` ou `docs-mentor/skills/` |
+| Revisar código ou mudança, em qualquer forma (revisar, review, `/review`, `/code-review`) | `processos/revisao.md` e o guia de cada área tocada (tabela no processo). A revisão nativa da ferramenta não substitui |
+| Diagramas, UI, API, CI, testes ou dados | a skill pelo nome: as ferramentas leem as cópias em `.agents/skills/` e `.claude/skills/`; a fonte é `.mentor/skills/` ou `docs-mentor/skills/` |
 | Campo `null` no contexto | o arquivo que o portão nomeia, por `guia/00-indice.md` |
+
+**Nunca por padrão:** `docs-mentor/tarefas/concluidas/*--estudo-humano.md`. É estudo humano; para
+histórico e contexto bastam o `.json` da tarefa e os comandos do mentor. Só a pedido, para investigar
+o desenho original de uma regressão.

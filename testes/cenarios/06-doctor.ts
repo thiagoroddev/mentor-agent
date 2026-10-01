@@ -1,16 +1,18 @@
-import { abrirCenario, confere, dizQue, escrever, ler, lerJson, mentor } from '../apoio.ts'
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
+import { RAIZ_REPO, abrirCenario, confere, dizQue, escrever, ler, lerJson, mentor } from '../apoio.ts'
 import type { Cenario } from '../apoio.ts'
+import { PONTOS_DE_ENTRADA } from '../../.mentor/scripts/instalar.mjs'
 
 /** A folha de saude: perfil ISO 25010, cadencia da revisao geral, e o veredito binario. */
 export function rodar(): Cenario {
   const c = abrirCenario('06-doctor')
   mentor(c, 'init')
   // Precondicao de projeto instalado de verdade: sem ponto de entrada, nenhuma ferramenta carrega o
-  // nucleo, e o doctor bloqueia com razao. Escrito a mao aqui em vez de rodar `instalar`, que
-  // copiaria os 55 arquivos do pacote para dentro de cada exemplo versionado.
-  for (const arquivo of ['CLAUDE.md', 'AGENTS.md', 'GEMINI.md']) {
-    escrever(c, arquivo, `# entrada\n\nLeia .mentor/nucleo.md.\n`)
-  }
+  // nucleo, e o doctor bloqueia com razao. Escrito pelo modelo aqui em vez de rodar `instalar`, que
+  // copiaria o pacote e as skills para dentro de cada exemplo versionado.
+  const nucleo = readFileSync(join(RAIZ_REPO, '.mentor', 'nucleo.md'), 'utf8')
+  for (const p of PONTOS_DE_ENTRADA) escrever(c, p.arquivo, `${p.conteudo(nucleo)}\n`)
 
   const ctx = lerJson<Record<string, any>>(c, 'docs-mentor/contexto.json')
   ctx['estado'].fase = 'construcao'

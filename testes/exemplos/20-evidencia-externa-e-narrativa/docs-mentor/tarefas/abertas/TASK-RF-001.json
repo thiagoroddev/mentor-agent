@@ -22,7 +22,7 @@
   "sem_requisito_motivo": "teste de gate",
   "criada_em": "29/08/26 14:00",
   "iniciada_em": "29/08/26 14:00",
-  "commit_base": "e9d3fcbc49ad9ef76986d634379b102c42262dc0",
+  "commit_base": "e1eecd9cac645754ec244f3a3f8e5114a6bda00e",
   "concluida_em": null,
   "plano": {
     "muda": [
@@ -78,15 +78,15 @@
       "codigo_saida": 0,
       "saida": "",
       "executado_em": "29/08/26 14:00",
-      "commit_execucao": "e9d3fcbc49ad9ef76986d634379b102c42262dc0",
-      "arvore_hash": "c6f079b77ebfddf75acac21d4bb44843f35f14d5",
+      "commit_execucao": "e1eecd9cac645754ec244f3a3f8e5114a6bda00e",
+      "arvore_hash": "ad6a5007df30b46152f9d13214a78485632e424e",
       "arvore_sem_documentos": true,
       "evidencia_url": null,
       "motivo": "Saída vazia: o comando não produziu evidência verificável",
       "ressalva": null,
-      "log_ref": "docs-mentor/.evidencias/logs/TASK-RF-001-build-1790896044530.log",
+      "log_ref": "docs-mentor/.evidencias/logs/TASK-RF-001-build-1790890242939.log",
       "chave_cache": null,
-      "digest_insumos": "c6f079b77ebfddf75acac21d4bb44843f35f14d5",
+      "digest_insumos": "ad6a5007df30b46152f9d13214a78485632e424e",
       "vermelho_dispensado": null
     }
   },

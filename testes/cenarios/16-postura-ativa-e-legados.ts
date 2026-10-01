@@ -10,19 +10,20 @@ import { PONTOS_DE_ENTRADA } from '../../.mentor/scripts/instalar.mjs'
 export function rodar(): Cenario {
   const c = abrirCenario('16-postura-ativa-e-legados')
 
-  // 1. Instalar gera pontos de entrada com diretiva de postura ativa
+  // 1. Instalar gera pontos de entrada com diretiva de postura ativa. Desde a 0.14.0 a diretiva chega
+  //    porque o nucleo inteiro vai dentro do AGENTS.md, gerado; o CLAUDE.md o importa.
+  const nucleo = readFileSync(join(RAIZ_REPO, '.mentor', 'nucleo.md'), 'utf8')
   const agentes = PONTOS_DE_ENTRADA.find((p) => p.arquivo === 'AGENTS.md')
   confere(c, Boolean(agentes), 'AGENTS.md esta nos pontos de entrada')
-  const textoAgentes = agentes?.conteudo() ?? ''
+  const textoAgentes = agentes?.conteudo(nucleo) ?? ''
   confere(c, textoAgentes.includes('Postura ativa do mentor'), 'AGENTS.md contem diretiva de postura ativa')
   confere(c, textoAgentes.includes('docs-mentor/contexto.json'), 'AGENTS.md instrui inspecionar contexto.json')
 
   const claude = PONTOS_DE_ENTRADA.find((p) => p.arquivo === 'CLAUDE.md')
-  const textoClaude = claude?.conteudo() ?? ''
-  confere(c, textoClaude.includes('@AGENTS.md') || textoClaude.includes('Postura ativa'), 'CLAUDE.md carrega instrucoes ativas')
+  const textoClaude = claude?.conteudo(nucleo) ?? ''
+  confere(c, textoClaude.includes('@AGENTS.md'), 'CLAUDE.md carrega as instrucoes ativas pelo AGENTS.md')
 
   // 2. nucleo.md declara o princípio da postura ativa e comando correto de gate
-  const nucleo = readFileSync(join(RAIZ_REPO, '.mentor', 'nucleo.md'), 'utf8')
   confere(c, nucleo.includes('Postura ativa do mentor') || nucleo.includes('Mentor ativo'), 'nucleo.md inclui principio de postura ativa')
   confere(c, nucleo.includes('task gate') && !nucleo.includes('task registrar-gate'), 'nucleo.md usa task gate em vez de task registrar-gate')
 
