@@ -49,3 +49,20 @@ recusados com o motivo, nunca sobrescritos.
 O Antigravity corta arquivo de regra acima de 24.000 bytes. Com o nucleo dentro, o `AGENTS.md` novo
 tem ~13 KB; o `verificar` avisa a partir de 21.600 e reprova acima de 24.000. Regras do projeto que
 crescerem demais pedem enxugamento, nao corte do nucleo.
+
+## Validacao nas tres ferramentas (01/10/26)
+
+Feita pelo mantenedor num clone de um projeto minimo com a 0.14.0 instalada, sem rodar nada depois
+do clone, como outra maquina recebe.
+
+| | Claude Code | Codex | Antigravity |
+| :-- | :-- | :-- | :-- |
+| Versao | 2.19675.0 | 26.928.21956 | 2.19.1 |
+| Nucleo carregado sem pedir | sim: diagnostico com o `doctor` ao "ola"; Portao 2 respondido sem ler arquivo (app e extensao do VS Code) | sim: diagnostico ao "ola" | sim: diagnostico ao "ola" |
+| Skills do mentor | revisou pela skill `revisao` (`.claude/skills`) | as 8, de `.agents/skills` | as 8, de `.agents/skills` |
+| "revise esta mudanca" | seguiu `processos/revisao.md`; areas e guias 06 e 07; os tres defeitos; lista do nucleo §6 | seguiu `processos/revisao.md`; areas de calculo e persistencia; os tres defeitos | seguiu `processos/revisao.md` passo a passo; guias 06 e 07, com as regras citadas; os tres defeitos |
+
+**Ressalva.** O roteiro, com os defeitos esperados, estava dentro do repositorio testado. O Codex o
+leu antes de revisar, e o Claude Code o viu no `git diff` depois de a pessoa apaga-lo; os dois
+avisaram. So' a revisao do Antigravity e' prova cega de que os defeitos seriam achados sem pista.
+Em teste futuro desse tipo, o gabarito fica fora do repositorio.
