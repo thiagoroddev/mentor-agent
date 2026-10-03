@@ -22,7 +22,7 @@
   "sem_requisito_motivo": null,
   "criada_em": "29/08/26 14:00",
   "iniciada_em": "29/08/26 14:00",
-  "commit_base": "e1eecd9cac645754ec244f3a3f8e5114a6bda00e",
+  "commit_base": "830109f2576d822c2af85d10fc1739210fa9f90a",
   "concluida_em": "29/08/26 14:00",
   "plano": {
     "muda": [
@@ -47,15 +47,15 @@
       "codigo_saida": 0,
       "saida": "\"5 passed\"",
       "executado_em": "29/08/26 14:00",
-      "commit_execucao": "e1eecd9cac645754ec244f3a3f8e5114a6bda00e",
-      "arvore_hash": "4aca00909690df599df0a85cf07a575c5008802f",
+      "commit_execucao": "830109f2576d822c2af85d10fc1739210fa9f90a",
+      "arvore_hash": "fa5fa34db9e8e1cd11aa63e19ca98b1f2d6f03cc",
       "arvore_sem_documentos": true,
       "evidencia_url": null,
       "motivo": null,
       "ressalva": null,
-      "log_ref": "docs-mentor/.evidencias/logs/TASK-CHORE-001-testes-1790890182262.log",
-      "chave_cache": "95e461fe40a94253ddd68ce75a0bbf2a944dc9d15f24b15ae37ea77d38e47d7d",
-      "digest_insumos": "4aca00909690df599df0a85cf07a575c5008802f",
+      "log_ref": "docs-mentor/.evidencias/logs/TASK-CHORE-001-testes-1791056315819.log",
+      "chave_cache": "544f59386e59084436e3bee49d443965141453161be0ea9e6cfb687a6634fbc5",
+      "digest_insumos": "fa5fa34db9e8e1cd11aa63e19ca98b1f2d6f03cc",
       "vermelho_dispensado": null
     }
   },

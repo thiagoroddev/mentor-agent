@@ -9,4 +9,4 @@
 
 | # | ID | Titulo | Fatia | Valor | Urgencia | Esforco H/IA | Bloqueada por | Origem |
 |--:|---|---|---|---|---|---|---|---|
-| 1 | `TASK-CHORE-001` | Portar as correcoes locais de midia e stdin do pre-push | - | importante | normal | M/G | - | titulo-autossuficiente |
+| | | Nenhuma tarefa na fila | | | | | | |

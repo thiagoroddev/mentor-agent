@@ -47,6 +47,8 @@ export function mentor(c: Cenario, ...args: string[]): Resultado {
     encoding: 'utf8',
     cwd: RAIZ_REPO,
     env: { ...process.env, MENTOR_RAIZ: c.pasta, MENTOR_AGORA: RELOGIO },
+    // A simulacao do protocolo Git sem refs precisa entregar EOF, como um push vazio.
+    ...(args[0] === 'hooks' && args.includes('--pre-push') ? { input: '', timeout: 30_000 } : {}),
   })
   return { codigo: r.status ?? 1, saida: `${r.stdout ?? ''}${r.stderr ?? ''}`.trim() }
 }

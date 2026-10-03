@@ -190,7 +190,8 @@ const mentorComInput = (raiz: string, input: string, ...comando: string[]) => {
   const r = spawnSync(process.execPath, [join(RAIZ, "mentor.mjs"), ...comando], {
     cwd: RAIZ,
     encoding: "utf8",
-    env: { ...process.env, MENTOR_RAIZ: raiz },
+    env: { ...process.env, MENTOR_RAIZ: raiz, MENTOR_HOOKS_STDIN: "1" },
+    timeout: 10000,
     input,
   });
   return {

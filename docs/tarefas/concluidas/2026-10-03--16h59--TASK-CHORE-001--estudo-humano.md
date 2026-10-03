@@ -86,3 +86,9 @@ Foi observado fora do escopo um ponteiro documental legado: o gerador de context
 Execução da portabilidade pronta para apresentação ao mantenedor. A tarefa permanece aberta em em-execucao, aguardando autorização específica de finalização e commit de código. Este desfecho registra provas observadas e não declara o Portão 2 aprovado. O plano inicial acima foi preservado integralmente.
 
 O processo novo de planejamento, ADRs, contratos JSON e organização de rascunhos está consolidado no planejamento prévio registrado; suas fatias ainda não foram executadas.
+
+## Preparacao da entrega autorizada
+
+O mantenedor autorizou concluir e enviar o trabalho ao remoto para continuacao em outro sistema. Corrigida a estimativa inicial superdimensionada M/G para P/M: um modulo portado sem novo desenho e pequenas adaptacoes no harness; os registros gerados nao acrescentam decisoes de engenharia.
+
+A limpeza anterior dos sete JSONs de exemplo fez o CLI detectar diferenca em artefatos rastreados apos o gate. Para conservar a evidencia verdadeira sem repetir testes, os sete arquivos foram recuperados diretamente da arvore Git capturada pela execucao aprovada, apos verificar novamente que diferiam apenas nos campos de metadados. Esses artefatos gerados passam a constar no plano. O resultado da suite permanece o da execucao original, com comando, log e arvore originais; nenhuma evidencia foi inventada ou reatribuida a outro codigo.

@@ -4,14 +4,14 @@
   "tipo": "CHORE",
   "titulo": "Portar as correcoes locais de midia e stdin do pre-push",
   "fatia_de": null,
-  "estado": "em-execucao",
+  "estado": "concluida",
   "cerimonia": "Standard",
   "perfil": "compacto",
   "valor": "importante",
   "urgencia": "normal",
   "esforco": {
-    "humano": "M",
-    "ia": "G"
+    "humano": "P",
+    "ia": "M"
   },
   "depende_de": [],
   "ordem_motivo": null,
@@ -23,7 +23,7 @@
   "criada_em": "03/10/26 16:23",
   "iniciada_em": "03/10/26 16:23",
   "commit_base": "830109f2576d822c2af85d10fc1739210fa9f90a",
-  "concluida_em": null,
+  "concluida_em": "03/10/26 16:59",
   "plano": {
     "muda": [
       ".mentor/scripts/cmd-hooks.ts",
@@ -32,7 +32,14 @@
       "testes/regressoes-de-campo.test.ts",
       ".mentor/manifesto.json",
       "CHANGELOG.md",
-      "testes/apoio.ts"
+      "testes/apoio.ts",
+      "testes/exemplos/01-ciclo-basico/docs-mentor/tarefas/concluidas/2026-08-29--14h00--TASK-RF-001.json",
+      "testes/exemplos/03-recusas/docs-mentor/tarefas/abertas/TASK-CHORE-001.json",
+      "testes/exemplos/04-tdd/docs-mentor/tarefas/abertas/TASK-SPIKE-001.json",
+      "testes/exemplos/04-tdd/docs-mentor/tarefas/concluidas/2026-08-29--14h00--TASK-RF-001.json",
+      "testes/exemplos/09-campo/docs-mentor/tarefas/concluidas/2026-08-29--14h00--TASK-CHORE-001.json",
+      "testes/exemplos/18-robustez-gates-e-absorcao/docs-mentor/tarefas/abertas/TASK-RF-002.json",
+      "testes/exemplos/20-evidencia-externa-e-narrativa/docs-mentor/tarefas/abertas/TASK-RF-001.json"
     ],
     "criterios_aceite": [
       {
@@ -114,5 +121,5 @@
   "riscos_aceitos": [],
   "absorvida_por": null,
   "cancelamento_motivo": null,
-  "narrativa": null
+  "narrativa": "2026-10-03--16h59--TASK-CHORE-001--estudo-humano.md"
 }

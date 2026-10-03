@@ -1,6 +1,6 @@
 {
   "versao": "0.14.0",
-  "gerado_em": "2026-10-01T21:28:30.582Z",
+  "gerado_em": "2026-10-03T19:30:21.713Z",
   "arquivos": {
     "esquemas/contexto.json": "184fbff38fd6d261",
     "esquemas/divida-tecnica.json": "0906f6786a8e63a1",
@@ -48,7 +48,7 @@
     "scripts/cmd-doctor.ts": "70ed7e5b8345fee8",
     "scripts/cmd-fila.ts": "7b353ab8e7931c95",
     "scripts/cmd-gates.ts": "ecbf0201f121b7cb",
-    "scripts/cmd-hooks.ts": "afbdb34b11613024",
+    "scripts/cmd-hooks.ts": "1165662a32ca5990",
     "scripts/cmd-init.ts": "1be2b36c98bd7855",
     "scripts/cmd-invariante.ts": "6e387ba8d0eb96ab",
     "scripts/cmd-lancamento.ts": "ec12f32185df06e7",
