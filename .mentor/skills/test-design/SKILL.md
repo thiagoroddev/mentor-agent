@@ -9,6 +9,18 @@ Esta habilidade orienta a criação de suítes de teste limpas, sustentáveis e 
 
 ---
 
+## Escolher o escopo antes de testar
+
+Siga `processos/teste.md` e o contexto do projeto. Para correção pequena ou portabilidade já
+comprovada, comece pela evidência de origem, confira a equivalência do patch e teste apenas o risco
+ou a diferença de ambiente que ainda falta demonstrar. Reutilize testes; não repita suíte inteira,
+fabrique vermelho ou crie testes que só espelham implementação/texto para repetir prova existente.
+
+Amplie a suíte por exigência explícita do projeto/CI, impacto compartilhado, contrato/dependência
+alterado, falha ou indício de regressão. Registre o motivo em `plano.proporcionalidade` e
+`plano.meio_de_validacao`. Verificação focada não aprova gate completo nem dispensa obrigação
+do contexto. A sequência TDD abaixo vale quando esse é o método declarado pelo projeto.
+
 ## 1. O Ciclo TDD no Mentor
 
 ```

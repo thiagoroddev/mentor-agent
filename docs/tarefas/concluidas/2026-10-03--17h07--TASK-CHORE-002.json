@@ -1,0 +1,102 @@
+{
+  "id": "TASK-CHORE-002",
+  "revisao_incremental_requerida": false,
+  "tipo": "CHORE",
+  "titulo": "Aplicar validacao proporcional em correcoes pequenas e portabilidades ja validadas",
+  "fatia_de": null,
+  "estado": "concluida",
+  "cerimonia": "Standard",
+  "perfil": "compacto",
+  "valor": "importante",
+  "urgencia": "normal",
+  "esforco": {
+    "humano": "P",
+    "ia": "M"
+  },
+  "depende_de": [],
+  "ordem_motivo": null,
+  "fila": "ciclo",
+  "ordem": null,
+  "origem": "titulo-autossuficiente",
+  "requisitos": [],
+  "sem_requisito_motivo": null,
+  "criada_em": "03/10/26 17:00",
+  "iniciada_em": "03/10/26 17:02",
+  "commit_base": "861faa63a2de120ff60566b6f1e17c2997721008",
+  "concluida_em": "03/10/26 17:07",
+  "plano": {
+    "muda": [
+      ".mentor/nucleo.md",
+      ".mentor/processos/teste.md",
+      ".mentor/processos/tarefa.md",
+      ".mentor/skills/test-design/SKILL.md",
+      ".mentor/manifesto.json",
+      "CHANGELOG.md",
+      "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/06-portabilidade-chore-039.md"
+    ],
+    "criterios_aceite": [
+      {
+        "texto": "Validacao focada com reuso para correcoes ja demonstradas, e ampliacao somente justificada.",
+        "teste": "Inspecao do diff e node mentor.mjs verificar"
+      },
+      {
+        "texto": "Gates obrigatorios e sua evidencia nao sao dispensados nem substituidos por testes focados.",
+        "teste": "Conferencia entre nucleo, processos e habilidade"
+      },
+      {
+        "texto": "Habilidade mantem frontmatter valido; trabalho entregue ao remoto para continuidade.",
+        "teste": "Comparacao integral do frontmatter, mentor verificar, git diff --check e confirmacao dos refs remotos; quick_validate indisponivel sem PyYAML"
+      }
+    ],
+    "pedido_original": "corrija isso ja numa tarefa pq e simples, vou prosseguir de outro sistema, tudo deve estar pronto no remoto",
+    "solucao_sugerida": null,
+    "problema_canonico": "Selecao de testes orientada a risco e reutilizacao de evidencia",
+    "impacto": "Instrucoes consistentes sobre o escopo de validacao; executor e schema permanecem iguais.",
+    "riscos": [
+      "Proporcionalidade confundida com dispensa de gate obrigatorio; ressalva explicita."
+    ],
+    "dependencias_novas": [],
+    "proporcionalidade": "Alinhar instrucoes existentes e registrar criterios e provas; sem novo motor nem testes que repetem texto.",
+    "meio_de_validacao": {
+      "tipo": "inspecao_documental",
+      "porque_nao_automatizado": "Orientacao textual sem comportamento executavel novo; testes que procuram frases espelhariam a implementacao. Integridade e frontmatter serao conferidos por comandos existentes.",
+      "artefato": ".mentor/processos/teste.md",
+      "roteiro": "Diff coerente, quick_validate.py, manifesto e verificar; confirmar remoto apos envio."
+    }
+  },
+  "gates": {
+    "tipos": {
+      "rotulo": "NÃO EXECUTADO",
+      "vermelho_em": null,
+      "comando": null,
+      "codigo_saida": null,
+      "saida": null,
+      "executado_em": "03/10/26 17:07",
+      "evidencia_url": null,
+      "motivo": "Mudanca apenas nas instrucoes e registros; nenhum TypeScript ou contrato executavel alterado. Integridade conferida pelo verificar.",
+      "ressalva": null
+    },
+    "testes": {
+      "rotulo": "NÃO EXECUTADO",
+      "vermelho_em": null,
+      "comando": null,
+      "codigo_saida": null,
+      "saida": null,
+      "executado_em": "03/10/26 17:07",
+      "evidencia_url": null,
+      "motivo": "Orientacao textual sem codigo executavel novo; a suite de 32 cenarios nao demonstra a qualidade desta orientacao. Conferidos coerencia do diff, integridade do pacote e frontmatter preservado; nenhum gate completo e apresentado como aprovado.",
+      "ressalva": null
+    }
+  },
+  "achados": [],
+  "validacao": "nao_requer",
+  "validado_em": null,
+  "validacao_motivo": null,
+  "tarefas_geradas": [],
+  "adrs": [],
+  "divida_tecnica": [],
+  "riscos_aceitos": [],
+  "absorvida_por": null,
+  "cancelamento_motivo": null,
+  "narrativa": "2026-10-03--17h07--TASK-CHORE-002--estudo-humano.md"
+}

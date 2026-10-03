@@ -1,6 +1,6 @@
 {
   "versao": "0.14.0",
-  "gerado_em": "2026-10-03T19:30:21.713Z",
+  "gerado_em": "2026-10-03T20:05:45.856Z",
   "arquivos": {
     "esquemas/contexto.json": "184fbff38fd6d261",
     "esquemas/divida-tecnica.json": "0906f6786a8e63a1",
@@ -27,7 +27,7 @@
     "modelos/fichas.md": "92cdc7020d33fcc1",
     "modelos/listas-por-fase.md": "57377dc4538acc80",
     "modelos/varredura.md": "f3016bd789b30a83",
-    "nucleo.md": "3fda6fd9887b87be",
+    "nucleo.md": "075a32f2f207e1ff",
     "package.json": "1c9a0949072c4ea1",
     "processos/analise-de-impacto.md": "60318cd6189f0f28",
     "processos/entrega.md": "94d11ca7e2f1b789",
@@ -36,8 +36,8 @@
     "processos/padroes-de-stack.md": "7d7df1b15ba7de44",
     "processos/rascunho.md": "1367f59f2659cf40",
     "processos/revisao.md": "6c8d11bbcd9d336a",
-    "processos/tarefa.md": "98f3df8ad61403ac",
-    "processos/teste.md": "e904b9a054de5187",
+    "processos/tarefa.md": "7aab80eedf7bfafb",
+    "processos/teste.md": "6c0b563e54b530aa",
     "regras.json": "5f5ddff0c236ed68",
     "scripts/arquivos.ts": "66951cdb98a340df",
     "scripts/casos.ts": "9d339f3923dde378",
@@ -83,7 +83,7 @@
     "skills/mermaid/SKILL.md": "cf7a4a723b7129f1",
     "skills/revisao/SKILL.md": "4be36781b907d3a9",
     "skills/spike-e-investigacao/SKILL.md": "5ab362eee5800a83",
-    "skills/test-design/SKILL.md": "0a58f5132c66958c",
+    "skills/test-design/SKILL.md": "9ca68015c0b23c2e",
     "skills/ui-design/SKILL.md": "58eed0c8f16f9911",
     "tetos.json": "12e4f0637afc64f6"
   }

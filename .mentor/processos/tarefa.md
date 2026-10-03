@@ -143,6 +143,8 @@ Dependência entre fatias só existe quando há pré-requisito técnico real de 
 
 ## Teste
 
+Escolha primeiro o escopo proporcional em `processos/teste.md`: prova existente, risco restante e motivo de eventual ampliação ficam nos campos de plano já existentes. Não repetir suíte por rotina nem apresentar teste focado como gate completo.
+
 O metodo e' do projeto (`contexto.qualidade.metodo_de_teste`), padrao **`tdd`**. Quando o teste
 nasce, o que fazer quando a asercao nao escreve, e por que o vermelho e' obrigatorio:
 **[`processos/teste.md`](./teste.md)**.
