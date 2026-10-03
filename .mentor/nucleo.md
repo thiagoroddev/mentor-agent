@@ -136,6 +136,12 @@ No perfil enxuto, gates de rotina são aconselhados, não uma condição automá
 
 Os gates declarados para o produto não se aplicam à melhoria exclusiva do Mentor definida no §2.
 
+**Validação automatizada proporcional.** Correções pequenas e portabilidades já comprovadas
+começam pela evidência existente e pela menor checagem que cobre o risco ou a diferença de ambiente.
+Ampliar para suíte completa exige risco nomeado, falha/indício novo ou exigência explícita do projeto/CI,
+registrados em `plano.proporcionalidade` e `plano.meio_de_validacao`. Teste pontual não aprova gate
+de suíte nem dispensa gate obrigatório. Detalhes em `processos/teste.md`.
+
 ⚠️ **Rode o comando declarado, nunca um montado de memória.** Comando digitado de cabeça sai com
 código 0 tendo lido zero arquivo: verde que não checou nada. Use `task gate <ID> <gate>` ou `task gates <ID>`, que executa e
 grava comando, saída, evidências e reutiliza execuções compatíveis quando os insumos estão intactos. Declaração escrita à mão não vale como evidência.

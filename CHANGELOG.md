@@ -7,6 +7,7 @@ O formato baseia-se em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0
 ## [Não publicado]
 
 ### Corrigido
+- Validação proporcional nas instruções: correções pequenas e portabilidades já comprovadas reutilizam evidência e começam por checagens focadas. Suíte completa exige risco identificado, sinal de regressão ou obrigação do projeto/CI; gates obrigatórios e suas provas são preservados.
 - Arquivos de mídia estática deixam de ser classificados como código pelo pre-push. Fontes, testes e configurações continuam sujeitos às verificações de código.
 - A chamada manual do pre-push não bloqueia aguardando stdin aberto. O protocolo de refs continua ativo quando o Git chama o hook, quando há redirecionamento de arquivo ou quando o chamador usa `--stdin` ou `MENTOR_HOOKS_STDIN=1`.
 - A leitura do status porcelain preserva as posições dos campos ao identificar arquivos modificados.

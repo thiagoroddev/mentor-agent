@@ -4,6 +4,33 @@ carrega_quando: escrever ou ajustar teste, e ao planejar qualquer tarefa com cri
 
 # Processo · Teste
 
+## Escolha proporcional da validação
+
+Antes de executar testes, use `plano.meio_de_validacao` e `plano.proporcionalidade` para
+declarar o risco, a prova já disponível e a menor checagem que ainda falta. Não crie campos novos.
+
+- **Correção pequena ou portabilidade já validada:** confira a equivalência do patch e a evidência
+  de origem. Verifique apenas diferenças relevantes de ambiente, integração ou contrato público;
+  reutilize testes existentes. Não repita uma bateria nem crie teste que espelha a implementação
+  somente para demonstrar outra vez o mesmo comportamento.
+- **Instrução ou documentação:** confira coerência, links, frontmatter e integridade com os comandos
+  existentes. Não crie teste que só procura a frase adicionada.
+- **Ampliar a suíte:** faça quando o projeto/CI a exige, houver impacto compartilhado relevante,
+  dependência/contrato alterado, falha ou indício novo de regressão. Nomeie esse motivo no plano;
+  o tamanho da suíte disponível, por si só, não exige executá-la.
+
+Distinga verificação focada de gate completo. Se o contexto exige um gate, rode seu comando declarado
+ou registre a dispensa permitida pela política com motivo; não apresente teste pontual como
+`APROVADO` para a suíte inteira. Evidência reutilizada conserva origem, comando e limite de cobertura.
+Mudança nos insumos relevantes exige nova prova; outros arquivos de documentação não são motivo
+automático para repetir testes.
+
+Falha ou bloqueio do harness pede diagnóstico do harness, não reconstrução da correção já comprovada.
+Registre o achado e seu efeito na cobertura; adapte apenas o necessário ou proponha o trabalho adicional
+quando sair do escopo. Subprocesso potencialmente bloqueante precisa de timeout próprio.
+
+A seleção de escopo não altera o método exigido pelo projeto nem as condições de TDD/reconciliação abaixo.
+
 O metodo e' do projeto (`contexto.qualidade.metodo_de_teste`), e o padrao e' **`tdd`**. Trocar por
 `bdd`, `teste-depois` ou `nenhum` exige motivo escrito. O metodo diz **quando** o teste nasce; o
 vinculo criterio→teste vale em todos eles.

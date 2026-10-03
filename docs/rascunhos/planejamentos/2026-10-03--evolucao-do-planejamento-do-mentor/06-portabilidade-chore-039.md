@@ -41,3 +41,15 @@ Sem novas dependências. Carga pequena, complexidade moderada pelo protocolo de 
 Pedido atual autoriza salvar documentação e portar correções existentes. Autorização anterior de commit é expressamente de documentação. Commit/finalização de código e push seguem seus atos e autorização aplicável.
 
 Não marcar a melhoria como publicada ou removê-la dos registros do piloto antes de uma versão do pacote efetivamente incorporá-la e o consumidor atualizar. Não executar instalar --forcar neste projeto de origem.
+
+## Validação proporcional decidida após a portabilidade
+
+A suíte completa executada nesta sessão comprovou 32 cenários, mas excedeu a validação necessária
+para o patch já comprovado no piloto. Em portabilidades equivalentes, usar evidência existente e
+checagem focada da diferença de ambiente e do protocolo afetado. Só ampliar por risco nomeado,
+indício/falha novo ou exigência real do projeto/CI; nunca declarar teste focado como suíte aprovada.
+
+A TASK-CHORE-002 alinha núcleo, processo de teste e habilidade existente com essa orientação, sem
+alterar executor ou schema. Para continuar em outro sistema, consulte os JSONs das tarefas e o
+planejamento completo desta pasta; `04-fatias-e-validacao.md` define as futuras fatias e dependências.
+Os estudos humanos são preservados integralmente e não devem ser carregados por padrão.
