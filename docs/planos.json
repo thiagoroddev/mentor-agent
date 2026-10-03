@@ -1,0 +1,19 @@
+[
+  {
+    "id": "PLAN-2026-10-03--evolucao-do-planej",
+    "titulo": "Evolução do planejamento do Mentor: consistência, ADRs e estudo humano integral",
+    "arquivo": "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor",
+    "sha256": "f694b5605e62d4c00acaabd41490bc61294db74e1bf88c8de0f3b6d74bf462f0",
+    "secao": null,
+    "registrado_em": "03/10/26",
+    "manifesto": {
+      "01-direcao-e-processo.md": "cb83d26f34e598044018d9927d292d02054aeecd927e72b7fee37597cef54a8c",
+      "02-consistencia-e-contratos.md": "cecfa462dbb0c076eac7a83e70ecac807f3c0c15996c7562d038049d67e731ce",
+      "03-artefatos-de-tarefa.md": "80c46db90feb1813c152fb6cab710fdc8b29f1b1cc7bd1e87924f433086e4adb",
+      "04-fatias-e-validacao.md": "72f81c85fd6fdd08af5a1b9eb2bc9338ff6eb20e25368a318fbabe653ad6e4d5",
+      "05-exemplo-task-rf-082.md": "186a22ca276a0426d34f45904c62baf8f7389ea1c536a2ad14c9aea0bda49b5d",
+      "06-portabilidade-chore-039.md": "187a649098e9723b65b9f2d9a1b2b5392a56c1fefbb5435769ddfd109fd975e1",
+      "README.md": "f694b5605e62d4c00acaabd41490bc61294db74e1bf88c8de0f3b6d74bf462f0"
+    }
+  }
+]
