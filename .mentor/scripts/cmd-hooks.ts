@@ -1,5 +1,5 @@
 import { spawnSync } from 'node:child_process'
-import { chmodSync, readFileSync } from 'node:fs'
+import { chmodSync, fstatSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { caminhos, escreverTexto, existe, lerTexto } from './arquivos.ts'
 import { carregarContexto } from './vistas.ts'
@@ -17,6 +17,25 @@ function exigePr(texto: unknown): boolean {
   if (t.includes('sem pr') || t.includes('dispensado') || t.includes('nao exige') || t.includes('nenhum')) return false
   return t.includes('pr') || t.includes('pull request') || t.includes('revisao')
 }
+
+const EXTENSOES_NAO_CODIGO = [
+  '.md',
+  '.txt',
+  '.pdf',
+  '.png',
+  '.jpg',
+  '.jpeg',
+  '.gif',
+  '.svg',
+  '.webp',
+  '.ico',
+  '.bmp',
+  '.tiff',
+  '.mp4',
+  '.webm',
+  '.mp3',
+  '.wav',
+]
 
 export function arquivoEhCodigo(arquivo: string): boolean {
   const norm = arquivo.replace(/\\/g, '/')
@@ -42,7 +61,12 @@ export function arquivoEhCodigo(arquivo: string): boolean {
   ) {
     return false
   }
-  if (norm.endsWith('.md') || norm.endsWith('.txt') || norm === '.gitignore' || norm === '.gitattributes' || norm === 'LICENSE') {
+  if (
+    EXTENSOES_NAO_CODIGO.some((ext) => norm.endsWith(ext)) ||
+    norm === '.gitignore' ||
+    norm === '.gitattributes' ||
+    norm === 'LICENSE'
+  ) {
     return false
   }
   return true
@@ -63,6 +87,24 @@ interface RefEnviada { local: string; shaLocal: string; remoto: string; shaRemot
  */
 function lerRefsEnviadas(): RefEnviada[] | null {
   if (process.stdin.isTTY) return null
+
+  // Se chamado manualmente ou via script sem ser pelo git (que passa $1 <remoto> e $2 <url>)
+  // e sem redirecionamento explicito de arquivo com bytes prontos, nao bloqueia no stdin.
+  const argumentosGit = process.argv.slice(2).filter((a) => !a.startsWith('-') && a !== 'hooks')
+  let temDadosProntos = false
+  try {
+    const s = fstatSync(0)
+    if (s.size > 0) temDadosProntos = true
+  } catch {
+    // ignora falha em fstatSync
+  }
+
+  const chamadoPeloGit = argumentosGit.length >= 1
+  const forcarStdin = process.argv.includes('--stdin') || process.env.MENTOR_HOOKS_STDIN === '1'
+  if (!chamadoPeloGit && !temDadosProntos && !forcarStdin) {
+    return null
+  }
+
   let texto = ''
   try { texto = readFileSync(0, 'utf8') } catch { return null }
   const refs = texto.split('\n')
@@ -204,7 +246,7 @@ export function prePush(): number {
 
   // 3.3. Consistencia entre working tree e commit enviado
   const rStatus = spawnSync('git', ['status', '--porcelain'], { cwd: c.raiz, encoding: 'utf8' })
-  const linhasStatus = (rStatus.stdout ?? '').split('\n').map((l) => l.trim()).filter(Boolean)
+  const linhasStatus = (rStatus.stdout ?? '').split('\n').filter((l) => l.length > 3)
   const arquivosSujos = linhasStatus
     .map((l) => l.slice(3).trim())
     .filter(arquivoEhCodigo)

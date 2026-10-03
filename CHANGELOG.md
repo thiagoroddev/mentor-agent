@@ -4,6 +4,13 @@ Todas as mudanças notáveis no **mentor-agent** são documentadas neste arquivo
 
 O formato baseia-se em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [Não publicado]
+
+### Corrigido
+- Arquivos de mídia estática deixam de ser classificados como código pelo pre-push. Fontes, testes e configurações continuam sujeitos às verificações de código.
+- A chamada manual do pre-push não bloqueia aguardando stdin aberto. O protocolo de refs continua ativo quando o Git chama o hook, quando há redirecionamento de arquivo ou quando o chamador usa `--stdin` ou `MENTOR_HOOKS_STDIN=1`.
+- A leitura do status porcelain preserva as posições dos campos ao identificar arquivos modificados.
+
 ## [0.14.0] - 2026-10-01
 
 Plano em `PLANO-v0.14.0.md`. Codex, Claude Code e Antigravity passam a carregar o mesmo: o nucleo

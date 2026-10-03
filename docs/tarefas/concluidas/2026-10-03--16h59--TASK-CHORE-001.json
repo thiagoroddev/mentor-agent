@@ -1,0 +1,125 @@
+{
+  "id": "TASK-CHORE-001",
+  "revisao_incremental_requerida": false,
+  "tipo": "CHORE",
+  "titulo": "Portar as correcoes locais de midia e stdin do pre-push",
+  "fatia_de": null,
+  "estado": "concluida",
+  "cerimonia": "Standard",
+  "perfil": "compacto",
+  "valor": "importante",
+  "urgencia": "normal",
+  "esforco": {
+    "humano": "P",
+    "ia": "M"
+  },
+  "depende_de": [],
+  "ordem_motivo": null,
+  "fila": "ciclo",
+  "ordem": null,
+  "origem": "titulo-autossuficiente",
+  "requisitos": [],
+  "sem_requisito_motivo": null,
+  "criada_em": "03/10/26 16:23",
+  "iniciada_em": "03/10/26 16:23",
+  "commit_base": "830109f2576d822c2af85d10fc1739210fa9f90a",
+  "concluida_em": "03/10/26 16:59",
+  "plano": {
+    "muda": [
+      ".mentor/scripts/cmd-hooks.ts",
+      "testes/pre-push-0-14.test.ts",
+      "testes/cenarios/31-testes-de-unidade.ts",
+      "testes/regressoes-de-campo.test.ts",
+      ".mentor/manifesto.json",
+      "CHANGELOG.md",
+      "testes/apoio.ts",
+      "testes/exemplos/01-ciclo-basico/docs-mentor/tarefas/concluidas/2026-08-29--14h00--TASK-RF-001.json",
+      "testes/exemplos/03-recusas/docs-mentor/tarefas/abertas/TASK-CHORE-001.json",
+      "testes/exemplos/04-tdd/docs-mentor/tarefas/abertas/TASK-SPIKE-001.json",
+      "testes/exemplos/04-tdd/docs-mentor/tarefas/concluidas/2026-08-29--14h00--TASK-RF-001.json",
+      "testes/exemplos/09-campo/docs-mentor/tarefas/concluidas/2026-08-29--14h00--TASK-CHORE-001.json",
+      "testes/exemplos/18-robustez-gates-e-absorcao/docs-mentor/tarefas/abertas/TASK-RF-002.json",
+      "testes/exemplos/20-evidencia-externa-e-narrativa/docs-mentor/tarefas/abertas/TASK-RF-001.json"
+    ],
+    "criterios_aceite": [
+      {
+        "texto": "Chamada manual conclui com stdin aberto, mantendo leitura de refs no Git e opt-in explicito.",
+        "teste": "testes/pre-push-0-14.test.ts > chamada manual e protocolo de refs"
+      },
+      {
+        "texto": "Midia estatica deixa de ser codigo sem dispensar fontes, testes e configuracoes.",
+        "teste": "testes/pre-push-0-14.test.ts > classifica midia/documentos"
+      },
+      {
+        "texto": "Regressoes anteriores de envio por ref, WIP e main protegida permanecem validas.",
+        "teste": "testes/regressoes-de-campo.test.ts > casos de pre-push"
+      }
+    ],
+    "impacto": "Porta o patch da CHORE-039 do piloto, sem alterar a versao nem instalar no consumidor.",
+    "riscos": [
+      "Ignorar stdin valido e conferir HEAD em vez dos refs enviados."
+    ],
+    "dependencias_novas": [],
+    "proporcionalidade": "Portar duas correcoes ja verificadas em um modulo; adaptar fixtures de stdin e demonstrar nao-bloqueio com timeout do subprocesso.",
+    "meio_de_validacao": {
+      "tipo": "testes_automatizados",
+      "meio": "Harness existente do pacote e checagem de tipos",
+      "roteiro": "Regressoes pontuais antes/depois e suite completa apropriada.",
+      "o_teste_cobre": "Nao-bloqueio, protocolo de refs, midia e regressao das barreiras.",
+      "por_que_nao_basta": "Nao publica nem atualiza consumidores."
+    },
+    "composicao": null,
+    "pedido_original": "Salvar no repositorio do mentor e aplicar trazendo as melhorias locais do piloto.",
+    "solucao_sugerida": null,
+    "problema_canonico": "Protocolo de hook Git pre-push e leitura bloqueante de entrada padrao"
+  },
+  "gates": {
+    "tipos": {
+      "rotulo": "APROVADO",
+      "vermelho_em": null,
+      "comando": "npx tsc --noEmit",
+      "codigo_saida": 0,
+      "saida": "",
+      "executado_em": "03/10/26 16:48",
+      "commit_execucao": "830109f2576d822c2af85d10fc1739210fa9f90a",
+      "arvore_hash": "daf4183117dbac055102866e1d2e445eb51f6190",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": null,
+      "ressalva": null,
+      "log_ref": "docs/.evidencias/logs/TASK-CHORE-001-tipos-1791056920728.log",
+      "chave_cache": "207ee34ca469117d1edd702d5269e4c36cf9179708b092766d0c3f4f6e548095",
+      "digest_insumos": "daf4183117dbac055102866e1d2e445eb51f6190",
+      "vermelho_dispensado": null
+    },
+    "testes": {
+      "rotulo": "APROVADO",
+      "vermelho_em": null,
+      "comando": "node testes/executar.ts",
+      "codigo_saida": 0,
+      "saida": "ok   01-ciclo-basico\n  ok   02-epico-fatiado\n  ok   03-recusas\n... [34 linhas omitidas] ...\n32 cenarios, todos verdes. Os projetos gerados ficam em testes/exemplos/.\nREV-001 está desatualizada: contrato/regra docs-mentor/rascunhos/plano.contrato.json mudou desde a captura.\nREV-001 está desatualizada: src.ts mudou desde a captura. Prepare uma nova revisão.",
+      "executado_em": "03/10/26 16:47",
+      "commit_execucao": "830109f2576d822c2af85d10fc1739210fa9f90a",
+      "arvore_hash": "a60136ee0b3763b9ef87e521e5f11394f72c4bda",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": "Insumos modificados durante a execucao: cache desabilitado",
+      "ressalva": null,
+      "log_ref": "docs/.evidencias/logs/TASK-CHORE-001-testes-1791056830596.log",
+      "chave_cache": null,
+      "digest_insumos": "a60136ee0b3763b9ef87e521e5f11394f72c4bda",
+      "vermelho_dispensado": null
+    }
+  },
+  "achados": [],
+  "validacao": "nao_requer",
+  "validado_em": null,
+  "validacao_motivo": null,
+  "tarefas_geradas": [],
+  "adrs": [],
+  "divida_tecnica": [],
+  "riscos_aceitos": [],
+  "absorvida_por": null,
+  "cancelamento_motivo": null,
+  "narrativa": "2026-10-03--16h59--TASK-CHORE-001--estudo-humano.md"
+}
