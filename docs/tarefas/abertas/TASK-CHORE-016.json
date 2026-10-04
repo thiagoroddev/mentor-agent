@@ -1,0 +1,153 @@
+{
+  "id": "TASK-CHORE-016",
+  "revisao_incremental_requerida": false,
+  "tipo": "CHORE",
+  "titulo": "Diagnostico de tarefas nas worktrees",
+  "fatia_de": "TASK-CHORE-014",
+  "estado": "aberta",
+  "cerimonia": "Standard",
+  "perfil": null,
+  "valor": "importante",
+  "urgencia": "normal",
+  "esforco": {
+    "humano": "M",
+    "ia": "M"
+  },
+  "depende_de": [
+    "TASK-CHORE-015"
+  ],
+  "ordem_motivo": "A fornece o contrato operacional para B/C/D; E comprova e integra suas entregas",
+  "fila": "reserva",
+  "ordem": null,
+  "origem": "titulo-autossuficiente",
+  "requisitos": [],
+  "sem_requisito_motivo": null,
+  "criada_em": "04/10/26 18:21",
+  "iniciada_em": null,
+  "commit_base": null,
+  "concluida_em": null,
+  "plano": {
+    "muda": [
+      ".mentor/scripts/worktrees.ts",
+      ".mentor/scripts/cmd-doctor.ts",
+      "testes/worktrees-paralelas.test.ts"
+    ],
+    "criterios_aceite": [
+      {
+        "texto": "Doctor mostra caminho, branch/HEAD, projeto e IDs em execução por worktree acessível.",
+        "teste": "CP-02/CP-04: executarSuite da fatia B e cenário E",
+        "evidencia": null
+      },
+      {
+        "texto": "IDs distintos em árvores distintas não são bloqueados pelo total; duplicidade gera advertência limitada à evidência observada.",
+        "teste": "CP-03: casos com IDs distintos, duplicado e registro herdado",
+        "evidencia": null
+      },
+      {
+        "texto": "Árvore ausente, detached, sem Mentor ou ilegível não encerra a leitura das demais.",
+        "teste": "CP-05: testes de disponibilidade e parse",
+        "evidencia": null
+      },
+      {
+        "texto": "A consulta conserva os arquivos das árvores e não modifica refs/índice nem faz sincronização remota.",
+        "teste": "CP-06: snapshot de bytes e estado Git antes/depois",
+        "evidencia": null
+      }
+    ],
+    "impacto": "Processo e pacote Mentor; nenhuma implantação automática no projeto consumidor.",
+    "riscos": [
+      "Raiz de monorepo ou MENTOR_RAIZ redirecionar leitura de árvore irmã.",
+      "Estado ativo herdado ser interpretado como ownership certo.",
+      "Falha em uma árvore esconder todas as outras."
+    ],
+    "dependencias_novas": [],
+    "proporcionalidade": "Standard. Reusar Git e o ciclo existente; novos artefatos têm necessidade explícita e não introduzem orquestração externa.",
+    "versao": 2,
+    "decisoes_aplicaveis": {
+      "motivo_ausencia": "Na descoberta de 04/10/2026 não havia pasta de ADRs nem habilidade de consistência gerada neste repositório. As decisões propostas estão no documento 01; consultar novamente as ADRs resolvidas antes da execução."
+    },
+    "reuso": {
+      "existentes": [
+        ".mentor/scripts/cmd-doctor.ts",
+        ".mentor/scripts/arquivos.ts",
+        ".mentor/scripts/tipos.ts",
+        "testes/vitest-local.ts"
+      ],
+      "novos": [
+        {
+          "artefato": "worktrees.ts",
+          "local": ".mentor/scripts",
+          "motivo": "Separar descoberta/leitura de árvores da apresentação do doctor, permitindo prova comportamental focada."
+        },
+        {
+          "artefato": "worktrees-paralelas.test.ts",
+          "local": "testes",
+          "motivo": "Provar leitura explícita, limites locais, duplicidade e tolerância a árvores indisponíveis."
+        }
+      ],
+      "motivo_sem_reuso": null
+    },
+    "habilidades": {
+      "planejamento": [
+        {
+          "nome": "planejamento",
+          "motivo": "Refinar a fatia e seus contratos antes da execução.",
+          "origem": ".mentor/skills/planejamento/SKILL.md"
+        }
+      ],
+      "execucao": [
+        {
+          "nome": "test-design",
+          "motivo": "Aplicar prova comportamental e proporcional.",
+          "origem": ".mentor/skills/test-design/SKILL.md"
+        }
+      ]
+    },
+    "avaliacao": {
+      "planejamento": {
+        "complexidade": "alta",
+        "dimensao_dominante": "validacao_discriminatoria",
+        "justificativa": "A entrega exige validacao discriminatoria entre os artefatos previstos; a capacidade é recomendada por tarefa e pode ser atendida por qualquer modelo adequado.",
+        "perfil_modelo": "avancado",
+        "effort": "alto"
+      },
+      "execucao": {
+        "complexidade": "alta",
+        "dimensao_dominante": "validacao_discriminatoria",
+        "justificativa": "A entrega exige validacao discriminatoria entre os artefatos previstos; a capacidade é recomendada por tarefa e pode ser atendida por qualquer modelo adequado.",
+        "perfil_modelo": "avancado",
+        "effort": "alto"
+      }
+    },
+    "documentos_herdados": [
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/01-problema-e-decisoes.md",
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/02-protocolo-e-contratos.md",
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/03-fatias-e-validacao.md"
+    ]
+  },
+  "gates": {},
+  "achados": [],
+  "validacao": "nao_requer",
+  "validado_em": null,
+  "validacao_motivo": null,
+  "tarefas_geradas": [],
+  "adrs": [],
+  "divida_tecnica": [],
+  "riscos_aceitos": [],
+  "absorvida_por": null,
+  "cancelamento_motivo": null,
+  "narrativa": null,
+  "plano_ref": {
+    "arquivo": "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/fatias/fatia-b-diagnostico.md",
+    "sha256": "fc104547bff4a00c6785b702946bf358ada33fdaa149e713c4fc01925dfddf32",
+    "secao": null,
+    "manifesto": {
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/fatias/fatia-b-diagnostico.md": "fc104547bff4a00c6785b702946bf358ada33fdaa149e713c4fc01925dfddf32",
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/fatias/fatia-b-diagnostico.contrato.json": "bd021a1ae2585915986573e3ee81951f3539bf54c6a278a99179017241d1e1b3",
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/01-problema-e-decisoes.md": "0099f69dd01165689b2c39818f784081b4723dc8524a3b2f3072b13379e713fe",
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/02-protocolo-e-contratos.md": "6005d90a3d247be902ec676aaaa67b65a2fc222675787313bebdd2e7a1d7ae65",
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/03-fatias-e-validacao.md": "c8f598de4276e6ffa7a9da518b25d2acf45b0300ebd1515e9b793405f4e741c1"
+    }
+  },
+  "plano_do_epico": null
+}

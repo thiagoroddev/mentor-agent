@@ -1,0 +1,155 @@
+{
+  "id": "TASK-CHORE-019",
+  "revisao_incremental_requerida": false,
+  "tipo": "CHORE",
+  "titulo": "Validacao integrada e consolidacao",
+  "fatia_de": "TASK-CHORE-014",
+  "estado": "aberta",
+  "cerimonia": "Standard",
+  "perfil": null,
+  "valor": "importante",
+  "urgencia": "normal",
+  "esforco": {
+    "humano": "M",
+    "ia": "M"
+  },
+  "depende_de": [
+    "TASK-CHORE-016",
+    "TASK-CHORE-017",
+    "TASK-CHORE-018"
+  ],
+  "ordem_motivo": "A fornece o contrato operacional para B/C/D; E comprova e integra suas entregas",
+  "fila": "reserva",
+  "ordem": null,
+  "origem": "titulo-autossuficiente",
+  "requisitos": [],
+  "sem_requisito_motivo": null,
+  "criada_em": "04/10/26 18:21",
+  "iniciada_em": null,
+  "commit_base": null,
+  "concluida_em": null,
+  "plano": {
+    "muda": [
+      "testes/cenarios/33-trabalho-paralelo.ts",
+      "testes/executar.ts",
+      "testes/cenarios/31-testes-de-unidade.ts",
+      "testes/README.md",
+      "CHANGELOG.md",
+      ".mentor/manifesto.json"
+    ],
+    "criterios_aceite": [
+      {
+        "texto": "Cenário real permite tarefas distintas em worktrees com limite local 1 e preserva cada registro e narrativa na integração serial.",
+        "teste": "CP-02/CP-11: cenário 33 temporário com remoto bare local",
+        "evidencia": null
+      },
+      {
+        "texto": "Doctor é somente leitura e mostra ambiguidades; resolvedor mantém conflitos externos e só aprova índice resolvido.",
+        "teste": "CP-03/CP-06/CP-07/CP-09: cenário integrado e suítes B/C",
+        "evidencia": null
+      },
+      {
+        "texto": "Os runners incorporam as provas B/C e o cenário novo, e o pacote mantém tipos e verificações sem regressões atribuíveis ao épico.",
+        "teste": "npm run tipos; node testes/executar.ts --unidade; node testes/executar.ts; node mentor.mjs verificar",
+        "evidencia": null
+      },
+      {
+        "texto": "Manifesto e changelog refletem somente as entregas efetivas, com evidências e limites preservados.",
+        "teste": "node mentor.mjs manifesto; inspeção do diff final e memórias de A–E",
+        "evidencia": null
+      }
+    ],
+    "impacto": "Processo e pacote Mentor; nenhuma implantação automática no projeto consumidor.",
+    "riscos": [
+      "Prova usar clones independentes e não exercitar worktrees reais.",
+      "Execução ampla alterar fixtures rastreadas e contaminar o diff.",
+      "Reutilizar evidência anterior que não prova a árvore integrada."
+    ],
+    "dependencias_novas": [],
+    "proporcionalidade": "Standard. Reusar Git e o ciclo existente; novos artefatos têm necessidade explícita e não introduzem orquestração externa.",
+    "versao": 2,
+    "decisoes_aplicaveis": {
+      "motivo_ausencia": "Na descoberta de 04/10/2026 não havia pasta de ADRs nem habilidade de consistência gerada neste repositório. As decisões propostas estão no documento 01; consultar novamente as ADRs resolvidas antes da execução."
+    },
+    "reuso": {
+      "existentes": [
+        "testes/apoio.ts",
+        "testes/vitest-local.ts",
+        "testes/executar.ts",
+        "testes/cenarios/21-concorrencia-git-e-dispensas.ts",
+        "testes/cenarios/28-wip-e-merge.ts",
+        "testes/cenarios/30-governanca-fatiamento-e-concorrencia.ts"
+      ],
+      "novos": [
+        {
+          "artefato": "33-trabalho-paralelo.ts",
+          "local": "testes/cenarios",
+          "motivo": "Provar o fluxo observável de worktrees simultâneas e integração serial num único cenário temporário."
+        }
+      ],
+      "motivo_sem_reuso": null
+    },
+    "habilidades": {
+      "planejamento": [
+        {
+          "nome": "planejamento",
+          "motivo": "Refinar a fatia e seus contratos antes da execução.",
+          "origem": ".mentor/skills/planejamento/SKILL.md"
+        }
+      ],
+      "execucao": [
+        {
+          "nome": "test-design",
+          "motivo": "Aplicar prova comportamental e proporcional.",
+          "origem": ".mentor/skills/test-design/SKILL.md"
+        }
+      ]
+    },
+    "avaliacao": {
+      "planejamento": {
+        "complexidade": "alta",
+        "dimensao_dominante": "validacao_discriminatoria",
+        "justificativa": "A entrega exige validacao discriminatoria entre os artefatos previstos; a capacidade é recomendada por tarefa e pode ser atendida por qualquer modelo adequado.",
+        "perfil_modelo": "avancado",
+        "effort": "alto"
+      },
+      "execucao": {
+        "complexidade": "alta",
+        "dimensao_dominante": "validacao_discriminatoria",
+        "justificativa": "A entrega exige validacao discriminatoria entre os artefatos previstos; a capacidade é recomendada por tarefa e pode ser atendida por qualquer modelo adequado.",
+        "perfil_modelo": "avancado",
+        "effort": "alto"
+      }
+    },
+    "documentos_herdados": [
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/01-problema-e-decisoes.md",
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/02-protocolo-e-contratos.md",
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/03-fatias-e-validacao.md"
+    ]
+  },
+  "gates": {},
+  "achados": [],
+  "validacao": "nao_requer",
+  "validado_em": null,
+  "validacao_motivo": null,
+  "tarefas_geradas": [],
+  "adrs": [],
+  "divida_tecnica": [],
+  "riscos_aceitos": [],
+  "absorvida_por": null,
+  "cancelamento_motivo": null,
+  "narrativa": null,
+  "plano_ref": {
+    "arquivo": "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/fatias/fatia-e-validacao.md",
+    "sha256": "da8a68b14ae70357ea4e1469c1ca1bbd39b027529f13217f14b37d84c5fc5ce8",
+    "secao": null,
+    "manifesto": {
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/fatias/fatia-e-validacao.md": "da8a68b14ae70357ea4e1469c1ca1bbd39b027529f13217f14b37d84c5fc5ce8",
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/fatias/fatia-e-validacao.contrato.json": "854ef4597b9eb1cb48b7b05b94ec209d58612de29995e27cb5eba8c9f24591de",
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/01-problema-e-decisoes.md": "0099f69dd01165689b2c39818f784081b4723dc8524a3b2f3072b13379e713fe",
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/02-protocolo-e-contratos.md": "6005d90a3d247be902ec676aaaa67b65a2fc222675787313bebdd2e7a1d7ae65",
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/03-fatias-e-validacao.md": "c8f598de4276e6ffa7a9da518b25d2acf45b0300ebd1515e9b793405f4e741c1"
+    }
+  },
+  "plano_do_epico": null
+}

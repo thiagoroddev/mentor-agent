@@ -1,0 +1,193 @@
+{
+  "id": "TASK-CHORE-014",
+  "revisao_incremental_requerida": false,
+  "tipo": "CHORE",
+  "titulo": "Trabalho paralelo por slots no Mentor",
+  "fatia_de": null,
+  "estado": "aberta",
+  "cerimonia": "Standard",
+  "perfil": null,
+  "valor": "importante",
+  "urgencia": "normal",
+  "esforco": {
+    "humano": "G",
+    "ia": "G"
+  },
+  "depende_de": [],
+  "ordem_motivo": null,
+  "fila": "reserva",
+  "ordem": null,
+  "origem": "titulo-autossuficiente",
+  "requisitos": [],
+  "sem_requisito_motivo": null,
+  "criada_em": "04/10/26 18:21",
+  "iniciada_em": null,
+  "commit_base": null,
+  "concluida_em": null,
+  "plano": {
+    "muda": [
+      ".mentor/processos/trabalho-paralelo.md",
+      ".mentor/modelos/atribuicao-paralela.md",
+      "docs/padroes-de-stack/git.md",
+      ".mentor/scripts/worktrees.ts",
+      ".mentor/scripts/cmd-doctor.ts",
+      "testes/worktrees-paralelas.test.ts",
+      ".mentor/scripts/cmd-resolver.ts",
+      "testes/resolvedor-paralelo.test.ts",
+      ".mentor/processos/planejamento.md",
+      ".mentor/processos/tarefa.md",
+      ".mentor/processos/entrega.md",
+      ".mentor/processos/teste.md",
+      ".mentor/skills/planejamento/SKILL.md",
+      ".mentor/scripts/cli.ts",
+      "README.md",
+      "testes/cenarios/33-trabalho-paralelo.ts",
+      "testes/executar.ts",
+      "testes/cenarios/31-testes-de-unidade.ts",
+      "testes/README.md",
+      "CHANGELOG.md",
+      ".mentor/manifesto.json"
+    ],
+    "criterios_aceite": [
+      {
+        "texto": "Equipe paralela usa slots com papéis de sessão substituíveis e contratos estáveis, preservando tarefas e evidências.",
+        "teste": "CP-01 a CP-15 conforme 03-fatias-e-validacao.md",
+        "evidencia": null
+      }
+    ],
+    "impacto": "Processo e pacote Mentor; nenhuma implantação automática no projeto consumidor.",
+    "riscos": [
+      "Integração precisa preservar fontes, narrativas e evidências de todas as fatias.",
+      "Ownership não pode ser deduzido apenas do modelo ou nome do slot."
+    ],
+    "dependencias_novas": [],
+    "proporcionalidade": "Standard, épico dividido em cinco fatias. O escopo fecha lacunas existentes com Git e comandos do Mentor, sem dependências externas novas.",
+    "versao": 2,
+    "decisoes_aplicaveis": {
+      "motivo_ausencia": "Na descoberta de 04/10/2026 não havia pasta de ADRs nem habilidade de consistência gerada neste repositório. As decisões propostas estão no documento 01; consultar novamente as ADRs resolvidas antes da execução."
+    },
+    "reuso": {
+      "existentes": [
+        ".mentor/processos/entrega.md",
+        ".mentor/scripts/cmd-doctor.ts",
+        ".mentor/scripts/cmd-resolver.ts",
+        ".mentor/scripts/cmd-fila.ts",
+        "testes/apoio.ts"
+      ],
+      "novos": [
+        {
+          "artefato": "trabalho-paralelo.md",
+          "local": ".mentor/processos",
+          "motivo": "Concentrar protocolo reutilizável de concorrência e handoff."
+        },
+        {
+          "artefato": "atribuicao-paralela.md",
+          "local": ".mentor/modelos",
+          "motivo": "Oferecer divisão pré-pronta preenchível, com referências ao estado real da tarefa."
+        },
+        {
+          "artefato": "git.md",
+          "local": "docs/padroes-de-stack",
+          "motivo": "Registrar a convenção Git local atualmente ausente, distinguindo política do consumidor de orientação genérica."
+        },
+        {
+          "artefato": "worktrees.ts",
+          "local": ".mentor/scripts",
+          "motivo": "Separar descoberta/leitura de árvores da apresentação do doctor, permitindo prova comportamental focada."
+        },
+        {
+          "artefato": "worktrees-paralelas.test.ts",
+          "local": "testes",
+          "motivo": "Provar leitura explícita, limites locais, duplicidade e tolerância a árvores indisponíveis."
+        },
+        {
+          "artefato": "resolvedor-paralelo.test.ts",
+          "local": "testes",
+          "motivo": "Provar códigos de saída e preservação de fontes/índice durante falhas de resolução."
+        },
+        {
+          "artefato": "33-trabalho-paralelo.ts",
+          "local": "testes/cenarios",
+          "motivo": "Provar o fluxo observável de worktrees simultâneas e integração serial num único cenário temporário."
+        }
+      ],
+      "motivo_sem_reuso": null
+    },
+    "habilidades": {
+      "planejamento": [
+        {
+          "nome": "planejamento",
+          "motivo": "Refinar a fatia e seus contratos antes da execução.",
+          "origem": ".mentor/skills/planejamento/SKILL.md"
+        }
+      ],
+      "execucao": [
+        {
+          "nome": "test-design",
+          "motivo": "Aplicar prova comportamental e proporcional.",
+          "origem": ".mentor/skills/test-design/SKILL.md"
+        }
+      ]
+    },
+    "avaliacao": {
+      "planejamento": {
+        "complexidade": "alta",
+        "dimensao_dominante": "acoplamento",
+        "justificativa": "Cinco fatias combinam protocolo, diagnóstico de árvores, integridade de merge e prova da integração; o estudo divide arquivos compartilhados e responsabilidades temporárias.",
+        "perfil_modelo": "avancado",
+        "effort": "alto"
+      },
+      "execucao": {
+        "complexidade": "alta",
+        "dimensao_dominante": "acoplamento",
+        "justificativa": "Cinco fatias combinam protocolo, diagnóstico de árvores, integridade de merge e prova da integração; o estudo divide arquivos compartilhados e responsabilidades temporárias.",
+        "perfil_modelo": "avancado",
+        "effort": "alto"
+      }
+    },
+    "documentos_herdados": [
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/01-problema-e-decisoes.md",
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/02-protocolo-e-contratos.md",
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/03-fatias-e-validacao.md"
+    ]
+  },
+  "gates": {},
+  "achados": [],
+  "validacao": "nao_requer",
+  "validado_em": null,
+  "validacao_motivo": null,
+  "tarefas_geradas": [],
+  "adrs": [],
+  "divida_tecnica": [],
+  "riscos_aceitos": [],
+  "absorvida_por": null,
+  "cancelamento_motivo": null,
+  "narrativa": null,
+  "plano_ref": {
+    "arquivo": "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots",
+    "sha256": "1dc77fb59348a06ea9dac3261019d81ef3366020d6c5559a1e67b40eaaf065dc",
+    "secao": null,
+    "manifesto": {
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/README.md": "1dc77fb59348a06ea9dac3261019d81ef3366020d6c5559a1e67b40eaaf065dc",
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/contrato.json": "82daa068c4df702e2880ff08cfc30fd408c06a28e282b23a54df73366ef318b3",
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/01-problema-e-decisoes.md": "0099f69dd01165689b2c39818f784081b4723dc8524a3b2f3072b13379e713fe",
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/02-protocolo-e-contratos.md": "6005d90a3d247be902ec676aaaa67b65a2fc222675787313bebdd2e7a1d7ae65",
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/03-fatias-e-validacao.md": "c8f598de4276e6ffa7a9da518b25d2acf45b0300ebd1515e9b793405f4e741c1"
+    }
+  },
+  "plano_do_epico": {
+    "objetivo": "Permitir que múltiplos agentes/modelos trabalhem concorrentemente no mesmo projeto via worktrees isoladas, contratos disjuntos e resolução segura de gerados.",
+    "problema_canonico": "Coordenação concorrente em repositório compartilhado com serialização de integração e isolamento de estado.",
+    "estado_da_arte": "Git worktrees para separação física de index/HEAD; fusão semântica 3-way para metadados; branches por tarefa com verificação estrita.",
+    "hipotese": "Worktrees com convenção de slots reutilizáveis e diagnóstico de tarefas no doctor eliminam atritos operacionais sem criar orquestrador complexo.",
+    "sinal_de_desvio": "Conflitos de merge em arquivos de código ou falhas silenciosas na resolução de metadados.",
+    "contrato_entre_fatias": {
+      "forma": "Arquivos de processo (.mentor/processos/trabalho-paralelo.md), modelo de atribuição e scripts de inspeção/resolução.",
+      "tipo": "codigo",
+      "onde_vive": ".mentor/processos/, .mentor/scripts/worktrees.ts, .mentor/scripts/cmd-resolver.ts",
+      "fatia_que_cria": "TASK-CHORE-015"
+    },
+    "restricoes_reavaliadas": [],
+    "revisoes": []
+  }
+}

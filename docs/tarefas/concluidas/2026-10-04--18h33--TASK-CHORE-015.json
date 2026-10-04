@@ -1,0 +1,233 @@
+{
+  "id": "TASK-CHORE-015",
+  "revisao_incremental_requerida": false,
+  "tipo": "CHORE",
+  "titulo": "Protocolo e atribuicao por slots",
+  "fatia_de": "TASK-CHORE-014",
+  "estado": "concluida",
+  "cerimonia": "Standard",
+  "perfil": null,
+  "valor": "importante",
+  "urgencia": "normal",
+  "esforco": {
+    "humano": "M",
+    "ia": "M"
+  },
+  "depende_de": [],
+  "ordem_motivo": "A fornece o contrato operacional para B/C/D; E comprova e integra suas entregas",
+  "fila": "ciclo",
+  "ordem": null,
+  "origem": "titulo-autossuficiente",
+  "requisitos": [],
+  "sem_requisito_motivo": null,
+  "criada_em": "04/10/26 18:21",
+  "iniciada_em": "04/10/26 18:26",
+  "commit_base": "69f58f4e37f563a4b89e117202e191206853a93a",
+  "concluida_em": "04/10/26 18:33",
+  "plano": {
+    "muda": [
+      ".mentor/processos/trabalho-paralelo.md",
+      ".mentor/modelos/atribuicao-paralela.md",
+      "docs/padroes-de-stack/git.md"
+    ],
+    "criterios_aceite": [
+      {
+        "texto": "Qualquer modelo pode ocupar qualquer slot e assumir planejamento, implementação ou integração por tarefa.",
+        "teste": "CP-01: revisão do protocolo e exercício de atribuição/handoff",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Revisão do protocolo em .mentor/processos/trabalho-paralelo.md e exercício de atribuição/handoff em .mentor/modelos/atribuicao-paralela.md confirmam que qualquer modelo ou operador pode ocupar qualquer slot e assumir planejamento, implementação ou integração por tarefa sem papéis fixos pré-determinados.",
+          "log_ref": null,
+          "executado_em": "04/10/26 18:30"
+        }
+      },
+      {
+        "texto": "O protocolo cobre cadastro sequencial, contrato comum, branches únicas, recursos locais e integração serial.",
+        "teste": "CP-02/CP-13: inspeção dos exemplos e contrato de atribuição",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Inspeção dos exemplos e contratos em .mentor/processos/trabalho-paralelo.md e .mentor/modelos/atribuicao-paralela.md confirma cobertura completa de cadastro sequencial de IDs, contratos comuns entre fatias, branches exclusivas por tarefa, reserva de recursos locais e integração serial de candidatos com verificação de staging.",
+          "log_ref": null,
+          "executado_em": "04/10/26 18:30"
+        }
+      },
+      {
+        "texto": "O modelo de atribuição referencia TASK-ID e estudo integral, sem se tornar catálogo paralelo de andamento.",
+        "teste": "CP-01: exercício de transferência preservando ID, branch e evidências",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Exercício de transferência de sessão em .mentor/modelos/atribuicao-paralela.md demonstra que o modelo referencia explicitamente o TASK-ID e o estudo/plano integral em docs-mentor/tarefas/abertas/<ID>.json, preservando o branch e as evidências de validação sem duplicar o catálogo ou o estado de progresso da tarefa.",
+          "log_ref": null,
+          "executado_em": "04/10/26 18:30"
+        }
+      },
+      {
+        "texto": "O padrão Git local usa convenções existentes e conserva decisões de contexto ainda não tomadas como pendentes.",
+        "teste": "Revisão comparada com docs/contexto.json e processos vigentes",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Revisão comparada com docs/contexto.json e processos vigentes em .mentor/processos/entrega.md e .mentor/processos/tarefa.md confirma que docs/padroes-de-stack/git.md documenta convenções existentes (branches por tarefa, prefixo codex/, worktrees, Portão 3, resolver-gerados) e mantém explicitamente decisões em aberto de versionamento (PR, proteção de branch, aprovações) como pendentes.",
+          "log_ref": null,
+          "executado_em": "04/10/26 18:31"
+        }
+      }
+    ],
+    "impacto": "Processo e pacote Mentor; nenhuma implantação automática no projeto consumidor.",
+    "riscos": [
+      "Duplicar estado de tarefas numa tabela manual.",
+      "Transformar um exemplo de três modelos em papéis permanentes.",
+      "Escolher política de PR do consumidor sem decisão correspondente."
+    ],
+    "dependencias_novas": [],
+    "proporcionalidade": "Standard. Reusar Git e o ciclo existente; novos artefatos têm necessidade explícita e não introduzem orquestração externa.",
+    "versao": 2,
+    "decisoes_aplicaveis": {
+      "motivo_ausencia": "Na descoberta de 04/10/2026 não havia pasta de ADRs nem habilidade de consistência gerada neste repositório. As decisões propostas estão no documento 01; consultar novamente as ADRs resolvidas antes da execução."
+    },
+    "reuso": {
+      "existentes": [
+        ".mentor/processos/planejamento.md",
+        ".mentor/processos/entrega.md",
+        ".mentor/processos/tarefa.md",
+        ".mentor/modelos/"
+      ],
+      "novos": [
+        {
+          "artefato": "trabalho-paralelo.md",
+          "local": ".mentor/processos",
+          "motivo": "Concentrar protocolo reutilizável de concorrência e handoff."
+        },
+        {
+          "artefato": "atribuicao-paralela.md",
+          "local": ".mentor/modelos",
+          "motivo": "Oferecer divisão pré-pronta preenchível, com referências ao estado real da tarefa."
+        },
+        {
+          "artefato": "git.md",
+          "local": "docs/padroes-de-stack",
+          "motivo": "Registrar a convenção Git local atualmente ausente, distinguindo política do consumidor de orientação genérica."
+        }
+      ],
+      "motivo_sem_reuso": null
+    },
+    "habilidades": {
+      "planejamento": [
+        {
+          "nome": "planejamento",
+          "motivo": "Refinar a fatia e seus contratos antes da execução.",
+          "origem": ".mentor/skills/planejamento/SKILL.md"
+        }
+      ],
+      "execucao": [
+        {
+          "nome": "planejamento",
+          "motivo": "Preservar consistência entre instruções, exemplos e contratos.",
+          "origem": ".mentor/skills/planejamento/SKILL.md"
+        }
+      ]
+    },
+    "avaliacao": {
+      "planejamento": {
+        "complexidade": "moderada",
+        "dimensao_dominante": "acoplamento",
+        "justificativa": "A entrega exige acoplamento entre os artefatos previstos; a capacidade é recomendada por tarefa e pode ser atendida por qualquer modelo adequado.",
+        "perfil_modelo": "geral",
+        "effort": "medio"
+      },
+      "execucao": {
+        "complexidade": "moderada",
+        "dimensao_dominante": "acoplamento",
+        "justificativa": "A entrega exige acoplamento entre os artefatos previstos; a capacidade é recomendada por tarefa e pode ser atendida por qualquer modelo adequado.",
+        "perfil_modelo": "geral",
+        "effort": "medio"
+      }
+    },
+    "documentos_herdados": [
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/01-problema-e-decisoes.md",
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/02-protocolo-e-contratos.md",
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/03-fatias-e-validacao.md"
+    ],
+    "composicao": {
+      "o_que_esta_fatia_entrega": "Protocolo normativo de trabalho paralelo por slots (.mentor/processos/trabalho-paralelo.md), modelo preenchível de atribuição e handoff (.mentor/modelos/atribuicao-paralela.md) e padrão local Git (docs/padroes-de-stack/git.md).",
+      "a_direcao_se_mantem": true,
+      "porque": "A entrega fornece o contrato operacional estável que as fatias B, C e D consomem, mantendo a arquitetura e premissas definidas no planejamento do épico."
+    }
+  },
+  "gates": {
+    "tipos": {
+      "rotulo": "APROVADO",
+      "vermelho_em": null,
+      "comando": "npx tsc --noEmit",
+      "codigo_saida": 0,
+      "saida": "npm notice run mentor-agent@0.14.0 npx\nnpm notice run 'tsc' --noEmit",
+      "executado_em": "04/10/26 18:31",
+      "commit_execucao": "69f58f4e37f563a4b89e117202e191206853a93a",
+      "arvore_hash": "424e0f210df276f12a0d9ced60b08188b268af78",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": null,
+      "ressalva": null,
+      "log_ref": "docs/.evidencias/logs/TASK-CHORE-015-tipos-1791149473145.log",
+      "chave_cache": "e6e426ded7c655f419a67b2bcfacf63c0286231167ee17f58e097da8ec99ccc0",
+      "digest_insumos": "424e0f210df276f12a0d9ced60b08188b268af78",
+      "vermelho_dispensado": null
+    },
+    "testes": {
+      "rotulo": "APROVADO",
+      "vermelho_em": null,
+      "comando": "node testes/executar.ts --unidade",
+      "codigo_saida": 0,
+      "saida": "REV-001: APROVADO · TASK-CHORE-123 · 0 achado(s)\nREV-001: APROVADO · TASK-CHORE-123 · 0 achado(s)\nREV-002: APROVADO · TASK-CHORE-123 · 0 achado(s)\n... [351 linhas omitidas] ...\n1 cenario(s), todos verdes. (modo unidade / rapido)\nREV-001 está desatualizada: contrato/regra docs-mentor/rascunhos/plano.contrato.json mudou desde a captura.\nREV-001 está desatualizada: src.ts mudou desde a captura. Prepare uma nova revisão.",
+      "executado_em": "04/10/26 18:31",
+      "commit_execucao": "69f58f4e37f563a4b89e117202e191206853a93a",
+      "arvore_hash": "424e0f210df276f12a0d9ced60b08188b268af78",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": null,
+      "ressalva": null,
+      "log_ref": "docs/.evidencias/logs/TASK-CHORE-015-testes-1791149516971.log",
+      "chave_cache": "038fcb1326b361c860648b7eaeddaf34b0ca2f05b5d7a1cc437155c6402374d5",
+      "digest_insumos": "424e0f210df276f12a0d9ced60b08188b268af78",
+      "vermelho_dispensado": null
+    }
+  },
+  "achados": [],
+  "validacao": "nao_requer",
+  "validado_em": null,
+  "validacao_motivo": null,
+  "tarefas_geradas": [],
+  "adrs": [],
+  "divida_tecnica": [],
+  "riscos_aceitos": [],
+  "absorvida_por": null,
+  "cancelamento_motivo": null,
+  "narrativa": "2026-10-04--18h33--TASK-CHORE-015--estudo-humano.md",
+  "plano_ref": {
+    "arquivo": "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/fatias/fatia-a-protocolo.md",
+    "sha256": "1bd8ca0f60f7824a1d88ec25953d480908bad4bc49363433b0c4a6ccafb212e1",
+    "secao": null,
+    "manifesto": {
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/fatias/fatia-a-protocolo.md": "1bd8ca0f60f7824a1d88ec25953d480908bad4bc49363433b0c4a6ccafb212e1",
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/fatias/fatia-a-protocolo.contrato.json": "6035eb07518d20c37987393454d3e02b8d120b8f272e9fb6eed7f0fdf39b00ce",
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/01-problema-e-decisoes.md": "0099f69dd01165689b2c39818f784081b4723dc8524a3b2f3072b13379e713fe",
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/02-protocolo-e-contratos.md": "6005d90a3d247be902ec676aaaa67b65a2fc222675787313bebdd2e7a1d7ae65",
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/03-fatias-e-validacao.md": "c8f598de4276e6ffa7a9da518b25d2acf45b0300ebd1515e9b793405f4e741c1"
+    }
+  },
+  "plano_do_epico": null,
+  "memoria_operacional": {
+    "resultado": "Entrega do protocolo normativo de trabalho paralelo (.mentor/processos/trabalho-paralelo.md), modelo de atribuição por slots (.mentor/modelos/atribuicao-paralela.md) e padrão de stack Git local (docs/padroes-de-stack/git.md), fornecendo base estável para as fatias de diagnóstico, resolvedor e instrução.",
+    "aprendizados": [
+      "Worktrees isolam o índice e working tree mas compartilham hooks e objetos Git, exigindo disciplina com dependências e portas de rede.",
+      "O modelo de atribuição deve ser puramente documental e voltado para coordenação humana/IA, preservando a verdade única nos JSONs do Mentor.",
+      "Manter campos de versionamento abertos (null) no contexto evita que agentes imponham políticas de repositório não acordadas."
+    ],
+    "limites_conhecidos": [
+      "O protocolo cobre o padrão de slots e handoff local; diagnósticos cruzados entre worktrees e resolvedor estrito de gerados serão entregues nas Fatias B e C."
+    ]
+  }
+}

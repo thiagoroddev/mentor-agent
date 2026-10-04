@@ -1,6 +1,6 @@
 {
   "versao": "0.14.0",
-  "gerado_em": "2026-10-04T19:54:46.003Z",
+  "gerado_em": "2026-10-04T21:33:46.783Z",
   "arquivos": {
     "esquemas/contexto.json": "6a08c3b851d076cd",
     "esquemas/diretrizes-adr.json": "b2eac0e1d50d2250",
@@ -25,6 +25,7 @@
     "guia/12-aprendizado-de-maquina.md": "5d754b398c61139a",
     "guia/13-evolucao.md": "74d286344b2876e4",
     "guia/ORIGEM.md": "8e93268874ef2836",
+    "modelos/atribuicao-paralela.md": "ef5ddb48fdb80a8f",
     "modelos/fichas.md": "92cdc7020d33fcc1",
     "modelos/listas-por-fase.md": "57377dc4538acc80",
     "modelos/varredura.md": "f3016bd789b30a83",
@@ -40,6 +41,7 @@
     "processos/revisao.md": "6c8d11bbcd9d336a",
     "processos/tarefa.md": "daf54d4ef0da7744",
     "processos/teste.md": "edef2857878f6bbb",
+    "processos/trabalho-paralelo.md": "6519275369a3ce60",
     "regras.json": "5f5ddff0c236ed68",
     "scripts/adrs.ts": "070acdbb4d2df352",
     "scripts/arquivos.ts": "5e251404a6051eeb",
@@ -66,7 +68,7 @@
     "scripts/cmd-riscos.ts": "54da3ca4e24f28eb",
     "scripts/cmd-stack.ts": "b2eebe54b9a2b7cd",
     "scripts/cmd-tarefa.ts": "9c67d37d3c3271e1",
-    "scripts/cmd-verificar.ts": "253d8abd97c92046",
+    "scripts/cmd-verificar.ts": "5946e36450859079",
     "scripts/cobertura-incremental.ts": "69e44b8a2eda1e1f",
     "scripts/entrada.ts": "3f18b4f3c4e4bb1e",
     "scripts/executor-gates.ts": "bf8364cb779dea3b",

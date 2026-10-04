@@ -17,3 +17,4 @@
 | 04/10/26 15:45 | [`TASK-CHORE-011`](./2026-10-04--15h45--TASK-CHORE-011--estudo-humano.md) | CHORE | Consulta derivada de status de planos sem auto-invalidação (Fatia G) | - | concluida | dispensado |
 | 04/10/26 15:57 | [`TASK-CHORE-012`](./2026-10-04--15h57--TASK-CHORE-012--estudo-humano.md) | CHORE | Instruções do núcleo e habilidade de planejamento (Fatia F) | - | concluida | dispensado |
 | 04/10/26 16:20 | [`TASK-CHORE-013`](./2026-10-04--16h20--TASK-CHORE-013--estudo-humano.md) | CHORE | Habilidades de UI-Design, Test-Design e Caracterização (Fatia H) | - | concluida | dispensado |
+| 04/10/26 18:33 | [`TASK-CHORE-015`](./2026-10-04--18h33--TASK-CHORE-015--estudo-humano.md) | CHORE | Protocolo e atribuicao por slots | 1/5 de TASK-CHORE-014 | concluida | nao_requer |

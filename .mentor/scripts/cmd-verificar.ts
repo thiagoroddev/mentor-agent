@@ -116,6 +116,7 @@ function existeComGrafiaExata(caminho: string, raiz: string): boolean {
 }
 
 const CERCA = /```[\s\S]*?```|`[^`\n]*`/g
+const BLOCO_PLANO_NARRATIVA = /<!-- mentor:plano:inicio[\s\S]*?<!-- mentor:plano:fim -->/g
 const LINK = /\[[^\]]*\]\(([^)\s]+)\)/g
 
 /** Familia 3a: link relativo em markdown resolve para arquivo que existe, com a grafia certa. */
@@ -128,7 +129,7 @@ function links(): Achado[] {
     if (basename(arquivo).endsWith('.md.md')) {
       achados.push({ familia: 'referencia', onde: rel, problema: 'extensao dupla .md.md' })
     }
-    const texto = lerTexto(arquivo).replace(CERCA, '')
+    const texto = lerTexto(arquivo).replace(CERCA, '').replace(BLOCO_PLANO_NARRATIVA, '')
     for (const casou of texto.matchAll(LINK)) {
       const bruto = casou[1]
       if (!bruto) continue
