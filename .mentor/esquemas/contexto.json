@@ -311,7 +311,8 @@
     "processo_de_trabalho": null,
     "camadas": [],
     "decisoes_irreversiveis": [],
-    "adrs": []
+    "adrs": [],
+    "onde_ficam_as_adrs": null
   },
   "persistencia": {
     "paradigma": null,
@@ -412,7 +413,8 @@
     "idioma": null,
     "commit": null,
     "nomes_de_arquivo": null,
-    "onde_ficam_as_de_stack": "docs-mentor/padroes-de-stack/"
+    "onde_ficam_as_de_stack": "docs-mentor/padroes-de-stack/",
+    "onde_ficam_as_adrs": null
   },
   "contagens": {
     "_gerado_por_script": true,

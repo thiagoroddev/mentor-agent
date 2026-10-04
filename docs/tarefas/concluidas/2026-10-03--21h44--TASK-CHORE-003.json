@@ -1,0 +1,141 @@
+{
+  "id": "TASK-CHORE-003",
+  "revisao_incremental_requerida": false,
+  "tipo": "CHORE",
+  "titulo": "Fatia A: Permitir configuracao da pasta de ADRs no contexto",
+  "fatia_de": null,
+  "estado": "concluida",
+  "cerimonia": "Standard",
+  "perfil": "completo",
+  "valor": "importante",
+  "urgencia": "normal",
+  "esforco": {
+    "humano": "M",
+    "ia": "M"
+  },
+  "depende_de": [],
+  "ordem_motivo": null,
+  "fila": "ciclo",
+  "ordem": null,
+  "origem": "titulo-autossuficiente",
+  "requisitos": [],
+  "sem_requisito_motivo": null,
+  "criada_em": "03/10/26 20:37",
+  "iniciada_em": "03/10/26 20:37",
+  "commit_base": "c27c4fa5aaf6547d895a7c8f1d2ec8a3bbd188d0",
+  "concluida_em": "03/10/26 21:44",
+  "plano": {
+    "muda": [
+      ".mentor/scripts/arquivos.ts",
+      ".mentor/scripts/tipos.ts",
+      ".mentor/esquemas/contexto.json",
+      ".mentor/manifesto.json",
+      "CHANGELOG.md",
+      "package-lock.json",
+      "testes/adrs-configuraveis.test.ts",
+      "testes/cenarios/31-testes-de-unidade.ts"
+    ],
+    "criterios_aceite": [
+      {
+        "texto": "caminhos().adr aponta para a pasta configurada em contexto.json quando declarada.",
+        "teste": "testes/adrs-configuraveis.test.ts",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "ok - caminhos().adr aponta para docs/arquitetura/ADR",
+          "executado_em": "03/10/26 20:49"
+        }
+      },
+      {
+        "texto": "caminhos().adr mantém fallback seguro para docs-mentor/arquitetura/ADR quando não configurada.",
+        "teste": "testes/adrs-configuraveis.test.ts",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "ok - caminhos().adr mantem fallback seguro para docs-mentor/arquitetura/ADR e docs/arquitetura/ADR",
+          "executado_em": "03/10/26 20:49"
+        }
+      },
+      {
+        "texto": "Tentativa de configurar caminho fora da raiz (path traversal) é rejeitada com erro explícito.",
+        "teste": "testes/adrs-configuraveis.test.ts",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "ok - rejeita tentativa de path traversal relativo, absoluto e link simbolico",
+          "executado_em": "03/10/26 20:49"
+        }
+      },
+      {
+        "texto": "Consumidores existentes (vistas contagens, restrições e doctor) leem as ADRs da pasta configurada.",
+        "teste": "testes/adrs-configuraveis.test.ts",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "ok - listar, contarAdrs, arquivoDaAdr e adrCitaRestricao leem adrs da pasta configurada",
+          "executado_em": "03/10/26 20:49"
+        }
+      }
+    ],
+    "impacto": "Permite que projetos com ADRs em locais específicos (como docs/arquitetura/ADR no piloto) sejam atendidos sem quebra de links ou estrutura.",
+    "riscos": [
+      "Configuração inválida quebrar execução; mitigado por fallback transparente e validação de limites de pasta."
+    ],
+    "dependencias_novas": [],
+    "proporcionalidade": "Resolução centralizada em arquivos.ts sem alterar os múltiplos pontos de consumo nem introduzir bibliotecas externas."
+  },
+  "gates": {
+    "tipos": {
+      "rotulo": "APROVADO",
+      "vermelho_em": null,
+      "comando": "npx tsc --noEmit",
+      "codigo_saida": 0,
+      "saida": "npm notice run mentor-agent@0.14.0 npx\nnpm notice run 'tsc' --noEmit",
+      "executado_em": "03/10/26 21:06",
+      "commit_execucao": "c27c4fa5aaf6547d895a7c8f1d2ec8a3bbd188d0",
+      "arvore_hash": "684c5b10a6218298c1ecaf31fa5e726b4db916b3",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": null,
+      "ressalva": null,
+      "log_ref": "docs/.evidencias/logs/TASK-CHORE-003-tipos-1791072408407.log",
+      "chave_cache": "b58709a5a1b102ca8093062c2f81f2de31f4808ea0df513e8773f00256c7e3f9",
+      "digest_insumos": "684c5b10a6218298c1ecaf31fa5e726b4db916b3",
+      "vermelho_dispensado": null
+    },
+    "testes": {
+      "rotulo": "APROVADO",
+      "vermelho_em": null,
+      "comando": "arquivo:/home/th/.gemini/antigravity/brain/8880f24d-d0ab-4117-ba97-5a894710c208/.system_generated/tasks/task-901.log",
+      "codigo_saida": 0,
+      "saida": "ok   01-ciclo-basico\r\n  ok   02-epico-fatiado\r\n  ok   03-recusas\r\n... [34 linhas omitidas] ...\n  ok   32-carregamento\r\n\r\n32 cenarios, todos verdes. Os projetos gerados ficam em testes/exemplos/.",
+      "executado_em": "03/10/26 21:43",
+      "commit_execucao": "c27c4fa5aaf6547d895a7c8f1d2ec8a3bbd188d0",
+      "arvore_hash": "684c5b10a6218298c1ecaf31fa5e726b4db916b3",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": null,
+      "ressalva": null,
+      "log_ref": "docs/.evidencias/logs/TASK-CHORE-003-testes-1791074635588.log",
+      "chave_cache": "a8e1edfb91d36d11b85d30005e1878297281fed097d66c2894b7da1fbe3c2b89",
+      "digest_insumos": "684c5b10a6218298c1ecaf31fa5e726b4db916b3",
+      "vermelho_dispensado": null
+    }
+  },
+  "achados": [],
+  "validacao": "nao_requer",
+  "validado_em": null,
+  "validacao_motivo": null,
+  "tarefas_geradas": [],
+  "adrs": [],
+  "divida_tecnica": [],
+  "riscos_aceitos": [],
+  "absorvida_por": null,
+  "cancelamento_motivo": null,
+  "narrativa": "2026-10-03--21h44--TASK-CHORE-003--estudo-humano.md",
+  "plano_ref": {
+    "arquivo": "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/fatias/fatia-a-origem-configuravel-adrs.md",
+    "sha256": "f26d35c851a4b2522ecf87c215a025ceea4886c6e5d5ca917f1ae9396d27d121",
+    "secao": null
+  }
+}

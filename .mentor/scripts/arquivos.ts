@@ -1,5 +1,5 @@
-import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { dirname, join, relative, resolve } from 'node:path'
+import { existsSync, mkdirSync, readdirSync, readFileSync, realpathSync, statSync, writeFileSync } from 'node:fs'
+import { dirname, isAbsolute, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 /**
@@ -68,6 +68,56 @@ export function pastaDeDocumentos(r: string): string {
   return atual
 }
 
+const cacheAdrs = new Map<string, { mtime: number; pasta: string }>()
+
+/**
+ * Resolve onde as ADRs moram. Por padrao vivem em `arquitetura/ADR` dentro da pasta de documentos
+ * do projeto (`docs-mentor/` ou `docs/`). Se `contexto.json` declarar `arquitetura.onde_ficam_as_adrs`
+ * (ou `convencoes.onde_ficam_as_adrs`), resolve a partir da raiz do projeto, rejeitando qualquer
+ * caminho ou link simbolico que tente escapar da raiz permitida.
+ */
+export function pastaDeAdrs(r: string, docs: string): string {
+  const padrao = join(docs, 'arquitetura', 'ADR')
+  const caminhoCtx = join(docs, 'contexto.json')
+  if (!existsSync(caminhoCtx)) return padrao
+  try {
+    const mtime = statSync(caminhoCtx).mtimeMs
+    const cached = cacheAdrs.get(caminhoCtx)
+    if (cached && cached.mtime === mtime) {
+      return cached.pasta
+    }
+
+    const raw = lerTexto(caminhoCtx)
+    const ctx = JSON.parse(raw)
+    const declarada = ctx?.arquitetura?.onde_ficam_as_adrs ?? ctx?.convencoes?.onde_ficam_as_adrs
+    let resolvida = padrao
+    if (declarada && typeof declarada === 'string' && declarada.trim()) {
+      const limpa = declarada.trim()
+      const abs = isAbsolute(limpa) ? resolve(limpa) : resolve(r, limpa)
+      const rel = relative(r, abs)
+      if (rel.startsWith('..') || isAbsolute(rel)) {
+        throw new Error(`Caminho de ADRs configurado ("${declarada}") escapa da raiz do projeto (${r}).`)
+      }
+      if (existsSync(abs)) {
+        const realAbs = realpathSync(abs)
+        const realR = realpathSync(r)
+        const realRel = relative(realR, realAbs)
+        if (realRel.startsWith('..') || isAbsolute(realRel)) {
+          throw new Error(`Caminho de ADRs configurado ("${declarada}") aponta para fora da raiz do projeto via link simbolico.`)
+        }
+      }
+      resolvida = abs
+    }
+    cacheAdrs.set(caminhoCtx, { mtime, pasta: resolvida })
+    return resolvida
+  } catch (e: any) {
+    if (e.message?.includes('escapa da raiz do projeto') || e.message?.includes('link simbolico')) {
+      throw e
+    }
+    return padrao
+  }
+}
+
 export type Caminhos = ReturnType<typeof caminhos>
 
 export function caminhos(r: string = raizProjeto()) {
@@ -104,7 +154,7 @@ export function caminhos(r: string = raizProjeto()) {
     invariantes: join(docs, 'invariantes.json'),
     glossario: join(docs, 'glossario.md'),
     stack: join(docs, 'padroes-de-stack'),
-    adr: join(docs, 'arquitetura', 'ADR'),
+    adr: pastaDeAdrs(r, docs),
   }
 }
 

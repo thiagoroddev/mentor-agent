@@ -6,6 +6,9 @@ O formato baseia-se em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0
 
 ## [Não publicado]
 
+### Adicionado
+- Origem configurável de ADRs: projetos consumidores podem declarar `arquitetura.onde_ficam_as_adrs` (ou `convencoes.onde_ficam_as_adrs`) em `contexto.json`. A resolução é feita de forma única em `caminhos().adr`, preservando fallback para `arquitetura/ADR` e rejeitando qualquer caminho ou link simbólico que escape da raiz do projeto.
+
 ### Corrigido
 - Validação proporcional nas instruções: correções pequenas e portabilidades já comprovadas reutilizam evidência e começam por checagens focadas. Suíte completa exige risco identificado, sinal de regressão ou obrigação do projeto/CI; gates obrigatórios e suas provas são preservados.
 - Arquivos de mídia estática deixam de ser classificados como código pelo pre-push. Fontes, testes e configurações continuam sujeitos às verificações de código.

@@ -15,5 +15,13 @@
       "06-portabilidade-chore-039.md": "187a649098e9723b65b9f2d9a1b2b5392a56c1fefbb5435769ddfd109fd975e1",
       "README.md": "f694b5605e62d4c00acaabd41490bc61294db74e1bf88c8de0f3b6d74bf462f0"
     }
+  },
+  {
+    "id": "PLAN-fatia-a-origem-configuravel-ad",
+    "titulo": "Fatia A: Origem configurável de ADRs no contexto",
+    "arquivo": "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/fatias/fatia-a-origem-configuravel-adrs.md",
+    "sha256": "f26d35c851a4b2522ecf87c215a025ceea4886c6e5d5ca917f1ae9396d27d121",
+    "secao": null,
+    "registrado_em": "03/10/26"
   }
 ]

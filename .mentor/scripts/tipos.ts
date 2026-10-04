@@ -452,6 +452,15 @@ export interface Contexto {
   contagens: Record<string, number | null | boolean>
   limites: { em_execucao: number; ciclo_tarefas: number }
   offsets_de_id?: Record<string, number>
+  arquitetura?: {
+    onde_ficam_as_adrs?: string | null
+    [k: string]: unknown
+  }
+  convencoes?: {
+    onde_ficam_as_de_stack?: string | null
+    onde_ficam_as_adrs?: string | null
+    [k: string]: unknown
+  }
   revisao_geral: {
     ultima_em: string | null
     ultima_na_tarefa: number | null

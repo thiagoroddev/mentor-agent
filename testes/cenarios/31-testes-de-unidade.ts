@@ -1,6 +1,7 @@
 import '../regressoes-de-campo.test.ts'
 import '../melhorias-0-13.test.ts'
 import '../pre-push-0-14.test.ts'
+import '../adrs-configuraveis.test.ts'
 import { executarSuites } from '../vitest-local.ts'
 import type { Cenario } from '../apoio.ts'
 
