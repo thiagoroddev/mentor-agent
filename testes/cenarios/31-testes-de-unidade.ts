@@ -4,6 +4,7 @@ import '../pre-push-0-14.test.ts'
 import '../adrs-configuraveis.test.ts'
 import '../adrs-formato-e-vigencia.test.ts'
 import '../adrs-gerador-e-verificar.test.ts'
+import '../contratos-planos-novos.test.ts'
 import { executarSuites } from '../vitest-local.ts'
 import type { Cenario } from '../apoio.ts'
 

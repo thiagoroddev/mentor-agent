@@ -255,7 +255,64 @@ export interface PlanoDoEpico {
   revisoes_de_estrategia?: RevisaoDeEstrategia[]
 }
 
+export interface DecisaoAplicavelItem {
+  adr: string
+  diretriz?: string | null
+  aplicacao: string
+  excecoes?: string | null
+}
+
+export interface DecisoesAplicaveisObjeto {
+  motivo_ausencia?: string | null
+  itens?: DecisaoAplicavelItem[]
+}
+
+export type DecisoesAplicaveis = DecisaoAplicavelItem[] | DecisoesAplicaveisObjeto
+
+export interface ArtefatoReusoNovo {
+  artefato: string
+  local: string
+  motivo: string
+}
+
+export interface ReusoPlano {
+  existentes?: string[]
+  novos?: ArtefatoReusoNovo[]
+  motivo_sem_reuso?: string | null
+}
+
+export interface HabilidadeItem {
+  nome: string
+  motivo: string
+  origem?: string | null
+}
+
+export interface HabilidadesPlano {
+  planejamento?: HabilidadeItem[]
+  execucao?: HabilidadeItem[]
+}
+
+export type ComplexidadeNivel = 'baixa' | 'media' | 'alta' | 'muito_alta'
+export type DimensaoDominante = 'incerteza' | 'profundidade_raciocinio' | 'acoplamento' | 'validacao_discriminatoria'
+export type PerfilModelo = 'economico' | 'geral' | 'avancado'
+export type EffortNivel = 'baixo' | 'medio' | 'alto' | 'maximo'
+
+export interface AvaliacaoFase {
+  complexidade?: ComplexidadeNivel | string | null
+  dimensao_dominante?: DimensaoDominante | string | null
+  justificativa?: string | null
+  perfil_modelo?: PerfilModelo | string | null
+  effort?: EffortNivel | string | null
+}
+
+export interface AvaliacaoPlano {
+  planejamento?: AvaliacaoFase | null
+  execucao?: AvaliacaoFase | null
+}
+
 export interface Plano {
+  /** Versão do contrato do plano (ex: 2 para contratos estruturados com decisões, reuso, habilidades e avaliação). */
+  versao?: number
   muda: string[]
   criterios_aceite: CriterioDeAceite[]
   /** As palavras do humano, antes de qualquer reformulacao (0.10.0). */
@@ -272,6 +329,14 @@ export interface Plano {
   restricoes_reavaliadas?: RestricaoReavaliada[]
   meio_de_validacao?: MeioDeValidacao | null
   composicao?: ComposicaoFatia | null
+  /** Diretrizes operacionais e decisões aplicáveis à tarefa (versão >= 2). */
+  decisoes_aplicaveis?: DecisoesAplicaveis | null
+  /** Reuso de componentes, utilitários, contratos e padrões existentes vs novos (versão >= 2). */
+  reuso?: ReusoPlano | null
+  /** Habilidades requeridas para planejamento e execução com motivos e origem (versão >= 2). */
+  habilidades?: HabilidadesPlano | null
+  /** Avaliação multidimensional para planejamento e execução (versão >= 2). */
+  avaliacao?: AvaliacaoPlano | null
   impacto: string | null
   riscos: string[]
   dependencias_novas: string[]

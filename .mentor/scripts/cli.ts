@@ -62,7 +62,7 @@ mentor <comando>
   task anexar <ID> --url "..." [--gate] anexa evidencia externa (CI/PR) mesmo se concluida
   task criterio <ID> <n> --comando "..." | --saida "..."
                                        registra evidencia em criterio do plano (n comeca em 0)
-  task vincular-plano <ID> --arquivo <path> [--secao <id>]
+  task vincular-plano <ID> [<PLANO-ID> | --arquivo <path>] [--secao <id>]
                                        vincula plano a tarefa sem copiar narrativa
   task finalizar <ID>                  fecha, vincula requisito, regenera as vistas
        [--artefatos-locais "a;b"]      dados nao rastreados no laboratorio, fora da tarefa e do commit
@@ -248,7 +248,7 @@ function principal(argv: string[]): number {
       if (sub === 'absorver') { absorver(id, flags.por); return 0 }
       if (sub === 'validar') { validar(id, flags); return 0 }
       if (sub === 'anexar') { anexar(id, flags); return 0 }
-      if (sub === 'vincular-plano') { vincularPlano(id, flags); return 0 }
+      if (sub === 'vincular-plano') { vincularPlano(id, flags, posicionais[2]); return 0 }
       if (sub === 'criterio') {
         const indice = posicionais[2]
         if (!indice) throw new Error('Falta o indice do criterio. Use: mentor task criterio <ID> <indice> [--comando "..."] [--saida "..."]')

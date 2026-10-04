@@ -129,6 +129,16 @@
     "restricoes_reavaliadas": [],
     "meio_de_validacao": null,
     "composicao": null,
+    "versao": null,
+    "versao_nota": "Versao do contrato de plano (ex: 2 para contratos estruturados com decisoes_aplicaveis, reuso, habilidades e avaliacao).",
+    "decisoes_aplicaveis": null,
+    "decisoes_aplicaveis_nota": "Diretrizes e ADRs vigentes aplicaveis: [ { adr, aplicacao, excecoes } ] ou { motivo_ausencia, itens }.",
+    "reuso": null,
+    "reuso_nota": "Catalogo de reuso: { existentes: [...], novos: [ { artefato, local, motivo } ], motivo_sem_reuso }.",
+    "habilidades": null,
+    "habilidades_nota": "Habilidades necessarias: { planejamento: [ { nome, motivo, origem } ], execucao: [ { nome, motivo, origem } ] }.",
+    "avaliacao": null,
+    "avaliacao_nota": "Avaliacao multidimensional de complexidade, dimensao_dominante, justificativa, perfil_modelo e effort para planejamento e execucao.",
     "criterios_aceite_nota": "Todo criterio nomeia um teste. Saida honesta: 'nao se aplica: <motivo>'. Criterio que nao vira asercao nao era criterio, era intencao."
   },
   "gates": {

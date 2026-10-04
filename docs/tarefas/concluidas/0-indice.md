@@ -10,3 +10,4 @@
 | 03/10/26 22:24 | [`TASK-CHORE-004`](./2026-10-03--22h24--TASK-CHORE-004--estudo-humano.md) | CHORE | Padronizar niveis de teste 1 e 2 e fluxo de epicos | - | concluida | nao_requer |
 | 03/10/26 23:21 | [`TASK-CHORE-005`](./2026-10-03--23h21--TASK-CHORE-005--estudo-humano.md) | CHORE | Formato operacional versionado e vigencia das ADRs | - | concluida | nao_requer |
 | 03/10/26 23:56 | [`TASK-CHORE-006`](./2026-10-03--23h56--TASK-CHORE-006--estudo-humano.md) | CHORE | Gerador da habilidade de consistência e validação no verificar | - | concluida | nao_requer |
+| 04/10/26 13:11 | [`TASK-CHORE-007`](./2026-10-04--13h11--TASK-CHORE-007--estudo-humano.md) | CHORE | Campos novos nos contratos locais e portateis | - | concluida | nao_requer |

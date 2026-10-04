@@ -7,6 +7,13 @@ O formato baseia-se em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0
 ## [Não publicado]
 
 ### Adicionado
+- **Campos novos nos contratos locais/portáteis e versão de contrato (Fatia D1)**:
+  - Suporte a contratos versão 2 com novos campos operacionais: `decisoes_aplicaveis` (diretrizes e ADRs com alcance/exceções ou justificativa de ausência), `reuso` (existentes vs novos com artefato/local/motivo), `habilidades` (competências de planejamento e execução) e `avaliacao` (complexidade, dimensão dominante, justificativa, perfil de modelo e effort).
+  - Atualização dos tipos em `tipos.ts` e do esquema em `tarefa.json`.
+  - Propagação e preservação de todos os novos campos no `resolverPlano()`, `vincularPlano()`, `iniciar()` e `importarPlano()`, com suporte a contratos acompanhantes (`.contrato.json`).
+  - Unificação do comando `mentor task vincular-plano <ID> [<PLANO-ID> | --arquivo <path>]`, permitindo vincular diretamente por identificador registrado no `planos.json`.
+  - Validação de integridade referencial para contratos versão 2 (checagem de existência de ADRs citadas e habilidades locais sem origem declarada).
+  - Validação de preenchimento dos 4 campos no `finalizar()` para tarefas com contrato versão 2, mantendo total retrocompatibilidade para tarefas legadas.
 - **Padronização dos níveis de teste (Nível 1 e Nível 2) e fluxo de fatias em épicos**:
   - Processo de teste (`teste.md`) atualizado com a distinção formal entre testes de Nível 1 (unidade/rápidos, na casa dos segundos, foco no ciclo de tarefas e TDD) e testes de Nível 2 (integração, E2E, cenários completos de pre-push e release).
   - Processo de entrega (`entrega.md`) atualizado formalizando a cadência de épicos: commits locais atômicos por tarefa/fatia validados via gates de Nível 1, consolidando o push remoto no fechamento do épico ou lote estável (onde o pre-push executa a bateria Nível 2).

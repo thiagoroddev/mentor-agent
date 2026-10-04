@@ -1,0 +1,236 @@
+{
+  "id": "TASK-CHORE-007",
+  "revisao_incremental_requerida": false,
+  "tipo": "CHORE",
+  "titulo": "Campos novos nos contratos locais e portateis",
+  "fatia_de": null,
+  "estado": "concluida",
+  "cerimonia": "Standard",
+  "perfil": "completo",
+  "valor": "importante",
+  "urgencia": "normal",
+  "esforco": {
+    "humano": "M",
+    "ia": "G"
+  },
+  "depende_de": [],
+  "ordem_motivo": null,
+  "fila": "ciclo",
+  "ordem": null,
+  "origem": "titulo-autossuficiente",
+  "requisitos": [],
+  "sem_requisito_motivo": null,
+  "criada_em": "04/10/26 13:00",
+  "iniciada_em": "04/10/26 13:01",
+  "commit_base": "b86432334016b8a448fd3fc381916e75f0a81d30",
+  "concluida_em": "04/10/26 13:11",
+  "plano": {
+    "versao": 2,
+    "muda": [
+      ".mentor/scripts/tipos.ts",
+      ".mentor/esquemas/tarefa.json",
+      ".mentor/scripts/cmd-plano.ts",
+      ".mentor/scripts/cli.ts",
+      ".mentor/scripts/cmd-tarefa.ts",
+      "testes/contratos-planos-novos.test.ts",
+      "testes/cenarios/31-testes-de-unidade.ts",
+      "CHANGELOG.md"
+    ],
+    "criterios_aceite": [
+      {
+        "texto": "Tipos e esquema de tarefa atualizados com versao, decisoes_aplicaveis, reuso, habilidades e avaliacao.",
+        "teste": "testes unitários em contratos-planos-novos.test.ts",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Validado via tipos.ts e tarefa.json (interfaces e esquema estruturado para versao, decisoes_aplicaveis, reuso, habilidades e avaliacao)",
+          "executado_em": "04/10/26 13:09"
+        }
+      },
+      {
+        "texto": "resolverPlano preserva e propaga todos os 4 campos novos de contratos acompanhantes (.contrato.json) e tarefas inline.",
+        "teste": "testes unitários em contratos-planos-novos.test.ts",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Validado via resolverPlano() em cmd-plano.ts e testes unitários em contratos-planos-novos.test.ts (preservação de campos inline e de contrato acompanhante)",
+          "executado_em": "04/10/26 13:09"
+        }
+      },
+      {
+        "texto": "vincularPlano aceita tanto <PLANO-ID> quanto --arquivo <path>, vinculando o plano e incorporando os novos campos contratuais à tarefa sem perdas.",
+        "teste": "testes unitários em contratos-planos-novos.test.ts",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Validado via vincularPlano() em cmd-plano.ts e cli.ts (suporte a PLAN-ID posicional, busca em planos.json, --arquivo e cópia integral de novos campos do contrato)",
+          "executado_em": "04/10/26 13:09"
+        }
+      },
+      {
+        "texto": "Validação de referências acusa ADR inexistente e habilidade sem origem em contratos versão 2.",
+        "teste": "testes unitários em contratos-planos-novos.test.ts",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Validado via validarReferenciasDoContrato() em cmd-plano.ts e testes unitários em contratos-planos-novos.test.ts (detecção de ADR inexistente e habilidade sem origem)",
+          "executado_em": "04/10/26 13:09"
+        }
+      },
+      {
+        "texto": "Tarefas e planos legados continuam 100% compatíveis e podem ser iniciados e finalizados sem erros.",
+        "teste": "testes unitários em contratos-planos-novos.test.ts",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Validado via contratos-planos-novos.test.ts e execução da suíte completa de regressoes (tarefas e contratos legados continuam 100% suportados sem impedimentos espúrios)",
+          "executado_em": "04/10/26 13:09"
+        }
+      },
+      {
+        "texto": "A bateria de testes unitários (Nível 1) executa em menos de 5 segundos e passa com código 0.",
+        "teste": "node testes/executar.ts --unidade",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Validado via node testes/executar.ts --unidade (todos verdes, código de saída 0)",
+          "executado_em": "04/10/26 13:10"
+        }
+      }
+    ],
+    "impacto": "Evolução do contrato de dados operacional para agentes, unificação de interface CLI de vínculo e garantia de retrocompatibilidade total.",
+    "estado_da_arte": {
+      "implementacoes_consolidadas": [
+        "Esquema monolítico rígido sem versionamento de contrato",
+        "Contratos implícitos descritos em linguagem natural apenas na narrativa Markdown",
+        "Metadados fragmentados em arquivos dispersos fora do ciclo de vida da tarefa"
+      ],
+      "motivo_descarte": "Esquema monolítico rígido quebra retrospectivamente o histórico de tarefas do repositório; contratos livres em prosa geram alucinações e não são validáveis programaticamente; metadados fragmentados dificultam consumo por agentes e sincronização atômica.",
+      "o_que_resta_construir": "Implementar cópia integral e promoção na Fatia D2 e compacidade de evidências no JSON na Fatia D3."
+    },
+    "custo_de_oportunidade": {
+      "o_que_existe_pronto": "Bibliotecas externas de validação de schemas como Zod ou Ajv.",
+      "custo_estimado": "Custo nulo de licença, porém adição de dependências desnecessárias a um CLI focado em zero dependências externas pesadas.",
+      "dependencias_ou_infra": "Dependências npm no package.json e runtime de validação externa.",
+      "tempo_substituido": "Aproximadamente 1 a 2 semanas de desenvolvimento e padronização."
+    },
+    "decisoes_aplicaveis": {
+      "motivo_ausencia": "Repositório do pacote Mentor atualmente sem pasta de ADRs criada em docs/arquitetura/ADR; diretrizes operacionais em definição neste épico."
+    },
+    "reuso": {
+      "existentes": [
+        ".mentor/scripts/arquivos.ts",
+        ".mentor/scripts/adrs.ts",
+        ".mentor/scripts/tipos.ts",
+        ".mentor/scripts/cmd-plano.ts",
+        ".mentor/scripts/cmd-tarefa.ts",
+        ".mentor/scripts/cli.ts"
+      ],
+      "novos": [
+        {
+          "artefato": "contratos-planos-novos.test.ts",
+          "local": "testes/",
+          "motivo": "Suíte de validação de contratos versão 2, retrocompatibilidade e integridade referencial."
+        }
+      ]
+    },
+    "habilidades": {
+      "planejamento": [
+        {
+          "nome": "planejamento",
+          "motivo": "Modelagem de contratos, integridade referencial e compatibilidade retroativa.",
+          "origem": "processo-mentor"
+        },
+        {
+          "nome": "consistencia-do-projeto",
+          "motivo": "Decisões arquiteturais do Mentor sobre tipagem e contratos leves.",
+          "origem": "habilidade-do-epico"
+        }
+      ],
+      "execucao": [
+        {
+          "nome": "planejamento",
+          "motivo": "Implementação dos esquemas e resolvedores de contratos.",
+          "origem": "processo-mentor"
+        }
+      ]
+    },
+    "avaliacao": {
+      "planejamento": {
+        "complexidade": "alta",
+        "dimensao_dominante": "incerteza",
+        "justificativa": "Definir schema extensível, regras de retrocompatibilidade com legado e interface CLI ergonômica.",
+        "perfil_modelo": "avancado",
+        "effort": "alto"
+      },
+      "execucao": {
+        "complexidade": "alta",
+        "dimensao_dominante": "acoplamento",
+        "justificativa": "Múltiplos comandos (nova, iniciar, vincular-plano, resolverPlano, finalizar) tocam as mesmas estruturas.",
+        "perfil_modelo": "geral",
+        "effort": "alto"
+      }
+    },
+    "riscos": [
+      "Invalidação acidental de tarefas ou planos legados por novas exigências do validador",
+      "Perda de campos de contrato acompanhante ao vincular plano",
+      "Divergência entre o formato de decisões_aplicáveis e a habilidade consistencia-do-projeto gerada na Fatia C"
+    ],
+    "dependencias_novas": [],
+    "proporcionalidade": "Standard completo: evolução dos contratos de dados centrais e do ciclo de vida de planos e tarefas com testes de unidade determinísticos."
+  },
+  "gates": {
+    "tipos": {
+      "rotulo": "APROVADO",
+      "vermelho_em": null,
+      "comando": "npx tsc --noEmit",
+      "codigo_saida": 0,
+      "saida": "npm notice run mentor-agent@0.14.0 npx\nnpm notice run 'tsc' --noEmit",
+      "executado_em": "04/10/26 13:10",
+      "commit_execucao": "b86432334016b8a448fd3fc381916e75f0a81d30",
+      "arvore_hash": "cc717206c07f83d68c076adc127fdebb2b1ceb03",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": null,
+      "ressalva": null,
+      "log_ref": "docs/.evidencias/logs/TASK-CHORE-007-tipos-1791130214137.log",
+      "chave_cache": "ab5429a130cb22676b18a2cd4df1b687a888def2f14634c679d95cd74b88de0c",
+      "digest_insumos": "cc717206c07f83d68c076adc127fdebb2b1ceb03",
+      "vermelho_dispensado": null
+    },
+    "testes": {
+      "rotulo": "APROVADO",
+      "vermelho_em": null,
+      "comando": "node testes/executar.ts --unidade",
+      "codigo_saida": 0,
+      "saida": "REV-001: APROVADO · TASK-CHORE-123 · 0 achado(s)\nREV-001: APROVADO · TASK-CHORE-123 · 0 achado(s)\nREV-002: APROVADO · TASK-CHORE-123 · 0 achado(s)\nAUD-005-B01 resolvida como \"tarefa\": TASK-CHORE-124\n  ok   31-testes-de-unidade\n\n1 cenario(s), todos verdes. (modo unidade / rapido)\nREV-001 está desatualizada: contrato/regra docs-mentor/rascunhos/plano.contrato.json mudou desde a captura.\nREV-001 está desatualizada: src.ts mudou desde a captura. Prepare uma nova revisão.",
+      "executado_em": "04/10/26 13:10",
+      "commit_execucao": "b86432334016b8a448fd3fc381916e75f0a81d30",
+      "arvore_hash": "cc717206c07f83d68c076adc127fdebb2b1ceb03",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": null,
+      "ressalva": null,
+      "log_ref": "docs/.evidencias/logs/TASK-CHORE-007-testes-1791130253847.log",
+      "chave_cache": "8043fb935c81e27a66cb2130d828318e838405a0f251150eed384b0bb0f672ef",
+      "digest_insumos": "cc717206c07f83d68c076adc127fdebb2b1ceb03",
+      "vermelho_dispensado": null
+    }
+  },
+  "achados": [],
+  "validacao": "nao_requer",
+  "validado_em": null,
+  "validacao_motivo": null,
+  "tarefas_geradas": [],
+  "adrs": [],
+  "divida_tecnica": [],
+  "riscos_aceitos": [],
+  "absorvida_por": null,
+  "cancelamento_motivo": null,
+  "narrativa": "2026-10-04--13h11--TASK-CHORE-007--estudo-humano.md",
+  "plano_ref": {
+    "arquivo": "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/fatias/fatia-d1-contratos-locais-e-portateis.md",
+    "sha256": "8aa9b60dd206833693ad31cd4f22b9210b6d1e8cabb36af43bae7a5ae053bba4",
+    "secao": null
+  }
+}

@@ -47,5 +47,13 @@
     "sha256": "28df0b9cd842a4a8f52d83161f7a2503fa505b13109b0371770b79a009d93101",
     "secao": null,
     "registrado_em": "03/10/26"
+  },
+  {
+    "id": "PLAN-fatia-d1-contratos-locais-e-po",
+    "titulo": "Fatia D1: Campos novos nos contratos locais/portáteis",
+    "arquivo": "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/fatias/fatia-d1-contratos-locais-e-portateis.md",
+    "sha256": "8aa9b60dd206833693ad31cd4f22b9210b6d1e8cabb36af43bae7a5ae053bba4",
+    "secao": null,
+    "registrado_em": "04/10/26"
   }
 ]

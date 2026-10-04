@@ -397,13 +397,24 @@ export function iniciar(id: string, flags: Flags = {}): void {
     }
     if (!tarefa.plano) {
       tarefa.plano = {
+        versao: planoRes.versao,
         muda: planoRes.muda,
         criterios_aceite: planoRes.criterios_aceite,
         impacto: planoRes.impacto,
         riscos: planoRes.riscos,
         dependencias_novas: planoRes.dependencias_novas,
         proporcionalidade: planoRes.proporcionalidade,
+        decisoes_aplicaveis: planoRes.decisoes_aplicaveis,
+        reuso: planoRes.reuso,
+        habilidades: planoRes.habilidades,
+        avaliacao: planoRes.avaliacao,
       }
+    } else {
+      if (planoRes.versao !== undefined && tarefa.plano.versao === undefined) tarefa.plano.versao = planoRes.versao
+      if (planoRes.decisoes_aplicaveis !== undefined && tarefa.plano.decisoes_aplicaveis === undefined) tarefa.plano.decisoes_aplicaveis = planoRes.decisoes_aplicaveis
+      if (planoRes.reuso !== undefined && tarefa.plano.reuso === undefined) tarefa.plano.reuso = planoRes.reuso
+      if (planoRes.habilidades !== undefined && tarefa.plano.habilidades === undefined) tarefa.plano.habilidades = planoRes.habilidades
+      if (planoRes.avaliacao !== undefined && tarefa.plano.avaliacao === undefined) tarefa.plano.avaliacao = planoRes.avaliacao
     }
   } else if (planoPreenchido) {
     // Mantem o plano aprovado; os campos que faltarem aparecem nas travas do finalizar.
@@ -1220,6 +1231,82 @@ export function finalizar(id: string, flags: Flags = {}): void {
         !co.tempo_substituido?.trim()
       ) {
         impedimentos.push('secao "custo_de_oportunidade" incompleta no plano')
+      }
+    }
+  }
+
+  // Contratos versão >= 2: validação estruturada dos novos campos
+  if (tarefa.plano?.versao && tarefa.plano.versao >= 2) {
+    // 1. decisoes_aplicaveis
+    const dec = tarefa.plano.decisoes_aplicaveis
+    if (!dec) {
+      impedimentos.push('plano versao 2 exige "decisoes_aplicaveis" preenchido (ou justificativa explicita de ausencia)')
+    } else if (Array.isArray(dec)) {
+      if (dec.length === 0) {
+        impedimentos.push('plano versao 2 exige "decisoes_aplicaveis" com pelo menos uma decisao ou justificativa explicita de ausencia')
+      } else {
+        const algumInvalido = dec.some((d) => !d.adr || !d.adr.trim() || !d.aplicacao || !d.aplicacao.trim())
+        if (algumInvalido) {
+          impedimentos.push('itens em "decisoes_aplicaveis" exigem "adr" e "aplicacao" preenchidos')
+        }
+      }
+    } else if (typeof dec === 'object') {
+      if (!dec.motivo_ausencia || !dec.motivo_ausencia.trim()) {
+        impedimentos.push('objeto "decisoes_aplicaveis" exige "motivo_ausencia" preenchido quando nao ha diretrizes aplicaveis')
+      }
+    }
+
+    // 2. reuso
+    const reu = tarefa.plano.reuso
+    if (!reu) {
+      impedimentos.push('plano versao 2 exige secao "reuso" preenchida (existentes, novos ou motivo_sem_reuso)')
+    } else {
+      const temExistentes = Array.isArray(reu.existentes) && reu.existentes.length > 0
+      const temNovos = Array.isArray(reu.novos) && reu.novos.length > 0
+      const temMotivo = Boolean(reu.motivo_sem_reuso && reu.motivo_sem_reuso.trim())
+      if (!temExistentes && !temNovos && !temMotivo) {
+        impedimentos.push('secao "reuso" exige lista de existentes, lista de novos ou "motivo_sem_reuso"')
+      }
+      if (Array.isArray(reu.novos)) {
+        const novoInvalido = reu.novos.some((n) => !n.artefato || !n.artefato.trim() || !n.local || !n.local.trim() || !n.motivo || !n.motivo.trim())
+        if (novoInvalido) {
+          impedimentos.push('cada item em "reuso.novos" exige artefato, local e motivo preenchidos')
+        }
+      }
+    }
+
+    // 3. habilidades
+    const hab = tarefa.plano.habilidades
+    if (!hab) {
+      impedimentos.push('plano versao 2 exige secao "habilidades" preenchida (planejamento e/ou execucao)')
+    } else {
+      const temPlan = Array.isArray(hab.planejamento) && hab.planejamento.length > 0
+      const temExec = Array.isArray(hab.execucao) && hab.execucao.length > 0
+      if (!temPlan && !temExec) {
+        impedimentos.push('secao "habilidades" exige itens em planejamento ou execucao')
+      }
+      const todasHabs = [...(hab.planejamento ?? []), ...(hab.execucao ?? [])]
+      const habInvalida = todasHabs.some((h) => !h.nome || !h.nome.trim() || !h.motivo || !h.motivo.trim())
+      if (habInvalida) {
+        impedimentos.push('cada item em "habilidades" exige nome e motivo preenchidos')
+      }
+    }
+
+    // 4. avaliacao
+    const av = tarefa.plano.avaliacao
+    if (!av) {
+      impedimentos.push('plano versao 2 exige secao "avaliacao" preenchida (planejamento e/ou execucao)')
+    } else {
+      const temPlan = Boolean(av.planejamento)
+      const temExec = Boolean(av.execucao)
+      if (!temPlan && !temExec) {
+        impedimentos.push('secao "avaliacao" exige dados em planejamento ou execucao')
+      }
+      for (const [fase, dados] of Object.entries(av)) {
+        if (!dados) continue
+        if (!dados.complexidade || !dados.dimensao_dominante || !dados.justificativa || !dados.perfil_modelo || !dados.effort) {
+          impedimentos.push(`avaliacao.${fase} exige complexidade, dimensao_dominante, justificativa, perfil_modelo e effort`)
+        }
       }
     }
   }
