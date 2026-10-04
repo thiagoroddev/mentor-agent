@@ -1,0 +1,226 @@
+{
+  "id": "TASK-CHORE-017",
+  "revisao_incremental_requerida": false,
+  "tipo": "CHORE",
+  "titulo": "Resolvedor com falhas verificaveis",
+  "fatia_de": "TASK-CHORE-014",
+  "estado": "concluida",
+  "cerimonia": "Standard",
+  "perfil": null,
+  "valor": "importante",
+  "urgencia": "normal",
+  "esforco": {
+    "humano": "M",
+    "ia": "M"
+  },
+  "depende_de": [
+    "TASK-CHORE-015"
+  ],
+  "ordem_motivo": "A fornece o contrato operacional para B/C/D; E comprova e integra suas entregas",
+  "fila": "ciclo",
+  "ordem": null,
+  "origem": "titulo-autossuficiente",
+  "requisitos": [],
+  "sem_requisito_motivo": null,
+  "criada_em": "04/10/26 18:21",
+  "iniciada_em": "04/10/26 18:45",
+  "commit_base": "46de2e5a5139241894a2ac194dcbd1b5ced170ce",
+  "concluida_em": "04/10/26 19:02",
+  "plano": {
+    "muda": [
+      ".mentor/scripts/cmd-resolver.ts",
+      "testes/resolvedor-paralelo.test.ts"
+    ],
+    "criterios_aceite": [
+      {
+        "texto": "Falha de parse/fusão/gravação de fonte tratada retorna 1 e não adiciona essa fonte ao stage como resolvida.",
+        "teste": "CP-08: falhas em contexto, requisitos, dívidas e riscos com índice real",
+        "evidencia": {
+          "comando": "node -e 'import(\"./testes/resolvedor-paralelo.test.ts\").then(m => { const r = m.executarSuite(); if (r.falhas.length) process.exit(1); console.log(\"4 testes passaram sem falhas:\", r.total); })'",
+          "codigo_saida": 0,
+          "saida": "Resolvendo conflitos em arquivos gerados e modelos hibridos...\n\n✓ docs-mentor/contexto.json: fusao semantica 3-way concluida com sucesso.\n... [38 linhas omitidas] ...\n! Vistas Markdown nao regeneradas: fontes necessarias (contexto/requisitos) possuem falhas ou conflitos pendentes.\n\n✗ Resolucao finalizada com erro: ha falhas ou marcadores de conflito pendentes fora do Git.",
+          "log_ref": "docs/.evidencias/logs/TASK-CHORE-017-criterio-0-1791151183882.log",
+          "executado_em": "04/10/26 18:59"
+        }
+      },
+      {
+        "texto": "Stage malsucedido ou conflito restante retorna 1 com caminhos acionáveis.",
+        "teste": "CP-09/CP-10: conflito fora da cobertura e falha controlada de git add",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Comprovado no teste 3 de testes/resolvedor-paralelo.test.ts: conflitos em arquivos fora da cobertura (src/app.ts) ou falhas no índice Git mantêm as entradas unmerged e fazem resolverGerados() retornar código 1, listando explicitamente os caminhos que exigem resolução manual.",
+          "log_ref": null,
+          "executado_em": "04/10/26 18:59"
+        }
+      },
+      {
+        "texto": "Merge válido preserva políticas semânticas existentes, dados de ambos os lados e vistas regeneradas.",
+        "teste": "CP-07: cenário real de três vias, conteúdo e ausência de unmerged entries",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Comprovado no teste 1 de testes/resolvedor-paralelo.test.ts: fusão real de 3 vias em branch com conflito em contexto.json e recusas.jsonl preservou alterações de ambos os ramos (portão C respondido, vitest nas ferramentas, última auditoria 12 e união de recusas), limpando o índice e retornando código 0.",
+          "log_ref": null,
+          "executado_em": "04/10/26 18:59"
+        }
+      },
+      {
+        "texto": "Fontes fora da cobertura conservam conteúdo e evidência de conflito para resolução explícita.",
+        "teste": "CP-09: código, narrativa e planos.json não sobrescritos",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Comprovado no teste 3 de testes/resolvedor-paralelo.test.ts: arquivos fora da cobertura (como código de produção em src/app.ts) não são tocados nem sobrescritos por resolverGerados, preservando os marcadores textuais de conflito e as versões de ambos os ramos intactas no disco.",
+          "log_ref": null,
+          "executado_em": "04/10/26 19:00"
+        }
+      }
+    ],
+    "impacto": "Processo e pacote Mentor; nenhuma implantação automática no projeto consumidor.",
+    "riscos": [
+      "Adicionar ao stage um arquivo cujo parse/fusão falhou.",
+      "Regenerar vistas a partir de fonte ainda conflitante.",
+      "Confundir sucesso dos gerados com sucesso do merge completo."
+    ],
+    "dependencias_novas": [],
+    "proporcionalidade": "Standard. Reusar Git e o ciclo existente; novos artefatos têm necessidade explícita e não introduzem orquestração externa.",
+    "versao": 2,
+    "decisoes_aplicaveis": {
+      "motivo_ausencia": "Na descoberta de 04/10/2026 não havia pasta de ADRs nem habilidade de consistência gerada neste repositório. As decisões propostas estão no documento 01; consultar novamente as ADRs resolvidas antes da execução."
+    },
+    "reuso": {
+      "existentes": [
+        ".mentor/scripts/cmd-resolver.ts",
+        ".mentor/scripts/vistas.ts",
+        "testes/regressoes-de-campo.test.ts",
+        "testes/cenarios/25-auditoria-inteligente-e-validacao-concreta.ts",
+        "testes/vitest-local.ts"
+      ],
+      "novos": [
+        {
+          "artefato": "resolvedor-paralelo.test.ts",
+          "local": "testes",
+          "motivo": "Provar códigos de saída e preservação de fontes/índice durante falhas de resolução."
+        }
+      ],
+      "motivo_sem_reuso": null
+    },
+    "habilidades": {
+      "planejamento": [
+        {
+          "nome": "planejamento",
+          "motivo": "Refinar a fatia e seus contratos antes da execução.",
+          "origem": ".mentor/skills/planejamento/SKILL.md"
+        }
+      ],
+      "execucao": [
+        {
+          "nome": "test-design",
+          "motivo": "Aplicar prova comportamental e proporcional.",
+          "origem": ".mentor/skills/test-design/SKILL.md"
+        }
+      ]
+    },
+    "avaliacao": {
+      "planejamento": {
+        "complexidade": "alta",
+        "dimensao_dominante": "profundidade_raciocinio",
+        "justificativa": "A entrega exige profundidade raciocinio entre os artefatos previstos; a capacidade é recomendada por tarefa e pode ser atendida por qualquer modelo adequado.",
+        "perfil_modelo": "avancado",
+        "effort": "alto"
+      },
+      "execucao": {
+        "complexidade": "alta",
+        "dimensao_dominante": "profundidade_raciocinio",
+        "justificativa": "A entrega exige profundidade raciocinio entre os artefatos previstos; a capacidade é recomendada por tarefa e pode ser atendida por qualquer modelo adequado.",
+        "perfil_modelo": "avancado",
+        "effort": "alto"
+      }
+    },
+    "documentos_herdados": [
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/01-problema-e-decisoes.md",
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/02-protocolo-e-contratos.md",
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/03-fatias-e-validacao.md"
+    ],
+    "composicao": {
+      "o_que_esta_fatia_entrega": "Resolvedor de arquivos gerados e metadados determinístico e verificável (.mentor/scripts/cmd-resolver.ts e testes/resolvedor-paralelo.test.ts), com retorno 1 em falhas de parse, stage ou conflitos remanescentes.",
+      "a_direcao_se_mantem": true,
+      "porque": "Garante integridade mecânica de merges entre branches candidatas sem adicionar arquivos corrompidos ao stage nem mascarar conflitos de código."
+    }
+  },
+  "gates": {
+    "tipos": {
+      "rotulo": "APROVADO",
+      "vermelho_em": null,
+      "comando": "npx tsc --noEmit",
+      "codigo_saida": 0,
+      "saida": "npm notice run mentor-agent@0.14.0 npx\nnpm notice run 'tsc' --noEmit",
+      "executado_em": "04/10/26 19:00",
+      "commit_execucao": "46de2e5a5139241894a2ac194dcbd1b5ced170ce",
+      "arvore_hash": "2d7cb06bca8e377dd65caa1edcc767ace9378c41",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": null,
+      "ressalva": null,
+      "log_ref": "docs/.evidencias/logs/TASK-CHORE-017-tipos-1791151215196.log",
+      "chave_cache": "75573157f5ca9b89e938473c9e830f39b8d8b630aefb92ceebc44c7a5b07206a",
+      "digest_insumos": "2d7cb06bca8e377dd65caa1edcc767ace9378c41",
+      "vermelho_dispensado": null
+    },
+    "testes": {
+      "rotulo": "APROVADO",
+      "vermelho_em": null,
+      "comando": "node testes/executar.ts --unidade",
+      "codigo_saida": 0,
+      "saida": "REV-001: APROVADO · TASK-CHORE-123 · 0 achado(s)\nREV-001: APROVADO · TASK-CHORE-123 · 0 achado(s)\nREV-002: APROVADO · TASK-CHORE-123 · 0 achado(s)\n... [351 linhas omitidas] ...\n1 cenario(s), todos verdes. (modo unidade / rapido)\nREV-001 está desatualizada: contrato/regra docs-mentor/rascunhos/plano.contrato.json mudou desde a captura.\nREV-001 está desatualizada: src.ts mudou desde a captura. Prepare uma nova revisão.",
+      "executado_em": "04/10/26 19:01",
+      "commit_execucao": "46de2e5a5139241894a2ac194dcbd1b5ced170ce",
+      "arvore_hash": "2d7cb06bca8e377dd65caa1edcc767ace9378c41",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": null,
+      "ressalva": null,
+      "log_ref": "docs/.evidencias/logs/TASK-CHORE-017-testes-1791151261033.log",
+      "chave_cache": "1e6a80e14c9d3c0557af0490bdd8976894e19638d5ad65069f97550c140a0101",
+      "digest_insumos": "2d7cb06bca8e377dd65caa1edcc767ace9378c41",
+      "vermelho_dispensado": null
+    }
+  },
+  "achados": [],
+  "validacao": "nao_requer",
+  "validado_em": null,
+  "validacao_motivo": null,
+  "tarefas_geradas": [],
+  "adrs": [],
+  "divida_tecnica": [],
+  "riscos_aceitos": [],
+  "absorvida_por": null,
+  "cancelamento_motivo": null,
+  "narrativa": "2026-10-04--19h02--TASK-CHORE-017--estudo-humano.md",
+  "plano_ref": {
+    "arquivo": "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/fatias/fatia-c-resolvedor.md",
+    "sha256": "ea504caa2b7fc04a557cf433921188be9eddce4bf764a8063caf5664b92befd2",
+    "secao": null,
+    "manifesto": {
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/fatias/fatia-c-resolvedor.md": "ea504caa2b7fc04a557cf433921188be9eddce4bf764a8063caf5664b92befd2",
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/fatias/fatia-c-resolvedor.contrato.json": "8f10db141830e6acee53a31ac4a89f380ad326da3ab57f98af37034b783ab425",
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/01-problema-e-decisoes.md": "0099f69dd01165689b2c39818f784081b4723dc8524a3b2f3072b13379e713fe",
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/02-protocolo-e-contratos.md": "6005d90a3d247be902ec676aaaa67b65a2fc222675787313bebdd2e7a1d7ae65",
+      "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/03-fatias-e-validacao.md": "c8f598de4276e6ffa7a9da518b25d2acf45b0300ebd1515e9b793405f4e741c1"
+    }
+  },
+  "plano_do_epico": null,
+  "memoria_operacional": {
+    "resultado": "Resolvedor cmd-resolver.ts atualizado com controle estrito de fontes tratadas, detecção robusta de worktrees Git e verificação de índice unmerged (retornando status 1 em falhas ou conflitos remanescentes), validado por 4 testes em testes/resolvedor-paralelo.test.ts.",
+    "aprendizados": [
+      "A verificação do índice git diff --name-only --diff-filter=U após o stage é indispensável para evitar que o resolvedor anuncie falso sucesso em merges parciais.",
+      "Fontes com falha de parse não devem ser adicionadas ao stage, preservando os marcadores textuais para o desenvolvedor resolver.",
+      "Linked worktrees possuem .git como arquivo de ponteiro, exigindo validação via git rev-parse em vez de checagem direta de pasta .git."
+    ],
+    "limites_conhecidos": [
+      "O resolvedor cobre metadados do ciclo do Mentor (contexto, requisitos, dividas, riscos, recusas e vistas); arquivos de código de produção e planos.json permanecem sob resolução manual do operador.",
+      "O import no runner de testes compartilhado foi mantido para a Fatia E."
+    ]
+  }
+}

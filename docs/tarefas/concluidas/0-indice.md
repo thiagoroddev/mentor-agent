@@ -19,3 +19,4 @@
 | 04/10/26 16:20 | [`TASK-CHORE-013`](./2026-10-04--16h20--TASK-CHORE-013--estudo-humano.md) | CHORE | Habilidades de UI-Design, Test-Design e Caracterização (Fatia H) | - | concluida | dispensado |
 | 04/10/26 18:33 | [`TASK-CHORE-015`](./2026-10-04--18h33--TASK-CHORE-015--estudo-humano.md) | CHORE | Protocolo e atribuicao por slots | 1/5 de TASK-CHORE-014 | concluida | nao_requer |
 | 04/10/26 18:43 | [`TASK-CHORE-016`](./2026-10-04--18h43--TASK-CHORE-016--estudo-humano.md) | CHORE | Diagnostico de tarefas nas worktrees | 2/5 de TASK-CHORE-014 | concluida | nao_requer |
+| 04/10/26 19:02 | [`TASK-CHORE-017`](./2026-10-04--19h02--TASK-CHORE-017--estudo-humano.md) | CHORE | Resolvedor com falhas verificaveis | 3/5 de TASK-CHORE-014 | concluida | nao_requer |
