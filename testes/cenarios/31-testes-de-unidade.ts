@@ -9,6 +9,7 @@ import '../narrativa-e-memoria.test.ts'
 import '../compacidade-de-evidencias.test.ts'
 import '../heranca-hashes-e-revisao.test.ts'
 import '../plano-status.test.ts'
+import '../planejamento-skill-e-processo.test.ts'
 import { executarSuites } from '../vitest-local.ts'
 import type { Cenario } from '../apoio.ts'
 

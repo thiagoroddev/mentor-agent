@@ -15,3 +15,4 @@
 | 04/10/26 14:33 | [`TASK-CHORE-009`](./2026-10-04--14h33--TASK-CHORE-009--estudo-humano.md) | CHORE | Compacidade de evidencias no JSON e adaptacao de consumidores | - | concluida | dispensado |
 | 04/10/26 14:58 | [`TASK-CHORE-010`](./2026-10-04--14h58--TASK-CHORE-010--estudo-humano.md) | CHORE | Herança, hashes e revisão incremental (Fatia E) | - | concluida | dispensado |
 | 04/10/26 15:45 | [`TASK-CHORE-011`](./2026-10-04--15h45--TASK-CHORE-011--estudo-humano.md) | CHORE | Consulta derivada de status de planos sem auto-invalidação (Fatia G) | - | concluida | dispensado |
+| 04/10/26 15:57 | [`TASK-CHORE-012`](./2026-10-04--15h57--TASK-CHORE-012--estudo-humano.md) | CHORE | Instruções do núcleo e habilidade de planejamento (Fatia F) | - | concluida | dispensado |

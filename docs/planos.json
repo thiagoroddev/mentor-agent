@@ -87,5 +87,13 @@
     "sha256": "d0f2a47051947f2b4311ce27205d7e8bd8f96ca1f6093d1099a509362663592b",
     "secao": null,
     "registrado_em": "04/10/26"
+  },
+  {
+    "id": "PLAN-fatia-f-habilidade-planejament",
+    "titulo": "Fatia F: Instruções do núcleo, habilidade de planejamento e processos",
+    "arquivo": "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/fatias/fatia-f-habilidade-planejamento.md",
+    "sha256": "25d52049126cf748f92afe0cecb0e210eb2a5a7917c7907bd6ef63c948243f3c",
+    "secao": null,
+    "registrado_em": "04/10/26"
   }
 ]

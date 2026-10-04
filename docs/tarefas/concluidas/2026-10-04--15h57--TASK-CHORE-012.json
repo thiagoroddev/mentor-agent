@@ -1,0 +1,251 @@
+{
+  "id": "TASK-CHORE-012",
+  "revisao_incremental_requerida": false,
+  "tipo": "CHORE",
+  "titulo": "Instruções do núcleo e habilidade de planejamento (Fatia F)",
+  "fatia_de": null,
+  "estado": "concluida",
+  "cerimonia": "Standard",
+  "perfil": null,
+  "valor": "importante",
+  "urgencia": "normal",
+  "esforco": {
+    "humano": "P",
+    "ia": "M"
+  },
+  "depende_de": [],
+  "ordem_motivo": null,
+  "fila": "ciclo",
+  "ordem": null,
+  "origem": "titulo-autossuficiente",
+  "requisitos": [],
+  "sem_requisito_motivo": null,
+  "criada_em": "04/10/26 15:49",
+  "iniciada_em": "04/10/26 15:49",
+  "commit_base": "9673b1db88b0dc8cb82e261b9303191dcbac55b3",
+  "concluida_em": "04/10/26 15:57",
+  "plano": {
+    "muda": [
+      ".mentor/skills/planejamento/SKILL.md",
+      ".mentor/processos/planejamento.md",
+      ".mentor/nucleo.md",
+      ".mentor/processos/tarefa.md",
+      ".mentor/processos/rascunho.md",
+      "CHANGELOG.md",
+      "testes/planejamento-skill-e-processo.test.ts",
+      "testes/cenarios/31-testes-de-unidade.ts"
+    ],
+    "criterios_aceite": [
+      {
+        "texto": ".mentor/skills/planejamento/SKILL.md criado com frontmatter valido e instrucoes canonicas de descoberta, consistencia, reuso, habilidades, avaliacao e fatiamento",
+        "teste": "npx tsx testes/cenarios/31-testes-de-unidade.ts",
+        "evidencia": {
+          "comando": "test -f .mentor/skills/planejamento/SKILL.md && echo ok",
+          "codigo_saida": 0,
+          "saida": "ok",
+          "log_ref": "docs/.evidencias/logs/TASK-CHORE-012-criterio-0-1791140096408.log",
+          "executado_em": "04/10/26 15:54"
+        }
+      },
+      {
+        "texto": ".mentor/processos/planejamento.md criado com os 2 niveis de planejamento, rolling wave, 5 eixos de classificacao e regras de replanejamento",
+        "teste": "npx tsx testes/cenarios/31-testes-de-unidade.ts",
+        "evidencia": {
+          "comando": "test -f .mentor/processos/planejamento.md && echo ok",
+          "codigo_saida": 0,
+          "saida": "ok",
+          "log_ref": "docs/.evidencias/logs/TASK-CHORE-012-criterio-1-1791140101530.log",
+          "executado_em": "04/10/26 15:55"
+        }
+      },
+      {
+        "texto": ".mentor/nucleo.md (secoes 4 e 9) atualizado com a ordem explicita de carregamento de planejamento e processos/planejamento.md",
+        "teste": "npx tsx testes/cenarios/31-testes-de-unidade.ts",
+        "evidencia": {
+          "comando": "grep -E 'planejamento' .mentor/nucleo.md",
+          "codigo_saida": 0,
+          "saida": "usando?* Discorde no planejamento (Portão 1), com clareza e custo estimado, e então execute a decisão\nO planejamento segue o processo em ondas de `processos/planejamento.md` e a skill `planejamento`. O plano declara: o que muda, arquivo por arquivo · critérios de aceite · impacto · riscos · dependências novas · **proporcionalidade** · **decisões aplicáveis** (ADRs) · **reuso** · **habilidades de execução** · **avaliação** (planejamento e execução: complexidade em 4 dimensões, perfil e effort).\n| Ideia nova, planejamento inicial, anotar melhoria | `processos/rascunho.md` |\n| Planejamento prévio, individual ou replanejamento | a skill `planejamento` e `processos/planejamento.md` |\n**Carregamento de planejamento:** em qualquer planejamento prévio (rascunho de épico), planejamento individual (tarefa avulsa ou fatia) ou replanejamento, carregue obrigatoriamente a skill `planejamento` e `processos/planejamento.md`, independentemente de seleção heurística do modelo.",
+          "log_ref": "docs/.evidencias/logs/TASK-CHORE-012-criterio-2-1791140107429.log",
+          "executado_em": "04/10/26 15:55"
+        }
+      },
+      {
+        "texto": ".mentor/processos/tarefa.md e rascunho.md atualizados referenciando o processo de planejamento",
+        "teste": "npx tsx testes/cenarios/31-testes-de-unidade.ts",
+        "evidencia": {
+          "comando": "grep -E 'planejamento' .mentor/processos/tarefa.md .mentor/processos/rascunho.md",
+          "codigo_saida": 0,
+          "saida": ".mentor/processos/tarefa.md:O `mentor-agent` recusa planos que constroem do zero sem pesquisar o estado da arte ou sem exercer o dever de contrariar. Todo o planejamento individual segue a metodologia em ondas de **`processos/planejamento.md`** e a skill **`planejamento`**.\n.mentor/processos/tarefa.md:Para evitar desperdício de tokens com reescrita ou perda de profundidade técnica por resumos artificiais, o plano de implementação técnico detalhado gerado na sessão de planejamento (`implementatio\n... [omitido por tamanho] ...\nocessos/rascunho.md:carrega_quando: ideia nova, planejamento inicial, ou anotar melhoria\n.mentor/processos/rascunho.md:Iniciativas maiores, épicos ou desenhos de arquitetura que exigem planejamento prévio vivem organizados sob `docs-mentor/rascunhos/planejamentos/` (ou `docs/rascunhos/planejamentos/`), seguindo a metodologia em ondas de **`processos/planejamento.md`** e a skill **`planejamento`**.",
+          "log_ref": "docs/.evidencias/logs/TASK-CHORE-012-criterio-3-1791140113849.log",
+          "executado_em": "04/10/26 15:55"
+        }
+      },
+      {
+        "texto": "Suite de testes unitarios testes/planejamento-skill-e-processo.test.ts registrada em 31-testes-de-unidade.ts passando com 100% de sucesso",
+        "teste": "npx tsx testes/cenarios/31-testes-de-unidade.ts",
+        "evidencia": {
+          "comando": "npx tsx testes/executar.ts --unidade",
+          "codigo_saida": 0,
+          "saida": "REV-001: APROVADO · TASK-CHORE-123 · 0 achado(s)\nREV-001: APROVADO · TASK-CHORE-123 · 0 achado(s)\nREV-002: APROVADO · TASK-CHORE-123 · 0 achado(s)\n... [243 linhas omitidas] ...\nnpm notice run 'tsx' testes/executar.ts --unidade\nREV-001 está desatualizada: contrato/regra docs-mentor/rascunhos/plano.contrato.json mudou desde a captura.\nREV-001 está desatualizada: src.ts mudou desde a captura. Prepare uma nova revisão.",
+          "log_ref": "docs/.evidencias/logs/TASK-CHORE-012-criterio-4-1791140176083.log",
+          "executado_em": "04/10/26 15:56"
+        }
+      }
+    ],
+    "impacto": "local",
+    "riscos": [
+      "Divergência entre instruções no nucleo.md e o AGENTS.md gerado, mitigada por node mentor.mjs gerar e mentor verificar"
+    ],
+    "dependencias_novas": [],
+    "proporcionalidade": "Standard",
+    "versao": 2,
+    "decisoes_aplicaveis": {
+      "motivo_ausencia": "Repositório do pacote Mentor atualmente sem pasta de ADRs em docs/arquitetura/ADR; diretrizes operacionais em definição neste épico."
+    },
+    "reuso": {
+      "existentes": [
+        ".mentor/nucleo.md",
+        ".mentor/processos/tarefa.md",
+        ".mentor/processos/rascunho.md"
+      ],
+      "novos": [
+        {
+          "artefato": "SKILL.md",
+          "local": ".mentor/skills/planejamento/",
+          "motivo": "Habilidade canônica de planejamento do mentor-agent"
+        },
+        {
+          "artefato": "planejamento.md",
+          "local": ".mentor/processos/",
+          "motivo": "Processo detalhado de planejamento em ondas e classificação"
+        },
+        {
+          "artefato": "planejamento-skill-e-processo.test.ts",
+          "local": "testes/",
+          "motivo": "Suíte de testes da habilidade, processo e instruções de planejamento"
+        }
+      ],
+      "motivo_sem_reuso": null
+    },
+    "habilidades": {
+      "planejamento": [
+        {
+          "nome": "planejamento",
+          "motivo": "Definição formal das instruções e processos de planejamento",
+          "origem": "processo-mentor"
+        }
+      ],
+      "execucao": [
+        {
+          "nome": "execucao",
+          "motivo": "Criação de arquivos de instrução, atualização do núcleo e testes",
+          "origem": "processo-mentor"
+        }
+      ]
+    },
+    "avaliacao": {
+      "planejamento": {
+        "complexidade": "media",
+        "dimensao_dominante": "acoplamento",
+        "justificativa": "Alinhamento normativo entre núcleo, processos, skills e documentação",
+        "perfil_modelo": "geral",
+        "effort": "medio"
+      },
+      "execucao": {
+        "complexidade": "media",
+        "dimensao_dominante": "acoplamento",
+        "justificativa": "Criação da habilidade, processo e sincronização com gerador e verificar",
+        "perfil_modelo": "geral",
+        "effort": "medio"
+      }
+    },
+    "documentos_herdados": [
+      "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/01-direcao-e-processo.md",
+      "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/02-consistencia-e-contratos.md"
+    ]
+  },
+  "gates": {
+    "tipos": {
+      "rotulo": "APROVADO",
+      "vermelho_em": null,
+      "comando": "npx tsc --noEmit",
+      "codigo_saida": 0,
+      "saida": "npm notice run mentor-agent@0.14.0 npx\nnpm notice run 'tsc' --noEmit",
+      "executado_em": "04/10/26 15:56",
+      "commit_execucao": "9673b1db88b0dc8cb82e261b9303191dcbac55b3",
+      "arvore_hash": "c2cde21656a5a0e0db8c4b3f9cca4ede68d5e4bf",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": null,
+      "ressalva": null,
+      "log_ref": "docs/.evidencias/logs/TASK-CHORE-012-tipos-1791140188873.log",
+      "chave_cache": "eb7f5a3f4a85528c269dcb7aa78573979c172a54eac79e02e5943327433ce4f5",
+      "digest_insumos": "c2cde21656a5a0e0db8c4b3f9cca4ede68d5e4bf",
+      "vermelho_dispensado": null
+    },
+    "testes": {
+      "rotulo": "APROVADO",
+      "vermelho_em": null,
+      "comando": "node testes/executar.ts --unidade",
+      "codigo_saida": 0,
+      "saida": "REV-001: APROVADO · TASK-CHORE-123 · 0 achado(s)\nREV-001: APROVADO · TASK-CHORE-123 · 0 achado(s)\nREV-002: APROVADO · TASK-CHORE-123 · 0 achado(s)\n... [241 linhas omitidas] ...\n1 cenario(s), todos verdes. (modo unidade / rapido)\nREV-001 está desatualizada: contrato/regra docs-mentor/rascunhos/plano.contrato.json mudou desde a captura.\nREV-001 está desatualizada: src.ts mudou desde a captura. Prepare uma nova revisão.",
+      "executado_em": "04/10/26 15:57",
+      "commit_execucao": "9673b1db88b0dc8cb82e261b9303191dcbac55b3",
+      "arvore_hash": "c2cde21656a5a0e0db8c4b3f9cca4ede68d5e4bf",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": null,
+      "ressalva": null,
+      "log_ref": "docs/.evidencias/logs/TASK-CHORE-012-testes-1791140230529.log",
+      "chave_cache": "82fee02ae1786e275d7e21a287fee4f0e12a49a9911cb6678026061d3fdc193d",
+      "digest_insumos": "c2cde21656a5a0e0db8c4b3f9cca4ede68d5e4bf",
+      "vermelho_dispensado": null
+    },
+    "validacao_manual": {
+      "rotulo": "não se aplica",
+      "comando": null,
+      "codigo_saida": null,
+      "saida": null,
+      "executado_em": "04/10/26 15:57",
+      "commit_execucao": "9673b1db88b0dc8cb82e261b9303191dcbac55b3",
+      "arvore_hash": "c2cde21656a5a0e0db8c4b3f9cca4ede68d5e4bf",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": "dispensada na finalizacao",
+      "ressalva": null,
+      "vermelho_em": null
+    }
+  },
+  "achados": [],
+  "validacao": "dispensado",
+  "validado_em": "04/10/26 15:57",
+  "validacao_motivo": "dispensada na finalizacao",
+  "tarefas_geradas": [],
+  "adrs": [],
+  "divida_tecnica": [],
+  "riscos_aceitos": [],
+  "absorvida_por": null,
+  "cancelamento_motivo": null,
+  "narrativa": "2026-10-04--15h57--TASK-CHORE-012--estudo-humano.md",
+  "plano_ref": {
+    "arquivo": "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/fatias/fatia-f-habilidade-planejamento.md",
+    "sha256": "25d52049126cf748f92afe0cecb0e210eb2a5a7917c7907bd6ef63c948243f3c",
+    "secao": null,
+    "manifesto": {
+      "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/fatias/fatia-f-habilidade-planejamento.md": "25d52049126cf748f92afe0cecb0e210eb2a5a7917c7907bd6ef63c948243f3c",
+      "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/fatias/fatia-f-habilidade-planejamento.contrato.json": "d51680852bb721f8155f5f162de56e264d2eddb30b5cb15934df737e43a4a3f0",
+      "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/01-direcao-e-processo.md": "cb83d26f34e598044018d9927d292d02054aeecd927e72b7fee37597cef54a8c",
+      "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/02-consistencia-e-contratos.md": "cecfa462dbb0c076eac7a83e70ecac807f3c0c15996c7562d038049d67e731ce"
+    }
+  },
+  "memoria_operacional": {
+    "resultado": "Habilidade de planejamento (.mentor/skills/planejamento/SKILL.md), processo metodológico (.mentor/processos/planejamento.md) e instruções normativas no núcleo (nucleo.md §§ 4 e 9), tarefa.md e rascunho.md criados e validados com testes unitários e gates verdes.",
+    "aprendizados": [
+      "O carregamento explícito da habilidade de planejamento no núcleo (§ 9) garante que o modelo consulte contexto, consistência (ADRs) e padrões de stack antes de iniciar a elaboração de soluções.",
+      "A distinção entre os 2 níveis (planejamento prévio para épicos/iniciativas e planejamento individual para tarefas no ciclo) simplifica o fluxo e evita formalismo desnecessário em correções pontuais."
+    ],
+    "limites_conhecidos": [
+      "O CLI confere a presença e conformidade dos arquivos de processo e habilidades, cabendo ao modelo ler e exercer as diretrizes durante o ciclo de planejamento."
+    ]
+  }
+}

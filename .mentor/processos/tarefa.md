@@ -70,11 +70,11 @@ consideradas" de design doc, RFC e MADR. O `finalizar` recusa sugestão sem as d
 ## Plano e Mérito Técnico (Portão 1)
 
 O plano não é apenas um formulário de procedimento: ele é a **defesa de mérito técnico** da tarefa.
-O `mentor-agent` recusa planos que constroem do zero sem pesquisar o estado da arte ou sem exercer o dever de contrariar.
+O `mentor-agent` recusa planos que constroem do zero sem pesquisar o estado da arte ou sem exercer o dever de contrariar. Todo o planejamento individual segue a metodologia em ondas de **`processos/planejamento.md`** e a skill **`planejamento`**.
 
 **Mérito técnico proporcional ao risco (V5):** em correções localizadas com causa e solução demonstradas, utilize o perfil **Standard compacto** (`--cerimonia Standard --perfil compacto` ou `--compacto`). Este perfil preserva critérios verificáveis, regressões e rastreabilidade, mas dispensa ensaio teatral de alternativas ou preenchimento artificial de discordância. Decisões arquiteturais, novos motores ou mudanças estruturais continuam exigindo análise comparativa completa de alternativas e mérito.
 
-**Planejamento portátil:** quando houver plano prévio aprovado ou importado (`mentor plano registrar` / `mentor plano importar`), vincule com `mentor task vincular-plano <ID> <PLANO-ID>` para reutilizar critérios e referências sem duplicar a narrativa.
+**Planejamento portátil e status derivado:** quando houver plano prévio aprovado ou importado (`mentor plano registrar` / `mentor plano importar`), vincule com `mentor task vincular-plano <ID> [<PLANO-ID> | --arquivo <path>]` para reutilizar critérios, contratos e referências sem duplicar a narrativa. Consulte o status derivado e integridade de revisão a qualquer momento com `mentor plano status`.
 
 ### Preservação Integral do Plano Técnico (implementation_plan na Narrativa)
 

@@ -77,15 +77,14 @@ uma mudança lógica, revertível sozinha, que deixa o gate verde.
 
 `ENTENDER → PLANEJAR → APROVAR → EXECUTAR → REGISTRAR`
 
-O plano declara: o que muda, arquivo por arquivo · critérios de aceite · impacto · riscos ·
-dependências novas · **proporcionalidade**.
+O planejamento segue o processo em ondas de `processos/planejamento.md` e a skill `planejamento`. O plano declara: o que muda, arquivo por arquivo · critérios de aceite · impacto · riscos · dependências novas · **proporcionalidade** · **decisões aplicáveis** (ADRs) · **reuso** · **habilidades de execução** · **avaliação** (planejamento e execução: complexidade em 4 dimensões, perfil e effort).
 
 **A linha de proporcionalidade é obrigatória sempre que o plano cria artefato novo** (checagem,
 módulo, template, script, tarefa, dependência): *pediram X, proponho Y, e Y é do tamanho de X
 porque…*. Declarar não proíbe crescer. Impede o crescimento **silencioso**, que é o único tipo que
 ninguém tem chance de recusar.
 
-Se descobrir algo que exija mudar o plano, volte a PLANEJAR. Nunca execute sem aprovação explícita. Ao concluir a execução, a memória de engenharia é registrada na seção `## Desfecho` da narrativa antes da finalização.
+Se descobrir algo que exija mudar o plano, volte a PLANEJAR (diferenças materiais exigem nova aprovação). Nunca execute sem aprovação explícita. Ao concluir a execução, a memória operacional estruturada é registrada na seção `## Desfecho` da narrativa antes da finalização.
 
 ## 5 · Cerimônia
 
@@ -166,7 +165,10 @@ prós e contras, recomende uma, e espere.
 | Publicar, mexer em ramo, esteira ou reversão | `processos/entrega.md` |
 | Revisar código ou mudança, em qualquer forma (revisar, review, `/review`, `/code-review`) | `processos/revisao.md` e o guia de cada área tocada (tabela no processo). A revisão nativa da ferramenta não substitui |
 | Diagramas, UI, API, CI, testes ou dados | a skill pelo nome: as ferramentas leem as cópias em `.agents/skills/` e `.claude/skills/`; a fonte é `.mentor/skills/` ou `docs-mentor/skills/` |
+| Planejamento prévio, individual ou replanejamento | a skill `planejamento` e `processos/planejamento.md` |
 | Campo `null` no contexto | o arquivo que o portão nomeia, por `guia/00-indice.md` |
+
+**Carregamento de planejamento:** em qualquer planejamento prévio (rascunho de épico), planejamento individual (tarefa avulsa ou fatia) ou replanejamento, carregue obrigatoriamente a skill `planejamento` e `processos/planejamento.md`, independentemente de seleção heurística do modelo.
 
 **Nunca por padrão:** `docs-mentor/tarefas/concluidas/*--estudo-humano.md`. É estudo humano; para
 histórico e contexto bastam o `.json` da tarefa e os comandos do mentor. Só a pedido, para investigar

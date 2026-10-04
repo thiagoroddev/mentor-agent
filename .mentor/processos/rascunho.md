@@ -33,6 +33,12 @@ Projeto novo tem muito rascunho, e isso é o estado saudável. Requisito que nas
 ⚠️ **Rascunho parado é pauta, não patrimônio.** O `doctor` conta os que passaram de 60 dias sem
 destino. A resposta certa costuma ser descartar com uma linha.
 
+## Planejamentos prévios e épicos
+
+Iniciativas maiores, épicos ou desenhos de arquitetura que exigem planejamento prévio vivem organizados sob `docs-mentor/rascunhos/planejamentos/` (ou `docs/rascunhos/planejamentos/`), seguindo a metodologia em ondas de **`processos/planejamento.md`** e a skill **`planejamento`**.
+
+Planejamentos registrados via `mentor plano registrar` podem ser inspecionados sem auto-invalidação documental através de `mentor plano status`. Conforme o épico avança, as fatias autorizadas são puxadas para execução como tarefas individuais vinculadas (`mentor task vincular-plano`).
+
 ## Fase inicial: o que rascunho cobre antes de existir requisito
 
 Quando `contexto.estado.fase` é `ideia` ou `descoberta`, o rascunho é o lugar de:

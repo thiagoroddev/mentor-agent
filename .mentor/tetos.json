@@ -32,6 +32,11 @@
       "caminho": ".mentor/processos/teste.md",
       "teto": 6500,
       "motivo": "Documenta a piramide de testes e os dois niveis de automacao: Nivel 1 (Unidade / ciclo de tarefa rapido) e Nivel 2 (Integracao / E2E / pre-push / epico)."
+    },
+    {
+      "caminho": ".mentor/processos/planejamento.md",
+      "teto": 11000,
+      "motivo": "Documenta a metodologia de planejamento em ondas, dois niveis (previo e individual), 5 eixos de classificacao, 4 dimensoes de complexidade, preservacao integral do estudo humano com memoria operacional e regras de replanejamento com diferencas materiais."
     }
   ],
   "regras": [

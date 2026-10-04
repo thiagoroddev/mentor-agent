@@ -7,6 +7,12 @@ O formato baseia-se em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0
 ## [Não publicado]
 
 ### Adicionado
+- **Instruções do núcleo e habilidade de planejamento (Fatia F)**:
+  - Habilidade canônica `.mentor/skills/planejamento/SKILL.md` orientando a descoberta obrigatória de contexto, consulta de decisões e diretrizes de ADRs (`consistencia-do-projeto`), inventário de reuso, seleção de habilidades de execução, avaliação multidimensional e fatiamento em ondas.
+  - Processo metodológico formal `.mentor/processos/planejamento.md` cobrindo o método comum de planejamento em dois níveis (planejamento prévio e individual), ciclo em ondas (*rolling wave planning*), 4 dimensões de complexidade (incerteza, profundidade de raciocínio, acoplamento, validação discriminatória), 5 eixos de classificação/calibração de modelo e effort, preservação integral do estudo humano com memória operacional e regras de replanejamento com diferenças materiais.
+  - Atualização de `.mentor/nucleo.md` (§§ 4 e 9) ordenando o carregamento obrigatório da habilidade `planejamento` e de `processos/planejamento.md` em planejamento prévio, individual e replanejamento, antes e independentemente de heurísticas do modelo.
+  - Atualização dos processos `.mentor/processos/tarefa.md` e `.mentor/processos/rascunho.md` com referências cruzadas à habilidade e processo de planejamento.
+  - Suíte de testes unitários dedicada em `testes/planejamento-skill-e-processo.test.ts`.
 - **Consulta derivada de status de planos sem auto-invalidação (Fatia G)**:
   - Novo comando `mentor plano status [<PLANO-ID>] [--json]` para consulta derivada somente-leitura de planos registrados em `docs-mentor/planos.json` (ou `docs/planos.json`).
   - Diagnóstico e integridade de revisão: compara hash SHA-256 vigente contra o hash atual no disco (suportando arquivos isolados e pastas com `README.md`), apontando revisão válida, divergência de revisão ou arquivo ausente.

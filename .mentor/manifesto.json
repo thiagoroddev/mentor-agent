@@ -1,6 +1,6 @@
 {
   "versao": "0.14.0",
-  "gerado_em": "2026-10-04T18:45:18.195Z",
+  "gerado_em": "2026-10-04T18:57:45.773Z",
   "arquivos": {
     "esquemas/contexto.json": "6a08c3b851d076cd",
     "esquemas/diretrizes-adr.json": "b2eac0e1d50d2250",
@@ -28,16 +28,17 @@
     "modelos/fichas.md": "92cdc7020d33fcc1",
     "modelos/listas-por-fase.md": "57377dc4538acc80",
     "modelos/varredura.md": "f3016bd789b30a83",
-    "nucleo.md": "075a32f2f207e1ff",
+    "nucleo.md": "ea94420e78322135",
     "package.json": "1c9a0949072c4ea1",
     "processos/analise-de-impacto.md": "916102ee6f91a658",
     "processos/entrega.md": "cfb36705e50e390d",
     "processos/inicializacao.md": "0a8420eb56229090",
     "processos/laboratorio.md": "04f7cf37466f6e81",
     "processos/padroes-de-stack.md": "7d7df1b15ba7de44",
-    "processos/rascunho.md": "1367f59f2659cf40",
+    "processos/planejamento.md": "0f585ebfdf01952c",
+    "processos/rascunho.md": "eaa0fd662eff54e6",
     "processos/revisao.md": "6c8d11bbcd9d336a",
-    "processos/tarefa.md": "7aab80eedf7bfafb",
+    "processos/tarefa.md": "daf54d4ef0da7744",
     "processos/teste.md": "edef2857878f6bbb",
     "regras.json": "5f5ddff0c236ed68",
     "scripts/adrs.ts": "070acdbb4d2df352",
@@ -84,10 +85,11 @@
     "skills/data-modeling/SKILL.md": "346a6a6afd3be72d",
     "skills/github-ci/SKILL.md": "6100f6a30e96631b",
     "skills/mermaid/SKILL.md": "cf7a4a723b7129f1",
+    "skills/planejamento/SKILL.md": "cf81856f7ce9ff9e",
     "skills/revisao/SKILL.md": "4be36781b907d3a9",
     "skills/spike-e-investigacao/SKILL.md": "5ab362eee5800a83",
     "skills/test-design/SKILL.md": "9ca68015c0b23c2e",
     "skills/ui-design/SKILL.md": "58eed0c8f16f9911",
-    "tetos.json": "6e6c3b18aff615f9"
+    "tetos.json": "db1ad5357bc1cacf"
   }
 }

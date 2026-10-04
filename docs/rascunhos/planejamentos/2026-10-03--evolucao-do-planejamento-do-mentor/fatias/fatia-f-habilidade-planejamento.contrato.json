@@ -1,0 +1,110 @@
+{
+  "versao": 2,
+  "muda": [
+    ".mentor/skills/planejamento/SKILL.md",
+    ".mentor/processos/planejamento.md",
+    ".mentor/nucleo.md",
+    ".mentor/processos/tarefa.md",
+    ".mentor/processos/rascunho.md",
+    "CHANGELOG.md",
+    "testes/planejamento-skill-e-processo.test.ts",
+    "testes/cenarios/31-testes-de-unidade.ts"
+  ],
+  "criterios_aceite": [
+    {
+      "texto": ".mentor/skills/planejamento/SKILL.md criado com frontmatter valido e instrucoes canonicas de descoberta, consistencia, reuso, habilidades, avaliacao e fatiamento",
+      "teste": "npx tsx testes/cenarios/31-testes-de-unidade.ts",
+      "evidencia": null
+    },
+    {
+      "texto": ".mentor/processos/planejamento.md criado com os 2 niveis de planejamento, rolling wave, 5 eixos de classificacao e regras de replanejamento",
+      "teste": "npx tsx testes/cenarios/31-testes-de-unidade.ts",
+      "evidencia": null
+    },
+    {
+      "texto": ".mentor/nucleo.md (secoes 4 e 9) atualizado com a ordem explicita de carregamento de planejamento e processos/planejamento.md",
+      "teste": "npx tsx testes/cenarios/31-testes-de-unidade.ts",
+      "evidencia": null
+    },
+    {
+      "texto": ".mentor/processos/tarefa.md e rascunho.md atualizados referenciando o processo de planejamento",
+      "teste": "npx tsx testes/cenarios/31-testes-de-unidade.ts",
+      "evidencia": null
+    },
+    {
+      "texto": "Suite de testes unitarios testes/planejamento-skill-e-processo.test.ts registrada em 31-testes-de-unidade.ts passando com 100% de sucesso",
+      "teste": "npx tsx testes/cenarios/31-testes-de-unidade.ts",
+      "evidencia": null
+    }
+  ],
+  "impacto": "local",
+  "riscos": [
+    "Divergência entre instruções no nucleo.md e o AGENTS.md gerado, mitigada por node mentor.mjs gerar e mentor verificar"
+  ],
+  "dependencias_novas": [],
+  "proporcionalidade": "Standard",
+  "decisoes_aplicaveis": {
+    "motivo_ausencia": "Repositório do pacote Mentor atualmente sem pasta de ADRs em docs/arquitetura/ADR; diretrizes operacionais em definição neste épico."
+  },
+  "reuso": {
+    "existentes": [
+      ".mentor/nucleo.md",
+      ".mentor/processos/tarefa.md",
+      ".mentor/processos/rascunho.md"
+    ],
+    "novos": [
+      {
+        "artefato": "SKILL.md",
+        "local": ".mentor/skills/planejamento/",
+        "motivo": "Habilidade canônica de planejamento do mentor-agent"
+      },
+      {
+        "artefato": "planejamento.md",
+        "local": ".mentor/processos/",
+        "motivo": "Processo detalhado de planejamento em ondas e classificação"
+      },
+      {
+        "artefato": "planejamento-skill-e-processo.test.ts",
+        "local": "testes/",
+        "motivo": "Suíte de testes da habilidade, processo e instruções de planejamento"
+      }
+    ],
+    "motivo_sem_reuso": null
+  },
+  "habilidades": {
+    "planejamento": [
+      {
+        "nome": "planejamento",
+        "motivo": "Definição formal das instruções e processos de planejamento",
+        "origem": "processo-mentor"
+      }
+    ],
+    "execucao": [
+      {
+        "nome": "execucao",
+        "motivo": "Criação de arquivos de instrução, atualização do núcleo e testes",
+        "origem": "processo-mentor"
+      }
+    ]
+  },
+  "avaliacao": {
+    "planejamento": {
+      "complexidade": "media",
+      "dimensao_dominante": "acoplamento",
+      "justificativa": "Alinhamento normativo entre núcleo, processos, skills e documentação",
+      "perfil_modelo": "geral",
+      "effort": "medio"
+    },
+    "execucao": {
+      "complexidade": "media",
+      "dimensao_dominante": "acoplamento",
+      "justificativa": "Criação da habilidade, processo e sincronização com gerador e verificar",
+      "perfil_modelo": "geral",
+      "effort": "medio"
+    }
+  },
+  "documentos_herdados": [
+    "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/01-direcao-e-processo.md",
+    "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/02-consistencia-e-contratos.md"
+  ]
+}
