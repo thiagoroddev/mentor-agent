@@ -25,7 +25,7 @@ export function rodar(): Cenario {
     'docs/ preexistente e alheio ao mentor fica intacto')
 
   const ctx = lerJson<Record<string, any>>(c, 'docs-mentor/contexto.json')
-  confere(c, ctx['_meta'].versao_do_pacote === '0.14.0',
+  confere(c, ctx['_meta'].versao_do_pacote === '0.15.0',
     'a versao do pacote fica gravada no contexto: sem ela o relatorio nao atribui nada')
 
   confere(c, mentor(c, 'verificar').codigo === 0, 'pacote recem-instalado nao diverge de nada')

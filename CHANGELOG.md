@@ -4,7 +4,7 @@ Todas as mudanças notáveis no **mentor-agent** são documentadas neste arquivo
 
 O formato baseia-se em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
-## [Não publicado]
+## [0.15.0] - 2026-10-04
 
 ### Adicionado
 - **Trabalho Paralelo por Slots e Multi-Agente (Épico PLAN-trabalho-paralelo-por-slots)**:
