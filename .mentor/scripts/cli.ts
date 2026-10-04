@@ -19,7 +19,7 @@ import { contextoIncremental, preparar as prepararAuditoria, registrar as regist
 import { novaReferencia, relatarReferencias } from './cmd-referencia.ts'
 import { novaInvariante, relatarInvariantes } from './cmd-invariante.ts'
 import { novoRequisito, relatarRequisitos } from './cmd-requisito.ts'
-import { importarPlano, listarPlanos, registrarPlano, vincularPlano } from './cmd-plano.ts'
+import { importarPlano, listarPlanos, registrarPlano, statusPlano, vincularPlano } from './cmd-plano.ts'
 import { listarPatches, registrarPatch, registrarTodosPatches } from './cmd-patches.ts'
 import { executarGateDaTarefa, executarGatesDaTarefa } from './executor-gates.ts'
 import { regenerarTudo } from './vistas.ts'
@@ -68,9 +68,10 @@ mentor <comando>
        [--artefatos-locais "a;b"]      dados nao rastreados no laboratorio, fora da tarefa e do commit
        [--motivo-artefatos-locais "..."] justificativa obrigatoria da exclusao explicita
        [--produto-tocado "..."]        spike que mudou arquivo fora do laboratorio, e por que
-  plano [registrar|importar|listar]    plano portatil (versao, revisao SHA-256 e contrato)
+  plano [registrar|importar|listar|status] plano portatil (versao, revisao SHA-256 e contrato)
        registrar --arquivo <caminho> [--secao <id>] [--titulo <titulo>]
        importar --arquivo <origem> --destino <destino> [--forcar]
+       status [<PLANO-ID>] [--json]     status derivado, integridade de revisao e fatias vinculadas
   planos                               lista planos registrados e tarefas vinculadas
   patch [listar|registrar|registrar-todos] rastreia e valida modificacoes locais em .mentor/
        registrar <arquivo> --tarefa <ID> [--teste <evidencia>]
@@ -156,7 +157,8 @@ function principal(argv: string[]): number {
       if (!sub || sub === 'listar') { listarPlanos(); return 0 }
       if (sub === 'registrar') { registrarPlano(flags); return 0 }
       if (sub === 'importar') { importarPlano(flags); return 0 }
-      throw new Error(`Subcomando de plano desconhecido: "${sub}". Use: mentor plano [registrar|importar|listar]`)
+      if (sub === 'status') { statusPlano(posicionais[1], flags); return 0 }
+      throw new Error(`Subcomando de plano desconhecido: "${sub}". Use: mentor plano [registrar|importar|listar|status]`)
     }
     case 'planos': {
       listarPlanos(); return 0

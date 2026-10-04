@@ -1,6 +1,6 @@
 {
   "versao": "0.14.0",
-  "gerado_em": "2026-10-04T18:00:31.798Z",
+  "gerado_em": "2026-10-04T18:45:18.195Z",
   "arquivos": {
     "esquemas/contexto.json": "6a08c3b851d076cd",
     "esquemas/diretrizes-adr.json": "b2eac0e1d50d2250",
@@ -43,7 +43,7 @@
     "scripts/adrs.ts": "070acdbb4d2df352",
     "scripts/arquivos.ts": "5e251404a6051eeb",
     "scripts/casos.ts": "9d339f3923dde378",
-    "scripts/cli.ts": "e53f0b85c8a10f40",
+    "scripts/cli.ts": "f1f848aceb32c323",
     "scripts/cmd-anotar.ts": "ad0afe5b8ee1e018",
     "scripts/cmd-auditar.ts": "afb2c6be1e2a4853",
     "scripts/cmd-campo.ts": "ab1eed484b32ace9",
@@ -57,7 +57,7 @@
     "scripts/cmd-merge.ts": "50ec28b00f081d1a",
     "scripts/cmd-pacote.ts": "dc8c36e053d0ad33",
     "scripts/cmd-patches.ts": "ce1e6cd6e109b633",
-    "scripts/cmd-plano.ts": "9a67d9f0030db576",
+    "scripts/cmd-plano.ts": "e747f77f7181723b",
     "scripts/cmd-referencia.ts": "2d828a2f38b63cfc",
     "scripts/cmd-regras.ts": "a753f82f340943ca",
     "scripts/cmd-requisito.ts": "92f9c5476566bc9c",

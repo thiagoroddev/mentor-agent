@@ -7,6 +7,14 @@ O formato baseia-se em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0
 ## [Não publicado]
 
 ### Adicionado
+- **Consulta derivada de status de planos sem auto-invalidação (Fatia G)**:
+  - Novo comando `mentor plano status [<PLANO-ID>] [--json]` para consulta derivada somente-leitura de planos registrados em `docs-mentor/planos.json` (ou `docs/planos.json`).
+  - Diagnóstico e integridade de revisão: compara hash SHA-256 vigente contra o hash atual no disco (suportando arquivos isolados e pastas com `README.md`), apontando revisão válida, divergência de revisão ou arquivo ausente.
+  - Mapeamento e agregação de fatias/tarefas vinculadas com resumo quantitativo (total, concluídas, em execução, ciclo, reserva, bloqueadas) e status individual de cada tarefa (critérios evidenciados/total, gates declarados, revisao do plano e diagnósticos).
+  - Suporte à flag `--json` com emissão estruturada válida para integração contínua e automações.
+  - Filtro flexível por ID do plano (com suporte a correspondência case-insensitive) ou caminho de arquivo (`--arquivo`), lançando erro claro se o plano não for encontrado.
+  - Garantia de imutabilidade: execução estritamente somente-leitura, sem gerar arquivos ou alterar documentos Markdown normativos, eliminando o risco de auto-invalidação acidental de hashes.
+  - Suíte de testes unitários dedicada em `testes/plano-status.test.ts`.
 - **Herança seletiva, hashes e revisão incremental (Fatia E)**:
   - Herança normativa seletiva via `documentos_herdados` em `ContratoPlano` e `Plano`: manifesto gerado em `plano_ref.manifesto` contém estritamente o arquivo da fatia e os documentos normativos declarados, sem selecionar o épico inteiro por padrão.
   - Isolamento de invalidação entre fatias: `resolverPlano()` valida apenas os hashes presentes no manifesto; alterações em arquivos não herdados da pasta do épico preservam a validade da revisão.

@@ -1,0 +1,91 @@
+{
+  "versao": 2,
+  "muda": [
+    ".mentor/scripts/cmd-plano.ts",
+    ".mentor/scripts/cli.ts",
+    "CHANGELOG.md",
+    "testes/plano-status.test.ts",
+    "testes/cenarios/31-testes-de-unidade.ts"
+  ],
+  "criterios_aceite": [
+    {
+      "texto": "mentor plano status lista planos registrados com status de integridade do arquivo fonte",
+      "teste": "npx tsx testes/cenarios/31-testes-de-unidade.ts",
+      "evidencia": null
+    },
+    {
+      "texto": "mentor plano status com ID ou arquivo detalha plano especifico com suas fatias, dependencias e criterios",
+      "teste": "npx tsx testes/cenarios/31-testes-de-unidade.ts",
+      "evidencia": null
+    },
+    {
+      "texto": "mentor plano status --json emite JSON estruturado valido na saida padrao",
+      "teste": "npx tsx testes/cenarios/31-testes-de-unidade.ts",
+      "evidencia": null
+    },
+    {
+      "texto": "Operacao e estritamente somente-leitura preservando hashes e arquivos em disco sem escrita",
+      "teste": "npx tsx testes/cenarios/31-testes-de-unidade.ts",
+      "evidencia": null
+    }
+  ],
+  "impacto": "local",
+  "riscos": [
+    "Nenhum risco critico para consulta de somente leitura"
+  ],
+  "dependencias_novas": [],
+  "proporcionalidade": "Standard",
+  "decisoes_aplicaveis": {
+    "motivo_ausencia": "Repositório do pacote Mentor atualmente sem pasta de ADRs em docs/arquitetura/ADR; diretrizes operacionais em definição neste épico."
+  },
+  "reuso": {
+    "existentes": [
+      ".mentor/scripts/cmd-plano.ts",
+      ".mentor/scripts/cli.ts"
+    ],
+    "novos": [
+      {
+        "artefato": "plano-status.test.ts",
+        "local": "testes/",
+        "motivo": "Suíte de testes de consulta derivada de planos"
+      }
+    ],
+    "motivo_sem_reuso": null
+  },
+  "habilidades": {
+    "planejamento": [
+      {
+        "nome": "planejamento",
+        "motivo": "Modelagem da consulta de status sem auto-invalidação",
+        "origem": "processo-mentor"
+      }
+    ],
+    "execucao": [
+      {
+        "nome": "execucao",
+        "motivo": "Implementação do comando statusPlano e testes",
+        "origem": "processo-mentor"
+      }
+    ]
+  },
+  "avaliacao": {
+    "planejamento": {
+      "complexidade": "media",
+      "dimensao_dominante": "usabilidade",
+      "justificativa": "Desenho de interface CLI e modelo de dados derivado",
+      "perfil_modelo": "geral",
+      "effort": "medio"
+    },
+    "execucao": {
+      "complexidade": "media",
+      "dimensao_dominante": "usabilidade",
+      "justificativa": "Implementação de comando de inspeção e testes unitários",
+      "perfil_modelo": "geral",
+      "effort": "medio"
+    }
+  },
+  "documentos_herdados": [
+    "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/01-direcao-e-processo.md",
+    "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/02-consistencia-e-contratos.md"
+  ]
+}

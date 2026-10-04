@@ -1,0 +1,226 @@
+{
+  "id": "TASK-CHORE-011",
+  "revisao_incremental_requerida": false,
+  "tipo": "CHORE",
+  "titulo": "Consulta derivada de status de planos sem auto-invalidação (Fatia G)",
+  "fatia_de": null,
+  "estado": "concluida",
+  "cerimonia": "Standard",
+  "perfil": null,
+  "valor": "importante",
+  "urgencia": "normal",
+  "esforco": {
+    "humano": "P",
+    "ia": "M"
+  },
+  "depende_de": [],
+  "ordem_motivo": null,
+  "fila": "ciclo",
+  "ordem": null,
+  "origem": "titulo-autossuficiente",
+  "requisitos": [],
+  "sem_requisito_motivo": null,
+  "criada_em": "04/10/26 15:36",
+  "iniciada_em": "04/10/26 15:37",
+  "commit_base": "3bf590761722d84b86eef435088c7c47ec382614",
+  "concluida_em": "04/10/26 15:45",
+  "plano": {
+    "muda": [
+      ".mentor/scripts/cmd-plano.ts",
+      ".mentor/scripts/cli.ts",
+      "CHANGELOG.md",
+      "testes/plano-status.test.ts",
+      "testes/cenarios/31-testes-de-unidade.ts"
+    ],
+    "criterios_aceite": [
+      {
+        "texto": "mentor plano status lista planos registrados com status de integridade do arquivo fonte",
+        "teste": "npx tsx testes/cenarios/31-testes-de-unidade.ts",
+        "evidencia": {
+          "comando": "node mentor.mjs plano status",
+          "codigo_saida": 0,
+          "saida": "STATUS DE PLANOS (10):\n\n  [PLAN-2026-10-03--evolucao-do-planej] \"Evolução do planejamento do Mentor: consistência, ADRs e estudo humano integral\"\n... [75 linhas omitidas] ...\n      - [EM-EXECUCAO] TASK-CHORE-011: \"Consulta derivada de status de planos sem auto-invalidação (Fatia G)\" (ciclo) · critérios: 0/4 · revisão: ok\n\n(Consulta derivada somente-leitura. O registro de planos e tarefas não implica aprovação humana de execução.)",
+          "log_ref": "docs/.evidencias/logs/TASK-CHORE-011-criterio-0-1791139409063.log",
+          "executado_em": "04/10/26 15:43"
+        }
+      },
+      {
+        "texto": "mentor plano status com ID ou arquivo detalha plano especifico com suas fatias, dependencias e criterios",
+        "teste": "npx tsx testes/cenarios/31-testes-de-unidade.ts",
+        "evidencia": {
+          "comando": "node mentor.mjs plano status PLAN-fatia-g-plano-status-md",
+          "codigo_saida": 0,
+          "saida": "STATUS DE PLANOS (1):\n\n  [PLAN-fatia-g-plano-status-md] \"Fatia G: mentor plano status — Consulta derivada sem auto-invalidação\"\n    Arquivo: docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/fatias/fatia-g-plano-status.md\n    Revisão: d0f2a470 | Status: ✓ VIGENTE / ÍNTEGRA\n    Fatias / Tarefas (1): 0 concluída(s), 1 em execução, 1 no ciclo, 0 na reserva\n    Tarefas vinculadas:\n      - [EM-EXECUCAO] TASK-CHORE-011: \"Consulta derivada de status de planos sem auto-invalidação (Fatia G)\" (ciclo) · critérios: 1/4 · revisão: ok\n\n(Consulta derivada somente-leitura. O registro de planos e tarefas não implica aprovação humana de execução.)",
+          "log_ref": "docs/.evidencias/logs/TASK-CHORE-011-criterio-1-1791139412000.log",
+          "executado_em": "04/10/26 15:43"
+        }
+      },
+      {
+        "texto": "mentor plano status --json emite JSON estruturado valido na saida padrao",
+        "teste": "npx tsx testes/cenarios/31-testes-de-unidade.ts",
+        "evidencia": {
+          "comando": "node mentor.mjs plano status PLAN-fatia-g-plano-status-md --json",
+          "codigo_saida": 0,
+          "saida": "[\n  {\n    \"plano\": {\n... [33 linhas omitidas] ...\n    }\n  }\n]",
+          "log_ref": "docs/.evidencias/logs/TASK-CHORE-011-criterio-2-1791139415177.log",
+          "executado_em": "04/10/26 15:43"
+        }
+      },
+      {
+        "texto": "Operacao e estritamente somente-leitura preservando hashes e arquivos em disco sem escrita",
+        "teste": "npx tsx testes/cenarios/31-testes-de-unidade.ts",
+        "evidencia": {
+          "comando": "npx tsx testes/executar.ts --unidade",
+          "codigo_saida": 0,
+          "saida": "REV-001: APROVADO · TASK-CHORE-123 · 0 achado(s)\nREV-001: APROVADO · TASK-CHORE-123 · 0 achado(s)\nREV-002: APROVADO · TASK-CHORE-123 · 0 achado(s)\n... [227 linhas omitidas] ...\nnpm notice run 'tsx' testes/executar.ts --unidade\nREV-001 está desatualizada: contrato/regra docs-mentor/rascunhos/plano.contrato.json mudou desde a captura.\nREV-001 está desatualizada: src.ts mudou desde a captura. Prepare uma nova revisão.",
+          "log_ref": "docs/.evidencias/logs/TASK-CHORE-011-criterio-3-1791139454695.log",
+          "executado_em": "04/10/26 15:44"
+        }
+      }
+    ],
+    "impacto": "local",
+    "riscos": [
+      "Nenhum risco critico para consulta de somente leitura"
+    ],
+    "dependencias_novas": [],
+    "proporcionalidade": "Standard",
+    "versao": 2,
+    "decisoes_aplicaveis": {
+      "motivo_ausencia": "Repositório do pacote Mentor atualmente sem pasta de ADRs em docs/arquitetura/ADR; diretrizes operacionais em definição neste épico."
+    },
+    "reuso": {
+      "existentes": [
+        ".mentor/scripts/cmd-plano.ts",
+        ".mentor/scripts/cli.ts"
+      ],
+      "novos": [
+        {
+          "artefato": "plano-status.test.ts",
+          "local": "testes/",
+          "motivo": "Suíte de testes de consulta derivada de planos"
+        }
+      ],
+      "motivo_sem_reuso": null
+    },
+    "habilidades": {
+      "planejamento": [
+        {
+          "nome": "planejamento",
+          "motivo": "Modelagem da consulta de status sem auto-invalidação",
+          "origem": "processo-mentor"
+        }
+      ],
+      "execucao": [
+        {
+          "nome": "execucao",
+          "motivo": "Implementação do comando statusPlano e testes",
+          "origem": "processo-mentor"
+        }
+      ]
+    },
+    "avaliacao": {
+      "planejamento": {
+        "complexidade": "media",
+        "dimensao_dominante": "usabilidade",
+        "justificativa": "Desenho de interface CLI e modelo de dados derivado",
+        "perfil_modelo": "geral",
+        "effort": "medio"
+      },
+      "execucao": {
+        "complexidade": "media",
+        "dimensao_dominante": "usabilidade",
+        "justificativa": "Implementação de comando de inspeção e testes unitários",
+        "perfil_modelo": "geral",
+        "effort": "medio"
+      }
+    },
+    "documentos_herdados": [
+      "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/01-direcao-e-processo.md",
+      "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/02-consistencia-e-contratos.md"
+    ]
+  },
+  "gates": {
+    "tipos": {
+      "rotulo": "APROVADO",
+      "vermelho_em": null,
+      "comando": "npx tsc --noEmit",
+      "codigo_saida": 0,
+      "saida": "npm notice run mentor-agent@0.14.0 npx\nnpm notice run 'tsc' --noEmit",
+      "executado_em": "04/10/26 15:44",
+      "commit_execucao": "3bf590761722d84b86eef435088c7c47ec382614",
+      "arvore_hash": "d133f263f46c0ad63bf1be536800709dda8e8cbd",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": null,
+      "ressalva": null,
+      "log_ref": "docs/.evidencias/logs/TASK-CHORE-011-tipos-1791139460671.log",
+      "chave_cache": "eca5eaca9fd3eac0c30ced7a9842794248d4be1ca866434e1824037d1959f655",
+      "digest_insumos": "d133f263f46c0ad63bf1be536800709dda8e8cbd",
+      "vermelho_dispensado": null
+    },
+    "testes": {
+      "rotulo": "APROVADO",
+      "vermelho_em": null,
+      "comando": "node testes/executar.ts --unidade",
+      "codigo_saida": 0,
+      "saida": "REV-001: APROVADO · TASK-CHORE-123 · 0 achado(s)\nREV-001: APROVADO · TASK-CHORE-123 · 0 achado(s)\nREV-002: APROVADO · TASK-CHORE-123 · 0 achado(s)\n... [225 linhas omitidas] ...\n1 cenario(s), todos verdes. (modo unidade / rapido)\nREV-001 está desatualizada: contrato/regra docs-mentor/rascunhos/plano.contrato.json mudou desde a captura.\nREV-001 está desatualizada: src.ts mudou desde a captura. Prepare uma nova revisão.",
+      "executado_em": "04/10/26 15:44",
+      "commit_execucao": "3bf590761722d84b86eef435088c7c47ec382614",
+      "arvore_hash": "d133f263f46c0ad63bf1be536800709dda8e8cbd",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": null,
+      "ressalva": null,
+      "log_ref": "docs/.evidencias/logs/TASK-CHORE-011-testes-1791139499979.log",
+      "chave_cache": "09b753148e726665dd9100f21b43aa178d4251f8c060c4351758ef1e695fad2d",
+      "digest_insumos": "d133f263f46c0ad63bf1be536800709dda8e8cbd",
+      "vermelho_dispensado": null
+    },
+    "validacao_manual": {
+      "rotulo": "não se aplica",
+      "comando": null,
+      "codigo_saida": null,
+      "saida": null,
+      "executado_em": "04/10/26 15:45",
+      "commit_execucao": "3bf590761722d84b86eef435088c7c47ec382614",
+      "arvore_hash": "d133f263f46c0ad63bf1be536800709dda8e8cbd",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": "dispensada na finalizacao",
+      "ressalva": null,
+      "vermelho_em": null
+    }
+  },
+  "achados": [],
+  "validacao": "dispensado",
+  "validado_em": "04/10/26 15:45",
+  "validacao_motivo": "dispensada na finalizacao",
+  "tarefas_geradas": [],
+  "adrs": [],
+  "divida_tecnica": [],
+  "riscos_aceitos": [],
+  "absorvida_por": null,
+  "cancelamento_motivo": null,
+  "narrativa": "2026-10-04--15h45--TASK-CHORE-011--estudo-humano.md",
+  "plano_ref": {
+    "arquivo": "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/fatias/fatia-g-plano-status.md",
+    "sha256": "d0f2a47051947f2b4311ce27205d7e8bd8f96ca1f6093d1099a509362663592b",
+    "secao": null,
+    "manifesto": {
+      "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/fatias/fatia-g-plano-status.md": "d0f2a47051947f2b4311ce27205d7e8bd8f96ca1f6093d1099a509362663592b",
+      "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/fatias/fatia-g-plano-status.contrato.json": "840717aaf8f4e89bdd88c1333e79b96f7bc3a4d737dc87f83e53f1c750434dbf",
+      "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/01-direcao-e-processo.md": "cb83d26f34e598044018d9927d292d02054aeecd927e72b7fee37597cef54a8c",
+      "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/02-consistencia-e-contratos.md": "cecfa462dbb0c076eac7a83e70ecac807f3c0c15996c7562d038049d67e731ce"
+    }
+  },
+  "memoria_operacional": {
+    "resultado": "Comando mentor plano status implementado e integrado na CLI com suporte a saída textual e estruturada JSON, verificação de integridade de hashes e mapeamento de tarefas vinculadas sem efeitos colaterais de escrita.",
+    "aprendizados": [
+      "Consultas agregadas derivadas dispensam mutação em documentos normativos e evitam qualquer invalidade acidental de hashes SHA-256.",
+      "A comparação entre o hash registrado e o hash atual do arquivo fonte permite detecção precoce de alterações externas não sincronizadas."
+    ],
+    "limites_conhecidos": [
+      "Planos que referenciam diretórios assumem o README.md como raiz de hash para a revisão principal."
+    ]
+  }
+}

@@ -79,5 +79,13 @@
     "sha256": "f343f9ab27fc184c9f7600147134728b55348721ad6be65e83ae2ff94315fb8b",
     "secao": null,
     "registrado_em": "04/10/26"
+  },
+  {
+    "id": "PLAN-fatia-g-plano-status-md",
+    "titulo": "Fatia G: mentor plano status — Consulta derivada sem auto-invalidação",
+    "arquivo": "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/fatias/fatia-g-plano-status.md",
+    "sha256": "d0f2a47051947f2b4311ce27205d7e8bd8f96ca1f6093d1099a509362663592b",
+    "secao": null,
+    "registrado_em": "04/10/26"
   }
 ]

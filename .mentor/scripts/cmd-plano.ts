@@ -507,6 +507,178 @@ export function listarPlanos(): void {
   }
 }
 
+export interface StatusPlanoResultado {
+  plano: RegistroPlano
+  arquivo_existe: boolean
+  sha256_atual: string | null
+  revisao_valida: boolean
+  tarefas_vinculadas: Array<{
+    id: string
+    titulo: string
+    tipo: string
+    estado: string
+    fila: string
+    depende_de: string[]
+    bloqueada_por?: string[]
+    revisao_valida: boolean
+    diagnosticos: string[]
+    criterios_total: number
+    criterios_evidenciados: number
+    gates: Record<string, string>
+  }>
+  resumo_tarefas: {
+    total: number
+    concluidas: number
+    em_execucao: number
+    ciclo: number
+    reserva: number
+    bloqueadas: number
+  }
+}
+
+export function statusPlano(idOuArquivo?: string, flags: Record<string, string | undefined> = {}): StatusPlanoResultado[] {
+  const c = caminhos()
+  const planos = carregarPlanos()
+  const tarefas = carregarTarefas()
+
+  if (planos.length === 0) {
+    if (flags.json === 'true' || flags.json === '') {
+      console.log(JSON.stringify([], null, 2))
+    } else {
+      console.log('Nenhum plano registrado em docs-mentor/planos.json.')
+    }
+    return []
+  }
+
+  let selecionados = planos
+  const filtro = idOuArquivo?.trim() || flags.plano?.trim() || flags.arquivo?.trim()
+  if (filtro) {
+    const limpo = normalizarCaminhoRelativo(filtro)
+    selecionados = planos.filter(
+      (p) =>
+        p.id.toLowerCase() === filtro.toLowerCase() ||
+        p.arquivo === limpo ||
+        p.arquivo.toLowerCase() === filtro.toLowerCase(),
+    )
+    if (selecionados.length === 0) {
+      throw new Error(`Plano "${filtro}" nao encontrado em docs-mentor/planos.json.`)
+    }
+  }
+
+  const resultados: StatusPlanoResultado[] = []
+
+  for (const p of selecionados) {
+    const abs = join(c.raiz, p.arquivo)
+    const existeArquivo = existsSync(abs)
+    let sha256Atual: string | null = null
+
+    if (existeArquivo) {
+      const stat = lstatSync(abs)
+      if (stat.isDirectory()) {
+        const readme = join(abs, 'README.md')
+        if (existsSync(readme)) {
+          sha256Atual = sha256DoArquivo(readme)
+        }
+      } else {
+        sha256Atual = sha256DoArquivo(abs)
+      }
+    }
+
+    const revisaoValida = existeArquivo && sha256Atual === p.sha256
+
+    const vinculadas = tarefas.filter((t) => {
+      const tArq = t.plano_ref?.arquivo
+      if (!tArq) return false
+      return tArq === p.arquivo || tArq.startsWith(p.arquivo.endsWith('/') ? p.arquivo : p.arquivo + '/')
+    })
+
+    const tarefasDetalhadas = vinculadas.map((t) => {
+      const planoRes = resolverPlano(t, c.raiz)
+      const criterios = t.plano?.criterios_aceite ?? []
+      const evidenciados = criterios.filter((cr) => cr.evidencia !== null).length
+      const gatesMap: Record<string, string> = {}
+      for (const [k, v] of Object.entries(t.gates ?? {})) {
+        if (v?.rotulo) gatesMap[k] = v.rotulo
+      }
+
+      return {
+        id: t.id,
+        titulo: t.titulo,
+        tipo: t.tipo,
+        estado: t.estado,
+        fila: t.fila,
+        depende_de: t.depende_de ?? [],
+        bloqueada_por: t.bloqueada_por ?? [],
+        revisao_valida: planoRes.revisao_valida,
+        diagnosticos: planoRes.diagnosticos,
+        criterios_total: criterios.length,
+        criterios_evidenciados: evidenciados,
+        gates: gatesMap,
+      }
+    })
+
+    const resumo = {
+      total: vinculadas.length,
+      concluidas: vinculadas.filter((t) => t.estado === 'concluida').length,
+      em_execucao: vinculadas.filter((t) => t.estado === 'em-execucao').length,
+      ciclo: vinculadas.filter((t) => t.fila === 'ciclo' && t.estado !== 'concluida' && t.estado !== 'cancelada').length,
+      reserva: vinculadas.filter((t) => t.fila === 'reserva' && t.estado !== 'concluida' && t.estado !== 'cancelada').length,
+      bloqueadas: vinculadas.filter((t) => (t.bloqueada_por?.length ?? 0) > 0).length,
+    }
+
+    resultados.push({
+      plano: p,
+      arquivo_existe: existeArquivo,
+      sha256_atual: sha256Atual,
+      revisao_valida: revisaoValida,
+      tarefas_vinculadas: tarefasDetalhadas,
+      resumo_tarefas: resumo,
+    })
+  }
+
+  if (flags.json === 'true' || flags.json === '') {
+    console.log(JSON.stringify(resultados, null, 2))
+    return resultados
+  }
+
+  console.log(`STATUS DE PLANOS (${resultados.length}):\n`)
+  for (const r of resultados) {
+    const p = r.plano
+    const sec = p.secao ? ` § ${p.secao}` : ''
+    const statusRevisao = !r.arquivo_existe
+      ? '✗ ARQUIVO AUSENTE'
+      : r.revisao_valida
+        ? '✓ VIGENTE / ÍNTEGRA'
+        : `⚠ DIVERGÊNCIA DE REVISÃO (esperado ${p.sha256.slice(0, 8)}, atual ${r.sha256_atual ? r.sha256_atual.slice(0, 8) : 'n/d'})`
+
+    console.log(`  [${p.id}] "${p.titulo}"${sec}`)
+    console.log(`    Arquivo: ${p.arquivo}`)
+    console.log(`    Revisão: ${p.sha256.slice(0, 8)} | Status: ${statusRevisao}`)
+    console.log(
+      `    Fatias / Tarefas (${r.resumo_tarefas.total}): ${r.resumo_tarefas.concluidas} concluída(s), ${r.resumo_tarefas.em_execucao} em execução, ${r.resumo_tarefas.ciclo} no ciclo, ${r.resumo_tarefas.reserva} na reserva`,
+    )
+    if (r.tarefas_vinculadas.length) {
+      console.log('    Tarefas vinculadas:')
+      for (const t of r.tarefas_vinculadas) {
+        const rev = t.revisao_valida ? 'ok' : 'divergente'
+        const bloq = t.bloqueada_por?.length ? ` [bloqueada por: ${t.bloqueada_por.join(', ')}]` : ''
+        console.log(`      - [${t.estado.toUpperCase()}] ${t.id}: "${t.titulo}" (${t.fila}) · critérios: ${t.criterios_evidenciados}/${t.criterios_total} · revisão: ${rev}${bloq}`)
+        if (t.diagnosticos.length) {
+          for (const d of t.diagnosticos) {
+            console.log(`        ! Diagnóstico: ${d}`)
+          }
+        }
+      }
+    } else {
+      console.log('    (nenhuma tarefa vinculada)')
+    }
+    console.log('')
+  }
+
+  console.log('(Consulta derivada somente-leitura. O registro de planos e tarefas não implica aprovação humana de execução.)')
+  return resultados
+}
+
 export function vincularPlano(id: string, flags: Record<string, string | undefined>, planoOuArquivo?: string): void {
   const c = caminhos()
   const planos = carregarPlanos()
