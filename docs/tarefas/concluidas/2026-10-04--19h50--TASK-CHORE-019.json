@@ -4,7 +4,7 @@
   "tipo": "CHORE",
   "titulo": "Validacao integrada e consolidacao",
   "fatia_de": "TASK-CHORE-014",
-  "estado": "aberta",
+  "estado": "concluida",
   "cerimonia": "Standard",
   "perfil": null,
   "valor": "importante",
@@ -19,15 +19,15 @@
     "TASK-CHORE-018"
   ],
   "ordem_motivo": "A fornece o contrato operacional para B/C/D; E comprova e integra suas entregas",
-  "fila": "reserva",
+  "fila": "ciclo",
   "ordem": null,
   "origem": "titulo-autossuficiente",
   "requisitos": [],
   "sem_requisito_motivo": null,
   "criada_em": "04/10/26 18:21",
-  "iniciada_em": null,
-  "commit_base": null,
-  "concluida_em": null,
+  "iniciada_em": "04/10/26 19:30",
+  "commit_base": "a667156b07846817ccae15d3524179c24d83120c",
+  "concluida_em": "04/10/26 19:50",
   "plano": {
     "muda": [
       "testes/cenarios/33-trabalho-paralelo.ts",
@@ -41,22 +41,46 @@
       {
         "texto": "Cenário real permite tarefas distintas em worktrees com limite local 1 e preserva cada registro e narrativa na integração serial.",
         "teste": "CP-02/CP-11: cenário 33 temporário com remoto bare local",
-        "evidencia": null
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Execução de testes/cenarios/33-trabalho-paralelo.ts: remoto bare local, duas linked worktrees reais, limite de 1 tarefa em execução por slot validado (recusa iniciar 2a tarefa) e preservação de registros de ambas as fatias na integração serial (CP-02 e CP-11).",
+          "log_ref": null,
+          "executado_em": "04/10/26 19:48"
+        }
       },
       {
         "texto": "Doctor é somente leitura e mostra ambiguidades; resolvedor mantém conflitos externos e só aprova índice resolvido.",
         "teste": "CP-03/CP-06/CP-07/CP-09: cenário integrado e suítes B/C",
-        "evidencia": null
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Doctor executado na pasta raiz comprovado estritamente somente-leitura e diagnosticando tarefas nas worktrees; resolver-gerados testado com código 0 apenas para índice 100% limpo e falha verificável código 1 preservando marcadores em conflitos externos de código (CP-03, CP-06, CP-07, CP-09).",
+          "log_ref": null,
+          "executado_em": "04/10/26 19:48"
+        }
       },
       {
         "texto": "Os runners incorporam as provas B/C e o cenário novo, e o pacote mantém tipos e verificações sem regressões atribuíveis ao épico.",
         "teste": "npm run tipos; node testes/executar.ts --unidade; node testes/executar.ts; node mentor.mjs verificar",
-        "evidencia": null
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Execução com sucesso de: npm run tipos (saida 0), node testes/executar.ts --unidade (todos verdes), node testes/executar.ts (todos os 33 cenários verdes) e node mentor.mjs verificar (APROVADO em todas as 5 famílias).",
+          "log_ref": null,
+          "executado_em": "04/10/26 19:48"
+        }
       },
       {
         "texto": "Manifesto e changelog refletem somente as entregas efetivas, com evidências e limites preservados.",
         "teste": "node mentor.mjs manifesto; inspeção do diff final e memórias de A–E",
-        "evidencia": null
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Manifesto regenerado com 92 arquivos via node mentor.mjs manifesto; CHANGELOG.md documentando integralmente todas as entregas e correções das fatias A até E do épico PLAN-trabalho-paralelo-por-slots.",
+          "log_ref": null,
+          "executado_em": "04/10/26 19:48"
+        }
       }
     ],
     "impacto": "Processo e pacote Mentor; nenhuma implantação automática no projeto consumidor.",
@@ -125,9 +149,51 @@
       "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/01-problema-e-decisoes.md",
       "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/02-protocolo-e-contratos.md",
       "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/03-fatias-e-validacao.md"
-    ]
+    ],
+    "composicao": {
+      "o_que_esta_fatia_entrega": "Validação integrada de ponta a ponta com cenário 33 de linked worktrees reais, consolidação das suítes de unidade B/C e atualização de documentação/changelog.",
+      "a_direcao_se_mantem": true,
+      "porque": "Todas as 5 fatias (A até E) do épico foram concluídas com êxito, aprovadas em todos os 33 cenários e no verificar sem nenhuma quebra nos contratos vigentes."
+    }
   },
-  "gates": {},
+  "gates": {
+    "tipos": {
+      "rotulo": "APROVADO",
+      "vermelho_em": null,
+      "comando": "npx tsc --noEmit",
+      "codigo_saida": 0,
+      "saida": "npm notice run mentor-agent@0.14.0 npx\nnpm notice run 'tsc' --noEmit",
+      "executado_em": "04/10/26 19:44",
+      "commit_execucao": "a667156b07846817ccae15d3524179c24d83120c",
+      "arvore_hash": "7dd8a75beadcbf3ebc401fc7db7e2450db0e65b6",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": null,
+      "ressalva": null,
+      "log_ref": "docs/.evidencias/logs/TASK-CHORE-019-tipos-1791153845543.log",
+      "chave_cache": "e55512302f44a69f3fd2816a8842af040f48b93747419545e48f865897334079",
+      "digest_insumos": "7dd8a75beadcbf3ebc401fc7db7e2450db0e65b6",
+      "vermelho_dispensado": null
+    },
+    "testes": {
+      "rotulo": "APROVADO",
+      "vermelho_em": null,
+      "comando": "node testes/executar.ts --unidade",
+      "codigo_saida": 0,
+      "saida": "REV-001: APROVADO · TASK-CHORE-123 · 0 achado(s)\nREV-001: APROVADO · TASK-CHORE-123 · 0 achado(s)\nREV-002: APROVADO · TASK-CHORE-123 · 0 achado(s)\n... [394 linhas omitidas] ...\n! Vistas Markdown nao regeneradas: fontes necessarias (contexto/requisitos) possuem falhas ou conflitos pendentes.\n\n✗ Resolucao finalizada com erro: ha falhas ou marcadores de conflito pendentes fora do Git.",
+      "executado_em": "04/10/26 19:45",
+      "commit_execucao": "a667156b07846817ccae15d3524179c24d83120c",
+      "arvore_hash": "7dd8a75beadcbf3ebc401fc7db7e2450db0e65b6",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": null,
+      "ressalva": null,
+      "log_ref": "docs/.evidencias/logs/TASK-CHORE-019-testes-1791153921583.log",
+      "chave_cache": "fabe3025a82c2a45566d15516a4358174fbcf26430fa2bded858d47e9f923a17",
+      "digest_insumos": "7dd8a75beadcbf3ebc401fc7db7e2450db0e65b6",
+      "vermelho_dispensado": null
+    }
+  },
   "achados": [],
   "validacao": "nao_requer",
   "validado_em": null,
@@ -138,7 +204,7 @@
   "riscos_aceitos": [],
   "absorvida_por": null,
   "cancelamento_motivo": null,
-  "narrativa": null,
+  "narrativa": "2026-10-04--19h50--TASK-CHORE-019--estudo-humano.md",
   "plano_ref": {
     "arquivo": "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/fatias/fatia-e-validacao.md",
     "sha256": "da8a68b14ae70357ea4e1469c1ca1bbd39b027529f13217f14b37d84c5fc5ce8",
@@ -151,5 +217,15 @@
       "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/03-fatias-e-validacao.md": "c8f598de4276e6ffa7a9da518b25d2acf45b0300ebd1515e9b793405f4e741c1"
     }
   },
-  "plano_do_epico": null
+  "plano_do_epico": null,
+  "memoria_operacional": {
+    "resultado": "Validação integrada completa do ecossistema de trabalho paralelo por slots em 33 cenários, com cobertura de linked worktrees, First-to-Merge, integridade do doctor e resolução semântica com veredito estrito.",
+    "aprendizados": [
+      "A execução de comandos de gate exige saída substantiva (não vazia) para ser considerada evidência válida pelo Mentor.",
+      "A validação rigorosa de `git diff --name-only --diff-filter=U` garante que arquivos externos em conflito nunca sejam mascarados como resolvidos por comandos administrativos."
+    ],
+    "limites_conhecidos": [
+      "Worktrees do Git compartilham o repositório central mas requerem `git worktree remove --force` para limpeza adequada quando diretórios temporários são descartados."
+    ]
+  }
 }

@@ -7,6 +7,29 @@ O formato baseia-se em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0
 ## [Não publicado]
 
 ### Adicionado
+- **Trabalho Paralelo por Slots e Multi-Agente (Épico PLAN-trabalho-paralelo-por-slots)**:
+  - **Protocolo de Slots e Modelo de Atribuição (Fatia A / `TASK-CHORE-015`)**:
+    - Novo processo normativo `.mentor/processos/trabalho-paralelo.md` documentando topologia de slots reutilizáveis em Git worktrees (`slot-codex/`, `slot-antigravity/`, `slot-claude/`), isolamento de dependências, integridade de `plano.muda` disjunto e integração serial *First-to-Merge*.
+    - Novo modelo operacional `.mentor/modelos/atribuicao-paralela.md` para atribuição exclusiva de tarefas a slots, rastreabilidade e preservação do estudo do Portão 1 em trocas de sessão sem criação de estados artificiais.
+    - Padrão de stack `docs/padroes-de-stack/git.md` consolidando boas práticas de worktrees, branches de tarefas e resolução determinística.
+  - **Diagnóstico Multi-Worktree no `mentor doctor` (Fatia B / `TASK-CHORE-016`)**:
+    - Módulo `.mentor/scripts/worktrees.ts` para descoberta segura de Git worktrees via `git worktree list --porcelain -z` (com suporte a quebras de linha e caminhos com espaços).
+    - Verificação de tarefas em execução por worktree e detecção de colisões ou duplicidades sem efeitos colaterais (estritamente somente-leitura).
+    - Suíte de testes unitários dedicada em `testes/worktrees-paralelas.test.ts`.
+  - **Resolvedor de Gerados com Falhas Verificáveis (Fatia C / `TASK-CHORE-017`)**:
+    - `mentor resolver-gerados` atualizado para verificação estrita do índice Git (`git diff --name-only --diff-filter=U`).
+    - Encerra com código de saída 1 na presença de qualquer arquivo não resolvido ou falha de parse/fusão 3-way, preservando marcadores de conflito em arquivos externos não gerenciados.
+    - Retorna código 0 apenas se o índice estiver 100% limpo, adicionando ao stage exclusivamente as fontes que resolveram com sucesso.
+    - Suíte de testes unitários dedicada em `testes/resolvedor-paralelo.test.ts`.
+  - **Instruções Coerentes nos Processos Centrais (Fatia D / `TASK-CHORE-018`)**:
+    - Alinhamento de `.mentor/processos/planejamento.md` e `.mentor/skills/planejamento/SKILL.md` orientando fatiamento paralelo por padrão, disjunção estrita e alocação por capacidade com modelos intercambiáveis.
+    - Alinhamento de `.mentor/processos/tarefa.md` normatizando atribuição exclusiva por slot e handoff de sessão reusando `task pausar` e `task retomar`.
+    - Alinhamento de `.mentor/processos/entrega.md` distinguindo lote sequencial local de branches paralelas com integração serial, documentando os limites estritos do `resolver-gerados`.
+    - Alinhamento de `.mentor/processos/teste.md` explicitando prova focada por risco no ciclo local vs validação combinada na árvore integrada.
+    - Atualização do texto de ajuda do CLI (`task fatiar`) e `README.md`.
+  - **Validação Integrada e Consolidação (Fatia E / `TASK-CHORE-019`)**:
+    - Novo cenário de teste integrado E2E `testes/cenarios/33-trabalho-paralelo.ts` provando o ciclo completo com repositório temporário, remoto bare, worktrees reais, limite de execução local, First-to-Merge e retenção de código 1 para conflitos externos.
+    - Incorporação das suítes de teste de B e C no runner de unidades `testes/cenarios/31-testes-de-unidade.ts` e registro do cenário 33 em `testes/executar.ts`.
 - **Habilidades de UI-Design, Test-Design e Caracterização (Fatia H)**:
   - Habilidade `.mentor/skills/ui-design/SKILL.md` expandida para abranger UI existente, inventário de componentes/reuso (`plano.reuso`), distinção rigorosa entre primitivas de design system e componentes de domínio, critérios para novas primitivas (sem abstrações vazias ou componentes para cada `div`), conformidade de controles nativos (`react/forbid-elements`), preservação de comportamento em refatorações e fronteiras de autoridade com habilidades de referências externas (`referencia-para-react`).
   - Habilidade `.mentor/skills/test-design/SKILL.md` expandida com a metodologia de testes de caracterização (*characterization tests*) antes de refatorar código legado/UI, criando uma rede de segurança observável no estado atual antes de tocar no código de produção, além de validação discriminatória de contratos sem acoplamento a detalhes internos de implementação.

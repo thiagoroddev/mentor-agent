@@ -37,11 +37,20 @@ os dois.
 | `01-ciclo-basico` | o caminho feliz inteiro, ate' o requisito vinculado pelo script |
 | `02-epico-fatiado` | XG nao se executa, se divide; `fatia N/M` e' calculado e muda sozinho |
 | `03-recusas` | **o que o pacote recusa.** Cada linha aqui e' uma classe de erro que a IA nao consegue mais cometer |
+| `31-testes-de-unidade` | suites unitarias describe/it (regressoes, ADRs, worktrees, resolvedor semantico) |
+| `32-carregamento-nas-ferramentas` | carregamento de AGENTS.md, CLAUDE.md, GEMINI.md e copias de skills |
+| `33-trabalho-paralelo` | trabalho simultaneo em linked worktrees (slots), diagnostico no doctor e fusao 3-way |
 
 O `03` e' o mais importante. Um cenario que so' testa o caminho feliz nao prova nada sobre um
 pacote cujo proposito e' recusar.
 
+## Modos de Execução
+
+- **Nível 1 (Rápido / Unidades):** `node testes/executar.ts --unidade` (ou `--rapido`). Executa somente as suítes unitárias puras em segundos, sem levantar 30+ árvores de teste do Git.
+- **Nível 2 (Bateria Completa / E2E):** `node testes/executar.ts` ou `npm test`. Executa todos os cenários consolidados sequencialmente.
+
 ## Ao acrescentar um cenario
 
 Um arquivo em `cenarios/`, exportando `rodar(): Cenario`, e uma linha em `executar.ts`.
-Sem biblioteca de teste: `apoio.ts` tem as quatro funcoes que os cenarios usam.
+Sem biblioteca de teste: `apoio.ts` tem as quatro funcoes que os cenarios usam. Cenários que exercitam Git multi-árvore e worktrees usam diretórios temporários (`abrirCenarioTemporario`), limpeza no `finally` e não afetam branches de trabalho do mantenedor.
+
