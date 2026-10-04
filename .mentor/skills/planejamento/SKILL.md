@@ -57,4 +57,15 @@ Avalie separadamente a carga de trabalho do planejamento e a da execução nos s
 - **Trabalho Distante (fatias futuras):** mantido em nível de resultado observável, fronteiras de responsabilidade, dependências e contratos previstos.
 - **Replanejamento:** ao aprender com a execução ou com novas evidências, atualize contratos e fatias mantendo o que permanece válido e solicitando autorização explícita para diferenças materiais (novo escopo, novo comportamento, nova dependência ou contrato alterado).
 
+---
+
+## 4. Trabalho Paralelo e Múltiplas Sessões
+
+Quando um épico ou conjunto de tarefas envolver múltiplas sessões ou agentes simultâneos:
+- Aplique o **Protocolo de Trabalho Paralelo** ([`.mentor/processos/trabalho-paralelo.md`](../../processos/trabalho-paralelo.md)) e o modelo de atribuição ([`.mentor/modelos/atribuicao-paralela.md`](../../modelos/atribuicao-paralela.md)).
+- Pré-cadastre todas as tarefas do lote na reserva antes de iniciar a execução em worktrees separadas, evitando colisão de IDs.
+- Garanta disjunção estrita dos arquivos em `plano.muda` entre tarefas paralelas.
+- Distribua tarefas por independência e capacidade necessária, sem criar papéis fixos ou permanentes por modelo: agentes são substituíveis e o histórico é preservado na tarefa.
+
 Para detalhes completos sobre formato de arquivos, ciclo em ondas e preservação de memória operacional, consulte **`.mentor/processos/planejamento.md`**.
+

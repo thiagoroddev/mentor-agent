@@ -141,6 +141,16 @@ Dependência entre fatias só existe quando há pré-requisito técnico real de 
 2. Cada fatia registra em `plano.composicao` o que entregou/ensinou sobre o épico, se a direção do épico se mantém (`a_direcao_se_mantem: true|false`) e o porquê.
 3. Se a direção cair (`a_direcao_se_mantem: false`), novas fatias são bloqueadas até revisão da estratégia aprovada (`mentor task iniciar <ID> --estrategia-revisada --motivo "<nova direcao>"`).
 
+## Atribuição em Trabalho Paralelo e Handoff de Sessão
+
+Quando múltiplas tarefas ou fatias rodam em paralelo em worktrees distintas ([`processos/trabalho-paralelo.md`](./trabalho-paralelo.md)):
+1. **Pré-cadastro e Reserva Centralizada:** todo o lote de tarefas deve ser registrado na reserva (`mentor task nova`) e commitado no ramo de planejamento ou na linha principal antes de qualquer slot iniciar sua execução. O ID da tarefa nasce único e compartilhado via Git; nunca crie tarefas concorrentes ad-hoc com IDs divergentes em worktrees separadas (CP-13).
+2. **Atribuição Exclusiva por Slot:** cada worktree assume no máximo uma tarefa em execução por vez (`0 de 1 em execucao`), respeitando o isolamento local. A atribuição é rastreada no modelo de atribuição ([`modelos/atribuicao-paralela.md`](../modelos/atribuicao-paralela.md)).
+3. **Handoff e Troca de Agente sem Novos Estados:** não existe estado "modelo-trocado". A tarefa, o plano e os artefatos pertencem ao repositório, não à ferramenta de IA. Se uma tarefa for transferida entre modelos ou sessões:
+   - Para transferir trabalho em andamento, utilize `mentor task pausar <ID> --motivo "handoff para sessão X" --commit` (ou preserve a branch na worktree).
+   - O agente substituto inspeciona a narrativa e o estudo do Portão 1 (`docs-mentor/tarefas/abertas/<ID>.md`), executa `mentor task retomar <ID>` e dá continuidade sem perda de contexto ou retrabalho (CP-01).
+   - O ID da tarefa, nome da branch e contratos firmados permanecem inalterados.
+
 ## Teste
 
 Escolha primeiro o escopo proporcional em `processos/teste.md`: prova existente, risco restante e motivo de eventual ampliação ficam nos campos de plano já existentes. Não repetir suíte por rotina nem apresentar teste focado como gate completo.

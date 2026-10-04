@@ -26,6 +26,13 @@ O Mentor aplica o mesmo método de planejamento em duas escalas complementares:
 - **Conteúdo:** o que muda arquivo por arquivo (`plano.muda`), critérios de aceite verificáveis com comandos de teste (`plano.criterios_aceite`), impacto, riscos, decisões aplicáveis (`plano.decisoes_aplicaveis`), inventário de reuso (`plano.reuso`), seleção de habilidades (`plano.habilidades`) e avaliação multidimensional (`plano.avaliacao`).
 - **Atalho:** tarefas pontuais ou localizadas podem ir diretamente ao planejamento individual sem a necessidade de criar rascunho prévio em arquivo separado.
 
+### Distribuição em Épicos e Trabalho Paralelo por Slots
+Quando um épico ou conjunto de tarefas envolve múltiplos agentes ou sessões concorrentes (ex.: modelo A no planejamento/spikes, modelo B na interface, modelo C em backend/testes):
+- **Protocolo Canônico:** consulte e aplique [`.mentor/processos/trabalho-paralelo.md`](./trabalho-paralelo.md) e o modelo [`.mentor/modelos/atribuicao-paralela.md`](../modelos/atribuicao-paralela.md).
+- **Pré-cadastro Centralizado do Lote:** todas as tarefas e seus IDs (`TASK-...`) devem ser cadastradas e commitadas na linha principal ou em branch de planejamento (`plan/...`) antes da distribuição às worktrees, evitando colisão de IDs ou divergência de escopo em árvores separadas (CP-13).
+- **Disjunção Estrita de `plano.muda`:** fatias paralelas devem ter escopo de arquivos de produção mutuamente exclusivo, eliminando conflitos semânticos no código.
+- **Distribuição por Independência e Capacidade:** tarefas são alocadas com base em complexidade e afinidade de contexto, nunca em papéis rígidos ou permanentes de ferramentas. Modelos são intercambiáveis: se a sessão mudar de agente, o ID da tarefa, o branch de trabalho e o slot são preservados sem perda do estudo ou de histórico (CP-01).
+
 ---
 
 ## 2. Planejamento em Ondas (*Rolling Wave Planning*)
@@ -76,6 +83,7 @@ O plano separa a avaliação da carga de trabalho em cinco eixos, distinguindo e
 - **Moderada Complexidade:** perfil *geral*, effort *médio*.
 - **Alta Complexidade:** perfil *geral de alta capacidade* ou *avançado*, effort *alto*.
 - **Muito Alta Complexidade:** perfil *avançado*, effort *alto* (ou *máximo* quando formalmente justificado).
+- **Alocação por Capacidade e Modelos Intercambiáveis:** o mapeamento de perfis e ferramentas (ex.: Codex para spikes/planejamento, Claude para regras de negócio/testes, Antigravity para front-end/ferramental) é orientativo e baseado na aptidão técnica para a tarefa. Nenhuma ferramenta tem papel fixo permanente: qualquer modelo com capacidade compatível pode assumir qualquer fatia, preservando os contratos do Portão 1.
 
 ---
 

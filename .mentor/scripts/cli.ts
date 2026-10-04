@@ -42,7 +42,8 @@ mentor <comando>
        [--valor --urgencia --depende --requisitos --cerimonia --fatia-de]
   task puxar <ID>                      reserva -> ciclo, conferindo a regra de passagem
   task guardar <ID>                    ciclo -> reserva
-  task fatiar <ID> --titulos "a|b|c"   divide em fatias encadeadas
+  task fatiar <ID> --titulos "a|b|c"   divide em fatias paralelas por padrao
+       [--ordem "1>2,1>3" --motivo-ordem "..."] [--esforco H/IA]
   task cancelar <ID> --motivo "..."    encerra sem fazer; o numero nao volta
   task absorver <ID> --por <ID>        escopo absorvido por outra tarefa
   task validar <ID> --aprovado         registra a validacao manual

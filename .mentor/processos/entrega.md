@@ -21,12 +21,10 @@ link vai para três registros e prova *"as três juntas passaram"*, não *"esta 
 ramo que não compila. Aí é um ramo só, com os dois IDs, e uma linha em cada registro dizendo que
 foram entregues juntas.
 
-### Épicos e fluxo de fatias
+### Épicos, fatias sequenciais e branches paralelas
 
-Em épicos compostos por múltiplas fatias:
-- **Commits atômicos locais:** Cada fatia executa seu ciclo completo de forma independente (`mentor task puxar` -> `iniciar` -> implementar -> gate Nível 1 rápido -> `finalizar` -> `git commit`). Isso gera um histórico limpo e rastreável, com um commit atômico por fatia.
-- **Push acumulado e validação consolidada:** Não se faz envio remoto (`git push`) a cada fatia intermediária do épico. O conjunto de commits locais é mantido na branch de trabalho e enviado em um **único `git push`** ao término do épico ou do lote estável.
-- **Garantia global no pre-push:** No momento do `git push`, o hook de pré-envio executa os testes de Nível 2 (integração e E2E) sobre o estado final, garantindo a integridade de todas as fatias consolidadas antes de atingir o repositório remoto.
+- **Lote Sequencial Local:** Quando um mesmo operador executa um lote sequencial de fatias no mesmo ramo (`rf-014-epico`), faz commits atômicos por fatia (`task puxar` -> `iniciar` -> gate N1 -> `finalizar` -> `git commit`) e pode consolidar em um único `git push` ao término do lote, onde o pre-push valida o Nível 2.
+- **Branches Paralelas e Integração Serial (CP-14):** Quando tarefas rodam em paralelo em slots distintos ([`processos/trabalho-paralelo.md`](./trabalho-paralelo.md)), cada branch de tarefa (`task/<ID>`) é uma unidade independente com seu próprio PR ou entrega. A integração na linha principal é **serial** (*First-to-Merge*): a primeira branch é incorporada diretamente; a segunda sincroniza com `git merge origin/main`, resolve conflitos administrativos e valida sua fatia antes de integrar.
 
 ## A linha principal
 
@@ -37,22 +35,15 @@ Quando `contexto.json` exige PR em `revisao_antes_do_merge`, o hook barra envio 
 **O que o hook de pre-push faz,** olhando os refs enviados: confere marca de tarefa, cobertura incremental contra os blobs do ref (inclusive outro ramo/worktree), evidência dos gates para a árvore enviada e os gates locais quando aplicáveis; depois **mostra** o `verificar`, sem barrar por achados não relacionados. Mudança auditável depois do parecer exige nova `REV`. Envio só para `wip/` passa direto. Light sem mudança auditável segue as checagens mecânicas; a marca `(light)` sozinha não libera conteúdo funcional.
 
 **Prova por Árvore em Squash Merge:**
-Quando o projeto adota merge por *squash* (gerando um commit único com novo SHA na linha principal), o Git local perde o vínculo de ancestrais e comandos como `git branch --merged` não reconhecem o ramo como entregue, fazendo o `git branch -d` recusar a exclusão.
-A evidência determinística de que o trabalho está entregue é a **prova por árvore vazia**:
-```bash
-git diff origin/main <branch>
-```
-Se o diff não contiver mudanças da branch (ou estiver vazio após sincronizar com `origin/main`), a árvore de trabalho da branch está 100% incorporada. O ramo local pode então ser excluído com segurança:
-```bash
-git branch -D <branch>
-```
+Quando o projeto adota merge por *squash*, o Git perde ancestrais e `git branch -d` recusa a exclusão. A evidência de entrega é a árvore incorporada: sincronize o ramo com a principal (`git merge origin/main`) e verifique se `git diff origin/main <branch>` está vazio ou se todos os arquivos modificados pela tarefa estão idênticos na linha principal. Somente com a árvore confirmada, exclua o ramo local com `git branch -D <branch>`.
 
-**Resolução de Conflitos em Gerados:**
-Conflitos concorrentes em arquivos derivados (`contexto.md`, `backlog.md`, `reserva.md`, `0-indice.md`), no log `recusas.jsonl` ou no modelo `contexto.json` são resolvidos determinísticamente pelo comando:
+**Resolução Semântica de Conflitos em Gerados:**
+Conflitos concorrentes em arquivos derivados (`contexto.md`, `backlog.md`, `reserva.md`, `0-indice.md`), no log `recusas.jsonl` ou no modelo `contexto.json` são resolvidos pelo comando:
 ```bash
 mentor resolver-gerados
 ```
-Ele faz a fusão semântica de `contexto.json` preservando decisões de ambos os lados, une as linhas de `recusas.jsonl` e regenera as visões markdown diretamente do estado consolidado, sem riscos de inversão de `--ours` entre merge e rebase.
+Ele realiza a fusão semântica 3-way de `contexto.json` (preservando decisões de ambos os ramos), une linhas de `recusas.jsonl` e regenera as vistas markdown a partir do estado consolidado.
+⚠️ **Limites e Veredito Estrito:** o resolvedor trata exclusivamente os arquivos de ciclo gerenciados pelo Mentor; ele **não arbitra código-fonte de aplicação**, cuja disjunção deve ser assegurada no planejamento. Se houver falha de parse ou qualquer conflito não resolvido restante no índice Git (`git diff --name-only --diff-filter=U`), o comando encerra com código de saída 1 e preserva os marcadores para inspeção, retornando código 0 apenas com o índice 100% limpo.
 
 **Integrar cedo e com frequência** (OPS-15). Ramo aberto há semanas é a forma mais invisível de
 desperdício, porque parece progresso.

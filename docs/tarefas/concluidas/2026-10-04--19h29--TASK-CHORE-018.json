@@ -4,7 +4,7 @@
   "tipo": "CHORE",
   "titulo": "Instrucoes coerentes de trabalho paralelo",
   "fatia_de": "TASK-CHORE-014",
-  "estado": "aberta",
+  "estado": "concluida",
   "cerimonia": "Standard",
   "perfil": null,
   "valor": "importante",
@@ -17,15 +17,15 @@
     "TASK-CHORE-015"
   ],
   "ordem_motivo": "A fornece o contrato operacional para B/C/D; E comprova e integra suas entregas",
-  "fila": "reserva",
+  "fila": "ciclo",
   "ordem": null,
   "origem": "titulo-autossuficiente",
   "requisitos": [],
   "sem_requisito_motivo": null,
   "criada_em": "04/10/26 18:21",
-  "iniciada_em": null,
-  "commit_base": null,
-  "concluida_em": null,
+  "iniciada_em": "04/10/26 19:02",
+  "commit_base": "d3f5cf43150811b1de1ef783716efdc14fd74f6d",
+  "concluida_em": "04/10/26 19:29",
   "plano": {
     "muda": [
       ".mentor/processos/planejamento.md",
@@ -40,22 +40,46 @@
       {
         "texto": "Planejamento e sua skill orientam distribuir tarefas por independência e capacidade, com exemplo substituível de modelos.",
         "teste": "CP-01/CP-13: revisão conjunta de processo e modelo A",
-        "evidencia": null
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Revisão conjunta de .mentor/processos/planejamento.md e .mentor/skills/planejamento/SKILL.md orientando distribuicao de epicos por independencia (plano.muda disjunto) e alocacao por capacidade e esforco com modelos intercambiaveis (CP-01 e CP-13).",
+          "log_ref": null,
+          "executado_em": "04/10/26 19:27"
+        }
       },
       {
         "texto": "Entrega distingue lote sequencial e branches paralelas, respeitando política de PR do consumidor e integração serial.",
         "teste": "CP-14: revisão dos dois fluxos e exemplos Git",
-        "evidencia": null
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Revisão de .mentor/processos/entrega.md distinguindo lote sequencial local de branches paralelas com integracao serial (First-to-Merge) e documentando os limites estritos do mentor resolver-gerados (CP-14).",
+          "log_ref": null,
+          "executado_em": "04/10/26 19:28"
+        }
       },
       {
         "texto": "Teste conserva gates exigidos e exige prova da árvore combinada, permitindo prova Git focada por risco.",
         "teste": "CP-12: revisão comparada com contexto e fingerprint vigente",
-        "evidencia": null
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Revisão de .mentor/processos/teste.md mantendo piramide de testes N1 vs N2, admitindo prova focada por risco de integracao no ciclo local e exigindo prova combinada na arvore integrada (CP-12).",
+          "log_ref": null,
+          "executado_em": "04/10/26 19:28"
+        }
       },
       {
         "texto": "README e ajuda do CLI descobrem o protocolo e descrevem fatiamento paralelo por padrão com --ordem explícita.",
         "teste": "Inspeção da saída de ajuda e comparação com cmd-fila.ts",
-        "evidencia": null
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Inspeção de README.md e saída de ajuda do CLI (node mentor.mjs) apresentando fatiamento paralelo por padrão e --ordem explicita compativel com a implementacao em cmd-fila.ts.",
+          "log_ref": null,
+          "executado_em": "04/10/26 19:28"
+        }
       }
     ],
     "impacto": "Processo e pacote Mentor; nenhuma implantação automática no projeto consumidor.",
@@ -118,9 +142,51 @@
       "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/01-problema-e-decisoes.md",
       "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/02-protocolo-e-contratos.md",
       "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/03-fatias-e-validacao.md"
-    ]
+    ],
+    "composicao": {
+      "o_que_esta_fatia_entrega": "Instruções coerentes de trabalho paralelo em planejamento, entrega, teste, skill, CLI e README conectando os contratos de slots, modelos intercambiáveis e First-to-Merge.",
+      "a_direcao_se_mantem": true,
+      "porque": "A documentação normativa e guias operacionais refletem perfeitamente as capacidades entregues nas fatias A, B e C sem introduzir complexidade ou quebra nos contratos vigentes."
+    }
   },
-  "gates": {},
+  "gates": {
+    "tipos": {
+      "rotulo": "APROVADO",
+      "vermelho_em": null,
+      "comando": "npx tsc --noEmit",
+      "codigo_saida": 0,
+      "saida": "npm notice run mentor-agent@0.14.0 npx\nnpm notice run 'tsc' --noEmit",
+      "executado_em": "04/10/26 19:27",
+      "commit_execucao": "d3f5cf43150811b1de1ef783716efdc14fd74f6d",
+      "arvore_hash": "c3afe661d81f28878423f0890ba0c62b722a1c87",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": null,
+      "ressalva": null,
+      "log_ref": "docs/.evidencias/logs/TASK-CHORE-018-tipos-1791152829603.log",
+      "chave_cache": "f1f8a6cefd023504906abb55036bd98c2962b204e6047a928029761a9299b1b2",
+      "digest_insumos": "c3afe661d81f28878423f0890ba0c62b722a1c87",
+      "vermelho_dispensado": null
+    },
+    "testes": {
+      "rotulo": "APROVADO",
+      "vermelho_em": null,
+      "comando": "node testes/executar.ts --unidade",
+      "codigo_saida": 0,
+      "saida": "REV-001: APROVADO · TASK-CHORE-123 · 0 achado(s)\nREV-001: APROVADO · TASK-CHORE-123 · 0 achado(s)\nREV-002: APROVADO · TASK-CHORE-123 · 0 achado(s)\n... [351 linhas omitidas] ...\n1 cenario(s), todos verdes. (modo unidade / rapido)\nREV-001 está desatualizada: contrato/regra docs-mentor/rascunhos/plano.contrato.json mudou desde a captura.\nREV-001 está desatualizada: src.ts mudou desde a captura. Prepare uma nova revisão.",
+      "executado_em": "04/10/26 19:27",
+      "commit_execucao": "d3f5cf43150811b1de1ef783716efdc14fd74f6d",
+      "arvore_hash": "c3afe661d81f28878423f0890ba0c62b722a1c87",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": null,
+      "ressalva": null,
+      "log_ref": "docs/.evidencias/logs/TASK-CHORE-018-testes-1791152871638.log",
+      "chave_cache": "dc37294e6b20fb9cd5e7742cf483fccfd254d56e11f076e0d7f72dfaae7d511c",
+      "digest_insumos": "c3afe661d81f28878423f0890ba0c62b722a1c87",
+      "vermelho_dispensado": null
+    }
+  },
   "achados": [],
   "validacao": "nao_requer",
   "validado_em": null,
@@ -131,7 +197,7 @@
   "riscos_aceitos": [],
   "absorvida_por": null,
   "cancelamento_motivo": null,
-  "narrativa": null,
+  "narrativa": "2026-10-04--19h29--TASK-CHORE-018--estudo-humano.md",
   "plano_ref": {
     "arquivo": "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/fatias/fatia-d-instrucoes.md",
     "sha256": "18048f36b6443ae8ed69fca5b7fba4b699883ee58257f1085a009eca13b4e589",
@@ -144,5 +210,15 @@
       "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/03-fatias-e-validacao.md": "c8f598de4276e6ffa7a9da518b25d2acf45b0300ebd1515e9b793405f4e741c1"
     }
   },
-  "plano_do_epico": null
+  "plano_do_epico": null,
+  "memoria_operacional": {
+    "resultado": "Instruções normativas, modelos de atribuição, ajuda de CLI e README harmonizados com o protocolo de trabalho paralelo por slots, modelos intercambiáveis e First-to-Merge.",
+    "aprendizados": [
+      "A distinção entre lote sequencial consolidado e branches paralelas com entrega serial (First-to-Merge) elimina a ambiguidade de quando consolidar commits em um único push vs abrir PRs por tarefa.",
+      "O alinhamento estrito do texto de ajuda do CLI com a implementação real de `cmd-fila.ts` reforça a convenção de fatias paralelas por padrão com `--ordem` explícita."
+    ],
+    "limites_conhecidos": [
+      "O comando `mentor resolver-gerados` é especializado em arquivos de ciclo do Mentor e não arbitra código de produção; conflitos em código de produto devem ser evitados via planejamento com `plano.muda` disjunto."
+    ]
+  }
 }

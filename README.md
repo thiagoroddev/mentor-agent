@@ -117,6 +117,17 @@ Cada ferramenta carregava uma coisa diferente, e cada uma revisava de um jeito. 
 - **`node mentor.mjs entrada migrar`** leva instalação antiga ao modelo novo, preservando as linhas do projeto.
 - **Revisão igual nas três**: qualquer pedido de revisão segue `processos/revisao.md` e carrega o guia de cada área tocada (tabela gerada do código); skill `revisao` como complemento.
 
+### Trabalho Paralelo por Slots e Multi-Agente (v0.14.0)
+
+Para equipes onde múltiplos agentes seniores de IA ou desenvolvedores atuam simultaneamente no mesmo repositório sem atrito:
+
+- **Topologia de Slots Fixos em Git Worktrees**: em vez de criar e destruir diretórios a cada tarefa, configure slots de trabalho reutilizáveis apontando para o mesmo repositório Git (ex.: `slot-a/`, `slot-b/`, `slot-c/` ou por ferramenta como `slot-codex/`, `slot-antigravity/`, `slot-claude/`). Dependências e caches (`node_modules`) ficam prontos. Processo completo em [`.mentor/processos/trabalho-paralelo.md`](./.mentor/processos/trabalho-paralelo.md) e modelo em [`.mentor/modelos/atribuicao-paralela.md`](./.mentor/modelos/atribuicao-paralela.md).
+- **Fatias Paralelas por Padrão**: `node mentor.mjs task fatiar <ID> --titulos "A|B|C"` cria fatias paralelas e independentes por padrão (`depende_de: []`). Dependências técnicas reais de código são declaradas explicitamente via `--ordem "1>2,1>3" --motivo-ordem "<justificativa>"`.
+- **Diagnóstico Multi-Worktree no `doctor`**: `node mentor.mjs doctor` inspeciona todas as worktrees ativas via Git porcelain com terminador nulo, audita tarefas em execução por slot, valida isolamento e alerta sobre eventuais colisões de branch ou escopo.
+- **Resolução Semântica Estrita (`mentor resolver-gerados`)**: ao integrar branches irmãs (*First-to-Merge*), resolve automaticamente divergências em `contexto.json`, une linhas de `recusas.jsonl` e regenera as vistas markdown. Se qualquer arquivo falhar ou o índice contiver conflitos restantes, encerra com código 1 sem mascarar problemas.
+- **Modelos Intercambiáveis**: nenhuma ferramenta tem propriedade rígida de subsistemas. Tarefas são distribuídas por complexidade e capacidade, e transferências preservam TASK-ID, branch e o estudo integral do Portão 1.
+
+
 ### Correções de Campo, Revisão por Tarefa e Rigor pelo Contexto (v0.13.0)
 
 As 20 correções que o piloto fez como patch local entre 15/09 e 30/09/2026 viram versão oficial. Plano em [`PLANO-v0.13.0.md`](./PLANO-v0.13.0.md); notas em [`NOTAS-DA-RELEASE-v0.13.0.md`](./NOTAS-DA-RELEASE-v0.13.0.md).

@@ -30,7 +30,9 @@ automático para repetir testes.
 Para manter o ciclo de desenvolvimento rápido sem comprometer a robustez, os testes automatizados são organizados em dois níveis:
 
 - **Nível 1 (Unidade / Ciclo de Tarefa):** Prova rápida (~segundos), determinística e focada na lógica alterada (funções puras, componentes isolados, contratos de módulo, regras de negócio). Deve ser o comando declarado no gate rotineiro `gates.testes` no `contexto.json`. Cada tarefa individual fecha e afere seus critérios contra o Nível 1 sem overhead de subprocessos pesados de Git ou simulações demoradas de infraestrutura.
+  - *Prova focada por risco de integração:* Quando a tarefa específica tocar mecânicas de Git, worktrees, concorrência ou resolução de conflitos, ela pode e deve incluir testes focados dessa integração em seu ciclo local, sem transformar o gate rotineiro na bateria global.
 - **Nível 2 (Integração / E2E / Pre-push / Release):** Prova abrangente (~minutos) do ecossistema completo, múltiplos módulos integrados, simulação de fluxos reais e subambientes. Acionado antes do envio remoto (`pre-push`), no fechamento consolidado de épicos, em releases/pacote ou em pipelines de CI.
+  - *Validação na árvore integrada (CP-12):* A prova combinada de múltiplas fatias e branches paralelas pertence à árvore integrada final, nunca a ramos isolados antes do merge. Mudança em insumos relevantes de código invalida evidências anteriores e requer nova aferição; atualizações administrativas em arquivos derivados sem impacto funcional preservam o fingerprint vigente.
 
 Falha ou bloqueio do harness pede diagnóstico do harness, não reconstrução da correção já comprovada.
 Registre o achado e seu efeito na cobertura; adapte apenas o necessário ou proponha o trabalho adicional

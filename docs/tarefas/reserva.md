@@ -7,6 +7,5 @@
 
 | ID | Titulo | Fatia | Tipo | Valor | Esforco H/IA | Origem |
 |---|---|---|---|---|---|---|
-| `TASK-CHORE-014` | Trabalho paralelo por slots no Mentor | epico, 2 fatias | CHORE | importante | G/G | titulo-autossuficiente |
-| `TASK-CHORE-018` | Instrucoes coerentes de trabalho paralelo | 4/5 de TASK-CHORE-014 | CHORE | importante | M/M | titulo-autossuficiente |
+| `TASK-CHORE-014` | Trabalho paralelo por slots no Mentor | epico, 1 fatias | CHORE | importante | G/G | titulo-autossuficiente |
 | `TASK-CHORE-019` | Validacao integrada e consolidacao | 5/5 de TASK-CHORE-014 | CHORE | importante | M/M | titulo-autossuficiente |
