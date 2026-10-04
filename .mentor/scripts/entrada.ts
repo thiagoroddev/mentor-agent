@@ -1,8 +1,9 @@
-import { caminhos } from './arquivos.ts'
+import { caminhos, relativo } from './arquivos.ts'
 import {
   diagnosticoDosPontosDeEntrada, estadoDasSkills as retratoDasSkills, migrarPontosDeEntrada, relatorioDeSkills,
   sincronizarAgentes, sincronizarSkills,
 } from './instalar.mjs'
+import { gerarHabilidadeConsistencia } from './adrs.ts'
 
 export {
   PONTOS_DE_ENTRADA, criarPontosDeEntrada, diagnosticoDosPontosDeEntrada, estadoDoBloco, estadoDasSkills,
@@ -37,6 +38,16 @@ export function gerarCarregamento(): number {
     console.error(`AGENTS.md com marcadores do nucleo invalidos (${bloco.detalhe}): nada foi alterado. Conserte a mao e rode de novo.`)
     codigo = 1
   }
+
+  const c = caminhos()
+  const resHabilidade = gerarHabilidadeConsistencia(c)
+  if (!resHabilidade.ok) {
+    console.error(`Erro ao gerar habilidade consistencia-do-projeto:\n  ${resHabilidade.erro}`)
+    codigo = 1
+  } else if (resHabilidade.modificada && resHabilidade.caminho) {
+    console.log(`Habilidade "consistencia-do-projeto" gerada em ${relativo(resHabilidade.caminho, c.raiz)}.`)
+  }
+
   const retrato = retratoDasSkills(l)
   if (retrato.sincronizadas || retrato.destinos.some((d: { registro: { estado: string } }) => d.registro.estado === 'corrompido')) {
     const r = sincronizarSkills(l)

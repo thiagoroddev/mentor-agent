@@ -39,5 +39,13 @@
     "sha256": "a38406f361bd051f90d22ee86655a73ac1233a89a69bcf42f6b8049a8c39c36b",
     "secao": null,
     "registrado_em": "03/10/26"
+  },
+  {
+    "id": "PLAN-fatia-c-gerador-e-verificar-md",
+    "titulo": "Fatia C: Gerador da habilidade de consistência, validação de ADRs no verificar e integração",
+    "arquivo": "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/fatias/fatia-c-gerador-e-verificar.md",
+    "sha256": "28df0b9cd842a4a8f52d83161f7a2503fa505b13109b0371770b79a009d93101",
+    "secao": null,
+    "registrado_em": "03/10/26"
   }
 ]

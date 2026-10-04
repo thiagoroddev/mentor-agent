@@ -1,6 +1,6 @@
 {
   "versao": "0.14.0",
-  "gerado_em": "2026-10-04T02:07:32.622Z",
+  "gerado_em": "2026-10-04T02:56:39.211Z",
   "arquivos": {
     "esquemas/contexto.json": "6a08c3b851d076cd",
     "esquemas/diretrizes-adr.json": "b2eac0e1d50d2250",
@@ -40,7 +40,7 @@
     "processos/tarefa.md": "7aab80eedf7bfafb",
     "processos/teste.md": "edef2857878f6bbb",
     "regras.json": "5f5ddff0c236ed68",
-    "scripts/adrs.ts": "108d6de0d7fc14cd",
+    "scripts/adrs.ts": "070acdbb4d2df352",
     "scripts/arquivos.ts": "5e251404a6051eeb",
     "scripts/casos.ts": "9d339f3923dde378",
     "scripts/cli.ts": "3f42b2a5a8e113ef",
@@ -65,9 +65,9 @@
     "scripts/cmd-riscos.ts": "54da3ca4e24f28eb",
     "scripts/cmd-stack.ts": "b2eebe54b9a2b7cd",
     "scripts/cmd-tarefa.ts": "86f2b6fd495895d4",
-    "scripts/cmd-verificar.ts": "29c191df827a03c2",
+    "scripts/cmd-verificar.ts": "253d8abd97c92046",
     "scripts/cobertura-incremental.ts": "69e44b8a2eda1e1f",
-    "scripts/entrada.ts": "ae97087b299e95a5",
+    "scripts/entrada.ts": "3f18b4f3c4e4bb1e",
     "scripts/executor-gates.ts": "ac65148d0fb21001",
     "scripts/fingerprint.ts": "fe89059977986913",
     "scripts/ids.ts": "b64a05cfaa370e69",

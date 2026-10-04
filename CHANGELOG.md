@@ -11,6 +11,10 @@ O formato baseia-se em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0
   - Processo de teste (`teste.md`) atualizado com a distinção formal entre testes de Nível 1 (unidade/rápidos, na casa dos segundos, foco no ciclo de tarefas e TDD) e testes de Nível 2 (integração, E2E, cenários completos de pre-push e release).
   - Processo de entrega (`entrega.md`) atualizado formalizando a cadência de épicos: commits locais atômicos por tarefa/fatia validados via gates de Nível 1, consolidando o push remoto no fechamento do épico ou lote estável (onde o pre-push executa a bateria Nível 2).
   - Suporte à flag `--unidade` / `--rapido` em `testes/executar.ts` e configuração do gate `testes` no `contexto.json` para execução ágil no ciclo de tarefas.
+- **Gerador da habilidade de consistência e auditoria de ADRs no `mentor verificar`**:
+  - Geração determinística da habilidade `consistencia-do-projeto` em `docs-mentor/skills/` (ou `docs/skills/`), sintetizando diretrizes arquiteturais ativas ordenadas por ID, tratando explicitamente ausência total de ADRs e diagnosticando arquivos legados com extração pendente.
+  - Integração em `gerarCarregamento()` (`entrada.ts`), sincronizando automaticamente a habilidade do projeto para `.agents/skills/` e `.claude/skills/` com controle de integridade e hashes.
+  - Nova família de auditoria `adrs` no `mentor verificar`, conferindo integridade semântica (rejeição de ciclos, identificadores duplicados, referências inexistentes) e detectando drift entre as ADRs em disco e a habilidade gerada.
 - **Formato operacional versionado e resolvedor de vigência para Diretrizes de ADRs**:
   - Bloco estruturado opcional `## Diretrizes operacionais` em ADRs com array JSON cercado por ```json mentor:diretrizes```, validado pelo esquema `.mentor/esquemas/diretrizes-adr.json`.
   - Tipos e resolvedor determinístico em `.mentor/scripts/adrs.ts` (`extrairDiretrizesDeTexto`, `carregarDiretrizesDoProjeto`, `calcularVigenciaDiretrizes`) suportando substituição parcial/granular (`substitui`), detecção de ciclos, IDs duplicados e referências inválidas, mantendo ADRs legadas legíveis sem interromper automações.

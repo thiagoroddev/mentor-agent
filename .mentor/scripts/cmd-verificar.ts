@@ -7,6 +7,7 @@ import { carregarContexto, carregarInvariantes, carregarReferencias, carregarReq
 import { MARCADOR } from './tipos.ts'
 import { problemasDoInventario } from './laboratorio.ts'
 import { AVISO_AGENTES, LIMITE_AGENTES, estadoDasSkills, estadoDoBloco, problemasDasSkills } from './instalar.mjs'
+import { verificarConsistenciaAdrs } from './adrs.ts'
 import type { Tetos } from './tipos.ts'
 
 export interface Achado { familia: string; onde: string; problema: string }
@@ -301,9 +302,11 @@ function avisosDeCarregamento(): string[] {
 }
 
 export function coletarAchados(): Achado[] {
+  const c = caminhos()
   return [
     ...marcadores(), ...tetos(), ...referencias(),
     ...links(), ...inventarioDeRegras(), ...divergenciaDoPacote(), ...carregamento(),
+    ...verificarConsistenciaAdrs(c),
   ]
 }
 
@@ -315,7 +318,7 @@ export function verificar(): number {
   }
   for (const aviso of avisosDeCarregamento()) console.log(`· ${aviso}`)
   if (achados.length === 0) {
-    console.log('APROVADO. Quatro familias: marcadores, tetos de texto, integridade referencial (ponteiros, links e inventario de regras) e carregamento (nucleo no AGENTS.md e copias das skills).')
+    console.log('APROVADO. Cinco familias: marcadores, tetos de texto, integridade referencial (ponteiros, links e inventario de regras), carregamento (nucleo no AGENTS.md e copias das skills) e diretrizes arquiteturais (ADRs).')
     return 0
   }
   console.error(`REPROVADO. ${achados.length} achado(s):\n`)

@@ -1,0 +1,176 @@
+{
+  "id": "TASK-CHORE-006",
+  "revisao_incremental_requerida": false,
+  "tipo": "CHORE",
+  "titulo": "Gerador da habilidade de consistência e validação no verificar",
+  "fatia_de": null,
+  "estado": "concluida",
+  "cerimonia": "Standard",
+  "perfil": "completo",
+  "valor": "importante",
+  "urgencia": "normal",
+  "esforco": {
+    "humano": "M",
+    "ia": "G"
+  },
+  "depende_de": [],
+  "ordem_motivo": null,
+  "fila": "ciclo",
+  "ordem": null,
+  "origem": "titulo-autossuficiente",
+  "requisitos": [],
+  "sem_requisito_motivo": null,
+  "criada_em": "03/10/26 23:35",
+  "iniciada_em": "03/10/26 23:35",
+  "commit_base": "e4e85627ff5cfbaada300479ef1241eb9db34236",
+  "concluida_em": "03/10/26 23:56",
+  "plano": {
+    "muda": [
+      ".mentor/scripts/adrs.ts",
+      ".mentor/scripts/entrada.ts",
+      ".mentor/scripts/cmd-verificar.ts",
+      "testes/adrs-gerador-e-verificar.test.ts",
+      "testes/cenarios/31-testes-de-unidade.ts",
+      "CHANGELOG.md"
+    ],
+    "criterios_aceite": [
+      {
+        "texto": "gerarHabilidadeConsistencia produz docs-mentor/skills/consistencia-do-projeto/SKILL.md com frontmatter e listagem determinística de diretrizes ativas ordenadas por ID.",
+        "teste": "testes unitários em adrs-gerador-e-verificar.test.ts",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Validado via testes/adrs-gerador-e-verificar.test.ts (geração determinística da habilidade na fonte do projeto com frontmatter e ordenação estrita por ID)",
+          "executado_em": "03/10/26 23:53"
+        }
+      },
+      {
+        "texto": "Projeto sem ADRs gera SKILL.md com declaração explícita de ausência, sem falhar silenciosamente nem simular regras inexistentes.",
+        "teste": "testes unitários em adrs-gerador-e-verificar.test.ts",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Validado via testes/adrs-gerador-e-verificar.test.ts (projeto sem ADRs gera SKILL.md com declaração explícita de ausência sob seção Status)",
+          "executado_em": "03/10/26 23:53"
+        }
+      },
+      {
+        "texto": "ADRs legadas sem bloco estruturado são listadas no SKILL.md como pendências de extração sem quebrar a geração.",
+        "teste": "testes unitários em adrs-gerador-e-verificar.test.ts",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Validado via testes/adrs-gerador-e-verificar.test.ts (arquivos legados sem bloco mentor:diretrizes são listados sob Decisões Legadas em Linguagem Natural sem travar a geração)",
+          "executado_em": "03/10/26 23:53"
+        }
+      },
+      {
+        "texto": "gerarCarregamento invoca a geração da habilidade de consistência e propaga a sincronização para .agents/skills e .claude/skills.",
+        "teste": "testes unitários em adrs-gerador-e-verificar.test.ts",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Validado via integração em gerarCarregamento() e testes unitários de carregamento/sincronização de skills",
+          "executado_em": "03/10/26 23:53"
+        }
+      },
+      {
+        "texto": "mentor verificar valida a integridade das ADRs (rejeitando ciclos, IDs duplicados e referências inválidas) e acusa drift quando a habilidade gerada está desatualizada em relação às ADRs.",
+        "teste": "testes unitários em adrs-gerador-e-verificar.test.ts",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Validado via verificarConsistenciaAdrs() e testes unitários em adrs-gerador-e-verificar.test.ts (rejeição de ciclos, duplicatas, referências inexistentes e detecção de drift de geração)",
+          "executado_em": "03/10/26 23:53"
+        }
+      },
+      {
+        "texto": "A bateria de testes unitários (Nível 1) executa em menos de 5 segundos e passa com código 0.",
+        "teste": "node testes/executar.ts --unidade",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Suite de testes unitários Nível 1 executada com sucesso via node testes/executar.ts --unidade (todos verdes, código 0)",
+          "executado_em": "03/10/26 23:53"
+        }
+      }
+    ],
+    "impacto": "Geração da habilidade consistencia-do-projeto para agentes e validação estrita no mentor verificar sem impacto negativo no fluxo existente.",
+    "estado_da_arte": {
+      "implementacoes_consolidadas": [
+        "Injeção direta de todo o histórico de ADRs no prompt de sistema ou contexto global",
+        "Frameworks genéricos de linter de markdown (ex: markdownlint) sem semântica arquitetural",
+        "Sistemas de governança baseados em repositório centralizado ou serviços externos"
+      ],
+      "motivo_descarte": "Injetar todas as ADRs no prompt polui a janela de contexto com decisões obsoletas e custa tokens desnecessários; linters genéricos não entendem semântica de substituição nem relações entre diretrizes; serviços externos quebram a portabilidade local e operam fora do ciclo de vida do agente.",
+      "o_que_resta_construir": "Integrar a habilidade gerada diretamente no fluxo do compilador do plano e no ciclo de execução/revisão das tarefas nas próximas fatias do épico (Fatias D1-D3)."
+    },
+    "custo_de_oportunidade": {
+      "o_que_existe_pronto": "Ferramentas de geração estática de documentação (ex: VitePress/Docusaurus) e analisadores estáticos de regras baseados em AST de Markdown.",
+      "custo_estimado": "Custo nulo de licença (open source), porém alto custo de complexidade arquitetural e perda de foco da interface CLI leve do Mentor.",
+      "dependencias_ou_infra": "Exigiria runtime Node com dependências pesadas de markdown e AST externa se adotadas bibliotecas de terceiros.",
+      "tempo_substituido": "Aproximadamente 2 a 3 semanas de desenvolvimento e manutenção contínua de ferramentas integradoras desacopladas."
+    },
+    "riscos": [
+      "Regressão na sincronização existente de skills em entrada.ts / instalar.mjs",
+      "Falso positivo no mentor verificar para projetos sem ADRs ou com ADRs legadas",
+      "Formatação divergente ou não-determinística do SKILL.md gerado gerando diff espúrio"
+    ],
+    "dependencias_novas": [],
+    "proporcionalidade": "Standard completo: nova capacidade central do ciclo de vida de skills e auditoria do Mentor com validação de invariantes por testes de unidade rápidos."
+  },
+  "gates": {
+    "tipos": {
+      "rotulo": "APROVADO",
+      "vermelho_em": null,
+      "comando": "npx tsc --noEmit",
+      "codigo_saida": 0,
+      "saida": "npm notice run mentor-agent@0.14.0 npx\nnpm notice run 'tsc' --noEmit",
+      "executado_em": "03/10/26 23:54",
+      "commit_execucao": "e4e85627ff5cfbaada300479ef1241eb9db34236",
+      "arvore_hash": "d9917db16fa95219da811bdbfa1511526a153640",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": null,
+      "ressalva": null,
+      "log_ref": "docs/.evidencias/logs/TASK-CHORE-006-tipos-1791082445439.log",
+      "chave_cache": "df1ffa38daeb7303fd3742f411f8ad1fc7f9722a121de037d0f37489b4ae93af",
+      "digest_insumos": "d9917db16fa95219da811bdbfa1511526a153640",
+      "vermelho_dispensado": null
+    },
+    "testes": {
+      "rotulo": "APROVADO",
+      "vermelho_em": null,
+      "comando": "node testes/executar.ts --unidade",
+      "codigo_saida": 0,
+      "saida": "REV-001: APROVADO · TASK-CHORE-123 · 0 achado(s)\nREV-001: APROVADO · TASK-CHORE-123 · 0 achado(s)\nREV-002: APROVADO · TASK-CHORE-123 · 0 achado(s)\nAUD-005-B01 resolvida como \"tarefa\": TASK-CHORE-124\n  ok   31-testes-de-unidade\n\n1 cenario(s), todos verdes. (modo unidade / rapido)\nREV-001 está desatualizada: contrato/regra docs-mentor/rascunhos/plano.contrato.json mudou desde a captura.\nREV-001 está desatualizada: src.ts mudou desde a captura. Prepare uma nova revisão.",
+      "executado_em": "03/10/26 23:55",
+      "commit_execucao": "e4e85627ff5cfbaada300479ef1241eb9db34236",
+      "arvore_hash": "d9917db16fa95219da811bdbfa1511526a153640",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": null,
+      "ressalva": null,
+      "log_ref": "docs/.evidencias/logs/TASK-CHORE-006-testes-1791082512914.log",
+      "chave_cache": "c021182c44196b0d16ff0f3c5f1e8d300ecca2386ce1cd1f2eb4c1cd74fbb026",
+      "digest_insumos": "d9917db16fa95219da811bdbfa1511526a153640",
+      "vermelho_dispensado": null
+    }
+  },
+  "achados": [],
+  "validacao": "nao_requer",
+  "validado_em": null,
+  "validacao_motivo": null,
+  "tarefas_geradas": [],
+  "adrs": [],
+  "divida_tecnica": [],
+  "riscos_aceitos": [],
+  "absorvida_por": null,
+  "cancelamento_motivo": null,
+  "narrativa": "2026-10-03--23h56--TASK-CHORE-006--estudo-humano.md",
+  "plano_ref": {
+    "arquivo": "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/fatias/fatia-c-gerador-e-verificar.md",
+    "sha256": "28df0b9cd842a4a8f52d83161f7a2503fa505b13109b0371770b79a009d93101",
+    "secao": null
+  }
+}

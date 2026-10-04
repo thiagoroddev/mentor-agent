@@ -1,4 +1,5 @@
-import { basename } from 'node:path'
+import { mkdirSync, writeFileSync } from 'node:fs'
+import { basename, join } from 'node:path'
 import { existe, lerTexto, listar, relativo } from './arquivos.ts'
 import type { Caminhos } from './arquivos.ts'
 import type {
@@ -290,3 +291,193 @@ export function calcularVigenciaDiretrizes(
     problemas,
   }
 }
+
+export interface AchadoVerificacaoAdrs {
+  familia: string
+  onde: string
+  problema: string
+}
+
+/**
+ * Produz o Markdown da habilidade `consistencia-do-projeto` com frontmatter padronizado
+ * e listagem determinística estrita das diretrizes vigentes e diagnósticos de legado.
+ */
+export function gerarConteudoHabilidadeConsistencia(vigencia: ResultadoVigenciaDiretrizes): string {
+  const linhas: string[] = [
+    '---',
+    'name: consistencia-do-projeto',
+    'description: Diretrizes operacionais e restrições arquiteturais vigentes do projeto derivadas das ADRs.',
+    '---',
+    '',
+    '# Consistência do Projeto: Diretrizes Arquiteturais Vigentes',
+    '',
+    '<!-- Gerado por `node mentor.mjs gerar`. Não edite manualmente: edite a ADR de origem e rode gerar. -->',
+    '',
+    'Este documento consolida as diretrizes operacionais extraídas das Architecture Decision Records (ADRs) do projeto.',
+    'Toda tarefa de planejamento, implementação e revisão técnica deve consultar e respeitar as diretrizes vigentes listadas abaixo.',
+    'Em caso de dúvida ou necessidade de aprofundamento de contexto e alternativas consideradas, consulte o documento integral da respectiva ADR.',
+    '',
+  ]
+
+  if (vigencia.vigentes.length === 0 && vigencia.todas.length === 0 && vigencia.legado_sem_diretrizes.length === 0) {
+    linhas.push(
+      '## Status',
+      '',
+      'Nenhuma ADR registrada no projeto. Quando decisões arquiteturais caras de reverter forem tomadas, registre uma ADR com bloco estruturado `mentor:diretrizes`.',
+      '',
+    )
+    return linhas.join('\n')
+  }
+
+  linhas.push('## Diretrizes Vigentes', '')
+  if (vigencia.vigentes.length === 0) {
+    linhas.push('Nenhuma diretriz com estado "aceita" vigente no momento.', '')
+  } else {
+    const ordenadas = [...vigencia.vigentes].sort((a, b) => a.id.localeCompare(b.id))
+    for (const d of ordenadas) {
+      const titulo = d.titulo ? ` · ${d.titulo}` : ''
+      linhas.push(`### ${d.id}${titulo}`)
+      linhas.push(`- **ADR de origem**: \`${d.adr}\``)
+      linhas.push(`- **Alcance**: \`${d.alcance}\``)
+      linhas.push(`- **Regra**: ${d.regra}`)
+      if (d.excecoes.length > 0) {
+        linhas.push(`- **Exceções**: ${d.excecoes.join(', ')}`)
+      }
+      if (d.substitui.length > 0) {
+        linhas.push(`- **Substitui**: ${d.substitui.map((s) => `\`${s}\``).join(', ')}`)
+      }
+      linhas.push('')
+    }
+  }
+
+  if (vigencia.legado_sem_diretrizes.length > 0) {
+    linhas.push(
+      '## Decisões Legadas em Linguagem Natural',
+      '',
+      '⚠️ Os seguintes arquivos de ADR não possuem bloco estruturado `mentor:diretrizes` (extração pendente) e dependem de consulta direta ao texto original:',
+      '',
+    )
+    for (const leg of [...vigencia.legado_sem_diretrizes].sort()) {
+      linhas.push(`- \`${leg}\``)
+    }
+    linhas.push('')
+  }
+
+  return linhas.join('\n')
+}
+
+/**
+ * Gera ou atualiza deterministicamente o arquivo da habilidade `consistencia-do-projeto/SKILL.md`
+ * na fonte de documentos do projeto (`docs-mentor/skills/` ou `docs/skills/`).
+ */
+export function gerarHabilidadeConsistencia(
+  c: Caminhos,
+  opcoes?: { forcar?: boolean },
+): { ok: boolean; erro?: string; modificada: boolean; caminho?: string } {
+  const pastaSkill = join(c.docs, 'skills', 'consistencia-do-projeto')
+  const caminhoSkill = join(pastaSkill, 'SKILL.md')
+
+  const { diretrizes, legados, erros } = carregarDiretrizesDoProjeto(c)
+  if (erros.length > 0) {
+    return {
+      ok: false,
+      erro: `Erros ao ler ADRs:\n  ${erros.join('\n  ')}`,
+      modificada: false,
+    }
+  }
+
+  const vigencia = calcularVigenciaDiretrizes(diretrizes, legados)
+  if (vigencia.problemas.length > 0) {
+    return {
+      ok: false,
+      erro: `Inconsistências impeditivas nas ADRs:\n  ${vigencia.problemas.join('\n  ')}`,
+      modificada: false,
+    }
+  }
+
+  const temAdrs = diretrizes.length > 0 || legados.length > 0
+  if (!temAdrs && !existe(caminhoSkill) && !opcoes?.forcar) {
+    return { ok: true, modificada: false }
+  }
+
+  if (!existe(c.docs)) {
+    return { ok: true, modificada: false }
+  }
+
+  const novoConteudo = gerarConteudoHabilidadeConsistencia(vigencia)
+
+  if (existe(caminhoSkill)) {
+    const conteudoAtual = lerTexto(caminhoSkill)
+    if (conteudoAtual === novoConteudo) {
+      return { ok: true, modificada: false, caminho: caminhoSkill }
+    }
+  }
+
+  mkdirSync(pastaSkill, { recursive: true })
+  writeFileSync(caminhoSkill, novoConteudo, 'utf8')
+  return { ok: true, modificada: true, caminho: caminhoSkill }
+}
+
+/**
+ * Validação semântica e estrutural das ADRs para o `mentor verificar`:
+ * - Acusa erros de parsing ou schema.
+ * - Acusa ciclos, duplicidades ou referências inexistentes.
+ * - Detecta drift se a habilidade `consistencia-do-projeto` estiver ausente ou desatualizada.
+ */
+export function verificarConsistenciaAdrs(c: Caminhos): AchadoVerificacaoAdrs[] {
+  const achados: AchadoVerificacaoAdrs[] = []
+  const pastaSkill = join(c.docs, 'skills', 'consistencia-do-projeto')
+  const caminhoSkill = join(pastaSkill, 'SKILL.md')
+
+  const { diretrizes, legados, erros } = carregarDiretrizesDoProjeto(c)
+  for (const err of erros) {
+    achados.push({
+      familia: 'adrs',
+      onde: relativo(c.adr, c.raiz),
+      problema: err,
+    })
+  }
+
+  const vigencia = calcularVigenciaDiretrizes(diretrizes, legados)
+  for (const prob of vigencia.problemas) {
+    achados.push({
+      familia: 'adrs',
+      onde: relativo(c.adr, c.raiz),
+      problema: prob,
+    })
+  }
+
+  const temAdrs = diretrizes.length > 0 || legados.length > 0
+  if (temAdrs) {
+    if (!existe(caminhoSkill)) {
+      achados.push({
+        familia: 'adrs',
+        onde: relativo(caminhoSkill, c.raiz),
+        problema: 'habilidade "consistencia-do-projeto" ausente na fonte do projeto. Rode: node mentor.mjs gerar',
+      })
+    } else {
+      const esperado = gerarConteudoHabilidadeConsistencia(vigencia)
+      const atual = lerTexto(caminhoSkill)
+      if (atual !== esperado) {
+        achados.push({
+          familia: 'adrs',
+          onde: relativo(caminhoSkill, c.raiz),
+          problema: 'habilidade "consistencia-do-projeto" desatualizada em relação às ADRs. Rode: node mentor.mjs gerar',
+        })
+      }
+    }
+  } else if (existe(caminhoSkill)) {
+    const esperado = gerarConteudoHabilidadeConsistencia(vigencia)
+    const atual = lerTexto(caminhoSkill)
+    if (atual !== esperado) {
+      achados.push({
+        familia: 'adrs',
+        onde: relativo(caminhoSkill, c.raiz),
+        problema: 'habilidade "consistencia-do-projeto" desatualizada em relação às ADRs. Rode: node mentor.mjs gerar',
+      })
+    }
+  }
+
+  return achados
+}
+
