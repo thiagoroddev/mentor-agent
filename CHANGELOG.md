@@ -7,6 +7,13 @@ O formato baseia-se em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0
 ## [Não publicado]
 
 ### Adicionado
+- **Cópia integral do plano, revisões e memória operacional na narrativa (Fatia D2)**:
+  - Cópia determinística e integral do Markdown do plano para a narrativa da tarefa (`abertas/<ID>.md`), preservando o estudo técnico de engenharia aprovado com delimitadores discretos (`<!-- mentor:plano:inicio sha256="..." -->` e `<!-- mentor:plano:fim -->`).
+  - Idempotência estrita: re-execuções com o mesmo plano não duplicam texto nem alteram seções de desfecho existentes (`## 5. Desfecho e Validação Real`).
+  - Suporte a revisões de plano: atualização transparente do bloco delimitado em caso de alteração no hash do plano.
+  - Bloco estruturado ```json mentor:memoria``` no Desfecho extraído mecanicamente e sem IA para o campo `tarefa.memoria_operacional` ({ resultado, aprendizados, limites_conhecidos }) no encerramento (`mentor task concluir`/`finalizar`).
+  - Exigência do bloco de memória operacional para tarefas versão 2 no `mentor task finalizar`, mantendo retrocompatibilidade total com tarefas legadas.
+  - Suíte de testes unitários dedicada em `testes/narrativa-e-memoria.test.ts`.
 - **Campos novos nos contratos locais/portáteis e versão de contrato (Fatia D1)**:
   - Suporte a contratos versão 2 com novos campos operacionais: `decisoes_aplicaveis` (diretrizes e ADRs com alcance/exceções ou justificativa de ausência), `reuso` (existentes vs novos com artefato/local/motivo), `habilidades` (competências de planejamento e execução) e `avaliacao` (complexidade, dimensão dominante, justificativa, perfil de modelo e effort).
   - Atualização dos tipos em `tipos.ts` e do esquema em `tarefa.json`.

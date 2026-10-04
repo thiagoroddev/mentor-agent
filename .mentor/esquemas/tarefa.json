@@ -203,5 +203,7 @@
   "pausa_motivo": null,
   "bloqueada_por": [],
   "pausas": [],
+  "memoria_operacional": null,
+  "memoria_operacional_nota": "Memoria operacional extraida literalmente do bloco mentor:memoria da narrativa no encerramento: { resultado, aprendizados: [...], limites_conhecidos: [...] }.",
   "tipos_nota": "SPIKE e' exploracao declarada: responde uma pergunta, e' descartavel, e nao exige criterio com teste. Existe para a exploracao nao se disfarcar de tarefa normal."
 }

@@ -1,8 +1,9 @@
 import { createHash } from 'node:crypto'
 import { copyFileSync, cpSync, existsSync, lstatSync, mkdirSync, readFileSync, readdirSync } from 'node:fs'
 import { basename, dirname, isAbsolute, join, relative } from 'node:path'
-import { agora, caminhos, escreverJson, existe, lerJson, lerTexto, listar, relativo } from './arquivos.ts'
+import { agora, caminhos, escreverJson, escreverTexto, existe, lerJson, lerTexto, listar, relativo } from './arquivos.ts'
 import type { Caminhos } from './arquivos.ts'
+import { incorporarPlanoNaNarrativa } from './narrativa.ts'
 import { carregarTarefas } from './vistas.ts'
 import type {
   AvaliacaoPlano,
@@ -556,6 +557,17 @@ export function vincularPlano(id: string, flags: Record<string, string | undefin
   // Localiza arquivo json da tarefa para gravar
   const arquivoTarefa = join(t.estado === 'concluida' ? c.concluidas : c.abertas, `${t.id}.json`)
   escreverJson(arquivoTarefa, t)
+
+  // Se a tarefa estiver aberta e o plano tiver conteúdo, atualiza a narrativa com cópia integral do plano
+  if (t.estado !== 'concluida') {
+    const caminhoNarrativa = join(c.abertas, `${t.id}.md`)
+    const planoRes = resolverPlano(t)
+    const textoAtual = existe(caminhoNarrativa) ? lerTexto(caminhoNarrativa) : null
+    const resInc = incorporarPlanoNaNarrativa(textoAtual, t, planoRes)
+    if (resInc.modificado) {
+      escreverTexto(caminhoNarrativa, resInc.conteudo)
+    }
+  }
 
   console.log(`Tarefa ${id} vinculada ao plano "${rel}" (sha256: ${sha256.slice(0, 8)}).`)
 }

@@ -406,6 +406,14 @@ export interface Tarefa {
   ordem_motivo?: string | null
   plano_do_epico?: PlanoDoEpico | null
   narrativa: string | null
+  /** Memória operacional extraída literalmente do bloco mentor:memoria da narrativa no encerramento (0.14.0). */
+  memoria_operacional?: MemoriaOperacional | null
+}
+
+export interface MemoriaOperacional {
+  resultado: string
+  aprendizados: string[]
+  limites_conhecidos: string[]
 }
 
 /** Decisao de nao corrigir agora, com o custo conhecido. Exige gatilho e dono, ou nao vence nunca. */

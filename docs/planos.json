@@ -55,5 +55,13 @@
     "sha256": "8aa9b60dd206833693ad31cd4f22b9210b6d1e8cabb36af43bae7a5ae053bba4",
     "secao": null,
     "registrado_em": "04/10/26"
+  },
+  {
+    "id": "PLAN-fatia-d2-copia-integral-e-memo",
+    "titulo": "Fatia D2: Cópia integral e idempotente do plano, revisões e memória operacional",
+    "arquivo": "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/fatias/fatia-d2-copia-integral-e-memoria-operacional.md",
+    "sha256": "5c01564b7b9bb0d4bb055e50f2e4d353f99cc878c901d77ce3452360489fc13b",
+    "secao": null,
+    "registrado_em": "04/10/26"
   }
 ]

@@ -25,6 +25,7 @@ import { calcularFingerprintDosInsumos } from './fingerprint.ts'
 import { caminhosAuditaveisEntre, escopoExclusivoDoMentor, fonteLocal, lightApenasFormatacao, nomesAlteradosLocais, verificarCobertura } from './cobertura-incremental.ts'
 import { politicaDaTarefa } from './politica-rigor.ts'
 import { origemNaoResolve } from './cmd-fila.ts'
+import { extrairMemoriaOperacional, incorporarPlanoNaNarrativa } from './narrativa.ts'
 
 type Flags = Record<string, string | undefined>
 
@@ -529,10 +530,15 @@ export function iniciar(id: string, flags: Flags = {}): void {
   escreverJson(caminho, tarefa)
 
   const narrativa = narrativaDe(caminho)
-  if (!existe(narrativa)) {
-    if (tarefa.plano_ref) {
-      escreverTexto(narrativa, [`# ${tarefa.id} · ${tarefa.titulo}`, '', `Plano de referencia: ${tarefa.plano_ref.arquivo}`].join('\n'))
-    } else if (tarefa.perfil === 'compacto') {
+  if (tarefa.plano_ref) {
+    const planoRes = resolverPlano(tarefa)
+    const textoAtual = existe(narrativa) ? lerTexto(narrativa) : null
+    const resInc = incorporarPlanoNaNarrativa(textoAtual, tarefa, planoRes)
+    if (resInc.modificado || !existe(narrativa)) {
+      escreverTexto(narrativa, resInc.conteudo)
+    }
+  } else if (!existe(narrativa)) {
+    if (tarefa.perfil === 'compacto') {
       escreverTexto(
         narrativa,
         [
@@ -936,6 +942,14 @@ function concluir(tarefa: Tarefa, caminho: string, narrativa: string): void {
   tarefa.estado = 'concluida'
   tarefa.concluida_em = agora().log
 
+  if (existe(narrativa)) {
+    const textoNarrativa = lerTexto(narrativa)
+    const extMemoria = extrairMemoriaOperacional(textoNarrativa)
+    if (extMemoria.memoria) {
+      tarefa.memoria_operacional = extMemoria.memoria
+    }
+  }
+
   const base = `${agora().nome}--${tarefa.id}`
   tarefa.narrativa = `${base}--estudo-humano.md`
   escreverJson(`${c.concluidas}/${base}.json`, tarefa)
@@ -1332,7 +1346,9 @@ export function finalizar(id: string, flags: Flags = {}): void {
   const narrativa = narrativaDe(caminho)
   if (!existe(narrativa)) {
     if (tarefa.plano_ref) {
-      escreverTexto(narrativa, `# ${tarefa.id} · ${tarefa.titulo}\n\nPlano referenciado: ${tarefa.plano_ref.arquivo}\n`)
+      const planoRes = resolverPlano(tarefa)
+      const resInc = incorporarPlanoNaNarrativa(null, tarefa, planoRes)
+      escreverTexto(narrativa, resInc.conteudo)
     } else {
       impedimentos.push('narrativa ausente')
     }
@@ -1344,6 +1360,15 @@ export function finalizar(id: string, flags: Flags = {}): void {
       impedimentos.push(`marcador ${MARCADOR} nao preenchido na narrativa`)
     }
     impedimentos.push(...problemasDoDesfecho(conteudoNarrativa))
+
+    // Validação de memória operacional na narrativa
+    const extMemoria = extrairMemoriaOperacional(conteudoNarrativa)
+    const versaoPlano = tarefa.plano?.versao ?? (tarefa.plano_ref ? resolverPlano(tarefa).versao : undefined)
+    if (extMemoria.erro) {
+      impedimentos.push(extMemoria.erro)
+    } else if (versaoPlano && versaoPlano >= 2 && !extMemoria.memoria) {
+      impedimentos.push('tarefa versao 2 exige bloco "```json mentor:memoria" no Desfecho com resultado, aprendizados e limites_conhecidos')
+    }
   }
 
   for (const [nome, decl] of melhoriaDoMentor ? [] : Object.entries(ctx.gates).filter(([nome]) => politica.gates_obrigatorios.includes(nome))) {
