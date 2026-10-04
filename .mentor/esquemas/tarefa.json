@@ -139,7 +139,7 @@
     "habilidades_nota": "Habilidades necessarias: { planejamento: [ { nome, motivo, origem } ], execucao: [ { nome, motivo, origem } ] }.",
     "avaliacao": null,
     "avaliacao_nota": "Avaliacao multidimensional de complexidade, dimensao_dominante, justificativa, perfil_modelo e effort para planejamento e execucao.",
-    "criterios_aceite_nota": "Todo criterio nomeia um teste. Saida honesta: 'nao se aplica: <motivo>'. Criterio que nao vira asercao nao era criterio, era intencao."
+    "criterios_aceite_nota": "Todo criterio nomeia um teste. Saida honesta: 'nao se aplica: <motivo>'. Criterio que nao vira asercao nao era criterio, era intencao. Evidencia contem { comando, codigo_saida, saida (resumo conciso), executado_em, log_ref (ponteiro para log bruto em docs/.evidencias/logs), resumo }."
   },
   "gates": {
     "_forma": {
@@ -161,6 +161,7 @@
       "vermelho_dispensado": null,
       "vermelho_dispensado_nota": "Quando o vermelho foi dispensado com prova por mutacao ({ dispensado_em, motivo }). Gravado com: task gate <id> testes --vermelho-dispensado --motivo \"...\"",
       "evidencia_url": null,
+      "log_ref": null,
       "commit_execucao": null,
       "arvore_hash": null,
       "motivo": null

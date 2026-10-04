@@ -12,3 +12,4 @@
 | 03/10/26 23:56 | [`TASK-CHORE-006`](./2026-10-03--23h56--TASK-CHORE-006--estudo-humano.md) | CHORE | Gerador da habilidade de consistência e validação no verificar | - | concluida | nao_requer |
 | 04/10/26 13:11 | [`TASK-CHORE-007`](./2026-10-04--13h11--TASK-CHORE-007--estudo-humano.md) | CHORE | Campos novos nos contratos locais e portateis | - | concluida | nao_requer |
 | 04/10/26 14:06 | [`TASK-CHORE-008`](./2026-10-04--14h06--TASK-CHORE-008--estudo-humano.md) | CHORE | Copia integral e idempotente do plano e memoria operacional | - | concluida | dispensado |
+| 04/10/26 14:33 | [`TASK-CHORE-009`](./2026-10-04--14h33--TASK-CHORE-009--estudo-humano.md) | CHORE | Compacidade de evidencias no JSON e adaptacao de consumidores | - | concluida | dispensado |

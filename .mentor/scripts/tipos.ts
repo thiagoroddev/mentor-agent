@@ -53,6 +53,10 @@ export interface EvidenciaCriterio {
   codigo_saida?: number | null
   saida?: string | null
   executado_em?: string | null
+  /** Caminho relativo ao log completo persistido externamente sob docs/.evidencias/logs (Fatia D3). */
+  log_ref?: string | null
+  /** Resumo conciso ou diagnóstico sucinto da execução. */
+  resumo?: string | null
 }
 
 export interface CriterioDeAceite {

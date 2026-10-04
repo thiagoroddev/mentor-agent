@@ -7,6 +7,12 @@ O formato baseia-se em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0
 ## [Não publicado]
 
 ### Adicionado
+- **Compacidade de evidências no JSON e adaptação de consumidores (Fatia D3)**:
+  - Evidência de critérios de aceite (`mentor task criterio`) com persistência de log completo em disco sob `docs/.evidencias/logs/<ID>-criterio-<indice>-<timestamp>.log` e registro do ponteiro `log_ref` no JSON da tarefa.
+  - O campo `evidencia.saida` no JSON da tarefa passa a armazenar apenas um resumo conciso/diagnóstico (teto compacto de até 10 linhas ou recorte por tamanho), evitando inflar o JSON com milhares de caracteres de saída crua.
+  - Suporte a `log_ref` e `resumo` na interface `EvidenciaCriterio` em `tipos.ts` e no esquema `tarefa.json`.
+  - Função utilitária `obterLogDeEvidencia(evidencia, raiz)` para resolução e leitura transparente de log a partir de `log_ref`, com fallback seguro para `saida` em tarefas legadas.
+  - Suíte de testes unitários dedicada em `testes/compacidade-de-evidencias.test.ts`.
 - **Cópia integral do plano, revisões e memória operacional na narrativa (Fatia D2)**:
   - Cópia determinística e integral do Markdown do plano para a narrativa da tarefa (`abertas/<ID>.md`), preservando o estudo técnico de engenharia aprovado com delimitadores discretos (`<!-- mentor:plano:inicio sha256="..." -->` e `<!-- mentor:plano:fim -->`).
   - Idempotência estrita: re-execuções com o mesmo plano não duplicam texto nem alteram seções de desfecho existentes (`## 5. Desfecho e Validação Real`).

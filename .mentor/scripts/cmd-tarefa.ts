@@ -1,6 +1,6 @@
 import { spawnSync } from 'node:child_process'
-import { renameSync, rmSync } from 'node:fs'
-import { isAbsolute, join, resolve } from 'node:path'
+import { existsSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs'
+import { isAbsolute, join, relative, resolve } from 'node:path'
 import {
   agora, caminhos, caminhoCorrespondeDeclaracao, extrairCaminhosDeclarados, escreverJson,
   escreverTexto, existe, lerJson, lerTexto, listar, NOME_DOS_DOCUMENTOS,
@@ -26,6 +26,33 @@ import { caminhosAuditaveisEntre, escopoExclusivoDoMentor, fonteLocal, lightApen
 import { politicaDaTarefa } from './politica-rigor.ts'
 import { origemNaoResolve } from './cmd-fila.ts'
 import { extrairMemoriaOperacional, incorporarPlanoNaNarrativa } from './narrativa.ts'
+import { pastaDeLogs, recortarResumo } from './executor-gates.ts'
+
+/**
+ * Recupera o log completo de uma evidência (de critério ou gate).
+ * Se possuir `log_ref` e o arquivo existir em disco, lê o conteúdo integral do arquivo.
+ * Caso contrário, faz fallback seguro para o campo `saida`.
+ */
+export function obterLogDeEvidencia(
+  evidencia: { saida?: string | null; log_ref?: string | null } | null | undefined,
+  raiz?: string,
+): string {
+  if (!evidencia) return ''
+  const c = raiz ? { raiz } : caminhos()
+  if (evidencia.log_ref) {
+    const caminhoAbs = isAbsolute(evidencia.log_ref)
+      ? evidencia.log_ref
+      : join(c.raiz, evidencia.log_ref)
+    if (existsSync(caminhoAbs)) {
+      try {
+        return readFileSync(caminhoAbs, 'utf8')
+      } catch {
+        // fallback para saida
+      }
+    }
+  }
+  return evidencia.saida ?? ''
+}
 
 type Flags = Record<string, string | undefined>
 
@@ -1737,6 +1764,7 @@ export function criterio(id: string, indiceStr: string, flags: Flags): void {
   }
   let comando: string | null = null
   let saida: string | null = null
+  let logRef: string | null = null
   let codigoSaida: number | null = null
   // `--cmd` e' o nome que a ajuda anunciou ate' a 0.7.0; os dois valem para nao quebrar quem seguiu a ajuda.
   const comandoPedido = flags.comando ?? flags.cmd
@@ -1744,10 +1772,30 @@ export function criterio(id: string, indiceStr: string, flags: Flags): void {
     comando = comandoPedido
     const r = spawnSync(comando, { shell: true, encoding: 'utf8', cwd: caminhos().raiz, timeout: 60_000 })
     codigoSaida = r.status
-    saida = recortar(`${r.stdout ?? ''}${r.stderr ?? ''}`.trim())
+    const saidaBruta = `${r.stdout ?? ''}${r.stderr ?? ''}`.trim()
+
+    // Persiste log detalhado sob docs/.evidencias/logs/ (Fatia D3)
+    const pastaLogs = pastaDeLogs()
+    const nomeLog = `${id}-criterio-${idx}-${Date.now()}.log`
+    const caminhoAbsLog = join(pastaLogs, nomeLog)
+    writeFileSync(caminhoAbsLog, saidaBruta, 'utf8')
+    logRef = relative(caminhos().raiz, caminhoAbsLog).replace(/\\/g, '/')
+
+    // Armazena resumo conciso no JSON para compacidade
+    saida = recortarResumo(saidaBruta)
   } else if (flags.saida) {
-    saida = flags.saida.trim()
+    const textoSaida = flags.saida.trim()
     codigoSaida = 0
+    if (textoSaida.length > 500) {
+      const pastaLogs = pastaDeLogs()
+      const nomeLog = `${id}-criterio-${idx}-${Date.now()}.log`
+      const caminhoAbsLog = join(pastaLogs, nomeLog)
+      writeFileSync(caminhoAbsLog, textoSaida, 'utf8')
+      logRef = relative(caminhos().raiz, caminhoAbsLog).replace(/\\/g, '/')
+      saida = recortarResumo(textoSaida)
+    } else {
+      saida = textoSaida
+    }
   } else {
     throw new Error('mentor task criterio exige --comando "<cmd>" ou --saida "<texto>".')
   }
@@ -1767,6 +1815,7 @@ export function criterio(id: string, indiceStr: string, flags: Flags): void {
     comando,
     codigo_saida: codigoSaida,
     saida,
+    log_ref: logRef,
     executado_em: agora().log,
   }
   escreverJson(caminho, tarefa)

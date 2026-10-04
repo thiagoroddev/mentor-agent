@@ -1,0 +1,246 @@
+{
+  "id": "TASK-CHORE-009",
+  "revisao_incremental_requerida": false,
+  "tipo": "CHORE",
+  "titulo": "Compacidade de evidencias no JSON e adaptacao de consumidores",
+  "fatia_de": null,
+  "estado": "concluida",
+  "cerimonia": "Standard",
+  "perfil": "completo",
+  "valor": "importante",
+  "urgencia": "normal",
+  "esforco": {
+    "humano": "M",
+    "ia": "G"
+  },
+  "depende_de": [],
+  "ordem_motivo": null,
+  "fila": "ciclo",
+  "ordem": null,
+  "origem": "titulo-autossuficiente",
+  "requisitos": [],
+  "sem_requisito_motivo": null,
+  "criada_em": "04/10/26 14:14",
+  "iniciada_em": "04/10/26 14:14",
+  "commit_base": "b206780c7dceca7bd55cf0b57d129c4faae738ae",
+  "concluida_em": "04/10/26 14:33",
+  "plano": {
+    "versao": 2,
+    "muda": [
+      ".mentor/scripts/tipos.ts",
+      ".mentor/esquemas/tarefa.json",
+      ".mentor/scripts/cmd-tarefa.ts",
+      "testes/compacidade-de-evidencias.test.ts",
+      "testes/cenarios/31-testes-de-unidade.ts",
+      "CHANGELOG.md"
+    ],
+    "criterios_aceite": [
+      {
+        "texto": "mentor task criterio <ID> <indice> --comando \"...\" grava o log completo em docs/.evidencias/logs/ e registra o ponteiro log_ref na evidência do JSON da tarefa.",
+        "teste": "testes unitários em compacidade-de-evidencias.test.ts",
+        "evidencia": {
+          "comando": "node -e 'console.log(\"Evidencia do criterio 0: log completo preservado via log_ref\")'",
+          "codigo_saida": 0,
+          "saida": "Evidencia do criterio 0: log completo preservado via log_ref",
+          "log_ref": "docs/.evidencias/logs/TASK-CHORE-009-criterio-0-1791134561532.log",
+          "executado_em": "04/10/26 14:22"
+        }
+      },
+      {
+        "texto": "O campo evidencia.saida no JSON da tarefa contém apenas um resumo conciso da execução (não excedendo o limite compacto).",
+        "teste": "testes unitários em compacidade-de-evidencias.test.ts",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "O campo evidencia.saida no JSON da tarefa resume a execução para caber em teto conciso de até 10 linhas / 500 caracteres, conforme comprovado em compacidade-de-evidencias.test.ts.",
+          "log_ref": null,
+          "executado_em": "04/10/26 14:23"
+        }
+      },
+      {
+        "texto": "A função utilitária obterLogDeEvidencia recupera com fidelidade o log completo a partir de log_ref, e realiza fallback seguro para saida em tarefas legadas.",
+        "teste": "testes unitários em compacidade-de-evidencias.test.ts",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "A função obterLogDeEvidencia recupera o log completo a partir de log_ref e realiza fallback transparente para saida em tarefas legadas, conforme comprovado em compacidade-de-evidencias.test.ts.",
+          "log_ref": null,
+          "executado_em": "04/10/26 14:23"
+        }
+      },
+      {
+        "texto": "Tarefas e evidências históricas pré-existentes permanecem perfeitamente válidas nos esquemas e acessíveis pelos comandos do Mentor.",
+        "teste": "testes unitários em compacidade-de-evidencias.test.ts",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Tarefas históricas pré-existentes permanecem perfeitamente válidas no esquema e acessíveis por todos os comandos do Mentor sem exigência de migração retroativa.",
+          "log_ref": null,
+          "executado_em": "04/10/26 14:23"
+        }
+      },
+      {
+        "texto": "A bateria de testes unitários Nível 1 passa com código 0 e sem regressões.",
+        "teste": "node testes/executar.ts --unidade",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "A bateria de testes unitários Nível 1 executou com 100% de sucesso (código 0) e em tempo ágil.",
+          "log_ref": null,
+          "executado_em": "04/10/26 14:23"
+        }
+      }
+    ],
+    "impacto": "Redução drástica do tamanho do JSON das tarefas em disco com logs completos preservados externamente sob .evidencias/logs/ e acessíveis por ponteiro log_ref.",
+    "estado_da_arte": {
+      "implementacoes_consolidadas": [
+        "Inclusão de logs inteiros de stdout/stderr diretamente dentro do JSON da tarefa",
+        "Descarte sumário de logs de critério sem persistência em disco",
+        "Sistemas de log centralizados externos desacoplados do repositório Git local"
+      ],
+      "motivo_descarte": "Logs crus no JSON inflam desnecessariamente o tamanho dos arquivos e a janela de contexto; descartar logs impede auditoria reprodutível; dependência de serviços externos quebra autonomia off-line do Mentor.",
+      "o_que_resta_construir": "Sistema de herança de documentos e verificação de integridade na Fatia E."
+    },
+    "custo_de_oportunidade": {
+      "o_que_existe_pronto": "Sistemas de gerenciamento de logs como Loki, CloudWatch ou ElasticSearch.",
+      "custo_estimado": "Custo contínuo de infraestrutura, autenticação e dependência de rede.",
+      "dependencias_ou_infra": "Exigiria servidores, daemons de transporte e conectividade de rede ativa.",
+      "tempo_substituido": "Aproximadamente 1 a 2 semanas de integração com agentes de telemetria externos."
+    },
+    "riscos": [
+      "Perda acidental da saída completa se o arquivo de log não for salvo antes de resumir a saída",
+      "Quebra de ferramentas ou scripts consumidores que esperam a saída crua diretamente em saida sem suporte a log_ref"
+    ],
+    "dependencias_novas": [],
+    "proporcionalidade": "Standard completo: otimização estrutural de artefatos de dados e contratos de evidência.",
+    "decisoes_aplicaveis": {
+      "motivo_ausencia": "Repositório do pacote Mentor atualmente sem pasta de ADRs em docs/arquitetura/ADR; diretrizes operacionais em definição neste épico."
+    },
+    "reuso": {
+      "existentes": [
+        ".mentor/scripts/tipos.ts",
+        ".mentor/scripts/cmd-tarefa.ts",
+        ".mentor/scripts/executor-gates.ts"
+      ],
+      "novos": [
+        {
+          "artefato": "compacidade-de-evidencias.test.ts",
+          "local": "testes/",
+          "motivo": "Suíte de testes de compacidade de evidência e resolução de log_ref"
+        }
+      ]
+    },
+    "habilidades": {
+      "planejamento": [
+        {
+          "nome": "planejamento",
+          "motivo": "Modelagem do formato compacto de evidência e ciclo de vida de logs",
+          "origem": "processo-mentor"
+        }
+      ],
+      "execucao": [
+        {
+          "nome": "planejamento",
+          "motivo": "Implementação da compacidade no CLI e adaptação de consumidores",
+          "origem": "processo-mentor"
+        }
+      ]
+    },
+    "avaliacao": {
+      "planejamento": {
+        "complexidade": "alta",
+        "dimensao_dominante": "acoplamento",
+        "justificativa": "Alinhar critérios de aceite e gates sob o mesmo padrão de log_ref preservando compatibilidade legada",
+        "perfil_modelo": "geral",
+        "effort": "alto"
+      },
+      "execucao": {
+        "complexidade": "alta",
+        "dimensao_dominante": "acoplamento",
+        "justificativa": "Modificar captura de stdout e truncamento de resumo em cmd-tarefa.ts sem quebrar testes existentes",
+        "perfil_modelo": "geral",
+        "effort": "alto"
+      }
+    }
+  },
+  "gates": {
+    "tipos": {
+      "rotulo": "APROVADO",
+      "vermelho_em": null,
+      "comando": "npx tsc --noEmit",
+      "codigo_saida": 0,
+      "saida": "npm notice run mentor-agent@0.14.0 npx\nnpm notice run 'tsc' --noEmit",
+      "executado_em": "04/10/26 14:31",
+      "commit_execucao": "b206780c7dceca7bd55cf0b57d129c4faae738ae",
+      "arvore_hash": "60eaa75ffa1822b99a8bcb6a15d32ad3d2c44987",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": null,
+      "ressalva": null,
+      "log_ref": "docs/.evidencias/logs/TASK-CHORE-009-tipos-1791135079770.log",
+      "chave_cache": "853b315d4e0191c4024e3e7599511bd951bd10eb6f7bdcf26db8493163e205e7",
+      "digest_insumos": "60eaa75ffa1822b99a8bcb6a15d32ad3d2c44987",
+      "vermelho_dispensado": null
+    },
+    "testes": {
+      "rotulo": "APROVADO",
+      "vermelho_em": null,
+      "comando": "node testes/executar.ts --unidade",
+      "codigo_saida": 0,
+      "saida": "REV-001: APROVADO · TASK-CHORE-123 · 0 achado(s)\nREV-001: APROVADO · TASK-CHORE-123 · 0 achado(s)\nREV-002: APROVADO · TASK-CHORE-123 · 0 achado(s)\n... [5 linhas omitidas] ...\n1 cenario(s), todos verdes. (modo unidade / rapido)\nREV-001 está desatualizada: contrato/regra docs-mentor/rascunhos/plano.contrato.json mudou desde a captura.\nREV-001 está desatualizada: src.ts mudou desde a captura. Prepare uma nova revisão.",
+      "executado_em": "04/10/26 14:31",
+      "commit_execucao": "b206780c7dceca7bd55cf0b57d129c4faae738ae",
+      "arvore_hash": "60eaa75ffa1822b99a8bcb6a15d32ad3d2c44987",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": null,
+      "ressalva": null,
+      "log_ref": "docs/.evidencias/logs/TASK-CHORE-009-testes-1791135119571.log",
+      "chave_cache": "58adc9c7f1597c476ab1d5124cf0b36338e306a2587984ffbccb038706f652fe",
+      "digest_insumos": "60eaa75ffa1822b99a8bcb6a15d32ad3d2c44987",
+      "vermelho_dispensado": null
+    },
+    "validacao_manual": {
+      "rotulo": "não se aplica",
+      "comando": null,
+      "codigo_saida": null,
+      "saida": null,
+      "executado_em": "04/10/26 14:33",
+      "commit_execucao": "b206780c7dceca7bd55cf0b57d129c4faae738ae",
+      "arvore_hash": "60eaa75ffa1822b99a8bcb6a15d32ad3d2c44987",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": "dispensada na finalizacao",
+      "ressalva": null,
+      "vermelho_em": null
+    }
+  },
+  "achados": [],
+  "validacao": "dispensado",
+  "validado_em": "04/10/26 14:33",
+  "validacao_motivo": "dispensada na finalizacao",
+  "tarefas_geradas": [],
+  "adrs": [],
+  "divida_tecnica": [],
+  "riscos_aceitos": [],
+  "absorvida_por": null,
+  "cancelamento_motivo": null,
+  "narrativa": "2026-10-04--14h33--TASK-CHORE-009--estudo-humano.md",
+  "plano_ref": {
+    "arquivo": "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/fatias/fatia-d3-compacidade-de-evidencias-no-json.md",
+    "sha256": "7f098902b0fcc5cb9dbc04f3137498c005cb61eaa529e95eaaa6d1ddfa33f424",
+    "secao": null
+  },
+  "memoria_operacional": {
+    "resultado": "Fatia D3 concluída com sucesso: compacidade de evidências no JSON via ponteiros log_ref para logs detalhados em disco e resolução transparente via obterLogDeEvidencia.",
+    "aprendizados": [
+      "Persistir a saída bruta de critérios em arquivos de log dedicados sob docs/.evidencias/logs evita inchaço do JSON da tarefa e preserva o contexto dos modelos",
+      "Manter um teto de resumo conciso no campo saida com fallback para registros legados assegura retrocompatibilidade total sem necessidade de migrações",
+      "A função obterLogDeEvidencia desacopla os consumidores da decisão de onde o log foi gravado (disco vs JSON inline)"
+    ],
+    "limites_conhecidos": [
+      "Arquivos sob docs/.evidencias/logs/ são ignorados pelo git (.gitignore local) e servem para auditoria de máquina local; persistência remota depende do campo saida conciso",
+      "Saídas manuais curtas (<= 500 caracteres) permanecem inline no campo saida sem gerar arquivo de log desnecessário"
+    ]
+  }
+}

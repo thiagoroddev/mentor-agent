@@ -62,6 +62,8 @@ export function calcularFingerprintDosInsumos(): FingerprintResultado | null {
 
     // Adiciona todas as alterações do working tree e untracked files
     if (git(['add', '-A', '--', '.'], env).status !== 0) return null
+    // Evita falsos negativos de stat cache (racy git) para arquivos alterados com mesmo tamanho/mtime
+    git(['add', '--renormalize', '--', '.'], env)
 
     // Remove apenas artefatos não semânticos de docs-mentor do índice temporário
     const docsRel = relativo(c.docs).replace(/\\/g, '/')

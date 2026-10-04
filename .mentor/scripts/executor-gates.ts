@@ -33,7 +33,7 @@ export interface ResultadoExecucaoGate {
  * resumo. Sem o `.gitignore` proprio, a pasta entrava no git de quem nao ignorava `logs` por acaso, e
  * cada gate virava arquivo no diff da auditoria.
  */
-function pastaDeLogs(): string {
+export function pastaDeLogs(): string {
   const c = caminhos()
   const pasta = join(c.docs, '.evidencias', 'logs')
   mkdirSync(pasta, { recursive: true })
@@ -47,14 +47,24 @@ function cabecaDoGit(): string | null {
   return r.status === 0 ? (r.stdout ?? '').trim() || null : null
 }
 
-function recortarResumo(texto: string, maxLinhas = 10): string {
-  const linhas = texto.trim().split('\n')
-  if (linhas.length <= maxLinhas) return linhas.join('\n')
-  return [
-    ...linhas.slice(0, 3),
-    `... [${linhas.length - 6} linhas omitidas] ...`,
-    ...linhas.slice(-3),
-  ].join('\n')
+export function recortarResumo(texto: string, maxLinhas = 10): string {
+  const limpo = texto.trim()
+  if (!limpo) return ''
+  const linhas = limpo.split('\n')
+  let resultado: string
+  if (linhas.length <= maxLinhas) {
+    resultado = linhas.join('\n')
+  } else {
+    resultado = [
+      ...linhas.slice(0, 3),
+      `... [${linhas.length - 6} linhas omitidas] ...`,
+      ...linhas.slice(-3),
+    ].join('\n')
+  }
+  if (resultado.length > 1000) {
+    return `${resultado.slice(0, 500)}\n... [omitido por tamanho] ...\n${resultado.slice(-400)}`
+  }
+  return resultado
 }
 
 export function executarComandoGate(options: {

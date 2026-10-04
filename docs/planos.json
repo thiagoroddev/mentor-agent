@@ -63,5 +63,13 @@
     "sha256": "5c01564b7b9bb0d4bb055e50f2e4d353f99cc878c901d77ce3452360489fc13b",
     "secao": null,
     "registrado_em": "04/10/26"
+  },
+  {
+    "id": "PLAN-fatia-d3-compacidade-de-eviden",
+    "titulo": "Fatia D3: Compacidade de evidências no JSON e adaptação de consumidores",
+    "arquivo": "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/fatias/fatia-d3-compacidade-de-evidencias-no-json.md",
+    "sha256": "7f098902b0fcc5cb9dbc04f3137498c005cb61eaa529e95eaaa6d1ddfa33f424",
+    "secao": null,
+    "registrado_em": "04/10/26"
   }
 ]
