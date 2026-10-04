@@ -349,6 +349,7 @@ export function rodar(): Cenario {
 
   // Limpa arquivos auxiliares de teste para garantir verificar integro
   sh('rm', '-f', 'casos-com-falha.json')
+  mentor(c, 'gerar')
   commit('apos resolucao 3-way')
   const rVerif = mentor(c, 'verificar')
   confere(c, rVerif.codigo === 0, 'verificar final aprova projeto integro')

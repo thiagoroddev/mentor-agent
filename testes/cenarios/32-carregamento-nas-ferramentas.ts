@@ -45,9 +45,9 @@ export function rodar(): Cenario {
     'B2: o CLAUDE.md importa o AGENTS.md, e so ele: importar o nucleo tambem carregaria duas vezes')
   confere(c, ler(c, 'GEMINI.md').includes('AGENTS.md') && !/^@/m.test(ler(c, 'GEMINI.md')),
     'B2: o GEMINI.md aponta para o AGENTS.md, sem import (o Antigravity carrega os dois)')
-  confere(c, skillsDoPacote.length === 8 && skillsDoPacote.includes('revisao'), 'B4: o catalogo do pacote tem 8 skills, com a revisao')
+  confere(c, skillsDoPacote.length === 9 && skillsDoPacote.includes('revisao') && skillsDoPacote.includes('planejamento'), 'B4: o catalogo do pacote tem 9 skills, com revisao e planejamento')
   for (const destino of ['.agents/skills', '.claude/skills']) {
-    confere(c, skillsDoPacote.every((s) => existe(`${destino}/${s}/SKILL.md`)), `B3: as 8 skills foram copiadas para ${destino}`)
+    confere(c, skillsDoPacote.every((s) => existe(`${destino}/${s}/SKILL.md`)), `B3: as ${skillsDoPacote.length} skills foram copiadas para ${destino}`)
     confere(c, existe(`${destino}/${REGISTRO_DE_SKILLS}`), `B3: ${destino} guarda o registro das copias do mentor`)
   }
   dizQue(c, mentor(c, 'verificar'), 'APROVADO', 'instalado e inicializado, passa no verificar')
@@ -177,7 +177,7 @@ export function rodar(): Cenario {
   spawnSync('git', ['-c', 'core.longpaths=true', 'clone', '-q', c.pasta, clone], { encoding: 'utf8' })
   const doClone = { ...c, pasta: clone }
   for (const destino of ['.agents/skills', '.claude/skills']) {
-    confere(c, skillsDoPacote.every((s) => existsSync(join(clone, destino, s, 'SKILL.md'))), `clone: as 8 skills chegaram em ${destino} sem gerar`)
+    confere(c, skillsDoPacote.every((s) => existsSync(join(clone, destino, s, 'SKILL.md'))), `clone: as ${skillsDoPacote.length} skills chegaram em ${destino} sem gerar`)
   }
   confere(c, ler(doClone, 'AGENTS.md').includes(blocoDoNucleo(nucleo)), 'clone: o nucleo chegou dentro do AGENTS.md')
   dizQue(c, mentor(doClone, 'verificar'), 'APROVADO', 'clone: o verificar aprova sem gerar nem script de instalacao')

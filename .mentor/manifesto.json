@@ -1,6 +1,6 @@
 {
   "versao": "0.14.0",
-  "gerado_em": "2026-10-04T19:20:42.909Z",
+  "gerado_em": "2026-10-04T19:54:46.003Z",
   "arquivos": {
     "esquemas/contexto.json": "6a08c3b851d076cd",
     "esquemas/diretrizes-adr.json": "b2eac0e1d50d2250",
@@ -46,7 +46,7 @@
     "scripts/casos.ts": "9d339f3923dde378",
     "scripts/cli.ts": "f1f848aceb32c323",
     "scripts/cmd-anotar.ts": "ad0afe5b8ee1e018",
-    "scripts/cmd-auditar.ts": "afb2c6be1e2a4853",
+    "scripts/cmd-auditar.ts": "eaff6a7e89877a59",
     "scripts/cmd-campo.ts": "ab1eed484b32ace9",
     "scripts/cmd-doctor.ts": "70ed7e5b8345fee8",
     "scripts/cmd-fila.ts": "7b353ab8e7931c95",

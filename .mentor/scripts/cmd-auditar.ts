@@ -123,8 +123,9 @@ export function motivosDeExclusao(
     else if (a.startsWith(`${docs}/auditorias/`) || VISTAS_GERADAS.some((v) => a === `${docs}/${v}`)) motivo = 'vista gerada'
     else if (a === `${docs}/contexto.json` && !caminhoCorrespondeDeclaracao(a, declarados)) motivo = 'vista gerada'
     else if (a.startsWith(`${docs}/rascunhos/`) || a === 'melhorias-do-pacote.md' || a.endsWith('/melhorias-do-pacote.md')) {
-      // Vínculo normativo tem precedência sobre exclusão genérica de rascunho (Fatia E)
-      if (caminhoCorrespondeDeclaracao(a, declarados)) {
+      // Vínculo normativo de planejamento tem precedência sobre exclusão genérica de rascunho (Fatia E)
+      const ePlanejamento = a.includes('/planejamentos/') || a.includes('/planos/')
+      if (ePlanejamento && caminhoCorrespondeDeclaracao(a, declarados)) {
         motivo = null
       } else {
         motivo = 'nota'

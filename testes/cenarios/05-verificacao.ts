@@ -35,6 +35,7 @@ export function rodar(): Cenario {
       motivo: 'ADRs migradas de sistema anterior: reescrever para caber apagaria contexto historico',
     }],
   }, null, 2))
+  mentor(c, 'gerar')
   confere(c, mentor(c, 'verificar').codigo === 0,
     'uma excecao com glob no arquivo do PROJETO cobre as tres, e sobrevive ao instalar --forcar')
 
