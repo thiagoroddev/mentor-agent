@@ -1,0 +1,99 @@
+{
+  "versao": 2,
+  "muda": [
+    "testes/cenarios/33-trabalho-paralelo.ts",
+    "testes/executar.ts",
+    "testes/cenarios/31-testes-de-unidade.ts",
+    "testes/README.md",
+    "CHANGELOG.md",
+    ".mentor/manifesto.json"
+  ],
+  "criterios_aceite": [
+    {
+      "texto": "Cenário real permite tarefas distintas em worktrees com limite local 1 e preserva cada registro e narrativa na integração serial.",
+      "teste": "CP-02/CP-11: cenário 33 temporário com remoto bare local",
+      "evidencia": null
+    },
+    {
+      "texto": "Doctor é somente leitura e mostra ambiguidades; resolvedor mantém conflitos externos e só aprova índice resolvido.",
+      "teste": "CP-03/CP-06/CP-07/CP-09: cenário integrado e suítes B/C",
+      "evidencia": null
+    },
+    {
+      "texto": "Os runners incorporam as provas B/C e o cenário novo, e o pacote mantém tipos e verificações sem regressões atribuíveis ao épico.",
+      "teste": "npm run tipos; node testes/executar.ts --unidade; node testes/executar.ts; node mentor.mjs verificar",
+      "evidencia": null
+    },
+    {
+      "texto": "Manifesto e changelog refletem somente as entregas efetivas, com evidências e limites preservados.",
+      "teste": "node mentor.mjs manifesto; inspeção do diff final e memórias de A–E",
+      "evidencia": null
+    }
+  ],
+  "impacto": "Processo e pacote Mentor; nenhuma implantação automática no projeto consumidor.",
+  "riscos": [
+    "Prova usar clones independentes e não exercitar worktrees reais.",
+    "Execução ampla alterar fixtures rastreadas e contaminar o diff.",
+    "Reutilizar evidência anterior que não prova a árvore integrada."
+  ],
+  "dependencias_novas": [],
+  "proporcionalidade": "Standard. Reusar Git e o ciclo existente; novos artefatos têm necessidade explícita e não introduzem orquestração externa.",
+  "decisoes_aplicaveis": {
+    "motivo_ausencia": "Na descoberta de 04/10/2026 não havia pasta de ADRs nem habilidade de consistência gerada neste repositório. As decisões propostas estão no documento 01; consultar novamente as ADRs resolvidas antes da execução."
+  },
+  "reuso": {
+    "existentes": [
+      "testes/apoio.ts",
+      "testes/vitest-local.ts",
+      "testes/executar.ts",
+      "testes/cenarios/21-concorrencia-git-e-dispensas.ts",
+      "testes/cenarios/28-wip-e-merge.ts",
+      "testes/cenarios/30-governanca-fatiamento-e-concorrencia.ts"
+    ],
+    "novos": [
+      {
+        "artefato": "33-trabalho-paralelo.ts",
+        "local": "testes/cenarios",
+        "motivo": "Provar o fluxo observável de worktrees simultâneas e integração serial num único cenário temporário."
+      }
+    ],
+    "motivo_sem_reuso": null
+  },
+  "habilidades": {
+    "planejamento": [
+      {
+        "nome": "planejamento",
+        "motivo": "Refinar a fatia e seus contratos antes da execução.",
+        "origem": ".mentor/skills/planejamento/SKILL.md"
+      }
+    ],
+    "execucao": [
+      {
+        "nome": "test-design",
+        "motivo": "Aplicar prova comportamental e proporcional.",
+        "origem": ".mentor/skills/test-design/SKILL.md"
+      }
+    ]
+  },
+  "avaliacao": {
+    "planejamento": {
+      "complexidade": "alta",
+      "dimensao_dominante": "validacao_discriminatoria",
+      "justificativa": "A entrega exige validacao discriminatoria entre os artefatos previstos; a capacidade é recomendada por tarefa e pode ser atendida por qualquer modelo adequado.",
+      "perfil_modelo": "avancado",
+      "effort": "alto"
+    },
+    "execucao": {
+      "complexidade": "alta",
+      "dimensao_dominante": "validacao_discriminatoria",
+      "justificativa": "A entrega exige validacao discriminatoria entre os artefatos previstos; a capacidade é recomendada por tarefa e pode ser atendida por qualquer modelo adequado.",
+      "perfil_modelo": "avancado",
+      "effort": "alto"
+    }
+  },
+  "documentos_herdados": [
+    "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/01-problema-e-decisoes.md",
+    "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/02-protocolo-e-contratos.md",
+    "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/03-fatias-e-validacao.md"
+  ]
+}

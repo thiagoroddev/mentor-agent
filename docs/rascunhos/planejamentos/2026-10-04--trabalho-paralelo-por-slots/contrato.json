@@ -1,0 +1,127 @@
+{
+  "versao": 2,
+  "muda": [
+    ".mentor/processos/trabalho-paralelo.md",
+    ".mentor/modelos/atribuicao-paralela.md",
+    "docs/padroes-de-stack/git.md",
+    ".mentor/scripts/worktrees.ts",
+    ".mentor/scripts/cmd-doctor.ts",
+    "testes/worktrees-paralelas.test.ts",
+    ".mentor/scripts/cmd-resolver.ts",
+    "testes/resolvedor-paralelo.test.ts",
+    ".mentor/processos/planejamento.md",
+    ".mentor/processos/tarefa.md",
+    ".mentor/processos/entrega.md",
+    ".mentor/processos/teste.md",
+    ".mentor/skills/planejamento/SKILL.md",
+    ".mentor/scripts/cli.ts",
+    "README.md",
+    "testes/cenarios/33-trabalho-paralelo.ts",
+    "testes/executar.ts",
+    "testes/cenarios/31-testes-de-unidade.ts",
+    "testes/README.md",
+    "CHANGELOG.md",
+    ".mentor/manifesto.json"
+  ],
+  "criterios_aceite": [
+    {
+      "texto": "Equipe paralela usa slots com papéis de sessão substituíveis e contratos estáveis, preservando tarefas e evidências.",
+      "teste": "CP-01 a CP-15 conforme 03-fatias-e-validacao.md",
+      "evidencia": null
+    }
+  ],
+  "impacto": "Processo e pacote Mentor; nenhuma implantação automática no projeto consumidor.",
+  "riscos": [
+    "Integração precisa preservar fontes, narrativas e evidências de todas as fatias.",
+    "Ownership não pode ser deduzido apenas do modelo ou nome do slot."
+  ],
+  "dependencias_novas": [],
+  "proporcionalidade": "Standard, épico dividido em cinco fatias. O escopo fecha lacunas existentes com Git e comandos do Mentor, sem dependências externas novas.",
+  "decisoes_aplicaveis": {
+    "motivo_ausencia": "Na descoberta de 04/10/2026 não havia pasta de ADRs nem habilidade de consistência gerada neste repositório. As decisões propostas estão no documento 01; consultar novamente as ADRs resolvidas antes da execução."
+  },
+  "reuso": {
+    "existentes": [
+      ".mentor/processos/entrega.md",
+      ".mentor/scripts/cmd-doctor.ts",
+      ".mentor/scripts/cmd-resolver.ts",
+      ".mentor/scripts/cmd-fila.ts",
+      "testes/apoio.ts"
+    ],
+    "novos": [
+      {
+        "artefato": "trabalho-paralelo.md",
+        "local": ".mentor/processos",
+        "motivo": "Concentrar protocolo reutilizável de concorrência e handoff."
+      },
+      {
+        "artefato": "atribuicao-paralela.md",
+        "local": ".mentor/modelos",
+        "motivo": "Oferecer divisão pré-pronta preenchível, com referências ao estado real da tarefa."
+      },
+      {
+        "artefato": "git.md",
+        "local": "docs/padroes-de-stack",
+        "motivo": "Registrar a convenção Git local atualmente ausente, distinguindo política do consumidor de orientação genérica."
+      },
+      {
+        "artefato": "worktrees.ts",
+        "local": ".mentor/scripts",
+        "motivo": "Separar descoberta/leitura de árvores da apresentação do doctor, permitindo prova comportamental focada."
+      },
+      {
+        "artefato": "worktrees-paralelas.test.ts",
+        "local": "testes",
+        "motivo": "Provar leitura explícita, limites locais, duplicidade e tolerância a árvores indisponíveis."
+      },
+      {
+        "artefato": "resolvedor-paralelo.test.ts",
+        "local": "testes",
+        "motivo": "Provar códigos de saída e preservação de fontes/índice durante falhas de resolução."
+      },
+      {
+        "artefato": "33-trabalho-paralelo.ts",
+        "local": "testes/cenarios",
+        "motivo": "Provar o fluxo observável de worktrees simultâneas e integração serial num único cenário temporário."
+      }
+    ],
+    "motivo_sem_reuso": null
+  },
+  "habilidades": {
+    "planejamento": [
+      {
+        "nome": "planejamento",
+        "motivo": "Refinar a fatia e seus contratos antes da execução.",
+        "origem": ".mentor/skills/planejamento/SKILL.md"
+      }
+    ],
+    "execucao": [
+      {
+        "nome": "test-design",
+        "motivo": "Aplicar prova comportamental e proporcional.",
+        "origem": ".mentor/skills/test-design/SKILL.md"
+      }
+    ]
+  },
+  "avaliacao": {
+    "planejamento": {
+      "complexidade": "alta",
+      "dimensao_dominante": "acoplamento",
+      "justificativa": "Cinco fatias combinam protocolo, diagnóstico de árvores, integridade de merge e prova da integração; o estudo divide arquivos compartilhados e responsabilidades temporárias.",
+      "perfil_modelo": "avancado",
+      "effort": "alto"
+    },
+    "execucao": {
+      "complexidade": "alta",
+      "dimensao_dominante": "acoplamento",
+      "justificativa": "Cinco fatias combinam protocolo, diagnóstico de árvores, integridade de merge e prova da integração; o estudo divide arquivos compartilhados e responsabilidades temporárias.",
+      "perfil_modelo": "avancado",
+      "effort": "alto"
+    }
+  },
+  "documentos_herdados": [
+    "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/01-problema-e-decisoes.md",
+    "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/02-protocolo-e-contratos.md",
+    "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/03-fatias-e-validacao.md"
+  ]
+}

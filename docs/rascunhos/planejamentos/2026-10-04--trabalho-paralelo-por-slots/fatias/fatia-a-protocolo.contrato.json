@@ -1,0 +1,104 @@
+{
+  "versao": 2,
+  "muda": [
+    ".mentor/processos/trabalho-paralelo.md",
+    ".mentor/modelos/atribuicao-paralela.md",
+    "docs/padroes-de-stack/git.md"
+  ],
+  "criterios_aceite": [
+    {
+      "texto": "Qualquer modelo pode ocupar qualquer slot e assumir planejamento, implementação ou integração por tarefa.",
+      "teste": "CP-01: revisão do protocolo e exercício de atribuição/handoff",
+      "evidencia": null
+    },
+    {
+      "texto": "O protocolo cobre cadastro sequencial, contrato comum, branches únicas, recursos locais e integração serial.",
+      "teste": "CP-02/CP-13: inspeção dos exemplos e contrato de atribuição",
+      "evidencia": null
+    },
+    {
+      "texto": "O modelo de atribuição referencia TASK-ID e estudo integral, sem se tornar catálogo paralelo de andamento.",
+      "teste": "CP-01: exercício de transferência preservando ID, branch e evidências",
+      "evidencia": null
+    },
+    {
+      "texto": "O padrão Git local usa convenções existentes e conserva decisões de contexto ainda não tomadas como pendentes.",
+      "teste": "Revisão comparada com docs/contexto.json e processos vigentes",
+      "evidencia": null
+    }
+  ],
+  "impacto": "Processo e pacote Mentor; nenhuma implantação automática no projeto consumidor.",
+  "riscos": [
+    "Duplicar estado de tarefas numa tabela manual.",
+    "Transformar um exemplo de três modelos em papéis permanentes.",
+    "Escolher política de PR do consumidor sem decisão correspondente."
+  ],
+  "dependencias_novas": [],
+  "proporcionalidade": "Standard. Reusar Git e o ciclo existente; novos artefatos têm necessidade explícita e não introduzem orquestração externa.",
+  "decisoes_aplicaveis": {
+    "motivo_ausencia": "Na descoberta de 04/10/2026 não havia pasta de ADRs nem habilidade de consistência gerada neste repositório. As decisões propostas estão no documento 01; consultar novamente as ADRs resolvidas antes da execução."
+  },
+  "reuso": {
+    "existentes": [
+      ".mentor/processos/planejamento.md",
+      ".mentor/processos/entrega.md",
+      ".mentor/processos/tarefa.md",
+      ".mentor/modelos/"
+    ],
+    "novos": [
+      {
+        "artefato": "trabalho-paralelo.md",
+        "local": ".mentor/processos",
+        "motivo": "Concentrar protocolo reutilizável de concorrência e handoff."
+      },
+      {
+        "artefato": "atribuicao-paralela.md",
+        "local": ".mentor/modelos",
+        "motivo": "Oferecer divisão pré-pronta preenchível, com referências ao estado real da tarefa."
+      },
+      {
+        "artefato": "git.md",
+        "local": "docs/padroes-de-stack",
+        "motivo": "Registrar a convenção Git local atualmente ausente, distinguindo política do consumidor de orientação genérica."
+      }
+    ],
+    "motivo_sem_reuso": null
+  },
+  "habilidades": {
+    "planejamento": [
+      {
+        "nome": "planejamento",
+        "motivo": "Refinar a fatia e seus contratos antes da execução.",
+        "origem": ".mentor/skills/planejamento/SKILL.md"
+      }
+    ],
+    "execucao": [
+      {
+        "nome": "planejamento",
+        "motivo": "Preservar consistência entre instruções, exemplos e contratos.",
+        "origem": ".mentor/skills/planejamento/SKILL.md"
+      }
+    ]
+  },
+  "avaliacao": {
+    "planejamento": {
+      "complexidade": "moderada",
+      "dimensao_dominante": "acoplamento",
+      "justificativa": "A entrega exige acoplamento entre os artefatos previstos; a capacidade é recomendada por tarefa e pode ser atendida por qualquer modelo adequado.",
+      "perfil_modelo": "geral",
+      "effort": "medio"
+    },
+    "execucao": {
+      "complexidade": "moderada",
+      "dimensao_dominante": "acoplamento",
+      "justificativa": "A entrega exige acoplamento entre os artefatos previstos; a capacidade é recomendada por tarefa e pode ser atendida por qualquer modelo adequado.",
+      "perfil_modelo": "geral",
+      "effort": "medio"
+    }
+  },
+  "documentos_herdados": [
+    "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/01-problema-e-decisoes.md",
+    "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/02-protocolo-e-contratos.md",
+    "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/03-fatias-e-validacao.md"
+  ]
+}

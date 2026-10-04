@@ -1,0 +1,94 @@
+{
+  "versao": 2,
+  "muda": [
+    ".mentor/processos/planejamento.md",
+    ".mentor/processos/tarefa.md",
+    ".mentor/processos/entrega.md",
+    ".mentor/processos/teste.md",
+    ".mentor/skills/planejamento/SKILL.md",
+    ".mentor/scripts/cli.ts",
+    "README.md"
+  ],
+  "criterios_aceite": [
+    {
+      "texto": "Planejamento e sua skill orientam distribuir tarefas por independência e capacidade, com exemplo substituível de modelos.",
+      "teste": "CP-01/CP-13: revisão conjunta de processo e modelo A",
+      "evidencia": null
+    },
+    {
+      "texto": "Entrega distingue lote sequencial e branches paralelas, respeitando política de PR do consumidor e integração serial.",
+      "teste": "CP-14: revisão dos dois fluxos e exemplos Git",
+      "evidencia": null
+    },
+    {
+      "texto": "Teste conserva gates exigidos e exige prova da árvore combinada, permitindo prova Git focada por risco.",
+      "teste": "CP-12: revisão comparada com contexto e fingerprint vigente",
+      "evidencia": null
+    },
+    {
+      "texto": "README e ajuda do CLI descobrem o protocolo e descrevem fatiamento paralelo por padrão com --ordem explícita.",
+      "teste": "Inspeção da saída de ajuda e comparação com cmd-fila.ts",
+      "evidencia": null
+    }
+  ],
+  "impacto": "Processo e pacote Mentor; nenhuma implantação automática no projeto consumidor.",
+  "riscos": [
+    "Criar contradição entre uma tarefa por branch e push único de todas as fatias.",
+    "Dar a impressão de que teste unitário sempre dispensa integração focada.",
+    "Anunciar B/C como implementadas antes de sua integração."
+  ],
+  "dependencias_novas": [],
+  "proporcionalidade": "Standard. Reusar Git e o ciclo existente; novos artefatos têm necessidade explícita e não introduzem orquestração externa.",
+  "decisoes_aplicaveis": {
+    "motivo_ausencia": "Na descoberta de 04/10/2026 não havia pasta de ADRs nem habilidade de consistência gerada neste repositório. As decisões propostas estão no documento 01; consultar novamente as ADRs resolvidas antes da execução."
+  },
+  "reuso": {
+    "existentes": [
+      ".mentor/processos/planejamento.md",
+      ".mentor/processos/tarefa.md",
+      ".mentor/processos/entrega.md",
+      ".mentor/processos/teste.md",
+      ".mentor/skills/planejamento/SKILL.md",
+      "README.md"
+    ],
+    "novos": [],
+    "motivo_sem_reuso": null
+  },
+  "habilidades": {
+    "planejamento": [
+      {
+        "nome": "planejamento",
+        "motivo": "Refinar a fatia e seus contratos antes da execução.",
+        "origem": ".mentor/skills/planejamento/SKILL.md"
+      }
+    ],
+    "execucao": [
+      {
+        "nome": "planejamento",
+        "motivo": "Preservar consistência entre instruções, exemplos e contratos.",
+        "origem": ".mentor/skills/planejamento/SKILL.md"
+      }
+    ]
+  },
+  "avaliacao": {
+    "planejamento": {
+      "complexidade": "moderada",
+      "dimensao_dominante": "acoplamento",
+      "justificativa": "A entrega exige acoplamento entre os artefatos previstos; a capacidade é recomendada por tarefa e pode ser atendida por qualquer modelo adequado.",
+      "perfil_modelo": "geral",
+      "effort": "medio"
+    },
+    "execucao": {
+      "complexidade": "moderada",
+      "dimensao_dominante": "acoplamento",
+      "justificativa": "A entrega exige acoplamento entre os artefatos previstos; a capacidade é recomendada por tarefa e pode ser atendida por qualquer modelo adequado.",
+      "perfil_modelo": "geral",
+      "effort": "medio"
+    }
+  },
+  "documentos_herdados": [
+    "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/01-problema-e-decisoes.md",
+    "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/02-protocolo-e-contratos.md",
+    "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/03-fatias-e-validacao.md"
+  ]
+}

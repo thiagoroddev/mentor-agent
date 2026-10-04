@@ -103,5 +103,72 @@
     "sha256": "aa190e7229c41e0f3094a6bb563dedfc3f9edc582477070764ad0d7469711cce",
     "secao": null,
     "registrado_em": "04/10/26"
+  },
+  {
+    "id": "PLAN-trabalho-paralelo-por-slots",
+    "titulo": "Épico: trabalho paralelo por slots no Mentor",
+    "arquivo": "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots",
+    "sha256": "1dc77fb59348a06ea9dac3261019d81ef3366020d6c5559a1e67b40eaaf065dc",
+    "secao": null,
+    "registrado_em": "04/10/26",
+    "manifesto": {
+      "01-problema-e-decisoes.md": "0099f69dd01165689b2c39818f784081b4723dc8524a3b2f3072b13379e713fe",
+      "02-protocolo-e-contratos.md": "6005d90a3d247be902ec676aaaa67b65a2fc222675787313bebdd2e7a1d7ae65",
+      "03-fatias-e-validacao.md": "c8f598de4276e6ffa7a9da518b25d2acf45b0300ebd1515e9b793405f4e741c1",
+      "04-instrucoes-para-execucao.md": "1e46cba0daa8e95b69c50826960bb0ddc3c14b45a08f89e8dd61db655f3fde2c",
+      "README.md": "1dc77fb59348a06ea9dac3261019d81ef3366020d6c5559a1e67b40eaaf065dc",
+      "contrato.json": "82daa068c4df702e2880ff08cfc30fd408c06a28e282b23a54df73366ef318b3",
+      "fatias/fatia-a-protocolo.contrato.json": "6035eb07518d20c37987393454d3e02b8d120b8f272e9fb6eed7f0fdf39b00ce",
+      "fatias/fatia-a-protocolo.md": "1bd8ca0f60f7824a1d88ec25953d480908bad4bc49363433b0c4a6ccafb212e1",
+      "fatias/fatia-b-diagnostico.contrato.json": "bd021a1ae2585915986573e3ee81951f3539bf54c6a278a99179017241d1e1b3",
+      "fatias/fatia-b-diagnostico.md": "fc104547bff4a00c6785b702946bf358ada33fdaa149e713c4fc01925dfddf32",
+      "fatias/fatia-c-resolvedor.contrato.json": "8f10db141830e6acee53a31ac4a89f380ad326da3ab57f98af37034b783ab425",
+      "fatias/fatia-c-resolvedor.md": "ea504caa2b7fc04a557cf433921188be9eddce4bf764a8063caf5664b92befd2",
+      "fatias/fatia-d-instrucoes.contrato.json": "36c7a544712e202bc73f319af5a944009173917f155737aa518a769749b0b517",
+      "fatias/fatia-d-instrucoes.md": "18048f36b6443ae8ed69fca5b7fba4b699883ee58257f1085a009eca13b4e589",
+      "fatias/fatia-e-validacao.contrato.json": "854ef4597b9eb1cb48b7b05b94ec209d58612de29995e27cb5eba8c9f24591de",
+      "fatias/fatia-e-validacao.md": "da8a68b14ae70357ea4e1469c1ca1bbd39b027529f13217f14b37d84c5fc5ce8",
+      "referencias/00-texto-original-e-pedidos.md": "ccccafb561fa0693809c1ca6e955f894da002c7126983665a6c7b0fd263f1f19"
+    }
+  },
+  {
+    "id": "PLAN-paralelo-a-protocolo",
+    "titulo": "Fatia A: Protocolo e modelo de atribuição por slots",
+    "arquivo": "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/fatias/fatia-a-protocolo.md",
+    "sha256": "1bd8ca0f60f7824a1d88ec25953d480908bad4bc49363433b0c4a6ccafb212e1",
+    "secao": null,
+    "registrado_em": "04/10/26"
+  },
+  {
+    "id": "PLAN-paralelo-b-diagnostico",
+    "titulo": "Fatia B: Diagnóstico de tarefas entre worktrees no doctor",
+    "arquivo": "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/fatias/fatia-b-diagnostico.md",
+    "sha256": "fc104547bff4a00c6785b702946bf358ada33fdaa149e713c4fc01925dfddf32",
+    "secao": null,
+    "registrado_em": "04/10/26"
+  },
+  {
+    "id": "PLAN-paralelo-c-resolvedor",
+    "titulo": "Fatia C: Resolvedor de gerados com falhas verificáveis",
+    "arquivo": "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/fatias/fatia-c-resolvedor.md",
+    "sha256": "ea504caa2b7fc04a557cf433921188be9eddce4bf764a8063caf5664b92befd2",
+    "secao": null,
+    "registrado_em": "04/10/26"
+  },
+  {
+    "id": "PLAN-paralelo-d-instrucoes",
+    "titulo": "Fatia D: Instruções coerentes de trabalho paralelo",
+    "arquivo": "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/fatias/fatia-d-instrucoes.md",
+    "sha256": "18048f36b6443ae8ed69fca5b7fba4b699883ee58257f1085a009eca13b4e589",
+    "secao": null,
+    "registrado_em": "04/10/26"
+  },
+  {
+    "id": "PLAN-paralelo-e-validacao",
+    "titulo": "Fatia E: Validação integrada e consolidação do pacote",
+    "arquivo": "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/fatias/fatia-e-validacao.md",
+    "sha256": "da8a68b14ae70357ea4e1469c1ca1bbd39b027529f13217f14b37d84c5fc5ce8",
+    "secao": null,
+    "registrado_em": "04/10/26"
   }
 ]
