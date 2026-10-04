@@ -7,6 +7,13 @@ O formato baseia-se em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0
 ## [Não publicado]
 
 ### Adicionado
+- **Herança seletiva, hashes e revisão incremental (Fatia E)**:
+  - Herança normativa seletiva via `documentos_herdados` em `ContratoPlano` e `Plano`: manifesto gerado em `plano_ref.manifesto` contém estritamente o arquivo da fatia e os documentos normativos declarados, sem selecionar o épico inteiro por padrão.
+  - Isolamento de invalidação entre fatias: `resolverPlano()` valida apenas os hashes presentes no manifesto; alterações em arquivos não herdados da pasta do épico preservam a validade da revisão.
+  - Atualização da assinatura semântica de auditoria (`assinaturaSemanticaDaTarefa` em `revisao-incremental.ts`) contemplando os campos contratuais v2 (`decisoes_aplicaveis`, `reuso`, `habilidades`, `avaliacao`, `documentos_herdados`) e a identidade de `plano_ref`.
+  - Contratos e texto normativo no dossiê de auditoria: `contratosDaRevisao` inclui os documentos herdados no manifesto, e o dossiê da revisão recebe seção estruturada com as diretrizes normativas resolvidas.
+  - Precedência de vínculo normativo sobre rascunho genérico: em `cmd-auditar.ts` (`motivosDeExclusao`), arquivos sob `docs/rascunhos/` que estejam declarados em `plano.muda` ou no plano vinculado não são descartados como `'nota'`.
+  - Suíte de testes unitários dedicada em `testes/heranca-hashes-e-revisao.test.ts`.
 - **Compacidade de evidências no JSON e adaptação de consumidores (Fatia D3)**:
   - Evidência de critérios de aceite (`mentor task criterio`) com persistência de log completo em disco sob `docs/.evidencias/logs/<ID>-criterio-<indice>-<timestamp>.log` e registro do ponteiro `log_ref` no JSON da tarefa.
   - O campo `evidencia.saida` no JSON da tarefa passa a armazenar apenas um resumo conciso/diagnóstico (teto compacto de até 10 linhas ou recorte por tamanho), evitando inflar o JSON com milhares de caracteres de saída crua.

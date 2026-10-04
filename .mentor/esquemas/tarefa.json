@@ -96,6 +96,7 @@
   "commit_base_nota": "HEAD do git no momento do 'task iniciar'. E a base do diff que a auditoria le. Nunca digitado.",
   "concluida_em": null,
   "plano_ref": null,
+  "plano_ref_nota": "Ponteiro para plano registrado: { arquivo, sha256, secao, manifesto: { [caminho]: sha256 } } com manifesto de documentos herdados.",
   "plano": {
     "muda": [],
     "criterios_aceite": [
@@ -139,6 +140,8 @@
     "habilidades_nota": "Habilidades necessarias: { planejamento: [ { nome, motivo, origem } ], execucao: [ { nome, motivo, origem } ] }.",
     "avaliacao": null,
     "avaliacao_nota": "Avaliacao multidimensional de complexidade, dimensao_dominante, justificativa, perfil_modelo e effort para planejamento e execucao.",
+    "documentos_herdados": [],
+    "documentos_herdados_nota": "Lista de documentos normativos herdados pelo plano/fatia. Gera o manifesto seletivo em plano_ref.manifesto sem invalidar o épico por fatias não correlatas.",
     "criterios_aceite_nota": "Todo criterio nomeia um teste. Saida honesta: 'nao se aplica: <motivo>'. Criterio que nao vira asercao nao era criterio, era intencao. Evidencia contem { comando, codigo_saida, saida (resumo conciso), executado_em, log_ref (ponteiro para log bruto em docs/.evidencias/logs), resumo }."
   },
   "gates": {

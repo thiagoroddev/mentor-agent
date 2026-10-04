@@ -122,7 +122,14 @@ export function motivosDeExclusao(
     if (a.startsWith(`${docs}/tarefas/`) || a.startsWith(`${docs}/.evidencias/`)) motivo = 'registro'
     else if (a.startsWith(`${docs}/auditorias/`) || VISTAS_GERADAS.some((v) => a === `${docs}/${v}`)) motivo = 'vista gerada'
     else if (a === `${docs}/contexto.json` && !caminhoCorrespondeDeclaracao(a, declarados)) motivo = 'vista gerada'
-    else if (a.startsWith(`${docs}/rascunhos/`) || a === 'melhorias-do-pacote.md' || a.endsWith('/melhorias-do-pacote.md')) motivo = 'nota'
+    else if (a.startsWith(`${docs}/rascunhos/`) || a === 'melhorias-do-pacote.md' || a.endsWith('/melhorias-do-pacote.md')) {
+      // Vínculo normativo tem precedência sobre exclusão genérica de rascunho (Fatia E)
+      if (caminhoCorrespondeDeclaracao(a, declarados)) {
+        motivo = null
+      } else {
+        motivo = 'nota'
+      }
+    }
     else if (a.startsWith('.mentor/') && arquivoIntactoDoPacote(a)) motivo = 'pacote'
     else if (gerados.has(bruto)) motivo = 'gerado'
     else if (extras.length && casaPadrao(a, extras)) motivo = 'ignorar_diff'
@@ -245,7 +252,12 @@ export function diffDaTarefa(t: Tarefa, ctx: Contexto = carregarContexto()): Dif
     }
   }
 
-  const motivos = motivosDeExclusao([...brutos.keys()], ctx, extrairCaminhosDeclarados(t.plano.muda))
+  const caminhosVinculados = [
+    ...extrairCaminhosDeclarados(t.plano.muda),
+    ...(t.plano_ref?.arquivo ? [t.plano_ref.arquivo] : []),
+    ...(t.plano_ref?.manifesto ? Object.keys(t.plano_ref.manifesto) : []),
+  ]
+  const motivos = motivosDeExclusao([...brutos.keys()], ctx, caminhosVinculados)
   const arquivos: ArquivoDoDiff[] = [...brutos.entries()]
     .map(([caminho, v]) => ({ caminho, linhas: v.linhas, motivo: motivos.get(caminho) ?? null, nao_commitado: v.nao_commitado }))
     .sort((a, b) => a.caminho.localeCompare(b.caminho))
@@ -437,7 +449,12 @@ export function preparar(flags: Flags = {}): number {
     raiz: c.raiz, pastaAuditorias: c.auditorias, tarefa,
     tarefasConhecidas: carregarTarefas(),
     resolverArquivosGerados: (arquivos) => {
-      const motivos = motivosDeExclusao(arquivos, carregarContexto(), extrairCaminhosDeclarados(tarefa.plano.muda))
+      const caminhosVinculados = [
+        ...extrairCaminhosDeclarados(tarefa.plano.muda),
+        ...(tarefa.plano_ref?.arquivo ? [tarefa.plano_ref.arquivo] : []),
+        ...(tarefa.plano_ref?.manifesto ? Object.keys(tarefa.plano_ref.manifesto) : []),
+      ]
+      const motivos = motivosDeExclusao(arquivos, carregarContexto(), caminhosVinculados)
       return new Map([...motivos.entries()].filter(([, motivo]) => motivo !== null).map(([arquivo, motivo]) => [arquivo, String(motivo)]))
     },
   })

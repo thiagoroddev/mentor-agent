@@ -38,6 +38,7 @@ export interface ContratoPlano {
   reuso?: ReusoPlano | null
   habilidades?: HabilidadesPlano | null
   avaliacao?: AvaliacaoPlano | null
+  documentos_herdados?: string[]
 }
 
 export interface PlanoResolvido {
@@ -61,6 +62,7 @@ export interface PlanoResolvido {
   reuso?: ReusoPlano | null
   habilidades?: HabilidadesPlano | null
   avaliacao?: AvaliacaoPlano | null
+  documentos_herdados?: string[]
   diagnosticos: string[]
   falta_contrato?: boolean
 }
@@ -195,6 +197,7 @@ export function resolverPlano(tarefa: Tarefa, raizDoProjeto = caminhos().raiz): 
       reuso: tarefa.plano?.reuso ?? null,
       habilidades: tarefa.plano?.habilidades ?? null,
       avaliacao: tarefa.plano?.avaliacao ?? null,
+      documentos_herdados: tarefa.plano?.documentos_herdados ?? [],
       diagnosticos,
       falta_contrato: false,
     }
@@ -223,6 +226,7 @@ export function resolverPlano(tarefa: Tarefa, raizDoProjeto = caminhos().raiz): 
       reuso: tarefa.plano?.reuso ?? null,
       habilidades: tarefa.plano?.habilidades ?? null,
       avaliacao: tarefa.plano?.avaliacao ?? null,
+      documentos_herdados: tarefa.plano?.documentos_herdados ?? [],
       diagnosticos,
       falta_contrato: false,
     }
@@ -246,11 +250,37 @@ export function resolverPlano(tarefa: Tarefa, raizDoProjeto = caminhos().raiz): 
     sha256Atual = sha256DoArquivo(abs)
   }
 
-  const revisaoValida = sha256Atual === tarefa.plano_ref.sha256
+  let revisaoValida = sha256Atual === tarefa.plano_ref.sha256
   if (!revisaoValida) {
     diagnosticos.push(
       `Revisao do plano divergente: esperado ${tarefa.plano_ref.sha256.slice(0, 8)}, atual ${sha256Atual.slice(0, 8)}`,
     )
+  }
+
+  // Validação seletiva de documentos normativos registrados no manifesto (Fatia E)
+  if (tarefa.plano_ref.manifesto) {
+    for (const [caminhoItem, shaEsperado] of Object.entries(tarefa.plano_ref.manifesto)) {
+      const absItem = join(raizDoProjeto, caminhoItem)
+      if (!existsSync(absItem)) {
+        revisaoValida = false
+        diagnosticos.push(`Documento normativo do manifesto nao encontrado: "${caminhoItem}"`)
+      } else {
+        const itemStat = lstatSync(absItem)
+        const absArquivo = itemStat.isDirectory() ? join(absItem, 'README.md') : absItem
+        if (!existsSync(absArquivo)) {
+          revisaoValida = false
+          diagnosticos.push(`Documento normativo do manifesto nao encontrado: "${caminhoItem}"`)
+        } else {
+          const shaAtualItem = sha256DoArquivo(absArquivo)
+          if (shaAtualItem !== shaEsperado) {
+            revisaoValida = false
+            diagnosticos.push(
+              `Revisao de documento normativo divergente em "${caminhoItem}": esperado ${shaEsperado.slice(0, 8)}, atual ${shaAtualItem.slice(0, 8)}`,
+            )
+          }
+        }
+      }
+    }
   }
 
   if (tarefa.plano_ref.secao) {
@@ -272,6 +302,7 @@ export function resolverPlano(tarefa: Tarefa, raizDoProjeto = caminhos().raiz): 
   let reuso = tarefa.plano?.reuso ?? null
   let habilidades = tarefa.plano?.habilidades ?? null
   let avaliacao = tarefa.plano?.avaliacao ?? null
+  let docsHerdados = tarefa.plano?.documentos_herdados ?? []
   let faltaContrato = false
 
   const contratoJson1 = stat.isDirectory() ? join(abs, 'contrato.json') : abs.replace(/\.md$/, '.contrato.json')
@@ -292,6 +323,7 @@ export function resolverPlano(tarefa: Tarefa, raizDoProjeto = caminhos().raiz): 
       if (parsed.reuso !== undefined) reuso = parsed.reuso
       if (parsed.habilidades !== undefined) habilidades = parsed.habilidades
       if (parsed.avaliacao !== undefined) avaliacao = parsed.avaliacao
+      if (parsed.documentos_herdados) docsHerdados = parsed.documentos_herdados
     } catch (e: any) {
       diagnosticos.push(`Contrato estruturado "${caminhoContrato}" invalido: ${e.message}`)
     }
@@ -312,6 +344,7 @@ export function resolverPlano(tarefa: Tarefa, raizDoProjeto = caminhos().raiz): 
       reuso,
       habilidades,
       avaliacao,
+      documentos_herdados: docsHerdados,
     }, c))
   }
 
@@ -334,6 +367,7 @@ export function resolverPlano(tarefa: Tarefa, raizDoProjeto = caminhos().raiz): 
     reuso,
     habilidades,
     avaliacao,
+    documentos_herdados: docsHerdados,
     diagnosticos,
     falta_contrato: faltaContrato,
   }
@@ -524,34 +558,62 @@ export function vincularPlano(id: string, flags: Record<string, string | undefin
     }
   }
 
-  t.plano_ref = {
-    arquivo: rel,
-    sha256,
-    secao,
-  }
-
   // Procura se tem contrato acompanhante
   const contratoJson1 = stat.isDirectory() ? join(abs, 'contrato.json') : abs.replace(/\.md$/, '.contrato.json')
   const contratoJson2 = stat.isDirectory() ? null : abs.replace(/\.md$/, '.json')
   const caminhoContrato = existsSync(contratoJson1) ? contratoJson1 : (contratoJson2 && existsSync(contratoJson2) ? contratoJson2 : null)
+  let parsedContrato: ContratoPlano | null = null
 
   if (caminhoContrato) {
     try {
-      const parsed = lerJson<ContratoPlano>(caminhoContrato)
-      if (parsed.versao !== undefined) t.plano.versao = Number(parsed.versao)
-      if (parsed.muda && parsed.muda.length > 0) t.plano.muda = parsed.muda
-      if (parsed.criterios_aceite && parsed.criterios_aceite.length > 0) t.plano.criterios_aceite = parsed.criterios_aceite
-      if (parsed.impacto !== undefined) t.plano.impacto = parsed.impacto
-      if (parsed.riscos && parsed.riscos.length > 0) t.plano.riscos = parsed.riscos
-      if (parsed.dependencias_novas) t.plano.dependencias_novas = parsed.dependencias_novas
-      if (parsed.proporcionalidade !== undefined) t.plano.proporcionalidade = parsed.proporcionalidade
-      if (parsed.decisoes_aplicaveis !== undefined) t.plano.decisoes_aplicaveis = parsed.decisoes_aplicaveis
-      if (parsed.reuso !== undefined) t.plano.reuso = parsed.reuso
-      if (parsed.habilidades !== undefined) t.plano.habilidades = parsed.habilidades
-      if (parsed.avaliacao !== undefined) t.plano.avaliacao = parsed.avaliacao
+      parsedContrato = lerJson<ContratoPlano>(caminhoContrato)
+      if (parsedContrato.versao !== undefined) t.plano.versao = Number(parsedContrato.versao)
+      if (parsedContrato.muda && parsedContrato.muda.length > 0) t.plano.muda = parsedContrato.muda
+      if (parsedContrato.criterios_aceite && parsedContrato.criterios_aceite.length > 0) t.plano.criterios_aceite = parsedContrato.criterios_aceite
+      if (parsedContrato.impacto !== undefined) t.plano.impacto = parsedContrato.impacto
+      if (parsedContrato.riscos && parsedContrato.riscos.length > 0) t.plano.riscos = parsedContrato.riscos
+      if (parsedContrato.dependencias_novas) t.plano.dependencias_novas = parsedContrato.dependencias_novas
+      if (parsedContrato.proporcionalidade !== undefined) t.plano.proporcionalidade = parsedContrato.proporcionalidade
+      if (parsedContrato.decisoes_aplicaveis !== undefined) t.plano.decisoes_aplicaveis = parsedContrato.decisoes_aplicaveis
+      if (parsedContrato.reuso !== undefined) t.plano.reuso = parsedContrato.reuso
+      if (parsedContrato.habilidades !== undefined) t.plano.habilidades = parsedContrato.habilidades
+      if (parsedContrato.avaliacao !== undefined) t.plano.avaliacao = parsedContrato.avaliacao
+      if (parsedContrato.documentos_herdados && parsedContrato.documentos_herdados.length > 0) {
+        t.plano.documentos_herdados = parsedContrato.documentos_herdados
+      }
     } catch {
       // continua
     }
+  }
+
+  // Gera manifesto seletivo por herança em plano_ref.manifesto (Fatia E)
+  const manifesto: Record<string, string> = {}
+  const chavePrincipal = stat.isDirectory() ? join(rel, 'README.md').replace(/\\/g, '/') : rel
+  manifesto[chavePrincipal] = sha256
+  if (caminhoContrato) {
+    const relContrato = relative(c.raiz, caminhoContrato).replace(/\\/g, '/')
+    manifesto[relContrato] = sha256DoArquivo(caminhoContrato)
+  }
+  const herdados = parsedContrato?.documentos_herdados ?? t.plano.documentos_herdados ?? []
+  for (const doc of herdados) {
+    if (!doc || typeof doc !== 'string') continue
+    const limpo = normalizarCaminhoRelativo(doc)
+    let absDoc = join(c.raiz, limpo)
+    if (!existsSync(absDoc)) {
+      const naPasta = join(stat.isDirectory() ? abs : dirname(abs), limpo)
+      if (existsSync(naPasta)) absDoc = naPasta
+    }
+    if (existsSync(absDoc)) {
+      const chaveRel = relative(c.raiz, absDoc).replace(/\\/g, '/')
+      manifesto[chaveRel] = sha256DoArquivo(absDoc)
+    }
+  }
+
+  t.plano_ref = {
+    arquivo: rel,
+    sha256,
+    secao,
+    manifesto,
   }
 
   // Localiza arquivo json da tarefa para gravar

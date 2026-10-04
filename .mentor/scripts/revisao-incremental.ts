@@ -185,6 +185,11 @@ export function assinaturaSemanticaDaTarefa(tarefa: Tarefa): string {
     plano_ref: tarefa.plano_ref ?? null,
     muda: tarefa.plano?.muda ?? [], criterios: tarefa.plano?.criterios_aceite ?? [],
     riscos: tarefa.plano?.riscos ?? [], impacto: tarefa.plano?.impacto ?? null,
+    decisoes_aplicaveis: tarefa.plano?.decisoes_aplicaveis ?? null,
+    reuso: tarefa.plano?.reuso ?? null,
+    habilidades: tarefa.plano?.habilidades ?? null,
+    avaliacao: tarefa.plano?.avaliacao ?? null,
+    documentos_herdados: tarefa.plano?.documentos_herdados ?? null,
   }))
 }
 
@@ -197,11 +202,19 @@ export function contratosDaRevisao(raiz: string, tarefas: Tarefa[], regras: Arra
   for (const regra of regras) for (const caminho of GUIAS_DA_REGRA[regra.regra] ?? []) caminhos.add(caminho)
   for (const tarefa of tarefas) {
     const ref = tarefa.plano_ref?.arquivo?.replace(/\\/g, '/')
-    if (!ref) continue
-    if (isAbsolute(ref) || ref.split('/').includes('..')) throw new Error(`Plano referenciado fora do projeto: ${ref}`)
-    caminhos.add(ref)
-    const json = ref.endsWith('.md') ? ref.replace(/\.md$/, '.contrato.json') : `${ref}/contrato.json`
-    if (existsSync(join(raiz, json))) caminhos.add(json)
+    if (ref) {
+      if (isAbsolute(ref) || ref.split('/').includes('..')) throw new Error(`Plano referenciado fora do projeto: ${ref}`)
+      caminhos.add(ref)
+      const json = ref.endsWith('.md') ? ref.replace(/\.md$/, '.contrato.json') : `${ref}/contrato.json`
+      if (existsSync(join(raiz, json))) caminhos.add(json)
+    }
+    if (tarefa.plano_ref?.manifesto) {
+      for (const mCaminho of Object.keys(tarefa.plano_ref.manifesto)) {
+        if (!isAbsolute(mCaminho) && !mCaminho.split('/').includes('..')) {
+          caminhos.add(mCaminho)
+        }
+      }
+    }
   }
   return [...caminhos].sort().flatMap((caminho) => {
     const abs = join(raiz, caminho)
@@ -491,6 +504,14 @@ export function prepararRevisaoIncremental(options: PrepararRevisaoOptions): Rev
   }))
   const evidenciasDeGate = tarefas.flatMap((t) => Object.entries(t.gates ?? {}).flatMap(([nome, g]) => g ?
     [`${t.id} gate ${nome}: ${g.rotulo}; comando=${g.comando ?? 'n/d'}; saída=${g.codigo_saida ?? 'n/d'}; log=${g.log_ref ?? g.evidencia_url ?? 'sem referência'}`] : []))
+  const diretrizesNormativas = tarefas.flatMap((t) => {
+    const pl = planos.get(t.id)
+    const itens: string[] = []
+    if (pl?.decisoes_aplicaveis && Array.isArray(pl.decisoes_aplicaveis)) {
+      itens.push(...pl.decisoes_aplicaveis.map((d) => `${t.id} diretriz ${d.adr}: ${d.aplicacao}`))
+    }
+    return itens
+  })
   const instrucoes = [
     'Revisão incremental do Mentor. Avalie somente o retrato, os critérios e o contexto fornecidos.',
     `Tarefas vinculadas: ${tarefas.map((t) => t.id).join(', ')}`,
@@ -498,6 +519,7 @@ export function prepararRevisaoIncremental(options: PrepararRevisaoOptions): Rev
     'Não leia o repositório nem abra tarefas. Reporte achados concretos; o destino é decisão humana.',
     ...requisitos.map((r) => `Critério: ${r}`),
     ...evidenciasDeGate.map((g) => `Gate registrado: ${g}`),
+    ...diretrizesNormativas.map((d) => `Diretriz normativa: ${d}`),
   ]
   const regras = perguntasPorRisco(arquivosOrdenados, patches.map((p) => p.texto).join('\n'), tarefas.flatMap((t) => planos.get(t.id)?.riscos ?? []), tarefas.map((t) => t.tipo).join(' '))
   const contratos = contratosDaRevisao(raiz, tarefas, regras)
@@ -539,6 +561,30 @@ export function prepararRevisaoIncremental(options: PrepararRevisaoOptions): Rev
       arquivos: p.arquivos,
       lida: false,
     }))
+    const secaoContratoNormativo = [
+      '', '**Contrato e Diretrizes Normativas**', '',
+      ...tarefas.flatMap((t) => {
+        const pl = planos.get(t.id)
+        const linhas: string[] = [`- Tarefa \`${t.id}\`:`]
+        if (pl?.arquivo) linhas.push(`  Plano fonte: \`${pl.arquivo}\` (sha256: ${pl.sha256 ? pl.sha256.slice(0, 8) : 'n/d'})`)
+        if (t.plano_ref?.manifesto) {
+          const chaves = Object.keys(t.plano_ref.manifesto)
+          linhas.push(`  Documentos normativos herdados: ${chaves.length ? chaves.map((k) => `\`${k}\``).join(', ') : 'nenhum'}`)
+        }
+        if (pl?.decisoes_aplicaveis) {
+          if (Array.isArray(pl.decisoes_aplicaveis)) {
+            linhas.push(`  Decisões aplicáveis: ${pl.decisoes_aplicaveis.map((d) => `${d.adr} (${d.aplicacao})`).join('; ')}`)
+          } else if (pl.decisoes_aplicaveis.motivo_ausencia) {
+            linhas.push(`  Decisões aplicáveis: ausência justificada (${pl.decisoes_aplicaveis.motivo_ausencia})`)
+          }
+        }
+        if (pl?.reuso) {
+          const ex = pl.reuso.existentes?.length ? pl.reuso.existentes.join(', ') : 'nenhum'
+          linhas.push(`  Reuso existente: ${ex}`)
+        }
+        return linhas
+      }),
+    ]
     indexText = [
       `# ${id} · revisão incremental`, '',
       `Estado: preparada · tarefa: ${tarefa.id} · unidade: ${unidadeId}`,
@@ -547,6 +593,7 @@ export function prepararRevisaoIncremental(options: PrepararRevisaoOptions): Rev
       '', '**Inventário**', '',
       '| Arquivo | Estado | SHA-256 capturado | Situação |', '| --- | --- | --- | --- |',
       ...arquivos.map((a) => `| \`${a.caminho}\` | ${a.status} | ${a.sha256 ?? 'removido'} | ${a.ambiguidade ?? (a.cobertura_herdada_de ? `cobertura herdada de ${a.cobertura_herdada_de}` : 'delta isolado')} |`),
+      ...secaoContratoNormativo,
       '', '**Regras selecionadas**', '',
       ...regras.map((r) => `- ${r.regra}: ${r.pergunta}`), '', '**Partes**', '',
       ...partes.map((p) => `- \`${p.arquivo}\` · ${p.caracteres} caracteres · ${p.arquivos.join(', ') || 'sem diff'}`),

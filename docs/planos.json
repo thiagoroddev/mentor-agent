@@ -71,5 +71,13 @@
     "sha256": "7f098902b0fcc5cb9dbc04f3137498c005cb61eaa529e95eaaa6d1ddfa33f424",
     "secao": null,
     "registrado_em": "04/10/26"
+  },
+  {
+    "id": "PLAN-fatia-e-heranca-hashes-e-revis",
+    "titulo": "Fatia E: Herança, hashes e revisão incremental",
+    "arquivo": "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/fatias/fatia-e-heranca-hashes-e-revisao.md",
+    "sha256": "f343f9ab27fc184c9f7600147134728b55348721ad6be65e83ae2ff94315fb8b",
+    "secao": null,
+    "registrado_em": "04/10/26"
   }
 ]

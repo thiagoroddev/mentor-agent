@@ -1,0 +1,228 @@
+{
+  "id": "TASK-CHORE-010",
+  "revisao_incremental_requerida": false,
+  "tipo": "CHORE",
+  "titulo": "Herança, hashes e revisão incremental (Fatia E)",
+  "fatia_de": null,
+  "estado": "concluida",
+  "cerimonia": "Standard",
+  "perfil": null,
+  "valor": "importante",
+  "urgencia": "normal",
+  "esforco": {
+    "humano": "P",
+    "ia": "G"
+  },
+  "depende_de": [],
+  "ordem_motivo": null,
+  "fila": "ciclo",
+  "ordem": null,
+  "origem": "titulo-autossuficiente",
+  "requisitos": [],
+  "sem_requisito_motivo": null,
+  "criada_em": "04/10/26 14:40",
+  "iniciada_em": "04/10/26 14:41",
+  "commit_base": "e99a67fc4c640728800622b7d5d02e3bdb486bd6",
+  "concluida_em": "04/10/26 14:58",
+  "plano": {
+    "muda": [
+      ".mentor/scripts/tipos.ts",
+      ".mentor/scripts/cmd-plano.ts",
+      ".mentor/scripts/revisao-incremental.ts",
+      ".mentor/scripts/cmd-auditar.ts",
+      ".mentor/esquemas/tarefa.json",
+      "CHANGELOG.md",
+      "testes/heranca-hashes-e-revisao.test.ts",
+      "testes/cenarios/31-testes-de-unidade.ts"
+    ],
+    "criterios_aceite": [
+      {
+        "texto": "Manifesto seletivo gerado por documentos_herdados em vincularPlano sem incluir o épico inteiro",
+        "teste": "npx tsx testes/cenarios/31-testes-de-unidade.ts",
+        "evidencia": null
+      },
+      {
+        "texto": "Isolamento de fatias: alteração em documento herdado no manifesto invalida revisão; alteração em arquivo não herdado preserva validade",
+        "teste": "npx tsx testes/cenarios/31-testes-de-unidade.ts",
+        "evidencia": null
+      },
+      {
+        "texto": "Assinatura semântica da tarefa atualizada com campos contratuais v2 (decisoes_aplicaveis, reuso, habilidades, avaliacao) e plano_ref",
+        "teste": "npx tsx testes/cenarios/31-testes-de-unidade.ts",
+        "evidencia": null
+      },
+      {
+        "texto": "Contratos da revisão e dossiê incorporam os documentos normativos herdados e texto resolvido",
+        "teste": "npx tsx testes/cenarios/31-testes-de-unidade.ts",
+        "evidencia": null
+      },
+      {
+        "texto": "Precedência de vínculo normativo em cmd-auditar impede exclusão de rascunhos declarados como nota",
+        "teste": "npx tsx testes/cenarios/31-testes-de-unidade.ts",
+        "evidencia": null
+      }
+    ],
+    "impacto": "local",
+    "riscos": [
+      "Teto de 30.000 caracteres no dossiê de revisão ao adicionar texto normativo longo"
+    ],
+    "dependencias_novas": [],
+    "proporcionalidade": "Standard",
+    "versao": 2,
+    "decisoes_aplicaveis": {
+      "motivo_ausencia": "Repositório do pacote Mentor atualmente sem pasta de ADRs em docs/arquitetura/ADR; diretrizes operacionais em definição neste épico."
+    },
+    "reuso": {
+      "existentes": [
+        ".mentor/scripts/tipos.ts",
+        ".mentor/scripts/cmd-plano.ts",
+        ".mentor/scripts/revisao-incremental.ts",
+        ".mentor/scripts/cmd-auditar.ts"
+      ],
+      "novos": [
+        {
+          "artefato": "heranca-hashes-e-revisao.test.ts",
+          "local": "testes/",
+          "motivo": "Suíte de testes de herança normativa seletiva, hashes e revisão incremental"
+        }
+      ],
+      "motivo_sem_reuso": null
+    },
+    "habilidades": {
+      "planejamento": [
+        {
+          "nome": "planejamento",
+          "motivo": "Estruturação de herança normativa e contratos de auditoria",
+          "origem": "processo-mentor"
+        }
+      ],
+      "execucao": [
+        {
+          "nome": "execucao",
+          "motivo": "Implementação das funções de herança e testes",
+          "origem": "processo-mentor"
+        }
+      ]
+    },
+    "avaliacao": {
+      "planejamento": {
+        "complexidade": "alta",
+        "dimensao_dominante": "arquitetura",
+        "justificativa": "Modelagem de herança normativa seletiva e isolamento de validação entre fatias",
+        "perfil_modelo": "avancado",
+        "effort": "alto"
+      },
+      "execucao": {
+        "complexidade": "alta",
+        "dimensao_dominante": "arquitetura",
+        "justificativa": "Implementação da geração de manifesto seletivo, resolução e integração de revisão incremental",
+        "perfil_modelo": "avancado",
+        "effort": "alto"
+      }
+    },
+    "documentos_herdados": [
+      "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/01-direcao-e-processo.md",
+      "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/02-consistencia-e-contratos.md"
+    ],
+    "estado_da_arte": {
+      "implementacoes_consolidadas": [
+        "Invalidação cega de diretórios inteiros via glob recursivo ou git rev-parse em monorepos",
+        "Assinaturas semânticas superficiais que cobrem apenas lista de arquivos sem inspecionar contratos de decisão e reuso",
+        "Sistemas de compilação com hash de árvore de conteúdo global (Bazel / Turborepo / Nix)"
+      ],
+      "motivo_descarte": "Invalidar o épico inteiro quando uma fatia não correlata muda cria acoplamento artificial e retrabalho contínuo; assinar apenas arquivos modificados sem incluir decisões aplicáveis permite divergência silenciosa de arquitetura; adotar Bazel ou Nix adiciona dependências externas proibidas.",
+      "o_que_resta_construir": "Herança seletiva explícita via documentos_herdados, manifesto pontual em plano_ref, assinatura semântica com campos contratuais v2 e inclusão do texto normativo no dossiê de auditoria."
+    },
+    "custo_de_oportunidade": {
+      "o_que_existe_pronto": "Ferramentas de monorepo como Turborepo ou Nx com hashing de dependências entre pacotes.",
+      "custo_estimado": "Adicionar dependência pesada de node_modules ou binários Go/Rust externos e complexidade de configuração de grafos.",
+      "dependencias_ou_infra": "Bibliotecas de terceiros, node_modules adicionais e engine de cálculo de grafo externa.",
+      "tempo_substituido": "Aproximadamente 2 semanas de implementação e manutenção de pipeline de monorepo."
+    }
+  },
+  "gates": {
+    "tipos": {
+      "rotulo": "APROVADO",
+      "vermelho_em": null,
+      "comando": "npx tsc --noEmit",
+      "codigo_saida": 0,
+      "saida": "npm notice run mentor-agent@0.14.0 npx\nnpm notice run 'tsc' --noEmit",
+      "executado_em": "04/10/26 14:56",
+      "commit_execucao": "e99a67fc4c640728800622b7d5d02e3bdb486bd6",
+      "arvore_hash": "cf3fc1275f6813a6d46e4f5d0d43b3e5964fb223",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": null,
+      "ressalva": null,
+      "log_ref": "docs/.evidencias/logs/TASK-CHORE-010-tipos-1791136568726.log",
+      "chave_cache": "e6187f5fc8d4fae326492e0fab8b3b1dfa0fd16c5a1f2db9faa38f977cec74fb",
+      "digest_insumos": "cf3fc1275f6813a6d46e4f5d0d43b3e5964fb223",
+      "vermelho_dispensado": null
+    },
+    "testes": {
+      "rotulo": "APROVADO",
+      "vermelho_em": null,
+      "comando": "node testes/executar.ts --unidade",
+      "codigo_saida": 0,
+      "saida": "REV-001: APROVADO · TASK-CHORE-123 · 0 achado(s)\nREV-001: APROVADO · TASK-CHORE-123 · 0 achado(s)\nREV-002: APROVADO · TASK-CHORE-123 · 0 achado(s)\n... [6 linhas omitidas] ...\n1 cenario(s), todos verdes. (modo unidade / rapido)\nREV-001 está desatualizada: contrato/regra docs-mentor/rascunhos/plano.contrato.json mudou desde a captura.\nREV-001 está desatualizada: src.ts mudou desde a captura. Prepare uma nova revisão.",
+      "executado_em": "04/10/26 14:56",
+      "commit_execucao": "e99a67fc4c640728800622b7d5d02e3bdb486bd6",
+      "arvore_hash": "cf3fc1275f6813a6d46e4f5d0d43b3e5964fb223",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": null,
+      "ressalva": null,
+      "log_ref": "docs/.evidencias/logs/TASK-CHORE-010-testes-1791136609344.log",
+      "chave_cache": "87a0633189ac0d1b60925ce2d5fbc0f83cccb5ebc149fb562fc466191202f294",
+      "digest_insumos": "cf3fc1275f6813a6d46e4f5d0d43b3e5964fb223",
+      "vermelho_dispensado": null
+    },
+    "validacao_manual": {
+      "rotulo": "não se aplica",
+      "comando": null,
+      "codigo_saida": null,
+      "saida": null,
+      "executado_em": "04/10/26 14:58",
+      "commit_execucao": "e99a67fc4c640728800622b7d5d02e3bdb486bd6",
+      "arvore_hash": "c17436a8e3069208e154270d1e01a58ea6753990",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": "Melhoria estrutural do Mentor coberta por suíte automatizada completa e verificada",
+      "ressalva": null,
+      "vermelho_em": null
+    }
+  },
+  "achados": [],
+  "validacao": "dispensado",
+  "validado_em": "04/10/26 14:58",
+  "validacao_motivo": "Melhoria estrutural do Mentor coberta por suíte automatizada completa e verificada",
+  "tarefas_geradas": [],
+  "adrs": [],
+  "divida_tecnica": [],
+  "riscos_aceitos": [],
+  "absorvida_por": null,
+  "cancelamento_motivo": null,
+  "narrativa": "2026-10-04--14h58--TASK-CHORE-010--estudo-humano.md",
+  "plano_ref": {
+    "arquivo": "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/fatias/fatia-e-heranca-hashes-e-revisao.md",
+    "sha256": "f343f9ab27fc184c9f7600147134728b55348721ad6be65e83ae2ff94315fb8b",
+    "secao": null,
+    "manifesto": {
+      "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/fatias/fatia-e-heranca-hashes-e-revisao.md": "f343f9ab27fc184c9f7600147134728b55348721ad6be65e83ae2ff94315fb8b",
+      "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/fatias/fatia-e-heranca-hashes-e-revisao.contrato.json": "023d904606525b58ac313087d40dad642fd4f86e1c2b64b95570cbed96ae103d",
+      "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/01-direcao-e-processo.md": "cb83d26f34e598044018d9927d292d02054aeecd927e72b7fee37597cef54a8c",
+      "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/02-consistencia-e-contratos.md": "cecfa462dbb0c076eac7a83e70ecac807f3c0c15996c7562d038049d67e731ce"
+    }
+  },
+  "memoria_operacional": {
+    "resultado": "Herança normativa seletiva, isolamento estrito de fatias e integração com revisão incremental concluídos com sucesso (Fatia E).",
+    "aprendizados": [
+      "Manifestos de herança seletiva eliminam o acoplamento espúrio e a auto-invalidação de fatias independentes dentro do mesmo épico.",
+      "A inclusão de campos contratuais na assinatura semântica garante que qualquer divergência arquitetural em decisões ou reuso invalide o parecer anterior.",
+      "Em estruturas de diretório de épico, o arquivo canônico do manifesto deve ser o README.md para evitar exceções EISDIR em leituras de disco."
+    ],
+    "limites_conhecidos": [
+      "Documentos herdados devem residir dentro da árvore do projeto; travessias externas são bloqueadas por segurança."
+    ]
+  }
+}

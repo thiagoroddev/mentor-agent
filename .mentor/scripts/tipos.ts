@@ -341,6 +341,8 @@ export interface Plano {
   habilidades?: HabilidadesPlano | null
   /** Avaliação multidimensional para planejamento e execução (versão >= 2). */
   avaliacao?: AvaliacaoPlano | null
+  /** Documentos normativos herdados pelo plano ou fatia para geração seletiva de manifesto (0.14.0). */
+  documentos_herdados?: string[]
   impacto: string | null
   riscos: string[]
   dependencias_novas: string[]
