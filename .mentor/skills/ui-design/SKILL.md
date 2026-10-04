@@ -1,36 +1,51 @@
 ---
 name: ui-design
-description: Decomposição de prints e telas do Figma em árvore de componentes, tokens e especificação dos 4 estados de UI antes da codificação.
+description: Decomposição de interfaces (novas ou existentes), inventário de reuso, primitivas vs componentes de domínio, especificação dos 4 estados de UI e preservação de comportamento e acessibilidade.
 ---
 
-# Habilidade · UI Design: Do Print/Figma aos Componentes
+# Habilidade · UI Design: Da Descoberta aos Componentes
 
-Esta habilidade orienta o processo de transformar um print, layout do Figma ou wireframe em uma especificação técnica de componentes em `docs-mentor/rascunhos/` antes de escrever qualquer linha de código no projeto.
+Esta habilidade orienta o desenho, decomposição e refatoração de interfaces no `mentor-agent`, cobrindo desde a criação a partir de prints/Figma até a evolução de telas legadas com inventário de reuso e preservação de comportamento.
 
 ---
 
-## 1. O Roteiro de Desconstrução de Interface
+## 1. Descoberta, Inventário de Reuso e UI Existente
 
-Nunca comece a codificar direto a partir de um print. Siga a ordem:
+Antes de propor código ou novos componentes (seja para tela nova ou alteração em tela existente):
+
+1. **Audite a UI Existente (`plano.reuso`):**
+   - Inspecione a árvore de componentes existente e liste em `plano.reuso.existentes` o que já está disponível no projeto.
+   - Identifique padrões visuais consolidados, variantes e convenções de estilo já adotadas.
+2. **Primitivas de Design System vs Componentes de Domínio:**
+   - **Primitivas:** blocos fundamentais reutilizáveis (ex.: `Button`, `Input`, `Dialog`, `Table`, `Badge`, `Card`). Devem seguir a biblioteca ou design system oficial do projeto (ex.: shadcn/ui).
+   - **Componentes de Domínio:** agregam primitivas para resolver uma funcionalidade de negócio específica (ex.: `FiltroRelatorio`, `PainelMotorista`). Devem ficar próximos da funcionalidade que atendem.
+3. **Critérios para Criar Nova Primitiva:**
+   - Crie uma nova primitiva somente se a biblioteca ou sistema de design do projeto genuinamente não contiver o equivalente.
+   - *Nunca crie componentes para cada div nem introduza abstrações sem responsabilidade concreta.*
+4. **Controles Nativos e Conformidade:**
+   - Identifique elementos nativos (ex.: `<button>`, `<input>`, `<select>`) que deveriam utilizar os componentes padrão do projeto (conforme regras de lint como `react/forbid-elements`).
+5. **Fronteira com Referências Externas:**
+   - Habilidades de tradução de referências (como `referencia-para-react`) adaptam códigos ou layouts externos. No entanto, a autoridade canônica é a UI local do projeto: referências externas devem se conformar aos componentes existentes do projeto, sem sobrescrever pastas alheias nem duplicar primitivas.
+
+---
+
+## 2. O Roteiro de Desconstrução de Interface
+
+Siga a sequência estruturada antes de codificar:
 
 ```
-[Print / Figma] ➔ [Mapeamento em Rascunho] ➔ [4 Estados de UI] ➔ [Codificação TDD]
+[Print / Figma / Legado] ➔ [Inventário & Rascunho] ➔ [4 Estados de UI] ➔ [Codificação TDD]
 ```
 
----
-
-## 2. Decomposição da Árvore de Componentes
-
-Ao inspecionar o design, separe a tela em camadas:
-
+Ao inspecionar a interface, decomponha a tela em camadas:
 ```
 Página / Rota
 └── Layout Container
-    ├── Organismo: Filtro de Relatório
+    ├── Organismo: Filtro de Relatório (Domínio)
     │   ├── Molécula: Campo de Data com Calendário
     │   ├── Molécula: Seletor de Formato (Radio/Dropdown)
-    │   └── Átomo: Botão Primário "Exportar"
-    └── Organismo: Tabela de Resultados
+    │   └── Átomo / Primitiva: Button Primário "Exportar"
+    └── Organismo: Tabela de Resultados (Domínio)
         ├── Molécula: Cabeçalho com Ordenação
         ├── Molécula: Linha de Registro com Ações
         └── Molécula: Paginação
@@ -45,9 +60,13 @@ Documente a estrutura dos componentes mapeados antes de codificar:
 ```markdown
 # Mapeamento de UI · Tela de Exportação de Relatórios
 
-Fonte visual: `docs-mentor/rascunhos/prototipos/tela-exportar.png` (ou link Figma)
+Fonte visual: `docs-mentor/rascunhos/prototipos/tela-exportar.png` (ou link Figma / código legado)
 
-## 1. Componentes Identificados
+## 1. Reuso e Primitivas
+- **Primitivas existentes:** `Button`, `Table`, `Badge`, `Select`.
+- **Componentes novos de domínio:** `FiltroRelatorio`, `TabelaRelatorio`.
+
+## 2. Componentes Identificados
 
 ### `FiltroRelatorio`
 - **Props**: `onFiltrar: (params: ExportarRelatorioQuery) => void`, `carregando: boolean`
@@ -56,7 +75,6 @@ Fonte visual: `docs-mentor/rascunhos/prototipos/tela-exportar.png` (ou link Figm
 
 ### `TabelaRelatorio`
 - **Props**: `itens: RelatorioItem[]`, `total: number`, `pagina: number`, `onMudarPagina: (p: number) => void`
-- **Primitivas**: Tabela (`Table`, `TableHeader`, `TableRow`, `TableCell`), `Badge`, `Button`.
 ```
 
 ---
@@ -74,8 +92,9 @@ Toda tela ou componente com carga de dados **precisa** prever e especificar como
 
 ---
 
-## 5. Tokens Visuais e Acessibilidade
+## 5. Tokens Visuais, Preservação e Acessibilidade
 
-- **Espaçamentos**: Utilize sempre a escala de espaçamento do projeto (ex: 4px, 8px, 12px, 16px, 24px, 32px), evitando valores arbitrários (`top: 37px`).
-- **Cores semânticas**: Mapeie os elementos para tokens funcionais (`primary`, `secondary`, `destructive`, `muted`, `accent`), garantindo suporte nativo a Dark Mode e contraste WCAG AA.
-- **Acessibilidade**: Elementos interativos devem ser navegáveis por teclado (`Tab`, `Enter`, `Space`) com rótulos semânticos (`aria-label`, `aria-describedby`).
+- **Preservação de Comportamento:** Ao refatorar componentes existentes, garanta que estados nativos (foco, desabilitado, interações de teclado) e eventos de formulário continuem operando de forma idêntica.
+- **Espaçamentos e Tipografia:** Utilize sempre a escala de espaçamento do projeto (ex: 4px, 8px, 12px, 16px, 24px, 32px), evitando valores arbitrários (`top: 37px`).
+- **Cores semânticas:** Mapeie os elementos para tokens funcionais (`primary`, `secondary`, `destructive`, `muted`, `accent`), garantindo suporte nativo a Dark Mode e contraste WCAG AA.
+- **Acessibilidade:** Elementos interativos devem ser navegáveis por teclado (`Tab`, `Enter`, `Space`) com rótulos semânticos (`aria-label`, `aria-describedby`).

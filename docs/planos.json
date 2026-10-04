@@ -95,5 +95,13 @@
     "sha256": "25d52049126cf748f92afe0cecb0e210eb2a5a7917c7907bd6ef63c948243f3c",
     "secao": null,
     "registrado_em": "04/10/26"
+  },
+  {
+    "id": "PLAN-fatia-h-ui-e-test-design-md",
+    "titulo": "Fatia H: Habilidades de UI-Design, Test-Design e Caracterização",
+    "arquivo": "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/fatias/fatia-h-ui-e-test-design.md",
+    "sha256": "aa190e7229c41e0f3094a6bb563dedfc3f9edc582477070764ad0d7469711cce",
+    "secao": null,
+    "registrado_em": "04/10/26"
   }
 ]

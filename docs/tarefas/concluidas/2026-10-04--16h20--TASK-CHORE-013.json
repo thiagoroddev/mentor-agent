@@ -1,0 +1,215 @@
+{
+  "id": "TASK-CHORE-013",
+  "revisao_incremental_requerida": false,
+  "tipo": "CHORE",
+  "titulo": "Habilidades de UI-Design, Test-Design e Caracterização (Fatia H)",
+  "fatia_de": null,
+  "estado": "concluida",
+  "cerimonia": "Standard",
+  "perfil": null,
+  "valor": "importante",
+  "urgencia": "normal",
+  "esforco": {
+    "humano": "P",
+    "ia": "M"
+  },
+  "depende_de": [],
+  "ordem_motivo": null,
+  "fila": "ciclo",
+  "ordem": null,
+  "origem": "titulo-autossuficiente",
+  "requisitos": [],
+  "sem_requisito_motivo": null,
+  "criada_em": "04/10/26 16:14",
+  "iniciada_em": "04/10/26 16:14",
+  "commit_base": "d4c58f23bacbd074fc0fec6e68918d60a7ab1c98",
+  "concluida_em": "04/10/26 16:20",
+  "plano": {
+    "muda": [
+      ".mentor/skills/ui-design/SKILL.md",
+      ".mentor/skills/test-design/SKILL.md",
+      "CHANGELOG.md",
+      "testes/ui-e-test-design.test.ts",
+      "testes/cenarios/31-testes-de-unidade.ts"
+    ],
+    "criterios_aceite": [
+      {
+        "texto": ".mentor/skills/ui-design/SKILL.md atualizado cobrindo UI existente, inventario de reuso, criterios para primitivas novas vs componentes de dominio e fronteiras de responsabilidade",
+        "teste": "npx tsx testes/cenarios/31-testes-de-unidade.ts",
+        "evidencia": {
+          "comando": "grep -E 'plano\\.reuso' .mentor/skills/ui-design/SKILL.md",
+          "codigo_saida": 0,
+          "saida": "1. **Audite a UI Existente (`plano.reuso`):**\n   - Inspecione a árvore de componentes existente e liste em `plano.reuso.existentes` o que já está disponível no projeto.",
+          "log_ref": "docs/.evidencias/logs/TASK-CHORE-013-criterio-0-1791141495524.log",
+          "executado_em": "04/10/26 16:18"
+        }
+      },
+      {
+        "texto": ".mentor/skills/test-design/SKILL.md atualizado cobrindo testes de caracterizacao antes de refatorar e validacao discriminatoria de contratos",
+        "teste": "npx tsx testes/cenarios/31-testes-de-unidade.ts",
+        "evidencia": {
+          "comando": "grep -E 'characterization' .mentor/skills/test-design/SKILL.md",
+          "codigo_saida": 0,
+          "saida": "- Crie testes de caracterização (*characterization tests*) para congelar e documentar o comportamento observável atual (entradas, saídas, erros emitidos e estados gerados).",
+          "log_ref": "docs/.evidencias/logs/TASK-CHORE-013-criterio-1-1791141503419.log",
+          "executado_em": "04/10/26 16:18"
+        }
+      },
+      {
+        "texto": "Suite de testes unitarios testes/ui-e-test-design.test.ts registrada em 31-testes-de-unidade.ts passando com 100% de sucesso",
+        "teste": "npx tsx testes/cenarios/31-testes-de-unidade.ts",
+        "evidencia": {
+          "comando": "npx tsx testes/executar.ts --unidade",
+          "codigo_saida": 0,
+          "saida": "REV-001: APROVADO · TASK-CHORE-123 · 0 achado(s)\nREV-001: APROVADO · TASK-CHORE-123 · 0 achado(s)\nREV-002: APROVADO · TASK-CHORE-123 · 0 achado(s)\n... [259 linhas omitidas] ...\nnpm notice run 'tsx' testes/executar.ts --unidade\nREV-001 está desatualizada: contrato/regra docs-mentor/rascunhos/plano.contrato.json mudou desde a captura.\nREV-001 está desatualizada: src.ts mudou desde a captura. Prepare uma nova revisão.",
+          "log_ref": "docs/.evidencias/logs/TASK-CHORE-013-criterio-2-1791141545841.log",
+          "executado_em": "04/10/26 16:19"
+        }
+      }
+    ],
+    "impacto": "local",
+    "riscos": [
+      "Divergência entre instruções e práticas locais do projeto consumidor, mitigada por instrução de precedência do design system do projeto"
+    ],
+    "dependencias_novas": [],
+    "proporcionalidade": "Standard",
+    "versao": 2,
+    "decisoes_aplicaveis": {
+      "motivo_ausencia": "Repositório do pacote Mentor atualmente sem pasta de ADRs em docs/arquitetura/ADR; diretrizes operacionais em definição neste épico."
+    },
+    "reuso": {
+      "existentes": [
+        ".mentor/skills/ui-design/SKILL.md",
+        ".mentor/skills/test-design/SKILL.md"
+      ],
+      "novos": [
+        {
+          "artefato": "ui-e-test-design.test.ts",
+          "local": "testes/",
+          "motivo": "Suíte de testes de integridade das habilidades de UI-design e Test-design"
+        }
+      ],
+      "motivo_sem_reuso": null
+    },
+    "habilidades": {
+      "planejamento": [
+        {
+          "nome": "planejamento",
+          "motivo": "Estruturação da expansão das habilidades de UI e Teste",
+          "origem": "processo-mentor"
+        }
+      ],
+      "execucao": [
+        {
+          "nome": "execucao",
+          "motivo": "Atualização das habilidades e testes unitários",
+          "origem": "processo-mentor"
+        }
+      ]
+    },
+    "avaliacao": {
+      "planejamento": {
+        "complexidade": "baixa",
+        "dimensao_dominante": "incerteza",
+        "justificativa": "Diretrizes e escopo claramente delimitados em 04-fatias-e-validacao.md",
+        "perfil_modelo": "geral",
+        "effort": "medio"
+      },
+      "execucao": {
+        "complexidade": "baixa",
+        "dimensao_dominante": "incerteza",
+        "justificativa": "Edição de SKILL.md existentes e testes de verificação",
+        "perfil_modelo": "geral",
+        "effort": "medio"
+      }
+    },
+    "documentos_herdados": [
+      "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/01-direcao-e-processo.md",
+      "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/04-fatias-e-validacao.md"
+    ]
+  },
+  "gates": {
+    "tipos": {
+      "rotulo": "APROVADO",
+      "vermelho_em": null,
+      "comando": "npx tsc --noEmit",
+      "codigo_saida": 0,
+      "saida": "npm notice run mentor-agent@0.14.0 npx\nnpm notice run 'tsc' --noEmit",
+      "executado_em": "04/10/26 16:19",
+      "commit_execucao": "d4c58f23bacbd074fc0fec6e68918d60a7ab1c98",
+      "arvore_hash": "fec3fe80562158d45b8fad64b436487044515e64",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": null,
+      "ressalva": null,
+      "log_ref": "docs/.evidencias/logs/TASK-CHORE-013-tipos-1791141554877.log",
+      "chave_cache": "e4fd1a1aa313b3363caf4710b16133304cf0d2288aedaba812634e672ea94465",
+      "digest_insumos": "fec3fe80562158d45b8fad64b436487044515e64",
+      "vermelho_dispensado": null
+    },
+    "testes": {
+      "rotulo": "APROVADO",
+      "vermelho_em": null,
+      "comando": "node testes/executar.ts --unidade",
+      "codigo_saida": 0,
+      "saida": "REV-001: APROVADO · TASK-CHORE-123 · 0 achado(s)\nREV-001: APROVADO · TASK-CHORE-123 · 0 achado(s)\nREV-002: APROVADO · TASK-CHORE-123 · 0 achado(s)\n... [257 linhas omitidas] ...\n1 cenario(s), todos verdes. (modo unidade / rapido)\nREV-001 está desatualizada: contrato/regra docs-mentor/rascunhos/plano.contrato.json mudou desde a captura.\nREV-001 está desatualizada: src.ts mudou desde a captura. Prepare uma nova revisão.",
+      "executado_em": "04/10/26 16:19",
+      "commit_execucao": "d4c58f23bacbd074fc0fec6e68918d60a7ab1c98",
+      "arvore_hash": "fec3fe80562158d45b8fad64b436487044515e64",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": null,
+      "ressalva": null,
+      "log_ref": "docs/.evidencias/logs/TASK-CHORE-013-testes-1791141597280.log",
+      "chave_cache": "4a29e6c4dcc417435438e1cd365c3d2c57d1f34281d14371d51db2f2515c992c",
+      "digest_insumos": "fec3fe80562158d45b8fad64b436487044515e64",
+      "vermelho_dispensado": null
+    },
+    "validacao_manual": {
+      "rotulo": "não se aplica",
+      "comando": null,
+      "codigo_saida": null,
+      "saida": null,
+      "executado_em": "04/10/26 16:20",
+      "commit_execucao": "d4c58f23bacbd074fc0fec6e68918d60a7ab1c98",
+      "arvore_hash": "fec3fe80562158d45b8fad64b436487044515e64",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": "Modificação restrita às instruções e documentação das habilidades no pacote do mentor, sem alteração de código ou telas do produto.",
+      "ressalva": null,
+      "vermelho_em": null
+    }
+  },
+  "achados": [],
+  "validacao": "dispensado",
+  "validado_em": "04/10/26 16:20",
+  "validacao_motivo": "Modificação restrita às instruções e documentação das habilidades no pacote do mentor, sem alteração de código ou telas do produto.",
+  "tarefas_geradas": [],
+  "adrs": [],
+  "divida_tecnica": [],
+  "riscos_aceitos": [],
+  "absorvida_por": null,
+  "cancelamento_motivo": null,
+  "narrativa": "2026-10-04--16h20--TASK-CHORE-013--estudo-humano.md",
+  "plano_ref": {
+    "arquivo": "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/fatias/fatia-h-ui-e-test-design.md",
+    "sha256": "aa190e7229c41e0f3094a6bb563dedfc3f9edc582477070764ad0d7469711cce",
+    "secao": null,
+    "manifesto": {
+      "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/fatias/fatia-h-ui-e-test-design.md": "aa190e7229c41e0f3094a6bb563dedfc3f9edc582477070764ad0d7469711cce",
+      "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/fatias/fatia-h-ui-e-test-design.contrato.json": "b3354fa6cff6414040cedf1d28bd2552eb464aa298980e995faf690c48822fdf",
+      "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/01-direcao-e-processo.md": "cb83d26f34e598044018d9927d292d02054aeecd927e72b7fee37597cef54a8c",
+      "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/04-fatias-e-validacao.md": "72f81c85fd6fdd08af5a1b9eb2bc9338ff6eb20e25368a318fbabe653ad6e4d5"
+    }
+  },
+  "memoria_operacional": {
+    "resultado": "Habilidades ui-design e test-design aprimoradas cobrindo inventário de reuso em UI existente, testes de caracterização pré-refatoração e validação discriminatória de contratos, validadas por testes unitários dedicados.",
+    "aprendizados": [
+      "A distinção explícita entre primitivas de design system e componentes de domínio impede a proliferação desnecessária de abstrações de UI e componentes para cada div.",
+      "Testes de caracterização antes de refatorar garantem uma rede de proteção objetiva sem exigir que o desenvolvedor deduza de cabeça todos os casos de borda do legado."
+    ],
+    "limites_conhecidos": [
+      "A aplicação específica de regras de lint como react/forbid-elements depende da configuração de linters pelo projeto consumidor."
+    ]
+  }
+}

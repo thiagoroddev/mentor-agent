@@ -1,0 +1,86 @@
+{
+  "versao": 2,
+  "muda": [
+    ".mentor/skills/ui-design/SKILL.md",
+    ".mentor/skills/test-design/SKILL.md",
+    "CHANGELOG.md",
+    "testes/ui-e-test-design.test.ts",
+    "testes/cenarios/31-testes-de-unidade.ts"
+  ],
+  "criterios_aceite": [
+    {
+      "texto": ".mentor/skills/ui-design/SKILL.md atualizado cobrindo UI existente, inventario de reuso, criterios para primitivas novas vs componentes de dominio e fronteiras de responsabilidade",
+      "teste": "npx tsx testes/cenarios/31-testes-de-unidade.ts",
+      "evidencia": null
+    },
+    {
+      "texto": ".mentor/skills/test-design/SKILL.md atualizado cobrindo testes de caracterizacao antes de refatorar e validacao discriminatoria de contratos",
+      "teste": "npx tsx testes/cenarios/31-testes-de-unidade.ts",
+      "evidencia": null
+    },
+    {
+      "texto": "Suite de testes unitarios testes/ui-e-test-design.test.ts registrada em 31-testes-de-unidade.ts passando com 100% de sucesso",
+      "teste": "npx tsx testes/cenarios/31-testes-de-unidade.ts",
+      "evidencia": null
+    }
+  ],
+  "impacto": "local",
+  "riscos": [
+    "Divergência entre instruções e práticas locais do projeto consumidor, mitigada por instrução de precedência do design system do projeto"
+  ],
+  "dependencias_novas": [],
+  "proporcionalidade": "Standard",
+  "decisoes_aplicaveis": {
+    "motivo_ausencia": "Repositório do pacote Mentor atualmente sem pasta de ADRs em docs/arquitetura/ADR; diretrizes operacionais em definição neste épico."
+  },
+  "reuso": {
+    "existentes": [
+      ".mentor/skills/ui-design/SKILL.md",
+      ".mentor/skills/test-design/SKILL.md"
+    ],
+    "novos": [
+      {
+        "artefato": "ui-e-test-design.test.ts",
+        "local": "testes/",
+        "motivo": "Suíte de testes de integridade das habilidades de UI-design e Test-design"
+      }
+    ],
+    "motivo_sem_reuso": null
+  },
+  "habilidades": {
+    "planejamento": [
+      {
+        "nome": "planejamento",
+        "motivo": "Estruturação da expansão das habilidades de UI e Teste",
+        "origem": "processo-mentor"
+      }
+    ],
+    "execucao": [
+      {
+        "nome": "execucao",
+        "motivo": "Atualização das habilidades e testes unitários",
+        "origem": "processo-mentor"
+      }
+    ]
+  },
+  "avaliacao": {
+    "planejamento": {
+      "complexidade": "baixa",
+      "dimensao_dominante": "incerteza",
+      "justificativa": "Diretrizes e escopo claramente delimitados em 04-fatias-e-validacao.md",
+      "perfil_modelo": "geral",
+      "effort": "medio"
+    },
+    "execucao": {
+      "complexidade": "baixa",
+      "dimensao_dominante": "incerteza",
+      "justificativa": "Edição de SKILL.md existentes e testes de verificação",
+      "perfil_modelo": "geral",
+      "effort": "medio"
+    }
+  },
+  "documentos_herdados": [
+    "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/01-direcao-e-processo.md",
+    "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/04-fatias-e-validacao.md"
+  ]
+}

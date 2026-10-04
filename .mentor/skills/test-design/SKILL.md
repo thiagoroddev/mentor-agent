@@ -1,27 +1,44 @@
 ---
 name: test-design
-description: Engenharia de testes, metodologia TDD prática, estrutura AAA e estratégias de mock sem acoplamento a detalhes internos.
+description: Engenharia de testes, metodologia TDD prática, testes de caracterização antes de refatorar, estrutura AAA e validação discriminatória de contratos.
 ---
 
-# Habilidade · Engenharia de Testes e TDD
+# Habilidade · Engenharia de Testes, TDD e Caracterização
 
-Esta habilidade orienta a criação de suítes de teste limpas, sustentáveis e determinísticas, aplicando TDD conforme exigido pelo `mentor-agent` (`processos/teste.md`).
+Esta habilidade orienta a criação de suítes de teste limpas, sustentáveis e determinísticas, aplicando TDD e testes de caracterização conforme exigido pelo `mentor-agent` (`processos/teste.md`).
 
 ---
 
-## Escolher o escopo antes de testar
+## 1. Escolher o Escopo Antes de Testar
 
 Siga `processos/teste.md` e o contexto do projeto. Para correção pequena ou portabilidade já
 comprovada, comece pela evidência de origem, confira a equivalência do patch e teste apenas o risco
 ou a diferença de ambiente que ainda falta demonstrar. Reutilize testes; não repita suíte inteira,
-fabrique vermelho ou crie testes que só espelham implementação/texto para repetir prova existente.
+fabrique vermelho desnecessário ou crie testes que apenas espelham texto para repetir prova existente.
 
 Amplie a suíte por exigência explícita do projeto/CI, impacto compartilhado, contrato/dependência
 alterado, falha ou indício de regressão. Registre o motivo em `plano.proporcionalidade` e
 `plano.meio_de_validacao`. Verificação focada não aprova gate completo nem dispensa obrigação
-do contexto. A sequência TDD abaixo vale quando esse é o método declarado pelo projeto.
+do contexto.
 
-## 1. O Ciclo TDD no Mentor
+---
+
+## 2. Testes de Caracterização Antes de Refatorar
+
+Ao refatorar ou modificar código legado, regras de cálculo ou componentes de interface que carecem de cobertura de testes:
+
+1. **Nunca altere o código de produção antes de caracterizar:**
+   - Crie testes de caracterização (*characterization tests*) para congelar e documentar o comportamento observável atual (entradas, saídas, erros emitidos e estados gerados).
+2. **O teste deve passar com o código existente:**
+   - O teste de caracterização passa no estado atual do sistema, servindo como rede de proteção objetiva.
+3. **Refatore com segurança:**
+   - Com a caracterização verde, execute a refatoração. Qualquer alteração indesejada de comportamento ou quebra de contrato será denunciada imediatamente pela suíte.
+
+---
+
+## 3. O Ciclo TDD no Mentor
+
+Quando desenvolver nova funcionalidade ou correção dirigida por teste:
 
 ```
 1. 🔴 Vermelho   ➔ Escrever o teste que falha e registrar com:
@@ -33,7 +50,7 @@ do contexto. A sequência TDD abaixo vale quando esse é o método declarado pel
 
 ---
 
-## 2. Estrutura AAA (Arrange, Act, Assert)
+## 4. Estrutura AAA (Arrange, Act, Assert)
 
 Todo teste deve ser legível como uma especificação em três blocos claros:
 
@@ -59,7 +76,14 @@ describe('CalculadoraDeDesconto', () => {
 
 ---
 
-## 3. Estratégias de Dublês de Teste (Mocks, Stubs e Fakes)
+## 5. Validação Discriminatória de Contratos
+
+- **Teste Comportamento Público:** Teste invariantes, saídas e erros públicos da interface ou componente. Nunca teste métodos privados, variáveis internas ou detalhes efêmeros de implementação que engessam refatorações legítimas.
+- **Teste Discriminatório (Sem Falsos Verdes):** Certifique-se de que o teste genuinamente falharia se a regra de negócio fosse alterada ou removida. Um teste que passa independentemente da correção da implementação não protege contra regressões.
+
+---
+
+## 6. Estratégias de Dublês de Teste (Mocks, Stubs e Fakes)
 
 | Tipo | Quando usar | Como implementar |
 | :--- | :--- | :--- |
@@ -67,12 +91,10 @@ describe('CalculadoraDeDesconto', () => {
 | **Stub (Retorno Fixo)** | Serviços externos de consulta (ex: API de CEP, cotação) | Função que devolve objeto pré-definido sem chamar rede. |
 | **Spy / Mock** | Verificação de efeitos colaterais indispensáveis (ex: disparo de email) | Inspecionar se `mailer.enviar()` foi chamado com parâmetros corretos. |
 
-⚠️ **Regra inegociável**: Teste o **comportamento e as saídas públicas**, nunca os métodos privados ou a implementação interna. Testes acoplados a detalhes internos quebram em qualquer refatoração legítima.
-
 ---
 
-## 4. Testes Determinísticos e Tempo Congelado
+## 7. Testes Determinísticos e Tempo Congelado
 
-- **Zero dependência de rede externa**: Todas as chamadas HTTP devem usar adaptadores falsos ou mocks de rede (ex: MSW).
-- **Relógio controlado**: Em testes que dependem de datas, congele o tempo (ex: `vi.useFakeTimers()`) para evitar falhas sazonais ou mudanças de fuso horário.
+- **Zero dependência de rede externa**: Todas as chamadas HTTP devem usar adaptadores falsos ou mocks locais (ex: MSW).
+- **Relógio controlado**: Em testes que dependem de datas ou expiração, congele o tempo (ex: `vi.useFakeTimers()`) para evitar falhas sazonais ou de fuso horário.
 - **Isolamento hermético**: Cada teste deve limpar seu estado (`beforeEach` / `afterEach`), garantindo que a ordem de execução não altere o resultado.

@@ -1,6 +1,6 @@
 {
   "versao": "0.14.0",
-  "gerado_em": "2026-10-04T18:57:45.773Z",
+  "gerado_em": "2026-10-04T19:20:42.909Z",
   "arquivos": {
     "esquemas/contexto.json": "6a08c3b851d076cd",
     "esquemas/diretrizes-adr.json": "b2eac0e1d50d2250",
@@ -88,8 +88,8 @@
     "skills/planejamento/SKILL.md": "cf81856f7ce9ff9e",
     "skills/revisao/SKILL.md": "4be36781b907d3a9",
     "skills/spike-e-investigacao/SKILL.md": "5ab362eee5800a83",
-    "skills/test-design/SKILL.md": "9ca68015c0b23c2e",
-    "skills/ui-design/SKILL.md": "58eed0c8f16f9911",
+    "skills/test-design/SKILL.md": "7620231cd00758e4",
+    "skills/ui-design/SKILL.md": "0e48d9e0d2b06cf4",
     "tetos.json": "db1ad5357bc1cacf"
   }
 }

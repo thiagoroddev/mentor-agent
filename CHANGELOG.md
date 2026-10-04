@@ -7,6 +7,10 @@ O formato baseia-se em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0
 ## [Não publicado]
 
 ### Adicionado
+- **Habilidades de UI-Design, Test-Design e Caracterização (Fatia H)**:
+  - Habilidade `.mentor/skills/ui-design/SKILL.md` expandida para abranger UI existente, inventário de componentes/reuso (`plano.reuso`), distinção rigorosa entre primitivas de design system e componentes de domínio, critérios para novas primitivas (sem abstrações vazias ou componentes para cada `div`), conformidade de controles nativos (`react/forbid-elements`), preservação de comportamento em refatorações e fronteiras de autoridade com habilidades de referências externas (`referencia-para-react`).
+  - Habilidade `.mentor/skills/test-design/SKILL.md` expandida com a metodologia de testes de caracterização (*characterization tests*) antes de refatorar código legado/UI, criando uma rede de segurança observável no estado atual antes de tocar no código de produção, além de validação discriminatória de contratos sem acoplamento a detalhes internos de implementação.
+  - Suíte de testes unitários dedicada em `testes/ui-e-test-design.test.ts`.
 - **Instruções do núcleo e habilidade de planejamento (Fatia F)**:
   - Habilidade canônica `.mentor/skills/planejamento/SKILL.md` orientando a descoberta obrigatória de contexto, consulta de decisões e diretrizes de ADRs (`consistencia-do-projeto`), inventário de reuso, seleção de habilidades de execução, avaliação multidimensional e fatiamento em ondas.
   - Processo metodológico formal `.mentor/processos/planejamento.md` cobrindo o método comum de planejamento em dois níveis (planejamento prévio e individual), ciclo em ondas (*rolling wave planning*), 4 dimensões de complexidade (incerteza, profundidade de raciocínio, acoplamento, validação discriminatória), 5 eixos de classificação/calibração de modelo e effort, preservação integral do estudo humano com memória operacional e regras de replanejamento com diferenças materiais.
