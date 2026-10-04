@@ -4,7 +4,7 @@
   "tipo": "CHORE",
   "titulo": "Trabalho paralelo por slots no Mentor",
   "fatia_de": null,
-  "estado": "aberta",
+  "estado": "concluida",
   "cerimonia": "Standard",
   "perfil": null,
   "valor": "importante",
@@ -15,7 +15,7 @@
   },
   "depende_de": [],
   "ordem_motivo": null,
-  "fila": "reserva",
+  "fila": "ciclo",
   "ordem": null,
   "origem": "titulo-autossuficiente",
   "requisitos": [],
@@ -23,7 +23,7 @@
   "criada_em": "04/10/26 18:21",
   "iniciada_em": null,
   "commit_base": null,
-  "concluida_em": null,
+  "concluida_em": "04/10/26 19:52",
   "plano": {
     "muda": [
       ".mentor/processos/trabalho-paralelo.md",
@@ -52,7 +52,13 @@
       {
         "texto": "Equipe paralela usa slots com papéis de sessão substituíveis e contratos estáveis, preservando tarefas e evidências.",
         "teste": "CP-01 a CP-15 conforme 03-fatias-e-validacao.md",
-        "evidencia": null
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Todas as fatias de A a E concluidas: protocolo em .mentor/processos/trabalho-paralelo.md, modelo de atribuicao, diagnostico de worktrees no doctor, resolver-gerados estrito, instrucoes centrais atualizadas e validacao integrada com 33 cenarios verdes.",
+          "log_ref": null,
+          "executado_em": "04/10/26 19:51"
+        }
       }
     ],
     "impacto": "Processo e pacote Mentor; nenhuma implantação automática no projeto consumidor.",
@@ -162,7 +168,7 @@
   "riscos_aceitos": [],
   "absorvida_por": null,
   "cancelamento_motivo": null,
-  "narrativa": null,
+  "narrativa": "2026-10-04--19h52--TASK-CHORE-014--estudo-humano.md",
   "plano_ref": {
     "arquivo": "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots",
     "sha256": "1dc77fb59348a06ea9dac3261019d81ef3366020d6c5559a1e67b40eaaf065dc",
@@ -189,5 +195,15 @@
     },
     "restricoes_reavaliadas": [],
     "revisoes": []
+  },
+  "memoria_operacional": {
+    "resultado": "Épico concluído com sucesso: o Mentor agora suporta formalmente equipes simultâneas multi-agente por slots com isolamento via worktrees, modelo de atribuição, diagnóstico no doctor, resolução semântica com falhas verificáveis e validação completa em 33 cenários.",
+    "aprendizados": [
+      "A divisão do trabalho em fatias atômicas com contratos portáteis v2 permitiu avançar de ponta a ponta com verificação granular sem sobrecarga ou conflitos.",
+      "O tratamento de worktrees do Git via porcelain -z elimina ambiguidades causadas por espaços ou formatações de plataforma em sistemas operacionais diversos."
+    ],
+    "limites_conhecidos": [
+      "Portas de dev servers e variáveis locais de ambiente (.env.local) continuam sob responsabilidade de cada slot e projeto consumidor."
+    ]
   }
 }

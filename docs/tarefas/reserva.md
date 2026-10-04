@@ -7,4 +7,4 @@
 
 | ID | Titulo | Fatia | Tipo | Valor | Esforco H/IA | Origem |
 |---|---|---|---|---|---|---|
-| `TASK-CHORE-014` | Trabalho paralelo por slots no Mentor | - | CHORE | importante | G/G | titulo-autossuficiente |
+| | Nada guardado | | | | | |
