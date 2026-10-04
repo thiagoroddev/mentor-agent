@@ -18,3 +18,4 @@
 | 04/10/26 15:57 | [`TASK-CHORE-012`](./2026-10-04--15h57--TASK-CHORE-012--estudo-humano.md) | CHORE | Instruções do núcleo e habilidade de planejamento (Fatia F) | - | concluida | dispensado |
 | 04/10/26 16:20 | [`TASK-CHORE-013`](./2026-10-04--16h20--TASK-CHORE-013--estudo-humano.md) | CHORE | Habilidades de UI-Design, Test-Design e Caracterização (Fatia H) | - | concluida | dispensado |
 | 04/10/26 18:33 | [`TASK-CHORE-015`](./2026-10-04--18h33--TASK-CHORE-015--estudo-humano.md) | CHORE | Protocolo e atribuicao por slots | 1/5 de TASK-CHORE-014 | concluida | nao_requer |
+| 04/10/26 18:43 | [`TASK-CHORE-016`](./2026-10-04--18h43--TASK-CHORE-016--estudo-humano.md) | CHORE | Diagnostico de tarefas nas worktrees | 2/5 de TASK-CHORE-014 | concluida | nao_requer |

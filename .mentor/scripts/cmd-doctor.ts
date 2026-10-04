@@ -15,6 +15,7 @@ import type { Caracteristica, Contexto, EstadoDaCaracteristica, Fase, MetaDeQual
 import { estadoDaCadencia, maioresArquivos } from './cmd-auditar.ts'
 import { adrCitaRestricao, arquivoDaAdr, coletarRestricoesReconfirmadas } from './restricoes.ts'
 import { perfilDeProcesso, politicaDaTarefa } from './politica-rigor.ts'
+import { descobrirWorktrees } from './worktrees.ts'
 
 /**
  * Folha de saude do projeto. Tres propriedades a sustentam, e as tres foram medidas em campo:
@@ -324,22 +325,31 @@ function processo(ctx: Contexto, tarefas: Tarefa[]): Linha[] {
       })
     }
 
-    // Worktrees locais: informativo para visibilidade entre sessões isoladas
+    // Worktrees locais: informativo para visibilidade entre sessões isoladas e concorrência por slots
     try {
-      const rWt = spawnSync('git', ['worktree', 'list', '--porcelain'], { cwd: raiz, encoding: 'utf8', timeout: 5_000 })
-      if (rWt.status === 0 && rWt.stdout) {
-        const blocos = rWt.stdout.trim().split('\n\n').filter(Boolean)
-        if (blocos.length > 1) {
-          const infoWts = blocos.map((b) => {
-            const mWorktree = b.match(/^worktree\s+(.+)$/m)
-            const mBranch = b.match(/^branch\s+refs\/heads\/(.+)$/m)
-            const pasta = mWorktree ? mWorktree[1]!.trim() : ''
-            const ramo = mBranch ? mBranch[1]!.trim() : 'detached'
-            return `${ramo} (${pasta})`
-          })
+      const diag = descobrirWorktrees(raiz)
+      if (diag.worktrees.length > 1) {
+        const infoWts = diag.worktrees.map((w) => {
+          const identBranch = w.branch ? w.branch : (w.detached ? 'detached' : 'sem-branch')
+          const headCurto = w.head ? ` @ ${w.head.slice(0, 7)}` : ''
+          const tarefasStr = w.tarefasEmExecucao.length
+            ? w.tarefasEmExecucao.join(', ')
+            : 'sem tarefa ativa'
+          const statusMentor = w.temMentor
+            ? `[${tarefasStr} · limite local ${w.limiteEmExecucao}]`
+            : (w.erro ? `[erro: ${w.erro}]` : (!w.disponivel ? '[indisponivel]' : '[sem mentor]'))
+          return `${identBranch}${headCurto} (${w.caminho}) ${statusMentor}`
+        })
+
+        linhas.push({
+          estado: 'neutro',
+          texto: `${diag.totalObservado} worktree(s) observada(s) (${diag.totalEmExecucao} tarefa(s) em execucao no total): ${infoWts.join('; ')}`,
+        })
+
+        for (const dup of diag.duplicidades) {
           linhas.push({
-            estado: 'neutro',
-            texto: `${blocos.length} worktrees ativas: ${infoWts.join('; ')}`,
+            estado: 'atencao',
+            texto: `possivel atribuicao duplicada: ${dup.id} em execucao em ${dup.caminhos.length} worktrees (${dup.caminhos.join(', ')}). Cada sessao deve operar em tarefa exclusiva.`,
           })
         }
       }

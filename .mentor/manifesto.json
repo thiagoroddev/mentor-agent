@@ -1,6 +1,6 @@
 {
   "versao": "0.14.0",
-  "gerado_em": "2026-10-04T21:33:46.783Z",
+  "gerado_em": "2026-10-04T21:44:06.738Z",
   "arquivos": {
     "esquemas/contexto.json": "6a08c3b851d076cd",
     "esquemas/diretrizes-adr.json": "b2eac0e1d50d2250",
@@ -50,7 +50,7 @@
     "scripts/cmd-anotar.ts": "ad0afe5b8ee1e018",
     "scripts/cmd-auditar.ts": "eaff6a7e89877a59",
     "scripts/cmd-campo.ts": "ab1eed484b32ace9",
-    "scripts/cmd-doctor.ts": "70ed7e5b8345fee8",
+    "scripts/cmd-doctor.ts": "2f9b58086c7d1a80",
     "scripts/cmd-fila.ts": "7b353ab8e7931c95",
     "scripts/cmd-gates.ts": "ecbf0201f121b7cb",
     "scripts/cmd-hooks.ts": "1165662a32ca5990",
@@ -83,6 +83,7 @@
     "scripts/sensivel.ts": "f9869fbed707492e",
     "scripts/tipos.ts": "3e8a42fda15bddda",
     "scripts/vistas.ts": "399adb2ea49c1a71",
+    "scripts/worktrees.ts": "c03885b5fed1e9f9",
     "skills/contratos-de-api/SKILL.md": "99943749d9a1771e",
     "skills/data-modeling/SKILL.md": "346a6a6afd3be72d",
     "skills/github-ci/SKILL.md": "6100f6a30e96631b",

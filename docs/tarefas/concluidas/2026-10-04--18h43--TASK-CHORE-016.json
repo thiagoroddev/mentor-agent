@@ -4,7 +4,7 @@
   "tipo": "CHORE",
   "titulo": "Diagnostico de tarefas nas worktrees",
   "fatia_de": "TASK-CHORE-014",
-  "estado": "aberta",
+  "estado": "concluida",
   "cerimonia": "Standard",
   "perfil": null,
   "valor": "importante",
@@ -17,15 +17,15 @@
     "TASK-CHORE-015"
   ],
   "ordem_motivo": "A fornece o contrato operacional para B/C/D; E comprova e integra suas entregas",
-  "fila": "reserva",
+  "fila": "ciclo",
   "ordem": null,
   "origem": "titulo-autossuficiente",
   "requisitos": [],
   "sem_requisito_motivo": null,
   "criada_em": "04/10/26 18:21",
-  "iniciada_em": null,
-  "commit_base": null,
-  "concluida_em": null,
+  "iniciada_em": "04/10/26 18:35",
+  "commit_base": "08444b49f6851ac7deaa1a1cd660349eab33ba3a",
+  "concluida_em": "04/10/26 18:43",
   "plano": {
     "muda": [
       ".mentor/scripts/worktrees.ts",
@@ -36,22 +36,46 @@
       {
         "texto": "Doctor mostra caminho, branch/HEAD, projeto e IDs em execução por worktree acessível.",
         "teste": "CP-02/CP-04: executarSuite da fatia B e cenário E",
-        "evidencia": null
+        "evidencia": {
+          "comando": "node -e 'import(\"./testes/worktrees-paralelas.test.ts\").then(m => { const r = m.executarSuite(); if (r.falhas.length) process.exit(1); console.log(\"7 testes passaram sem falhas:\", r.total); })'",
+          "codigo_saida": 0,
+          "saida": "7 testes passaram sem falhas: 7",
+          "log_ref": "docs/.evidencias/logs/TASK-CHORE-016-criterio-0-1791150125343.log",
+          "executado_em": "04/10/26 18:42"
+        }
       },
       {
         "texto": "IDs distintos em árvores distintas não são bloqueados pelo total; duplicidade gera advertência limitada à evidência observada.",
         "teste": "CP-03: casos com IDs distintos, duplicado e registro herdado",
-        "evidencia": null
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Comprovado no teste 6 de testes/worktrees-paralelas.test.ts: tarefas distintas (TASK-RF-001 e TASK-RF-002) em árvores distintas resultam em duplicidades vazias e contagem informativa total; quando a mesma tarefa TASK-DUP-001 está ativa em duas árvores, o doctor emite advertência de possível atribuição duplicada com a lista exata dos caminhos observados.",
+          "log_ref": null,
+          "executado_em": "04/10/26 18:42"
+        }
       },
       {
         "texto": "Árvore ausente, detached, sem Mentor ou ilegível não encerra a leitura das demais.",
         "teste": "CP-05: testes de disponibilidade e parse",
-        "evidencia": null
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Comprovado no teste 5 de testes/worktrees-paralelas.test.ts: worktree deletada do disco é sinalizada como indisponível sem abortar; worktree em detached HEAD tem branch resolvida como null e flag detached: true; e as demais árvores saudáveis do repositório continuam sendo lidas normalmente com seus estados e tarefas intactos.",
+          "log_ref": null,
+          "executado_em": "04/10/26 18:42"
+        }
       },
       {
         "texto": "A consulta conserva os arquivos das árvores e não modifica refs/índice nem faz sincronização remota.",
         "teste": "CP-06: snapshot de bytes e estado Git antes/depois",
-        "evidencia": null
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Comprovado no teste 7 de testes/worktrees-paralelas.test.ts: cálculo de sha256 dos arquivos de controle do Mentor e git status --porcelain antes e depois da execução de descobrirWorktrees comprovam zero alterações em arquivos, índice ou referências Git, atestando caráter estritamente somente-leitura.",
+          "log_ref": null,
+          "executado_em": "04/10/26 18:42"
+        }
       }
     ],
     "impacto": "Processo e pacote Mentor; nenhuma implantação automática no projeto consumidor.",
@@ -123,9 +147,51 @@
       "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/01-problema-e-decisoes.md",
       "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/02-protocolo-e-contratos.md",
       "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/03-fatias-e-validacao.md"
-    ]
+    ],
+    "composicao": {
+      "o_que_esta_fatia_entrega": "Diagnóstico somente de leitura de tarefas ativas entre worktrees locais no comando doctor (.mentor/scripts/worktrees.ts, cmd-doctor.ts e testes/worktrees-paralelas.test.ts).",
+      "a_direcao_se_mantem": true,
+      "porque": "Permite visibilidade semântica de concorrência e detecção de atribuições duplicadas entre slots locais, sem bloqueio global nem orquestração externa."
+    }
   },
-  "gates": {},
+  "gates": {
+    "tipos": {
+      "rotulo": "APROVADO",
+      "vermelho_em": null,
+      "comando": "npx tsc --noEmit",
+      "codigo_saida": 0,
+      "saida": "npm notice run mentor-agent@0.14.0 npx\nnpm notice run 'tsc' --noEmit",
+      "executado_em": "04/10/26 18:42",
+      "commit_execucao": "08444b49f6851ac7deaa1a1cd660349eab33ba3a",
+      "arvore_hash": "dc8f188561f051590fe13069cea2ca682d3ea42a",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": null,
+      "ressalva": null,
+      "log_ref": "docs/.evidencias/logs/TASK-CHORE-016-tipos-1791150156658.log",
+      "chave_cache": "cbaa7cf061e2663617b2b15610b0c2a968ee7add29ac173c58c3c5af10b1ff6a",
+      "digest_insumos": "dc8f188561f051590fe13069cea2ca682d3ea42a",
+      "vermelho_dispensado": null
+    },
+    "testes": {
+      "rotulo": "APROVADO",
+      "vermelho_em": null,
+      "comando": "node testes/executar.ts --unidade",
+      "codigo_saida": 0,
+      "saida": "REV-001: APROVADO · TASK-CHORE-123 · 0 achado(s)\nREV-001: APROVADO · TASK-CHORE-123 · 0 achado(s)\nREV-002: APROVADO · TASK-CHORE-123 · 0 achado(s)\n... [351 linhas omitidas] ...\n1 cenario(s), todos verdes. (modo unidade / rapido)\nREV-001 está desatualizada: contrato/regra docs-mentor/rascunhos/plano.contrato.json mudou desde a captura.\nREV-001 está desatualizada: src.ts mudou desde a captura. Prepare uma nova revisão.",
+      "executado_em": "04/10/26 18:43",
+      "commit_execucao": "08444b49f6851ac7deaa1a1cd660349eab33ba3a",
+      "arvore_hash": "dc8f188561f051590fe13069cea2ca682d3ea42a",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": null,
+      "ressalva": null,
+      "log_ref": "docs/.evidencias/logs/TASK-CHORE-016-testes-1791150198757.log",
+      "chave_cache": "d73fc1e7d3cb7b65a77da979dfa267dd0248b66d0cb193610b307b8f12ce313f",
+      "digest_insumos": "dc8f188561f051590fe13069cea2ca682d3ea42a",
+      "vermelho_dispensado": null
+    }
+  },
   "achados": [],
   "validacao": "nao_requer",
   "validado_em": null,
@@ -136,7 +202,7 @@
   "riscos_aceitos": [],
   "absorvida_por": null,
   "cancelamento_motivo": null,
-  "narrativa": null,
+  "narrativa": "2026-10-04--18h43--TASK-CHORE-016--estudo-humano.md",
   "plano_ref": {
     "arquivo": "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/fatias/fatia-b-diagnostico.md",
     "sha256": "fc104547bff4a00c6785b702946bf358ada33fdaa149e713c4fc01925dfddf32",
@@ -149,5 +215,17 @@
       "docs/rascunhos/planejamentos/2026-10-04--trabalho-paralelo-por-slots/03-fatias-e-validacao.md": "c8f598de4276e6ffa7a9da518b25d2acf45b0300ebd1515e9b793405f4e741c1"
     }
   },
-  "plano_do_epico": null
+  "plano_do_epico": null,
+  "memoria_operacional": {
+    "resultado": "Módulo .mentor/scripts/worktrees.ts implementado com descoberta de worktrees via Git porcelain, integrado ao cmd-doctor.ts com exibição informativa de concorrência e alerta de tarefas duplicadas, validado por 7 testes em testes/worktrees-paralelas.test.ts.",
+    "aprendizados": [
+      "git worktree list --porcelain -z fornece separação confiável por NUL mesmo quando nomes de pastas contêm espaços.",
+      "Em monorepos, o cálculo do caminho relativo do projeto a partir do git toplevel é indispensável para evitar cruzar diretórios incorretos.",
+      "A leitura entre worktrees deve operar puramente por caminhos absolutos locais, sem consultar MENTOR_RAIZ do processo atual."
+    ],
+    "limites_conhecidos": [
+      "A leitura é uma fotografia local de worktrees no mesmo disco; não detecta clones separados ou repositórios remotos.",
+      "O import no runner de testes compartilhado (cenarios/31-testes-de-unidade.ts) foi mantido para a Fatia E de consolidação para evitar concorrência em arquivos compartilhados."
+    ]
+  }
 }
