@@ -37,6 +37,12 @@ consegue reverter depois, porque ninguém soube que foi tomada.
 
 Decisão fechada vira ADR, teto 1.800 caracteres: contexto e restrições · alternativas com prós e
 contras · decisão · consequências, incluindo o que fica mais difícil e o que fica irreversível.
+Para restrições arquiteturais que governam código ou desenho técnico, a ADR pode declarar
+o bloco operacional estruturado `## Diretrizes operacionais` cercado por ```json mentor:diretrizes```
+(esquema em `.mentor/esquemas/diretrizes-adr.json`), contendo array de diretrizes com `id`
+(`DIR-ADR-xxx-nn`), `estado` (`aceita`|`proposta`|`revogada`), `regra`, `alcance`, `excecoes`
+e IDs de diretrizes anteriores substituídas em `substitui`. ADRs sem este bloco são reconhecidas
+como legado legível por humanos sem interromper a automação.
 
 ## Riscos não mitigáveis
 

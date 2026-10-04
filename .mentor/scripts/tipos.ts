@@ -668,3 +668,34 @@ export interface RevisaoIncremental {
   pendencias: PendenciaDeAuditoria[]
   contextos: Array<{ arquivo: string; motivo: string; sha256: string; caracteres: number; gerado_em: string }>
 }
+
+// ---------------------------------------------------------------- diretrizes de ADR
+
+export const ESTADOS_DIRETRIZ = ['proposta', 'aceita', 'revogada'] as const
+export type EstadoDiretriz = (typeof ESTADOS_DIRETRIZ)[number]
+
+export interface DiretrizAdr {
+  id: string
+  adr: string
+  titulo?: string
+  estado: EstadoDiretriz
+  regra: string
+  alcance: string
+  excecoes: string[]
+  substitui: string[]
+}
+
+export interface SubstituicaoDiretriz {
+  diretriz: DiretrizAdr
+  substituida_por: string
+}
+
+export interface ResultadoVigenciaDiretrizes {
+  todas: DiretrizAdr[]
+  vigentes: DiretrizAdr[]
+  revogadas: DiretrizAdr[]
+  substituidas: SubstituicaoDiretriz[]
+  legado_sem_diretrizes: string[]
+  problemas: string[]
+}
+

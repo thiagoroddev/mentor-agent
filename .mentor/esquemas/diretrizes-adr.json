@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DiretrizesADR",
+  "type": "array",
+  "description": "Lista de diretrizes operacionais estruturadas extraídas da seção Diretrizes operacionais de uma ADR.",
+  "items": {
+    "type": "object",
+    "required": [
+      "id",
+      "estado",
+      "regra",
+      "alcance",
+      "excecoes",
+      "substitui"
+    ],
+    "properties": {
+      "id": {
+        "type": "string",
+        "pattern": "^DIR-[A-Z0-9_-]+$",
+        "description": "Identificador estável e único da diretriz (ex: DIR-ADR-004-01)."
+      },
+      "adr": {
+        "type": "string",
+        "description": "Identificador ou arquivo da ADR de origem."
+      },
+      "titulo": {
+        "type": "string",
+        "description": "Título ou frase resumida da diretriz."
+      },
+      "estado": {
+        "type": "string",
+        "enum": [
+          "proposta",
+          "aceita",
+          "revogada"
+        ],
+        "description": "Estado formal de aceitação da diretriz."
+      },
+      "regra": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Texto prescritivo e imperativo da diretriz."
+      },
+      "alcance": {
+        "type": "string",
+        "description": "Camada, módulo ou domínio de aplicação (ex: ui/componentes, persistencia, arquitetura)."
+      },
+      "excecoes": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "Lista de exceções autorizadas ou casos de borda permitidos."
+      },
+      "substitui": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "Lista de IDs de diretrizes anteriores que esta diretriz substitui."
+      }
+    },
+    "additionalProperties": false
+  }
+}

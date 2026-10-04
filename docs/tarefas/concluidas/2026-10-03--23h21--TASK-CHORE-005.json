@@ -1,0 +1,161 @@
+{
+  "id": "TASK-CHORE-005",
+  "revisao_incremental_requerida": false,
+  "tipo": "CHORE",
+  "titulo": "Formato operacional versionado e vigencia das ADRs",
+  "fatia_de": null,
+  "estado": "concluida",
+  "cerimonia": "Standard",
+  "perfil": "completo",
+  "valor": "importante",
+  "urgencia": "normal",
+  "esforco": {
+    "humano": "M",
+    "ia": "M"
+  },
+  "depende_de": [],
+  "ordem_motivo": null,
+  "fila": "ciclo",
+  "ordem": null,
+  "origem": "titulo-autossuficiente",
+  "requisitos": [],
+  "sem_requisito_motivo": null,
+  "criada_em": "03/10/26 22:55",
+  "iniciada_em": "03/10/26 22:55",
+  "commit_base": "a03d3b64b1ec7b702f288e8fb94133de99d9155d",
+  "concluida_em": "03/10/26 23:21",
+  "plano": {
+    "muda": [
+      ".mentor/esquemas/diretrizes-adr.json",
+      ".mentor/scripts/tipos.ts",
+      ".mentor/scripts/adrs.ts",
+      "testes/adrs-formato-e-vigencia.test.ts",
+      "testes/cenarios/31-testes-de-unidade.ts",
+      ".mentor/processos/analise-de-impacto.md",
+      "CHANGELOG.md"
+    ],
+    "criterios_aceite": [
+      {
+        "texto": "Esquema .mentor/esquemas/diretrizes-adr.json valida id, estado, regra, alcance, excecoes e substitui.",
+        "teste": "testes unitarios em adrs-formato-e-vigencia.test.ts",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Validado via adrs-formato-e-vigencia.test.ts (validação de esquema, campos obrigatórios, tipos e rejeição de JSON inválido com sucesso)",
+          "executado_em": "03/10/26 23:07"
+        }
+      },
+      {
+        "texto": "Parser em .mentor/scripts/adrs.ts extrai bloco fenced json mentor:diretrizes de arquivos Markdown de ADRs.",
+        "teste": "testes unitarios em adrs-formato-e-vigencia.test.ts",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Validado via adrs-formato-e-vigencia.test.ts (extrairDiretrizesDeTexto extrai bloco fenced json mentor:diretrizes com sucesso)",
+          "executado_em": "03/10/26 23:08"
+        }
+      },
+      {
+        "texto": "Resolvedor calcula vigencia correta com suporte a substituicao parcial por diretriz.",
+        "teste": "testes unitarios em adrs-formato-e-vigencia.test.ts",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Validado via adrs-formato-e-vigencia.test.ts (calcularVigenciaDiretrizes calcula vigência com substituição parcial granular por diretriz)",
+          "executado_em": "03/10/26 23:08"
+        }
+      },
+      {
+        "texto": "Ciclos de substituicao e IDs duplicados ou inexistentes em substitui sao detectados e reportados como problemas impeditivos.",
+        "teste": "testes unitarios em adrs-formato-e-vigencia.test.ts",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Validado via adrs-formato-e-vigencia.test.ts (detecção determinística de ciclos de substituição e IDs duplicados ou inexistentes em substitui)",
+          "executado_em": "03/10/26 23:08"
+        }
+      },
+      {
+        "texto": "ADRs legadas sem bloco estruturado sao classificadas como legado_sem_diretrizes sem interromper consumidores.",
+        "teste": "testes unitarios em adrs-formato-e-vigencia.test.ts",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Validado via adrs-formato-e-vigencia.test.ts (ADRs sem bloco estruturado retornam legado: true e são agregadas em legado_sem_diretrizes sem travar automações)",
+          "executado_em": "03/10/26 23:08"
+        }
+      },
+      {
+        "texto": "Suite de testes de unidade (Nivel 1) executa em menos de 5 segundos e passa com codigo 0.",
+        "teste": "node testes/executar.ts --unidade",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Suite de testes de unidade Nível 1 executada com sucesso via node testes/executar.ts --unidade (todos verdes, código 0)",
+          "executado_em": "03/10/26 23:08"
+        }
+      }
+    ],
+    "impacto": "Estabelece formato padronizado e verificável para decisões de arquitetura e sua vigência no Mentor, viabilizando geração de contexto semântico e habilidades na Fatia C.",
+    "riscos": [
+      "Incompatibilidade com ADRs legadas; mitigado pelo tratamento explícito de legado sem quebra.",
+      "Ciclos ou ambiguidades no grafo de substituição; mitigado por algoritmo determinístico de ordenação topológica e validação estrita."
+    ],
+    "dependencias_novas": [],
+    "proporcionalidade": "Implementação de esquema e parser leve em TypeScript nativo sem inclusão de novas dependências externas de runtime."
+  },
+  "gates": {
+    "tipos": {
+      "rotulo": "APROVADO",
+      "vermelho_em": null,
+      "comando": "npx tsc --noEmit",
+      "codigo_saida": 0,
+      "saida": "npm notice run mentor-agent@0.14.0 npx\nnpm notice run 'tsc' --noEmit",
+      "executado_em": "03/10/26 23:08",
+      "commit_execucao": "a03d3b64b1ec7b702f288e8fb94133de99d9155d",
+      "arvore_hash": "1b38fa913fb2c92d5c520aef168d3e5e08a54b86",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": null,
+      "ressalva": null,
+      "log_ref": "docs/.evidencias/logs/TASK-CHORE-005-tipos-1791079723751.log",
+      "chave_cache": "ac33eef492f2d4a23f8ed636509e4d65162e17464a87533021cb9e598e6b9280",
+      "digest_insumos": "1b38fa913fb2c92d5c520aef168d3e5e08a54b86",
+      "vermelho_dispensado": null
+    },
+    "testes": {
+      "rotulo": "APROVADO",
+      "vermelho_em": null,
+      "comando": "node testes/executar.ts --unidade",
+      "codigo_saida": 0,
+      "saida": "REV-001: APROVADO · TASK-CHORE-123 · 0 achado(s)\nREV-001: APROVADO · TASK-CHORE-123 · 0 achado(s)\nREV-002: APROVADO · TASK-CHORE-123 · 0 achado(s)\nAUD-005-B01 resolvida como \"tarefa\": TASK-CHORE-124\n  ok   31-testes-de-unidade\n\n1 cenario(s), todos verdes. (modo unidade / rapido)\nREV-001 está desatualizada: contrato/regra docs-mentor/rascunhos/plano.contrato.json mudou desde a captura.\nREV-001 está desatualizada: src.ts mudou desde a captura. Prepare uma nova revisão.",
+      "executado_em": "03/10/26 23:20",
+      "commit_execucao": "a03d3b64b1ec7b702f288e8fb94133de99d9155d",
+      "arvore_hash": "1b38fa913fb2c92d5c520aef168d3e5e08a54b86",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": null,
+      "ressalva": null,
+      "log_ref": "docs/.evidencias/logs/TASK-CHORE-005-testes-1791080456502.log",
+      "chave_cache": "5e9cd985f915049363ecb60db0ff5924ed2466d7d8bd054ca30dc1c271bfead0",
+      "digest_insumos": "1b38fa913fb2c92d5c520aef168d3e5e08a54b86",
+      "vermelho_dispensado": null
+    }
+  },
+  "achados": [],
+  "validacao": "nao_requer",
+  "validado_em": null,
+  "validacao_motivo": null,
+  "tarefas_geradas": [],
+  "adrs": [],
+  "divida_tecnica": [],
+  "riscos_aceitos": [],
+  "absorvida_por": null,
+  "cancelamento_motivo": null,
+  "narrativa": "2026-10-03--23h21--TASK-CHORE-005--estudo-humano.md",
+  "plano_ref": {
+    "arquivo": "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/fatias/fatia-b-formato-operacional-adrs.md",
+    "sha256": "a38406f361bd051f90d22ee86655a73ac1233a89a69bcf42f6b8049a8c39c36b",
+    "secao": null
+  }
+}

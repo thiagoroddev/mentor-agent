@@ -31,5 +31,13 @@
     "sha256": "3d8b6aa4b88430045c7f9222ab703c91cd14f65a8377c89ca411b44cfa5f178e",
     "secao": null,
     "registrado_em": "03/10/26"
+  },
+  {
+    "id": "PLAN-fatia-b-formato-operacional-ad",
+    "titulo": "Fatia B: Formato operacional versionado e vigência das ADRs",
+    "arquivo": "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/fatias/fatia-b-formato-operacional-adrs.md",
+    "sha256": "a38406f361bd051f90d22ee86655a73ac1233a89a69bcf42f6b8049a8c39c36b",
+    "secao": null,
+    "registrado_em": "03/10/26"
   }
 ]
