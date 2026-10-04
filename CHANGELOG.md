@@ -7,6 +7,10 @@ O formato baseia-se em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0
 ## [Não publicado]
 
 ### Adicionado
+- **Padronização dos níveis de teste (Nível 1 e Nível 2) e fluxo de fatias em épicos**:
+  - Processo de teste (`teste.md`) atualizado com a distinção formal entre testes de Nível 1 (unidade/rápidos, na casa dos segundos, foco no ciclo de tarefas e TDD) e testes de Nível 2 (integração, E2E, cenários completos de pre-push e release).
+  - Processo de entrega (`entrega.md`) atualizado formalizando a cadência de épicos: commits locais atômicos por tarefa/fatia validados via gates de Nível 1, consolidando o push remoto no fechamento do épico ou lote estável (onde o pre-push executa a bateria Nível 2).
+  - Suporte à flag `--unidade` / `--rapido` em `testes/executar.ts` e configuração do gate `testes` no `contexto.json` para execução ágil no ciclo de tarefas.
 - Origem configurável de ADRs: projetos consumidores podem declarar `arquitetura.onde_ficam_as_adrs` (ou `convencoes.onde_ficam_as_adrs`) em `contexto.json`. A resolução é feita de forma única em `caminhos().adr`, preservando fallback para `arquitetura/ADR` e rejeitando qualquer caminho ou link simbólico que escape da raiz do projeto.
 
 ### Corrigido

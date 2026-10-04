@@ -41,8 +41,11 @@ const CENARIOS: Array<() => Cenario> = [
   governancaFatiamento, testesDeUnidade, carregamento,
 ]
 
+const apenasUnidade = process.argv.includes('--unidade') || process.argv.includes('--rapido')
+const cenariosParaRodar: Array<() => Cenario> = apenasUnidade ? [testesDeUnidade] : CENARIOS
+
 let falharam = 0
-for (const rodar of CENARIOS) {
+for (const rodar of cenariosParaRodar) {
   let c: Cenario
   try {
     c = rodar()
@@ -63,7 +66,7 @@ for (const rodar of CENARIOS) {
 
 console.log(
   falharam === 0
-    ? `\n${CENARIOS.length} cenarios, todos verdes. Os projetos gerados ficam em testes/exemplos/.`
-    : `\n${falharam} de ${CENARIOS.length} cenarios falharam.`,
+    ? `\n${cenariosParaRodar.length} cenario(s), todos verdes.${apenasUnidade ? ' (modo unidade / rapido)' : ' Os projetos gerados ficam em testes/exemplos/.'}`
+    : `\n${falharam} de ${cenariosParaRodar.length} cenario(s) falharam.`,
 )
 process.exitCode = falharam === 0 ? 0 : 1

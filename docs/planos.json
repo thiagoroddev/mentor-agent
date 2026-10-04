@@ -23,5 +23,13 @@
     "sha256": "f26d35c851a4b2522ecf87c215a025ceea4886c6e5d5ca917f1ae9396d27d121",
     "secao": null,
     "registrado_em": "03/10/26"
+  },
+  {
+    "id": "PLAN-padronizacao-niveis-de-teste",
+    "titulo": "Padronização de Níveis de Teste (Nível 1 e 2) e Fluxo de Épicos no Mentor",
+    "arquivo": "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/fatias/padronizacao-niveis-de-teste-e-fluxo-epicos.md",
+    "sha256": "3d8b6aa4b88430045c7f9222ab703c91cd14f65a8377c89ca411b44cfa5f178e",
+    "secao": null,
+    "registrado_em": "03/10/26"
   }
 ]

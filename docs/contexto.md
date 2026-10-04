@@ -30,7 +30,7 @@
 - `qualidade.perfil.sem_afericao`: 1
 - `operacao.analise_de_dependencias.automatica`: false
 - `gates.tipos.comando`: npx tsc --noEmit
-- `gates.testes.comando`: node testes/executar.ts
+- `gates.testes.comando`: node testes/executar.ts --unidade
 - `gates.validacao_manual.existe`: false
 - `convencoes.onde_ficam_as_de_stack`: docs/padroes-de-stack/
 - `lembretes`: 6 item(s)

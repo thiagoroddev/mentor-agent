@@ -1,6 +1,6 @@
 {
   "versao": "0.14.0",
-  "gerado_em": "2026-10-03T23:44:19.804Z",
+  "gerado_em": "2026-10-04T01:04:32.857Z",
   "arquivos": {
     "esquemas/contexto.json": "6a08c3b851d076cd",
     "esquemas/divida-tecnica.json": "0906f6786a8e63a1",
@@ -30,14 +30,14 @@
     "nucleo.md": "075a32f2f207e1ff",
     "package.json": "1c9a0949072c4ea1",
     "processos/analise-de-impacto.md": "60318cd6189f0f28",
-    "processos/entrega.md": "94d11ca7e2f1b789",
+    "processos/entrega.md": "cfb36705e50e390d",
     "processos/inicializacao.md": "0a8420eb56229090",
     "processos/laboratorio.md": "04f7cf37466f6e81",
     "processos/padroes-de-stack.md": "7d7df1b15ba7de44",
     "processos/rascunho.md": "1367f59f2659cf40",
     "processos/revisao.md": "6c8d11bbcd9d336a",
     "processos/tarefa.md": "7aab80eedf7bfafb",
-    "processos/teste.md": "6c0b563e54b530aa",
+    "processos/teste.md": "edef2857878f6bbb",
     "regras.json": "5f5ddff0c236ed68",
     "scripts/arquivos.ts": "5e251404a6051eeb",
     "scripts/casos.ts": "9d339f3923dde378",
@@ -85,6 +85,6 @@
     "skills/spike-e-investigacao/SKILL.md": "5ab362eee5800a83",
     "skills/test-design/SKILL.md": "9ca68015c0b23c2e",
     "skills/ui-design/SKILL.md": "58eed0c8f16f9911",
-    "tetos.json": "12e4f0637afc64f6"
+    "tetos.json": "6e6c3b18aff615f9"
   }
 }

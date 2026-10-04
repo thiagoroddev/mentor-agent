@@ -25,6 +25,13 @@ ou registre a dispensa permitida pela política com motivo; não apresente teste
 Mudança nos insumos relevantes exige nova prova; outros arquivos de documentação não são motivo
 automático para repetir testes.
 
+### Níveis de teste na pirâmide de automação
+
+Para manter o ciclo de desenvolvimento rápido sem comprometer a robustez, os testes automatizados são organizados em dois níveis:
+
+- **Nível 1 (Unidade / Ciclo de Tarefa):** Prova rápida (~segundos), determinística e focada na lógica alterada (funções puras, componentes isolados, contratos de módulo, regras de negócio). Deve ser o comando declarado no gate rotineiro `gates.testes` no `contexto.json`. Cada tarefa individual fecha e afere seus critérios contra o Nível 1 sem overhead de subprocessos pesados de Git ou simulações demoradas de infraestrutura.
+- **Nível 2 (Integração / E2E / Pre-push / Release):** Prova abrangente (~minutos) do ecossistema completo, múltiplos módulos integrados, simulação de fluxos reais e subambientes. Acionado antes do envio remoto (`pre-push`), no fechamento consolidado de épicos, em releases/pacote ou em pipelines de CI.
+
 Falha ou bloqueio do harness pede diagnóstico do harness, não reconstrução da correção já comprovada.
 Registre o achado e seu efeito na cobertura; adapte apenas o necessário ou proponha o trabalho adicional
 quando sair do escopo. Subprocesso potencialmente bloqueante precisa de timeout próprio.

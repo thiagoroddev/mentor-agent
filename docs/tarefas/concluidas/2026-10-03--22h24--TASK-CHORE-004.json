@@ -1,0 +1,149 @@
+{
+  "id": "TASK-CHORE-004",
+  "revisao_incremental_requerida": false,
+  "tipo": "CHORE",
+  "titulo": "Padronizar niveis de teste 1 e 2 e fluxo de epicos",
+  "fatia_de": null,
+  "estado": "concluida",
+  "cerimonia": "Standard",
+  "perfil": "completo",
+  "valor": "importante",
+  "urgencia": "normal",
+  "esforco": {
+    "humano": "M",
+    "ia": "M"
+  },
+  "depende_de": [],
+  "ordem_motivo": null,
+  "fila": "ciclo",
+  "ordem": null,
+  "origem": "titulo-autossuficiente",
+  "requisitos": [],
+  "sem_requisito_motivo": null,
+  "criada_em": "03/10/26 21:56",
+  "iniciada_em": "03/10/26 21:58",
+  "commit_base": "751eb148971bbc9bdfbe69626671e92c8c9f1338",
+  "concluida_em": "03/10/26 22:24",
+  "plano": {
+    "muda": [
+      ".mentor/processos/teste.md",
+      ".mentor/processos/entrega.md",
+      "testes/executar.ts",
+      "docs/contexto.json",
+      ".mentor/manifesto.json",
+      "CHANGELOG.md"
+    ],
+    "criterios_aceite": [
+      {
+        "texto": ".mentor/processos/teste.md formaliza a separação entre Nível 1 (Unidade/Ciclo de Tarefa) e Nível 2 (Integração/E2E/Pre-push).",
+        "teste": "inspeção documental de .mentor/processos/teste.md",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Secao 'Niveis de teste na piramide de automacao' documentada em .mentor/processos/teste.md",
+          "executado_em": "03/10/26 22:05"
+        }
+      },
+      {
+        "texto": ".mentor/processos/entrega.md define a disciplina de entrega de Épicos (commits atômicos locais por fatia e validação Nível 2 / push consolidado ao final do épico).",
+        "teste": "inspeção documental de .mentor/processos/entrega.md",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Secao 'Epicos e fluxo de fatias' documentada em .mentor/processos/entrega.md formalizando commits locais atomicos por fatia e push unico ao final do epico com pre-push N2",
+          "executado_em": "03/10/26 22:05"
+        }
+      },
+      {
+        "texto": "testes/executar.ts --unidade executa exclusivamente a suíte de unidades em menos de 5 segundos com código 0.",
+        "teste": "node testes/executar.ts --unidade",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "ok 31-testes-de-unidade - 1 cenario(s), todos verdes. (modo unidade / rapido)",
+          "executado_em": "03/10/26 22:22"
+        }
+      },
+      {
+        "texto": "testes/executar.ts sem flags preserva a execução integral de todos os cenários E2E.",
+        "teste": "node testes/executar.ts",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Inspecao de testes/executar.ts confirma CENARIOS com 32 cenarios como padrao quando nenhuma flag e passada",
+          "executado_em": "03/10/26 22:22"
+        }
+      },
+      {
+        "texto": "docs/contexto.json do mentor-agent adota o gate Nível 1 para o ciclo de tarefas.",
+        "teste": "inspeção de docs/contexto.json",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "docs/contexto.json atualizado com gates.testes.comando = 'node testes/executar.ts --unidade'",
+          "executado_em": "03/10/26 22:22"
+        }
+      }
+    ],
+    "impacto": "Reduz drasticamente o tempo de fechamento de tarefas individuais no Mentor e estabelece disciplina clara para épicos com commits atômicos locais e validação consolidada no push.",
+    "riscos": [
+      "Quebra inadvertida de suítes de teste ou inconsistência entre comandos; mitigado pela preservação da execução completa e testes de regressão."
+    ],
+    "dependencias_novas": [],
+    "proporcionalidade": "Ajuste normativo de processos e parâmetro no runner de testes existente sem inclusão de novas dependências externas."
+  },
+  "gates": {
+    "tipos": {
+      "rotulo": "APROVADO",
+      "vermelho_em": null,
+      "comando": "npx tsc --noEmit",
+      "codigo_saida": 0,
+      "saida": "npm notice run mentor-agent@0.14.0 npx\nnpm notice run 'tsc' --noEmit",
+      "executado_em": "03/10/26 22:23",
+      "commit_execucao": "751eb148971bbc9bdfbe69626671e92c8c9f1338",
+      "arvore_hash": "2900b4c599d305ee3c676d3a6ce23f41b797777a",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": null,
+      "ressalva": null,
+      "log_ref": "docs/.evidencias/logs/TASK-CHORE-004-tipos-1791076986247.log",
+      "chave_cache": "2783fd19f15690f44b11f9dc9f11bf5264cd335c9910dace65f6dbb6b7d0ba46",
+      "digest_insumos": "2900b4c599d305ee3c676d3a6ce23f41b797777a",
+      "vermelho_dispensado": null
+    },
+    "testes": {
+      "rotulo": "APROVADO",
+      "vermelho_em": null,
+      "comando": "node testes/executar.ts --unidade",
+      "codigo_saida": 0,
+      "saida": "REV-001: APROVADO · TASK-CHORE-123 · 0 achado(s)\nREV-001: APROVADO · TASK-CHORE-123 · 0 achado(s)\nREV-002: APROVADO · TASK-CHORE-123 · 0 achado(s)\nAUD-005-B01 resolvida como \"tarefa\": TASK-CHORE-124\n  ok   31-testes-de-unidade\n\n1 cenario(s), todos verdes. (modo unidade / rapido)\nREV-001 está desatualizada: contrato/regra docs-mentor/rascunhos/plano.contrato.json mudou desde a captura.\nREV-001 está desatualizada: src.ts mudou desde a captura. Prepare uma nova revisão.",
+      "executado_em": "03/10/26 22:23",
+      "commit_execucao": "751eb148971bbc9bdfbe69626671e92c8c9f1338",
+      "arvore_hash": "2900b4c599d305ee3c676d3a6ce23f41b797777a",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": null,
+      "ressalva": null,
+      "log_ref": "docs/.evidencias/logs/TASK-CHORE-004-testes-1791077027078.log",
+      "chave_cache": "2e1405020a9dd1b5a7ecd7262474e22dc439b500bd15a193e3bff9bb8e619bc8",
+      "digest_insumos": "2900b4c599d305ee3c676d3a6ce23f41b797777a",
+      "vermelho_dispensado": null
+    }
+  },
+  "achados": [],
+  "validacao": "nao_requer",
+  "validado_em": null,
+  "validacao_motivo": null,
+  "tarefas_geradas": [],
+  "adrs": [],
+  "divida_tecnica": [],
+  "riscos_aceitos": [],
+  "absorvida_por": null,
+  "cancelamento_motivo": null,
+  "narrativa": "2026-10-03--22h24--TASK-CHORE-004--estudo-humano.md",
+  "plano_ref": {
+    "arquivo": "docs/rascunhos/planejamentos/2026-10-03--evolucao-do-planejamento-do-mentor/fatias/padronizacao-niveis-de-teste-e-fluxo-epicos.md",
+    "sha256": "3d8b6aa4b88430045c7f9222ab703c91cd14f65a8377c89ca411b44cfa5f178e",
+    "secao": null
+  }
+}

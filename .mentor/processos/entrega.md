@@ -21,6 +21,13 @@ link vai para três registros e prova *"as três juntas passaram"*, não *"esta 
 ramo que não compila. Aí é um ramo só, com os dois IDs, e uma linha em cada registro dizendo que
 foram entregues juntas.
 
+### Épicos e fluxo de fatias
+
+Em épicos compostos por múltiplas fatias:
+- **Commits atômicos locais:** Cada fatia executa seu ciclo completo de forma independente (`mentor task puxar` -> `iniciar` -> implementar -> gate Nível 1 rápido -> `finalizar` -> `git commit`). Isso gera um histórico limpo e rastreável, com um commit atômico por fatia.
+- **Push acumulado e validação consolidada:** Não se faz envio remoto (`git push`) a cada fatia intermediária do épico. O conjunto de commits locais é mantido na branch de trabalho e enviado em um **único `git push`** ao término do épico ou do lote estável.
+- **Garantia global no pre-push:** No momento do `git push`, o hook de pré-envio executa os testes de Nível 2 (integração e E2E) sobre o estado final, garantindo a integridade de todas as fatias consolidadas antes de atingir o repositório remoto.
+
 ## A linha principal
 
 **Sempre publicável** (guia OPS-20). Quebrada, consertá-la vem antes de qualquer funcionalidade.

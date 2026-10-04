@@ -15,8 +15,8 @@
     },
     {
       "caminho": ".mentor/processos/entrega.md",
-      "teto": 10500,
-      "motivo": "Documenta protecao da main com PR, prova-por-arvore em squash merge, mentor resolver-gerados, worktrees e PRs de planejamento (plano)."
+      "teto": 11500,
+      "motivo": "Documenta protecao da main com PR, prova-por-arvore em squash merge, mentor resolver-gerados, worktrees, PRs de planejamento (plano) e fluxo de epicos com commits locais e push consolidado."
     },
     {
       "caminho": ".mentor/processos/tarefa.md",
@@ -27,6 +27,11 @@
       "caminho": ".mentor/processos/revisao.md",
       "teto": 8600,
       "motivo": "Inclui a tabela de areas e guias gerada de AREAS_DE_REVISAO e a regra de que toda revisao, inclusive a pedida em conversa, carrega o guia de cada area (0.14.0). Medido: 6553 caracteres; teto = medido x 1,3."
+    },
+    {
+      "caminho": ".mentor/processos/teste.md",
+      "teto": 6500,
+      "motivo": "Documenta a piramide de testes e os dois niveis de automacao: Nivel 1 (Unidade / ciclo de tarefa rapido) e Nivel 2 (Integracao / E2E / pre-push / epico)."
     }
   ],
   "regras": [
