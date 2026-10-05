@@ -4,6 +4,17 @@ Todas as mudanças notáveis no **mentor-agent** são documentadas neste arquivo
 
 O formato baseia-se em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [0.16.0] - 2026-10-05
+
+### Adicionado
+- **Comando `mentor task desvincular` para fatias de épicos (`TASK-CHORE-020`)**:
+  - Novo subcomando CLI `mentor task desvincular <ID> [--mover-para <NOVO-PAI>] --motivo "<justificativa>"` para desamarrar ou transferir fatias sem necessidade de edição manual de arquivos JSON nem perda de governança.
+  - **Desvinculação Segura para Tarefa Avulsa**: remove o vínculo com o épico pai (`fatia_de = null`), mantendo a tarefa viva no ciclo (`abertas/`), zerando `plano.composicao` (higiene) e `ordem_motivo`.
+  - **Reparentamento entre Épicos (`--mover-para`)**: transfere uma fatia para outro épico vivo. Valida rigorosamente que o destino existe, está vivo (não concluído/cancelado), possui `plano_do_epico` estruturado e não é descendente da tarefa (prevenção determinística de loops/ciclos de dependência). Ao reparentar tarefa já iniciada, reinicia `plano.composicao` com marcadores para obrigar recontextualização no novo épico.
+  - **Rastro e Auditoria em Revisões**: exige `--motivo` obrigatório e registra entrada com timestamp em `plano_do_epico.revisoes` no épico de origem e no de destino. Emite aviso de atenção se a fatia desvinculada for a última viva do épico.
+  - **Governança de Dependências**: zera `ordem_motivo` e emite alerta caso a tarefa possua `depende_de` apontando para ex-irmãs, permitindo decisão deliberada do operador sem apagar silenciosamente restrições de código reais.
+  - **Suíte de Testes e Documentação**: 8 novos testes de unidade em `testes/desvincular-fatia.test.ts` cobrindo todos os cenários de sucesso e recusa; documentação em `.mentor/processos/tarefa.md`.
+
 ## [0.15.0] - 2026-10-04
 
 ### Adicionado

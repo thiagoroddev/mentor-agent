@@ -8,7 +8,7 @@ perguntar, e registra tudo de forma rastreavel.
 Na raiz do projeto que vai usar o pacote:
 
 ```bash
-npm i -D github:thiagoroddev/mentor-agent#v0.15.0
+npm i -D github:thiagoroddev/mentor-agent#v0.16.0
 npx mentor instalar        # copia .mentor/ e mentor.mjs para a raiz
 node mentor.mjs init       # cria docs-mentor/, sem tocar na docs/ do aplicativo
 ```
@@ -32,7 +32,7 @@ a IA le' `.mentor/` como arquivo, e o projeto versiona as convencoes dele ao lad
 isso em vez de estourar.
 
 A versao instalada fica gravada em `docs-mentor/contexto.json`, senao o relatorio de campo nao consegue
-dizer *"isto aconteceu com a 0.15.0"*.
+dizer *"isto aconteceu com a 0.16.0"*.
 
 ### Atualizar uma instalacao existente
 
@@ -40,13 +40,13 @@ A atualizacao de versao comeca pela tarefa (captura o diff real e evita diagnost
 
 ```bash
 # 1. Crie e inicie a tarefa da atualizacao:
-node mentor.mjs task nova --tipo CHORE --origem titulo-autossuficiente --titulo "Atualizar mentor-agent para v0.15.0" --esforco P/P
+node mentor.mjs task nova --tipo CHORE --origem titulo-autossuficiente --titulo "Atualizar mentor-agent para v0.16.0" --esforco P/P
 node mentor.mjs task puxar <ID>
 node mentor.mjs task iniciar <ID>
 # Preencha o plano da tarefa
 
 # 2. Atualize o pacote e force a copia:
-npm i -D github:thiagoroddev/mentor-agent#v0.15.0
+npm i -D github:thiagoroddev/mentor-agent#v0.16.0
 npx mentor instalar --forcar
 node mentor.mjs entrada migrar   # leva CLAUDE.md, AGENTS.md, GEMINI.md e skills ao modelo novo
 node mentor.mjs resolver-gerados # regenera markdowns derivados e alinha contexto
@@ -116,6 +116,13 @@ Cada ferramenta carregava uma coisa diferente, e cada uma revisava de um jeito. 
 - **Skills por cópia gerada** em `.agents/skills/` e `.claude/skills/`, com registro de hash. Conflito de nome, pasta alheia, cópia editada e registro corrompido nunca são sobrescritos: o comando recusa e diz o motivo.
 - **`node mentor.mjs entrada migrar`** leva instalação antiga ao modelo novo, preservando as linhas do projeto.
 - **Revisão igual nas três**: qualquer pedido de revisão segue `processos/revisao.md` e carrega o guia de cada área tocada (tabela gerada do código); skill `revisao` como complemento.
+### Desvincular e Reparentar Fatias de Épicos (v0.16.0)
+
+Para reorganizar fatias sem intervenção manual em arquivos JSON ou perda de rastreabilidade:
+
+- **Desvinculação Segura (`mentor task desvincular <ID> --motivo "..."`)**: remove o vínculo com o épico pai (`fatia_de = null`), transformando a fatia em tarefa avulsa no ciclo, limpando `ordem_motivo` e `composicao`, e alertando caso haja dependência remanescente de ex-irmãs (`depende_de`).
+- **Reparentamento entre Épicos (`--mover-para <NOVO-PAI>`)**: transfere a fatia diretamente para outro épico vivo com plano estruturado, prevenindo ciclos de descendência ou amarrações a tarefas concluídas/sem plano. Se a tarefa já estava iniciada, reinicia o rascunho de composição com marcadores para reavaliação no contexto do novo épico.
+- **Rastro Obrigatório nos Épicos**: exige `--motivo` obrigatório e registra formalmente o histórico em `plano_do_epico.revisoes` tanto no pai de origem quanto no de destino, avisando se a fatia desvinculada for a última viva do épico.
 
 ### Trabalho Paralelo por Slots e Multi-Agente (v0.15.0)
 

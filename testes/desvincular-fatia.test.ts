@@ -16,7 +16,7 @@ describe('mentor task desvincular (TASK-CHORE-020)', () => {
     mkdirSync(concluidas, { recursive: true })
 
     const contexto = {
-      _meta: { schema: 'contexto-projeto/1', versao_do_pacote: '0.15.0' },
+      _meta: { schema: 'contexto-projeto/1', versao_do_pacote: '0.16.0' },
       projeto: { nome: 'teste-desvincular' },
       limites: { em_execucao: 1, ciclo_tarefas: 12 },
       gates: {},
