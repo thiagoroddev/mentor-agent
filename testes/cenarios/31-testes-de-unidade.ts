@@ -13,6 +13,7 @@ import '../planejamento-skill-e-processo.test.ts'
 import '../ui-e-test-design.test.ts'
 import '../worktrees-paralelas.test.ts'
 import '../resolvedor-paralelo.test.ts'
+import '../desvincular-fatia.test.ts'
 import { executarSuites } from '../vitest-local.ts'
 import type { Cenario } from '../apoio.ts'
 

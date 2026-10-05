@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { inicializar } from './cmd-init.ts'
 import { anexar, criterio, fila, finalizar, iniciar, nova, pausar, retomar, validar } from './cmd-tarefa.ts'
-import { absorver, cancelar, fatiar, guardar, listarReserva, puxar } from './cmd-fila.ts'
+import { absorver, cancelar, desvincular, fatiar, guardar, listarReserva, puxar } from './cmd-fila.ts'
 import { adicionarFerramenta } from './cmd-stack.ts'
 import { verificar } from './cmd-verificar.ts'
 import { relatar as relatarRegras, sincronizar as sincronizarRegras } from './cmd-regras.ts'
@@ -44,6 +44,7 @@ mentor <comando>
   task guardar <ID>                    ciclo -> reserva
   task fatiar <ID> --titulos "a|b|c"   divide em fatias paralelas por padrao
        [--ordem "1>2,1>3" --motivo-ordem "..."] [--esforco H/IA]
+  task desvincular <ID> --motivo "..." desvincula fatia de epico, tornando-a avulsa [--mover-para <ID>]
   task cancelar <ID> --motivo "..."    encerra sem fazer; o numero nao volta
   task absorver <ID> --por <ID>        escopo absorvido por outra tarefa
   task validar <ID> --aprovado         registra a validacao manual
@@ -247,6 +248,7 @@ function principal(argv: string[]): number {
       if (sub === 'puxar') { puxar(id, flags); return process.exitCode === 1 ? 1 : 0 }
       if (sub === 'guardar') { guardar(id); return 0 }
       if (sub === 'fatiar') { fatiar(id, flags); return 0 }
+      if (sub === 'desvincular') { desvincular(id, flags); return 0 }
       if (sub === 'cancelar') { cancelar(id, flags.motivo); return 0 }
       if (sub === 'absorver') { absorver(id, flags.por); return 0 }
       if (sub === 'validar') { validar(id, flags); return 0 }

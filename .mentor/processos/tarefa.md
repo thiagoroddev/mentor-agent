@@ -141,6 +141,12 @@ Dependência entre fatias só existe quando há pré-requisito técnico real de 
 2. Cada fatia registra em `plano.composicao` o que entregou/ensinou sobre o épico, se a direção do épico se mantém (`a_direcao_se_mantem: true|false`) e o porquê.
 3. Se a direção cair (`a_direcao_se_mantem: false`), novas fatias são bloqueadas até revisão da estratégia aprovada (`mentor task iniciar <ID> --estrategia-revisada --motivo "<nova direcao>"`).
 
+**Desvincular ou Transferir Fatia (`task desvincular`):**
+Caso uma fatia cresça e deva se tornar uma tarefa avulsa independente, ou precise ser transferida para outro épico:
+- `mentor task desvincular <ID> --motivo "..."`: remove o vínculo `fatia_de`, zera `ordem_motivo`, anula `plano.composicao` (por higiene) e registra a revisão no épico de origem.
+- `mentor task desvincular <ID> --mover-para <NOVO-EPICO> --motivo "..."`: transfere a fatia para outro épico vivo com `plano_do_epico`, reinicia o esqueleto de `plano.composicao` com marcadores para cobrar novo alinhamento ao finalizar, e registra o rastro em ambos os épicos.
+- O comando alerta caso a tarefa mantenha dependências de ex-irmãs em `depende_de` ou caso a fatia retirada seja a última ativa do épico de origem.
+
 ## Atribuição em Trabalho Paralelo e Handoff de Sessão
 
 Quando múltiplas tarefas ou fatias rodam em paralelo em worktrees distintas ([`processos/trabalho-paralelo.md`](./trabalho-paralelo.md)):

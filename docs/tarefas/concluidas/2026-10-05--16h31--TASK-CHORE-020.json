@@ -1,0 +1,232 @@
+{
+  "id": "TASK-CHORE-020",
+  "revisao_incremental_requerida": false,
+  "tipo": "CHORE",
+  "titulo": "Comando task desvincular para retirar ou mover fatia de epico",
+  "fatia_de": null,
+  "estado": "concluida",
+  "cerimonia": "Standard",
+  "perfil": null,
+  "valor": "importante",
+  "urgencia": "normal",
+  "esforco": {
+    "humano": "P",
+    "ia": "P"
+  },
+  "depende_de": [],
+  "ordem_motivo": null,
+  "fila": "ciclo",
+  "ordem": null,
+  "origem": "titulo-autossuficiente",
+  "requisitos": [],
+  "sem_requisito_motivo": null,
+  "criada_em": "05/10/26 16:14",
+  "iniciada_em": "05/10/26 16:14",
+  "commit_base": "5b3018cc07825a011938a2ed21919017aec87a12",
+  "concluida_em": "05/10/26 16:31",
+  "plano": {
+    "muda": [
+      ".mentor/scripts/cmd-fila.ts",
+      ".mentor/scripts/cli.ts",
+      ".mentor/processos/tarefa.md",
+      "testes/desvincular-fatia.test.ts",
+      "testes/cenarios/31-testes-de-unidade.ts"
+    ],
+    "criterios_aceite": [
+      {
+        "texto": "mentor task desvincular <ID> --motivo \"...\" desvincula fatia de epico, seta fatia_de como null, zera ordem_motivo e limpa plano.composicao por higiene",
+        "teste": "testes/desvincular-fatia.test.ts > desvincular para avulsa",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Aprovado: fatia desvinculada para avulsa com fatia_de null, ordem_motivo null e composicao limpa",
+          "log_ref": null,
+          "executado_em": "05/10/26 16:30"
+        }
+      },
+      {
+        "texto": "mentor task desvincular <ID> --mover-para <NOVO-PAI> --motivo \"...\" transfere a fatia para outro epico pai existente e vivo",
+        "teste": "testes/desvincular-fatia.test.ts > mover para outro epico",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Aprovado: fatia transferida para novo epico vivo com sucesso",
+          "log_ref": null,
+          "executado_em": "05/10/26 16:30"
+        }
+      },
+      {
+        "texto": "Recusa desvincular tarefa que ja e avulsa",
+        "teste": "testes/desvincular-fatia.test.ts > recusa se ja avulsa",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Aprovado: recusa imediata de tarefa que ja e avulsa",
+          "log_ref": null,
+          "executado_em": "05/10/26 16:30"
+        }
+      },
+      {
+        "texto": "Recusa desvincular tarefa ja concluida ou cancelada com mensagem especifica de estado",
+        "teste": "testes/desvincular-fatia.test.ts > recusa em concluida ou cancelada",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Aprovado: recusa de tarefas concluidas ou canceladas com mensagem de estado",
+          "log_ref": null,
+          "executado_em": "05/10/26 16:30"
+        }
+      },
+      {
+        "texto": "Regenera automaticamente as vistas derivadas com formato recalculado N/M de TASK-X ou traço",
+        "teste": "testes/desvincular-fatia.test.ts > formato de fatias nas vistas",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Aprovado: vistas regeneradas com calculo N/M e traco para tarefas avulsas",
+          "log_ref": null,
+          "executado_em": "05/10/26 16:30"
+        }
+      },
+      {
+        "texto": "Exige --motivo obrigatorio e grava registro em plano_do_epico.revisoes na origem e no destino, avisando se for a ultima fatia ativa",
+        "teste": "testes/desvincular-fatia.test.ts > rastro em revisoes e aviso de ultima fatia",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Aprovado: --motivo gravado em plano_do_epico.revisoes e aviso de ultima fatia ativa emitido",
+          "log_ref": null,
+          "executado_em": "05/10/26 16:30"
+        }
+      },
+      {
+        "texto": "Recusa mover para destino concluido ou cancelado, para descendente (ciclo) ou para tarefa sem plano_do_epico",
+        "teste": "testes/desvincular-fatia.test.ts > validacoes de destino e ciclo",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Aprovado: recusa de destino concluido, sem plano_do_epico ou descendente em ciclo",
+          "log_ref": null,
+          "executado_em": "05/10/26 16:30"
+        }
+      },
+      {
+        "texto": "Zera ordem_motivo e avisa sobre depende_de apontando para ex-irmas sem apaga-las",
+        "teste": "testes/desvincular-fatia.test.ts > ordem_motivo e dependencias de ex-irmas",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Aprovado: ordem_motivo zerado e aviso sobre dependencias de ex-irmas emitido",
+          "log_ref": null,
+          "executado_em": "05/10/26 16:30"
+        }
+      },
+      {
+        "texto": "Ao mover tarefa ja iniciada, composicao volta ao esqueleto com marcador para cobrar preenchimento sobre novo epico",
+        "teste": "testes/desvincular-fatia.test.ts > reinicio de composicao com marcador ao mover",
+        "evidencia": {
+          "comando": null,
+          "codigo_saida": 0,
+          "saida": "Aprovado: composicao reiniciada com marcadores ao mover para novo epico",
+          "log_ref": null,
+          "executado_em": "05/10/26 16:30"
+        }
+      }
+    ],
+    "pedido_original": "Lacuna no mentor: o CLI não tem comando para tirar uma fatia de um épico. Fiz isso editando o fatia_de dos .json à mão. Vale anotar isso para a atualização do pacote que você vai fazer. é pra aplicar agora numa tarefa no reporisorio do mentor e atualziar a tag",
+    "solucao_sugerida": "criar comando no CLI para tirar ou transferir fatia de épico sem editar JSON à mão",
+    "alternativas_profissionais": [
+      {
+        "pratica": "Comando nativo mentor task desvincular <ID> [--mover-para <NOVO-PAI>] --motivo \"...\" tratando fatia_de, higiene de composicao, rastro no epico e regeneracao",
+        "pegaria_o_caso": "Sim, elimina a edicao manual e preserva a rastreabilidade e consistencia do ciclo e dos linters do Mentor.",
+        "custo": "Baixo; codigo enxuto no cmd-fila.ts e roteamento simples no cli.ts."
+      },
+      {
+        "pratica": "Comando generico de edicao de campos mentor task editar <ID> --campo fatia_de --valor null",
+        "pegaria_o_caso": "Permitiria alterar o campo, mas nao trataria rastro no epico, relacao pai-filho nem ordem_motivo, gerando dados inconsistentes.",
+        "custo": "Alto risco de quebra de invariantes do modelo de tarefas."
+      }
+    ],
+    "problema_canonico": "re-parenting e desagrupamento de tarefas em modelos hierarquicos (WBS/DAG)",
+    "discordancia": {
+      "o_que_faria_diferente": "Permitir tanto desvincular para avulsa quanto mover diretamente para outro epico existente (--mover-para), com rastro obrigatorio de revisao no epico pai.",
+      "o_que_preocupa": "Garantir que a composicao de tarefa iniciada seja reiniciada com marcadores ao trocar de epico para que o finalizar cobre o preenchimento coerente.",
+      "o_que_existe_pronto_80_porcento": "Subcomandos CLI de issue trackers consolidados (Linear/Jira CLI issue unlink/move)."
+    },
+    "impacto": ".mentor/scripts/cmd-fila.ts, .mentor/scripts/cli.ts, .mentor/processos/tarefa.md e suíte de testes.",
+    "riscos": [
+      "Deixar metadados de composicao orfaos ao desvincular.",
+      "Mover fatia para tarefa que nao existe ou para si mesma gerando loop."
+    ],
+    "dependencias_novas": [],
+    "proporcionalidade": "Standard. Solucao direta no CLI, sem dependencias externas, totalmente retrocompativel.",
+    "restricoes_reavaliadas": [],
+    "meio_de_validacao": {
+      "tipo": "testes_automatizados",
+      "porque_nao_automatizado": null,
+      "roteiro": null,
+      "artefato": null,
+      "casos": null
+    },
+    "composicao": null
+  },
+  "gates": {
+    "tipos": {
+      "rotulo": "APROVADO",
+      "vermelho_em": null,
+      "comando": "npx tsc --noEmit",
+      "codigo_saida": 0,
+      "saida": "npm notice run mentor-agent@0.15.0 npx\nnpm notice run 'tsc' --noEmit",
+      "executado_em": "05/10/26 16:29",
+      "commit_execucao": "5b3018cc07825a011938a2ed21919017aec87a12",
+      "arvore_hash": "0fdfad9223e0cefefcc8bfc231488766827a2779",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": null,
+      "ressalva": null,
+      "log_ref": "docs/.evidencias/logs/TASK-CHORE-020-tipos-1791228558930.log",
+      "chave_cache": "4c012c21344083601d22779a196a2859a8687f014531103fb8fdafb1d1f3457a",
+      "digest_insumos": "0fdfad9223e0cefefcc8bfc231488766827a2779",
+      "vermelho_dispensado": null
+    },
+    "testes": {
+      "rotulo": "APROVADO",
+      "vermelho_em": null,
+      "comando": "node testes/executar.ts --unidade",
+      "codigo_saida": 0,
+      "saida": "REV-001: APROVADO · TASK-CHORE-123 · 0 achado(s)\nREV-001: APROVADO · TASK-CHORE-123 · 0 achado(s)\nREV-002: APROVADO · TASK-CHORE-123 · 0 achado(s)\n... [399 linhas omitidas] ...\n\n✗ Resolucao finalizada com erro: ha falhas ou marcadores de conflito pendentes fora do Git.\n! Aviso: TASK-RF-003 mantem dependencias de ex-irmas (TASK-RF-002). Verifique se ainda fazem sentido.",
+      "executado_em": "05/10/26 16:30",
+      "commit_execucao": "5b3018cc07825a011938a2ed21919017aec87a12",
+      "arvore_hash": "0fdfad9223e0cefefcc8bfc231488766827a2779",
+      "arvore_sem_documentos": true,
+      "evidencia_url": null,
+      "motivo": null,
+      "ressalva": null,
+      "log_ref": "docs/.evidencias/logs/TASK-CHORE-020-testes-1791228600124.log",
+      "chave_cache": "09fa6379ee28fc8a1c4513d7794d25ac0176bcbfe329c003756b580dacae1b58",
+      "digest_insumos": "0fdfad9223e0cefefcc8bfc231488766827a2779",
+      "vermelho_dispensado": null
+    }
+  },
+  "achados": [],
+  "validacao": "nao_requer",
+  "validado_em": null,
+  "validacao_motivo": null,
+  "tarefas_geradas": [],
+  "adrs": [],
+  "divida_tecnica": [],
+  "riscos_aceitos": [],
+  "absorvida_por": null,
+  "cancelamento_motivo": null,
+  "narrativa": "2026-10-05--16h31--TASK-CHORE-020--estudo-humano.md",
+  "memoria_operacional": {
+    "resultado": "Comando task desvincular implementado com suporte a desvinculação avulsa e transferência entre épicos, validação de ciclos, rastro em revisões e regeneração automática de vistas.",
+    "aprendizados": [
+      "Re-parenting de fatias deve sempre sanitizar ordem_motivo e reiniciar marcadores de composicao para garantir rigor no fechamento.",
+      "Avisos de dependências de ex-irmãs previnem quebras silenciosas no código de produção."
+    ],
+    "limites_conhecidos": [
+      "Tarefas já finalizadas (concluídas ou canceladas) não podem ser desvinculadas ou transferidas sem reabertura."
+    ]
+  }
+}
