@@ -338,3 +338,135 @@ export function fatiar(id: string, flags: Flags): void {
   }
   console.log(`${id} vira epico: sai da fila e nao se executa. Executam-se as fatias.`)
 }
+
+// ---------------------------------------------------------------- desvincular
+
+/**
+ * Desvincula uma fatia de seu épico pai, tornando-a avulsa ou transferindo-a para outro épico.
+ * Trata rastro em plano_do_epico.revisoes, zera ordem_motivo, reinicia composicao se movida
+ * e regenera as vistas derivadas.
+ */
+export function desvincular(id: string, flags: Flags = {}): void {
+  const motivo = (flags.motivo ?? '').trim()
+  if (!motivo) {
+    throw new Error('Falta --motivo. Desvincular fatia exige justificativa registrada no epico.')
+  }
+
+  const c = caminhos()
+  const todas = carregarTarefas()
+  const tarefa = todas.find((t) => t.id === id)
+  if (!tarefa) throw new Error(`Tarefa ${id} nao encontrada.`)
+
+  if (tarefa.estado === 'concluida' || tarefa.estado === 'cancelada') {
+    throw new Error(`${id} esta em estado "${tarefa.estado}". Apenas tarefas abertas, em execucao ou pausadas podem ser desvinculadas.`)
+  }
+
+  if (!tarefa.fatia_de) {
+    throw new Error(`${id} ja e uma tarefa avulsa (nao possui fatia_de).`)
+  }
+
+  const idOrigem = tarefa.fatia_de
+  const paiOrigem = todas.find((t) => t.id === idOrigem)
+
+  const destinoId = flags['mover-para']?.trim()
+  let novoPai: Tarefa | null = null
+
+  if (destinoId) {
+    novoPai = todas.find((t) => t.id === destinoId) ?? null
+    if (!novoPai) throw new Error(`Epico de destino ${destinoId} nao existe.`)
+    if (novoPai.id === id) throw new Error('Uma tarefa nao pode ser fatia de si mesma.')
+    if (novoPai.estado === 'concluida' || novoPai.estado === 'cancelada') {
+      throw new Error(`Epico de destino ${novoPai.id} esta em estado "${novoPai.estado}". Nao e permitido mover para epico encerrado.`)
+    }
+    if (!novoPai.plano_do_epico) {
+      throw new Error(`Tarefa ${novoPai.id} nao e um epico (nao possui plano_do_epico). Use mentor task fatiar para fatiar um epico.`)
+    }
+
+    // Validação de ciclos na árvore de pais
+    let atual: Tarefa | undefined = novoPai
+    while (atual?.fatia_de) {
+      if (atual.fatia_de === id) {
+        throw new Error(`Ciclo detectado: ${novoPai.id} e descendente de ${id}. Nao e permitido mover para descendente.`)
+      }
+      atual = todas.find((t) => t.id === atual?.fatia_de)
+    }
+  }
+
+  // Zera ordem_motivo que pertencia ao arranjo de fatias anterior
+  tarefa.ordem_motivo = null
+
+  // Alerta sobre dependências de ex-irmãs sem apagá-las
+  if (paiOrigem) {
+    const irmasOrigem = todas.filter((t) => t.fatia_de === paiOrigem.id && t.id !== id)
+    const depsExIrmas = tarefa.depende_de.filter((depId) => irmasOrigem.some((i) => i.id === depId))
+    if (depsExIrmas.length > 0) {
+      console.warn(`! Aviso: ${id} mantem dependencias de ex-irmas (${depsExIrmas.join(', ')}). Verifique se ainda fazem sentido.`)
+    }
+  }
+
+  if (novoPai) {
+    tarefa.fatia_de = novoPai.id
+    // Se a tarefa já estava iniciada, reinicia a composição com marcadores para cobrar novo preenchimento
+    if (tarefa.plano && tarefa.plano.composicao) {
+      tarefa.plano.composicao = {
+        o_que_esta_fatia_entrega: `${MARCADOR} o que esta fatia entrega e como se integra ao todo`,
+        a_direcao_se_mantem: true,
+        porque: `${MARCADOR} por que a direcao do epico se mantem ou mudou`,
+      }
+    }
+  } else {
+    tarefa.fatia_de = null
+    // Higiene: anula o bloco de composição já que a tarefa não é mais fatia
+    if (tarefa.plano?.composicao) {
+      tarefa.plano.composicao = null
+    }
+  }
+
+  // Salva a tarefa atualizada
+  const caminhoTarefa = join(c.abertas, `${tarefa.id}.json`)
+  escreverJson(caminhoTarefa, tarefa)
+
+  // Grava rastro no épico de origem
+  if (paiOrigem && paiOrigem.plano_do_epico) {
+    if (!paiOrigem.plano_do_epico.revisoes) paiOrigem.plano_do_epico.revisoes = []
+    paiOrigem.plano_do_epico.revisoes.push({
+      data: agora().log,
+      motivo: novoPai
+        ? `fatia ${id} transferida para ${novoPai.id}: ${motivo}`
+        : `fatia ${id} desvinculada para tarefa avulsa: ${motivo}`,
+      apos_fatia: id,
+    })
+    const caminhoPaiOrigem = join(c.abertas, `${paiOrigem.id}.json`)
+    if (existe(caminhoPaiOrigem)) escreverJson(caminhoPaiOrigem, paiOrigem)
+  }
+
+  // Grava rastro no novo épico de destino
+  if (novoPai && novoPai.plano_do_epico) {
+    if (!novoPai.plano_do_epico.revisoes) novoPai.plano_do_epico.revisoes = []
+    novoPai.plano_do_epico.revisoes.push({
+      data: agora().log,
+      motivo: `fatia ${id} recebida vinda de ${idOrigem}: ${motivo}`,
+      apos_fatia: id,
+    })
+    const caminhoNovoPai = join(c.abertas, `${novoPai.id}.json`)
+    if (existe(caminhoNovoPai)) escreverJson(caminhoNovoPai, novoPai)
+  }
+
+  // Alerta quando a fatia desvinculada for a última viva do épico de origem
+  if (paiOrigem) {
+    const vivasRestantes = todas.filter(
+      (t) => t.fatia_de === paiOrigem.id && t.id !== id && t.estado !== 'concluida' && t.estado !== 'cancelada',
+    )
+    if (vivasRestantes.length === 0) {
+      console.warn(`! Aviso: ${id} era a ultima fatia ativa de ${paiOrigem.id}. O epico agora nao possui mais fatias ativas.`)
+    }
+  }
+
+  regenerarTudo()
+
+  if (novoPai) {
+    console.log(`${id} transferida do epico ${idOrigem} para o epico ${novoPai.id}.`)
+  } else {
+    console.log(`${id} desvinculada do epico ${idOrigem}. Agora e uma tarefa avulsa.`)
+  }
+}

@@ -23,3 +23,4 @@
 | 04/10/26 19:29 | [`TASK-CHORE-018`](./2026-10-04--19h29--TASK-CHORE-018--estudo-humano.md) | CHORE | Instrucoes coerentes de trabalho paralelo | 4/5 de TASK-CHORE-014 | concluida | nao_requer |
 | 04/10/26 19:50 | [`TASK-CHORE-019`](./2026-10-04--19h50--TASK-CHORE-019--estudo-humano.md) | CHORE | Validacao integrada e consolidacao | 5/5 de TASK-CHORE-014 | concluida | nao_requer |
 | 04/10/26 19:52 | [`TASK-CHORE-014`](./2026-10-04--19h52--TASK-CHORE-014--estudo-humano.md) | CHORE | Trabalho paralelo por slots no Mentor | - | concluida | nao_requer |
+| 05/10/26 16:31 | [`TASK-CHORE-020`](./2026-10-05--16h31--TASK-CHORE-020--estudo-humano.md) | CHORE | Comando task desvincular para retirar ou mover fatia de epico | - | concluida | nao_requer |
